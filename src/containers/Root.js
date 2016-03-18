@@ -10,13 +10,16 @@ import { syncHistoryWithStore } from 'react-router-redux'
 
 const history = syncHistoryWithStore(browserHistory, store)
 
+// FIXME: routes - named match to determine 'tab'
+//
 export default class Root extends Component {
   
   render() {
     return (
       <Provider store={store}>
         <Router history={history}>
-          <Route path="/" component={ScholarsSearchApp}/>
+          <Route path="search/:tab" component={ScholarsSearchApp}/> 
+          <Route path="/" component={ScholarsSearchApp} />
         </Router>
       </Provider>
     )        

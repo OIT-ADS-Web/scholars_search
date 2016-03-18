@@ -176,11 +176,11 @@ export class Solr {
   }
   
 }
-function requestSearch(query) {
+function requestSearch(searchFields) {
   return {
     type: REQUEST_SEARCH,
     results: {docs: []},
-    query
+    searchFields
    }
 }
 
@@ -199,9 +199,36 @@ export function nextPage() {
 }
 
 
-export function fetchSearch(query='*:*', start=0) {
+// all words = ( word AND word .. )   
+// exact match = " word phrase "
+// at least one = ( word OR word ..)
+// no match = NOT word
+//  NOTE: NOT that is alone returns no results
+// this method will get an object that looks like this?
+//
+//    const compoundSearch = {
+//         'allWords': allWords.value,
+//         'exactMatch': exactMatch.value,
+//         'atLeastOne': atLeastOne.value,
+//         'noMatch': noMatch.value
+//      }
+ 
+// FIXME: how does this put into ?query params of Router?
+// e.g. maybe in component?
+//
+/*(
+    let greeting = findDOMNode(this.refs.greeting).value
+    this.context.router.push({
+      pathname: '/',
+      query: {
+        allWords:  compoundSearch.allWords
+      }
+*/
+
+export function fetchSearch(searchFields, start=0) {
   return dispatch => {
-    dispatch(requestSearch(query));
+    
+    dispatch(requestSearch(searchFields));
     
     //let solr = new SolrQuery(start)
 

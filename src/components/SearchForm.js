@@ -4,25 +4,58 @@ import actions from '../actions/search'
 require('../styles/forms.less');
 
 
+//
+// all words = ( word AND word .. )   
+// exact match = " word phrase "
+// at least one = ( word OR word ..)
+// no match = NOT word
+//  NOTE: NOT that is alone returns no results
 export class SearchForm extends Component {
+
+
+  // FIXME: don't necessarily like this down at SearchForm
+  // level just to get at router and add values to router
+  // so they go into state
+  static get contextTypes() {
+    return({
+        router: PropTypes.object
+    })
+  }
 
   constructor(props) {
     super(props)
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
+    //this.handleSubmitSearch = () => this.handleSubmitSearch();
   }
 
   handleSubmitSearch(e) {
     e.preventDefault();
     if (this.textInput !== null) {
       const { dispatch } = this.props;
-      // search = {
-      //   'all': textInput1.value,
-      //   'exact': textInput2.value,
-      //   'atLeast': textInput3.value,
-      //   'none': textInput4.value
-      // }
+      const compoundSearch = {
+         'allWords': allWords.value,
+         'exactMatch': exactMatch.value,
+         'atLeastOne': atLeastOne.value,
+         'noMatch': noMatch.value
+       }
       //dispatch(fetchSearch(search, 0));
+     // fetchSearch(compoundSearch, 0)
+     //
     }
+/*
+ * FIXME: should only add these to route if there is a value
+ *
+    this.context.router.push({
+      pathname: '/',
+      query: {
+         'allWords': allWords.value,
+         'exactMatch': exactMatch.value,
+         'atLeastOne': atLeastOne.value,
+         'noMatch': noMatch.value
+      }
+    })
+*/
+
   }
 
   render() {
@@ -32,19 +65,19 @@ export class SearchForm extends Component {
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
             <label>With all these words</label>
-            <input type="text" ref={(ref) => this.textInput1 = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.allWords = ref} className="form-control"/>
           </div>
            <div className="form-group">
             <label>With the exact phrase</label>
-            <input type="text" ref={(ref) => this.textInput2 = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.exactMatch = ref} className="form-control"/>
           </div>
            <div className="form-group">
             <label>With at least one of these words</label>
-            <input type="text" ref={(ref) => this.textInput3 = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.atLeastOne = ref} className="form-control"/>
           </div>
            <div className="form-group">
             <label>With none of these words</label>
-            <input type="text" ref={(ref) => this.textInput4 = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.noMatch = ref} className="form-control"/>
           </div>
           <button type="submit" className="btn btn-default">Submit</button>
         </form>
@@ -52,5 +85,24 @@ export class SearchForm extends Component {
   }
 
 }
-export default SearchForm
+
+//export default SearchForm
+
+// import react-redux helper to create a wrapped  Dashboard that
+// can be connected to a store
+import { connect } from 'react-redux'
+// make a function that maps the stores state to the props
+// of our top-level component, anything goes here, just return
+// and object and use the state as you see fit.
+// get greeting from query params now that we have routes
+const mapStateToProps = (state, ownProps) => {
+  return {
+    //displayMessage: state.displayMessage,
+    //greeting: ownProps.location.query.greeting
+  }
+}
+
+// wrap the dashboard componet with redux functions
+// standared imports will get this 'connected' component
+export default connect(mapStateToProps)(SearchForm);
 
