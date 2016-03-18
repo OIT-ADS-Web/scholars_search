@@ -1,44 +1,9 @@
-//import React, { Component, PropTypes } from 'react';
-//import { connect } from 'react-redux';
-//import { fetchSearch } from '../actions';
-
-//import SearchBox from '../components/SearchBox';
-//import SearchResults from '../components/SearchResults';
-
-//class ScholarsSearchApp extends Component {
-//
-//  constructor(props) {
-//    super(props);
-//  }
-//
-//  render() {
-//    return (
-//      <div>
-//      </div>
-//    );
-//  }
-//}
-
-
-/*
-function mapStateToProps(state) {
-  const { search } = state;
-  return {
-    search
-  };
-}
-
-export default connect(mapStateToProps)(MainApp);a
-
-
-*/
-
 import React, { Component, PropTypes } from 'react'
-import { findDOMNode } from 'react-dom';
+//import { findDOMNode } from 'react-dom';
 import Page from '../layouts/page'
-import actions from '../actions/search'
+//import * from '../actions/search'
 
-import SearchFrom from '../components/SearchForm'
+import SearchForm from '../components/SearchForm'
 
 // export class directly for unit testing of this component
 // 'import { Dashboard }' will get the unwrapped component
@@ -64,6 +29,12 @@ export class ScholarsSearchApp extends Component {
   }
 
 }
+
+
+ScholarsSearchApp.propTypes = {
+  searchParams: PropTypes.object
+}
+
 // import react-redux helper to create a wrapped  Dashboard that
 // can be connected to a store
 import { connect } from 'react-redux'
@@ -73,8 +44,7 @@ import { connect } from 'react-redux'
 // get greeting from query params now that we have routes
 const mapStateToProps = (state, ownProps) => {
   return {
-    //displayMessage: state.displayMessage,
-    //greeting: ownProps.location.query.greeting
+    searchParams: ownProps.location.query
   }
 }
 

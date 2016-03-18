@@ -46,7 +46,7 @@
 //  return createStoreWithMiddleware(searchApp, initialState)
 //}
 
-require('./styles/main.less');
+require('./styles/scholars_search.less');
 
 import React from 'react';
 import { render } from 'react-dom';
