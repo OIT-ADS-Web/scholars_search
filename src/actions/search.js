@@ -88,7 +88,9 @@ export default class SolrQuery {
 
   // Build QueryString manually since built-in xr function won't duplicate array params
   // Need this for multiple facet.field parameters
-  getQueryString() {
+  get queryString() {
+
+  //getQueryString() {
     var queryOptions = Object.assign({q: this.query},this.options,this.getFilterOptions(),this.getFacetFieldOptions())
     var params =  Object.keys(queryOptions).map(key => {
       let value = queryOptions[key]
@@ -201,9 +203,14 @@ export function fetchSearch(query='*:*', start=0) {
   return dispatch => {
     dispatch(requestSearch(query));
     
+    //let solr = new SolrQuery(start)
+
     let s = new Solr({query, start});
     let uri = s.build();
-    console.log(`uri: ${uri}`);
+    // executeQuery -->
+    // let uri = SolrQuery.queryString
+ 
+    //console.log(`uri: ${uri}`);
     return fetch(uri)
       .then(response => response.json())
       .then(json => dispatch(receiveSearch(json)))
