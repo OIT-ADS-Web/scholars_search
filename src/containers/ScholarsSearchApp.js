@@ -5,8 +5,9 @@ import Page from '../layouts/page'
 
 import SearchForm from '../components/SearchForm'
 
+
 // export class directly for unit testing of this component
-// 'import { Dashboard }' will get the unwrapped component
+// 'import { ScholarsSearchApp }' will get the unwrapped component
 export class ScholarsSearchApp extends Component {
   // NOTE: this allows getting the ownProps --> location (see way below)
   //
@@ -42,9 +43,19 @@ import { connect } from 'react-redux'
 // of our top-level component, anything goes here, just return
 // and object and use the state as you see fit.
 // get greeting from query params now that we have routes
+
+//
+//https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
+//
+//params
+
+//The dynamic segments of the URL.
+
+
 const mapStateToProps = (state, ownProps) => {
   return {
-    searchParams: ownProps.location.query
+    searchParams: ownProps.location.query,
+    typeParam: ownProps.params
   }
 }
 

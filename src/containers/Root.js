@@ -5,7 +5,7 @@ import ScholarsSearchApp from './ScholarsSearchApp'
 
 const store = configureStore()
 
-import { Router, Route, browserHistory } from 'react-router'
+import { Router, Route, browserHistory, IndexRoute } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 
 const history = syncHistoryWithStore(browserHistory, store)
@@ -18,8 +18,10 @@ export default class Root extends Component {
     return (
       <Provider store={store}>
         <Router history={history}>
-          <Route path="search/:tab" component={ScholarsSearchApp}/> 
-          <Route path="/" component={ScholarsSearchApp} />
+          <Route path="/" component={ScholarsSearchApp} >
+            <IndexRoute component={ScholarsSearchApp}/>
+            <Route path=":tab" component={ScholarsSearchApp}/> 
+          </Route>
         </Router>
       </Provider>
     )        
