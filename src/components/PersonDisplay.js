@@ -38,7 +38,7 @@ class PersonDisplay extends Component {
     return (
       <li key="{this.doc.DocId}">
          <div>
-            <strong>{this.name]}</strong>
+            <strong>{this.name}</strong>
             <span> - {this.doc.PREFERRED_TITLE}</span>
          </div>
       </li>

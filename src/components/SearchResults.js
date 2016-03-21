@@ -9,6 +9,16 @@ import PersonDisplay from './PersonDisplay'
 
 class SearchResults extends Component {
 
+  /*
+    static get defaultProps() {
+    return {
+      search : { 
+        results: { num 
+        // stuff you want :)
+    }
+  }
+  */
+
   constructor(props) {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
@@ -24,10 +34,33 @@ class SearchResults extends Component {
   }
   
   render() {
+    if (this.props.search == undefined) {
+      console.log("SearchResults.render() - props.search == undefined")
+
+      return (
+          <div>
+          </div>
+      )
+    }
+
     const { search : { results } } = this.props;
+    console.log("SearchResults.render()")
+
+    if (this.props.search.results == undefined) {
+      console.log("SearchResults.render() - search.results == undefined")
+
+      return (
+          <div>
+          </div>
+      )
+    }
+
+
     let { numFound=0,docs,start=0 } = results;
     
     let r = "";
+
+
     // NOTE: this will change depending on type e.g.
     // <PublicationDisplay ..
     // <PersonDisplay ..
@@ -35,6 +68,10 @@ class SearchResults extends Component {
     if (docs) {
       r = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
     }
+    else {
+      console.log("SearchResults.render() - NO DOCS")
+    }
+
     let page = "";
     if ( (start + PAGE_ROWS ) < numFound ) {
       page = (
@@ -130,11 +167,13 @@ class SearchResults extends Component {
 }
 */
 
-//const mapStateToProps = (state) => {
+const mapStateToProps = (search) => {
 //  const { search } = state;
-//  return { search };
-//};
+  return { search };
+};
 
-//export default connect(mapStateToProps)(SearchResults);
+//export default SearchResults
+
+export default connect(mapStateToProps)(SearchResults);
 
 // export default connect()(SearchResults);

@@ -3,6 +3,8 @@ import Page from '../layouts/page'
 
 import SearchForm from '../components/SearchForm'
 
+import SearchResults from '../components/SearchResults'
+
 
 // export class directly for unit testing of this component
 // 'import { ScholarsSearchApp }' will get the unwrapped component
@@ -35,6 +37,7 @@ export class ScholarsSearchApp extends Component {
     return (
       <Page title="Scholars Search">
         <SearchForm />
+        <SearchResults />
       </Page>
     )
   }

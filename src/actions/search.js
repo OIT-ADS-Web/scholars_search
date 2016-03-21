@@ -35,6 +35,10 @@ export default class SolrQuery {
     return this
   }
 
+  get options() {
+    return this._options
+  }
+
   deleteOption(option){
     delete this.options[option];
     return this
@@ -132,7 +136,7 @@ export default class SolrQuery {
  
 
 */
-
+/*
 export class Solr {
 
   constructor(options) {
@@ -184,6 +188,8 @@ export class Solr {
   }
   
 }
+*/
+
 function requestSearch(searchFields) {
   return {
     type: REQUEST_SEARCH,
@@ -254,42 +260,23 @@ export function fetchSearch(compoundSearch, start=0) {
     //})
 
 
-    console.log("fetch search")
+    console.log("actions.fetchSearch")
 
     // FIXME: much do more here to actually build query
     // const qry = solr.buildQuery(compoundSearch) ?
     // solr.setQuery(qry)
     //
+    // just searching first field now
     solr.query = compoundSearch.allWords
     //solr.setQuery(compoundSearch)
 
 
     console.log(`query: ${compoundSearch.allWords}`)
 
-    //let s = new Solr({query, start});
-    //let uri = s.build();
-    // executeQuery -->
-    // let uri = SolrQuery.queryString
-
-    
     return solr.execute()
-      .then(response => response.json())
+      .then(r => JSON.parse(r.response))
       .then(json => dispatch(receiveSearch(json)))
  
-   /* 
-  executeQuery(e) {
-    this.setState({query: this.props.solr.query})
-    this.props.solr.execute().then(r => this.setState({searchResult: JSON.parse(r.response)}))
-  }
-   */
-
-
- 
-    //console.log(`uri: ${uri}`);
-    //return fetch(uri)
-    //  .then(response => response.json())
-    //  .then(json => dispatch(receiveSearch(json)))
-  
   }
 }
 

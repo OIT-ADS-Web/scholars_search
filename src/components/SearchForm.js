@@ -3,7 +3,7 @@ import actions from '../actions/search'
 
 require('../styles/forms.less');
 
-
+import SearchResults from './SearchResults'
 //
 // all words = ( word AND word .. )   
 // exact match = " word phrase "
@@ -49,9 +49,11 @@ export class SearchForm extends Component {
     /*
      * FIXME: should only add these to route if there is a value
      *
+     *
+     * FIXME: this path should be global, configurable
      */
     this.context.router.push({
-      pathname: '/',
+      pathname: '/scholars_search/',
       query: compoundSearch 
     })
 
@@ -64,6 +66,8 @@ export class SearchForm extends Component {
      //const { query, isFetching } = this.props;
 
     return (
+
+       <div>
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
             <label>With all these words</label>
@@ -83,6 +87,11 @@ export class SearchForm extends Component {
           </div>
           <button type="submit" className="btn btn-default">Submit</button>
         </form>
+
+        <SearchResults />
+ 
+      </div>
+
     )
   }
 
@@ -97,8 +106,9 @@ import { connect } from 'react-redux'
 // of our top-level component, anything goes here, just return
 // and object and use the state as you see fit.
 // get greeting from query params now that we have routes
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (search, ownProps) => {
   return {
+    search: search
     //displayMessage: state.displayMessage,
     //greeting: ownProps.location.query.greeting
   }

@@ -29,6 +29,9 @@ This will watch all files, rebuild and hot-load the running dev server code with
   ProxyPassReverse / http://localhost:9080/
 
 
+  NOTE: this means you have to do this to connect (note trailing slash)
+
+  http://localhost/scholars_search/
 
 ## Tests
 Testing is done with the [Karma]() test runner and the [Jasmine]() framework. Tests in this example are written with es6 syntax.
