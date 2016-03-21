@@ -25,37 +25,39 @@ export class SearchForm extends Component {
   constructor(props) {
     super(props)
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
+    // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
   }
 
   handleSubmitSearch(e) {
     e.preventDefault();
-    if (this.textInput !== null) {
-      const { dispatch } = this.props;
-      const compoundSearch = {
-         'allWords': allWords.value,
-         'exactMatch': exactMatch.value,
-         'atLeastOne': atLeastOne.value,
-         'noMatch': noMatch.value
-       }
-      //dispatch(fetchSearch(search, 0));
-     // fetchSearch(compoundSearch, 0)
-     //
-    }
-/*
- * FIXME: should only add these to route if there is a value
- *
+
+    const { dispatch } = this.props;
+      
+    const allWords = this.allWords
+    const exactMatch = this.exactMatch
+    const atLeastOne = this.atLeastOne
+    const noMatch = this.noMatch
+
+    const compoundSearch = {
+       'allWords': allWords.value,
+       'exactMatch': exactMatch.value,
+       'atLeastOne': atLeastOne.value,
+       'noMatch': noMatch.value
+     }
+
+    /*
+     * FIXME: should only add these to route if there is a value
+     *
+     */
     this.context.router.push({
       pathname: '/',
-      query: {
-         'allWords': allWords.value,
-         'exactMatch': exactMatch.value,
-         'atLeastOne': atLeastOne.value,
-         'noMatch': noMatch.value
-      }
+      query: compoundSearch 
     })
-*/
 
+    // dispatch(fetchSearch(compoundSearch, 0));
+    // fetchSearch(compoundSearch, 0)
+ 
   }
 
   render() {

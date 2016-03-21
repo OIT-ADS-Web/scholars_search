@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-//import { findDOMNode } from 'react-dom';
 import Page from '../layouts/page'
-//import * from '../actions/search'
 
 import SearchForm from '../components/SearchForm'
 
@@ -36,13 +34,12 @@ ScholarsSearchApp.propTypes = {
   searchParams: PropTypes.object
 }
 
-// import react-redux helper to create a wrapped  Dashboard that
+// import react-redux helper to create a wrapped ScholarsSearchApp that
 // can be connected to a store
 import { connect } from 'react-redux'
 // make a function that maps the stores state to the props
 // of our top-level component, anything goes here, just return
 // and object and use the state as you see fit.
-// get greeting from query params now that we have routes
 
 //
 //https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
@@ -59,7 +56,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-// wrap the dashboard componet with redux functions
+// wrap the search component with redux functions
 // standared imports will get this 'connected' component
 export default connect(mapStateToProps)(ScholarsSearchApp);
 
