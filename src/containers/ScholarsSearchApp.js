@@ -15,6 +15,18 @@ export class ScholarsSearchApp extends Component {
     })
   }
 
+  /*
+  static get childContextTypes() {
+    return ({
+         router: PropTypes.object
+     })
+  }
+
+    getChildContext: function() {
+         return { bar: "I am the parent" };
+    },
+  */
+
   constructor(props,context) {
     super(props,context)
   }

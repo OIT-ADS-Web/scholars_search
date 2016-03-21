@@ -12,8 +12,10 @@ class PersonDisplay extends Component {
     return (str || "").replace(/&#039;/g,"'");
   }
 
-  get name() { 
-    return ""
+  get name() {
+    return this.doc.nameRaw[0]
+
+    //return ""
     //if (this.doc.ts_duke_header_hero_name) {
     //  return this.f(this.doc.ts_duke_header_hero_name);
     //}
@@ -34,19 +36,12 @@ class PersonDisplay extends Component {
   render() {
 
     return (
-      <div>
-        <img typeof="Image"
-             className="image-style-profile-search-main"
-             src={this.pictureUri}
-             width="100"
-             height="100" />
-        <a href={this.doc.url} key={this.doc.path}>
-          {this.name}
-        </a>
-        {' '}
-        <br />
-        [{this.doc.path} / {this.doc.label} / {this.doc.ts_duke_sap_partner}]
-      </div>
+      <li key="{this.doc.DocId}">
+         <div>
+            <strong>{this.name]}</strong>
+            <span> - {this.doc.PREFERRED_TITLE}</span>
+         </div>
+      </li>
     );
   }
 

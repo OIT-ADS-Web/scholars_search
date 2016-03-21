@@ -17,6 +17,7 @@ class SearchResults extends Component {
   handleNextPage(e) {
     e.preventDefault();
     const { dispatch, search: { query, start } } = this.props;
+    
     //dispatch(nextPage());
     //console.log(`....----> query: ${query} / ${start}`);
     //dispatch(fetchSearch(query, start));
@@ -27,7 +28,10 @@ class SearchResults extends Component {
     let { numFound=0,docs,start=0 } = results;
     
     let r = "";
-    // NOTE: this will change depending on type
+    // NOTE: this will change depending on type e.g.
+    // <PublicationDisplay ..
+    // <PersonDisplay ..
+    // etc...
     if (docs) {
       r = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
     }
@@ -51,7 +55,80 @@ class SearchResults extends Component {
   
 }
 
+/*
+ *
+  // parseHighlighting
+  render() {
+    var docs = this.state.searchResult.response.docs
+    var departmentCounts = this.parseDepartmentCounts.bind(this)()
+    var selectedDepartments = Array.from(this.state.departments)
+    var currentDepartment = selectedDepartments.pop()
+    var departmentBreadCrumbs = []
+    var setDepartmentFacet = this.setDepartmentFacet;
+    var removeDepartmentFilter = this.removeDepartmentFilter
 
+      // highlighting looks like this:
+      // {"vitroIndividual:https://scholars.duke.edu/individual/per4284062":
+      // {"ALLTEXT":[" Nucleus Models, Biological GTP-Binding Proteins Mutagenesis, Insertional Endoplasmic Reticulum Genes <strong>Gram-Positive</strong> Bacterial Infections Active Transport, Cell Nucleus"]}}
+ 
+    
+    //var highlighting = this.state.searchResult.response.highlighting
+    //console.log(this.state.searchResult.response)
+
+    selectedDepartments.forEach(sd => departmentBreadCrumbs.push(<span key={"bc_" + sd.uri}><a href="#" onClick={function(e){ e.preventDefault(); setDepartmentFacet(sd)}}>{sd.name}</a> &rarr; </span>))
+    if (currentDepartment) {
+      departmentBreadCrumbs.push(<span key={"bc_" + currentDepartment.uri}>{currentDepartment.name}</span>)
+      departmentBreadCrumbs.push(<span key={"remove_dept_filter" + currentDepartment.uri}><a onClick={function(e){ e.preventDefault(); removeDepartmentFilter()}}> &otimes; </a></span>)
+    }
+
+    return(
+      <div className="wrapper">
+        <h1>Find People</h1>
+        <section className="search-form">
+          <input type="text" onChange={this.setQuery.bind(this)}/>
+          <button onClick={this.executeQuery.bind(this)}>search</button>
+        </section>
+        <section className="search-summary">
+          <div>Query: {this.state.query}</div>
+          <div>
+            Department: {departmentBreadCrumbs}
+          </div>
+        </section>
+        <section className="search-results">
+          <section className="people">
+          <ul>
+          {docs.map( doc => {
+             return (
+                 <li key={doc.DocId}>
+                  <div>
+                    <strong>{doc.nameRaw[0]}</strong>
+                    <span> - {doc.PREFERRED_TITLE}</span>
+                    <div>{doc.DocId}</div>
+                  </div>
+                 </li>
+             )
+          })}
+          </ul>
+          </section>
+          <section className="facets">
+            <ul>
+            { departmentCounts.map(d => {
+               return (
+                 <li key={d.depth.toString() + "|" + d.uri}>
+                   <a href="#" onClick={(e) => { e.preventDefault();this.setDepartmentFacet(d)}}>
+                   {d.name} ({d.count})
+                   </a>
+                 </li>
+               )
+            })}
+            </ul>
+          </section>
+        </section>
+      </div>
+    )
+  }
+}
+*/
 
 //const mapStateToProps = (state) => {
 //  const { search } = state;

@@ -13,21 +13,25 @@ import xr from 'xr'
 export default class SolrQuery {
   constructor(selectUrl){
     this.selectUrl = selectUrl
-    this.query = "*.*"
-    this.facetFields = {}
-    this.options = {}
-    this.filters = {}
+    this._query = "*.*"
+    this._facetFields = {}
+    this._options = {}
+    this._filters = {}
   }
 
   set query(query) {
   //setQuery(query) {
-    this.query = query
-    return this
+    this._query = query
+    return this  
+  }
+
+  get query() {
+    return this._query
   }
 
   set options(options) {
   //setOptions(options){
-    Object.assign(this.options,options)
+    Object.assign(this._options,options)
     return this
   }
 
@@ -39,19 +43,19 @@ export default class SolrQuery {
   //set facetField(name, options={}) {
 
   setFacetField(name,options={}) {
-    this.facetFields[name] = options
+    this._facetFields[name] = options
     return this
   }
 
   deleteFacetField(name) {
-    delete this.facetFields[name]
+    delete this._facetFields[name]
     return this
   }
 
 
   getFacetFieldOptions() {
     var facetOptions = {}
-    var facets = Object.keys(this.facetFields)
+    var facets = Object.keys(this._facetFields)
     if (facets.length > 0) {
       facetOptions = {
         facet: true,
@@ -59,7 +63,7 @@ export default class SolrQuery {
       }
     }
     facets.forEach(facetField => {
-      var facetProperties = this.facetFields[facetField]
+      var facetProperties = this._facetFields[facetField]
       Object.keys(facetProperties).forEach(facetProp => {
         facetOptions["f." + facetField + ".facet." + facetProp] = facetProperties[facetProp]
       })
@@ -70,17 +74,17 @@ export default class SolrQuery {
   setFilter(name,query) {
     var filter = {}
     filter[name]=query
-    Object.assign(this.filters,filter)
+    Object.assign(this._filters,filter)
     return this
   }
 
   deleteFilter(name) {
-    delete this.filters[name]
+    delete this._filters[name]
     return this
   }
 
   getFilterOptions() {
-    var filterQueries = Object.keys(this.filters).map(filterName => this.filters[filterName])
+    var filterQueries = Object.keys(this._filters).map(filterName => this._filters[filterName])
     return {
       fq:filterQueries
     }
@@ -105,7 +109,7 @@ export default class SolrQuery {
   }
 
   execute() {
-    return xr.get(this.getQueryString())
+    return xr.get(this.queryString)
   }
 
 }
@@ -122,6 +126,10 @@ export default class SolrQuery {
       mincount: "1"
     })
 
+
+
+        xr.get(config.org_url).then(r => this.setState({organizations: JSON.parse(r.response)}))
+ 
 
 */
 
@@ -203,8 +211,11 @@ export function nextPage() {
 // exact match = " word phrase "
 // at least one = ( word OR word ..)
 // no match = NOT word
+
 //  NOTE: NOT that is alone returns no results
-// this method will get an object that looks like this?
+//
+//
+//  this method will get an object that looks like this?
 //
 //    const compoundSearch = {
 //         'allWords': allWords.value,
@@ -213,34 +224,72 @@ export function nextPage() {
 //         'noMatch': noMatch.value
 //      }
  
-// FIXME: how does this put into ?query params of Router?
-// e.g. maybe in component?
-//
-/*(
-    let greeting = findDOMNode(this.refs.greeting).value
-    this.context.router.push({
-      pathname: '/',
-      query: {
-        allWords:  compoundSearch.allWords
-      }
+/*
+FIXME since these are added to route - and state - maybe
+it should get them from there?
+
 */
 
-export function fetchSearch(searchFields, start=0) {
+export function fetchSearch(compoundSearch, start=0) {
   return dispatch => {
-    
-    dispatch(requestSearch(searchFields));
-    
-    //let solr = new SolrQuery(start)
 
-    let s = new Solr({query, start});
-    let uri = s.build();
+    // FIXME: has to actually do something with search fields
+    //
+    dispatch(requestSearch(compoundSearch));
+
+    // FIXME: add start parameter
+    let solr = new SolrQuery(SOLR_URL)
+    
+    solr.options = {
+      wt: "json",
+      rows: 50,
+      hl: true
+    }
+    
+    solr.setFilter("type","classgroup:*people")
+      
+    //solr.setFacetField("department_facet_string",{
+    //  prefix: "1|",
+    //  mincount: "1"
+    //})
+
+
+    console.log("fetch search")
+
+    // FIXME: much do more here to actually build query
+    // const qry = solr.buildQuery(compoundSearch) ?
+    // solr.setQuery(qry)
+    //
+    solr.query = compoundSearch.allWords
+    //solr.setQuery(compoundSearch)
+
+
+    console.log(`query: ${compoundSearch.allWords}`)
+
+    //let s = new Solr({query, start});
+    //let uri = s.build();
     // executeQuery -->
     // let uri = SolrQuery.queryString
- 
-    //console.log(`uri: ${uri}`);
-    return fetch(uri)
+
+    
+    return solr.execute()
       .then(response => response.json())
       .then(json => dispatch(receiveSearch(json)))
+ 
+   /* 
+  executeQuery(e) {
+    this.setState({query: this.props.solr.query})
+    this.props.solr.execute().then(r => this.setState({searchResult: JSON.parse(r.response)}))
+  }
+   */
+
+
+ 
+    //console.log(`uri: ${uri}`);
+    //return fetch(uri)
+    //  .then(response => response.json())
+    //  .then(json => dispatch(receiveSearch(json)))
+  
   }
 }
 

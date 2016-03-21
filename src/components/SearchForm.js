@@ -55,8 +55,8 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-    // dispatch(fetchSearch(compoundSearch, 0));
-    // fetchSearch(compoundSearch, 0)
+    dispatch(actions.fetchSearch(compoundSearch, 0))
+    //actions.fetchSearch(compoundSearch, 0)
  
   }
 
