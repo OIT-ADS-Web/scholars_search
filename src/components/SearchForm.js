@@ -88,7 +88,7 @@ export class SearchForm extends Component {
           <button type="submit" className="btn btn-default">Submit</button>
         </form>
 
-        <SearchResults />
+        { /* <SearchResults /> */ }
  
       </div>
 

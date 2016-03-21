@@ -34,6 +34,7 @@ class SearchResults extends Component {
   }
   
   render() {
+    /*
     if (this.props.search == undefined) {
       console.log("SearchResults.render() - props.search == undefined")
 
@@ -42,9 +43,13 @@ class SearchResults extends Component {
           </div>
       )
     }
+    */
+
 
     const { search : { results } } = this.props;
     console.log("SearchResults.render()")
+    console.log(this.props)
+
 
     if (this.props.search.results == undefined) {
       console.log("SearchResults.render() - search.results == undefined")
@@ -169,9 +174,11 @@ class SearchResults extends Component {
 
 const mapStateToProps = (search) => {
 //  const { search } = state;
-  return { search };
+  return  search ;
 };
 
+// NOTE: doesn't seem to ever call unless I connect ...
+//
 //export default SearchResults
 
 export default connect(mapStateToProps)(SearchResults);
