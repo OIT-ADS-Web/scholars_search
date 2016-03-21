@@ -46,7 +46,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "start": "webpack-dev-server --content-base dist --inline --hot --port 8001",
+    "start": "webpack-dev-server --content-base dist --inline --hot --port 8333",
     "build": "webpack",
     "clean": "rm -fr dist/*",
     "test": "karma start"
