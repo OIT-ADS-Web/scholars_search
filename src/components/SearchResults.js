@@ -19,6 +19,7 @@ class SearchResults extends Component {
   }
   */
 
+
   constructor(props) {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
@@ -65,9 +66,12 @@ class SearchResults extends Component {
     //}
 
 
+    //    xr.get(config.org_url).then(r => this.setState({organizations: JSON.parse(r.response)}))
+ 
+
     let { numFound=0,docs,start=0 } = results;
     
-    let r = "";
+    let resultSet = "";
 
 
     // NOTE: this will change depending on type e.g.
@@ -75,7 +79,8 @@ class SearchResults extends Component {
     // <PersonDisplay ..
     // etc...
     if (docs) {
-      r = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
+      resultSet = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
+      // sidebar = ... <FacetSidebar />
     }
     else {
       console.log("SearchResults.render() - NO DOCS")
@@ -91,7 +96,7 @@ class SearchResults extends Component {
       <section>
         <h3>Results found: {numFound} </h3>
         <ul>
-          {r}
+          {resultSet}
         </ul>
         <div>{page}</div>
       </section>

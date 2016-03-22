@@ -57,7 +57,6 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-    // disable submit here?
     dispatch(actions.fetchSearch(compoundSearch, 0))
     //actions.fetchSearch(compoundSearch, 0)
  

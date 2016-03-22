@@ -1,9 +1,9 @@
 // FIXME: not using this at the moment
 // likely still in dependencies
-import fetch from 'isomorphic-fetch'
+//import fetch from 'isomorphic-fetch'
 
 
-export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
+//export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
 
 var config = require('config');
 
@@ -112,6 +112,4 @@ export default class SolrQuery {
 
 }
 
-
-export default SolrQuery
 

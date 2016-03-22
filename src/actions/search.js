@@ -5,7 +5,8 @@ export const RECEIVE_SEARCH  = 'RECEIVE_SEARCH';
 export const NEXT_PAGE       = 'NEXT_PAGE';
 export const PAGE_ROWS   = 50;
 
-export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
+export const REQUEST_ORGS  = 'REQUEST_ORGS';
+export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
 
 var config = require('config');
 
@@ -24,6 +25,20 @@ function receiveSearch(json) {
     type: RECEIVE_SEARCH,
     results: json.response,
     receivedAt: Date.now()
+  }
+}
+
+function requestOrgs() {
+  return {
+    type: REQUEST_ORGS,
+    orgs: {docs: []}
+  }
+}
+
+function receiveOrgs(json) {
+  return {
+    type: RECEIVE_ORGS,
+    orgs: json.response
   }
 }
 
@@ -61,11 +76,47 @@ it should get them from there?
 
 */
 
+export function fetchOrgs() {
+  const org_url = config.solr_url
+
+  return dispatch => {
+
+    dispatch(requestOrgs());
+
+    return xr.get(config.org_url)
+      .then(r => JSON.parse(r.response))
+      .then(json => dispatch(receiveOrgs(json)))
+ 
+  }
+}
+ 
+/*
+ *
+ *     this.state = {
+      query: "",
+      departments: [],
+      organizations: [],
+      searchResult: {
+        response: {
+          highlighting: {},
+        docs: []
+        },
+        facet_counts: {
+          facet_fields: {
+            department_facet_string: []
+          }
+        }
+      }
+ 
+*/
+
 export function fetchSearch(compoundSearch, start=0) {
   const solr_url = config.solr_url
 
   // NOTE: recreate SolrQuery object every time there is a
-  // search??  
+  // search?? should probably be a global object - in the
+  // store?   that way we set facets on it etc...
+  //
   // FIXME: add start parameter
   let solr = new SolrQuery(solr_url)
     
@@ -129,6 +180,7 @@ export function fetchSearch(compoundSearch, start=0) {
 // allow all to be exported at once into an 'action' object
 export default {
   fetchSearch,
-  nextPage
+  nextPage,
+  fetchOrgs
 }
 

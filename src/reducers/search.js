@@ -21,8 +21,7 @@ function sort(search, action) {
        sort_order: ...?? 
     }
  
-
-
+}
 
 }
 */
@@ -56,6 +55,10 @@ function search(search = { isFetching: false, results: {}, start: 0 }, action) {
 // publicationSearch
 // will get into that later - just need advanced search first
 // just naming 'search' to be explicit, not necessary
+//
+//
+// import init from './init'  ????
+//
 //
 const searchReducer = combineReducers({
   search: search,
