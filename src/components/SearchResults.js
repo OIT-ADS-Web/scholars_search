@@ -27,8 +27,12 @@ class SearchResults extends Component {
   handleNextPage(e) {
     e.preventDefault();
     const { dispatch, search: { query, start } } = this.props;
-    
-    //dispatch(nextPage());
+
+    // FIXME: need to recreate compoundSearch ... from URL params?
+    //
+    //dispatch(actions.fetchSearch(compoundSearch, 0))
+     
+    //dispatch(actions.nextPage());
     //console.log(`....----> query: ${query} / ${start}`);
     //dispatch(fetchSearch(query, start));
   }
@@ -47,18 +51,18 @@ class SearchResults extends Component {
 
 
     const { search : { results } } = this.props;
-    console.log("SearchResults.render()")
-    console.log(this.props)
+    //console.log("SearchResults.render()")
+    //console.log(this.props)
 
 
-    if (this.props.search.results == undefined) {
-      console.log("SearchResults.render() - search.results == undefined")
-
-      return (
-          <div>
-          </div>
-      )
-    }
+    //if (this.props.search.results == undefined) {
+    //  console.log("SearchResults.render() - search.results == undefined")
+    //
+    //  return (
+    //      <div>
+    //      </div>
+    //  )
+    //}
 
 
     let { numFound=0,docs,start=0 } = results;
@@ -84,13 +88,13 @@ class SearchResults extends Component {
       );
     }
     return (
-      <div>
+      <section>
         <h3>Results found: {numFound} </h3>
-        <div>
+        <ul>
           {r}
-          {page}
-        </div>
-      </div>
+        </ul>
+        <div>{page}</div>
+      </section>
 
     );
   }

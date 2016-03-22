@@ -63,7 +63,7 @@ export class SearchForm extends Component {
   }
 
   render() {
-     //const { query, isFetching } = this.props;
+     const { query, isFetching } = this.props;
 
     return (
 
@@ -107,11 +107,7 @@ import { connect } from 'react-redux'
 // and object and use the state as you see fit.
 // get greeting from query params now that we have routes
 const mapStateToProps = (search, ownProps) => {
-  return {
-    search: search
-    //displayMessage: state.displayMessage,
-    //greeting: ownProps.location.query.greeting
-  }
+  return search
 }
 
 // wrap the dashboard componet with redux functions

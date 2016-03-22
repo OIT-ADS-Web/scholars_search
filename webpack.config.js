@@ -1,6 +1,8 @@
 // the html plugin will dynamically add the bundle script tags to the main index.html file
 // it also allows us to use template to build the rest of that file
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+var path = require('path');
+
 
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
@@ -15,6 +17,11 @@ module.exports = {
   output: {
     path: __dirname + "/dist/",
     filename: "[name].js"
+  },
+  resolve: {
+    alias: {
+       config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')
+    }
   },
   module: {
     loaders: [

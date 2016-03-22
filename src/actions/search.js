@@ -7,6 +7,10 @@ export const PAGE_ROWS   = 50;
 
 export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
 
+
+var config = require('config');
+
+
 // FIXME: need a solr query builder that's like these two combined
 import xr from 'xr'
 
@@ -243,13 +247,17 @@ export function fetchSearch(compoundSearch, start=0) {
     //
     dispatch(requestSearch(compoundSearch));
 
+    //SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
+    const solr_url = config.solr_url
+ 
     // FIXME: add start parameter
-    let solr = new SolrQuery(SOLR_URL)
+    let solr = new SolrQuery(solr_url)
     
     solr.options = {
       wt: "json",
-      rows: 50,
-      hl: true
+      rows: PAGE_ROWS,
+      hl: true,
+      start: start
     }
     
     solr.setFilter("type","classgroup:*people")
