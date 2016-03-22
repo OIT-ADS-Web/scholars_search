@@ -176,15 +176,18 @@ class SearchResults extends Component {
 }
 */
 
+// FIXME: this is just returning the same state
+// seems like no point in that, but otherwise says
+// no property 'results'
 const mapStateToProps = (search) => {
 //  const { search } = state;
   return  search ;
 };
 
 // NOTE: doesn't seem to ever call unless I connect ...
-//
 //export default SearchResults
 
 export default connect(mapStateToProps)(SearchResults);
 
-// export default connect()(SearchResults);
+// this doesn't seem to pass along state
+//export default connect()(SearchResults);

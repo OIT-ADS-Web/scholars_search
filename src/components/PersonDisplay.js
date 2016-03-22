@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+// Person = struct of some sort???
+// 
+//
+// NOTE: props are sent to components
 class PersonDisplay extends Component {
 
   constructor(props) {
@@ -23,6 +27,14 @@ class PersonDisplay extends Component {
     // return this.f(`${this.doc.ts_duke_header_hero_name} // ${this.doc.ts_duke_goes_by_name}`);
   }
 
+  get preferredTitle() {
+    return this.doc.PREFERRED_TITLE
+  }
+
+  get docId() {
+    return this.doc.DocId
+  }
+
   get pictureUri() {
     let host = "https://scholars.duke.edu";
     //
@@ -36,10 +48,10 @@ class PersonDisplay extends Component {
   render() {
 
     return (
-      <li key="{this.doc.DocId}">
+      <li key="{this.docId}">
          <div>
             <strong>{this.name}</strong>
-            <span> - {this.doc.PREFERRED_TITLE}</span>
+            <span> - {this.preferredTitle}</span>
          </div>
       </li>
     );

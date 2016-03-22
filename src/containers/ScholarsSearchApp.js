@@ -67,7 +67,8 @@ import { connect } from 'react-redux'
 const mapStateToProps = (state, ownProps) => {
   return {
     searchParams: ownProps.location.query,
-    typeParam: ownProps.params
+    typeParam: ownProps.params//,
+    //isFetching: state.isFetching
   }
 }
 

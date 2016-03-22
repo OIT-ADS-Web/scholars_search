@@ -5,9 +5,14 @@ Install node dependencies:
 
     npm install
 
-Start the development server:
+## Start the development server:
 
     npm start
+
+    or (if need to set an environment):
+
+    NODE_ENV=(development|development_acceptance) npm start
+
 
 Navigate to:
 

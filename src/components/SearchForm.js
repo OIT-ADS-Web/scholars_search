@@ -57,15 +57,29 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
+    // disable submit here?
     dispatch(actions.fetchSearch(compoundSearch, 0))
     //actions.fetchSearch(compoundSearch, 0)
  
   }
 
   render() {
-     const { query, isFetching } = this.props;
+    //const { query, isFetching } = this.props;
+     const { search : { isFetching } } = this.props;
 
-    return (
+     // FIXME: need to populate fields if in router URL 
+
+     console.log("SearchForm#render()")
+     console.log("isFetching="+isFetching)
+
+     // FIXME: probably better way to do this
+     let button
+     if (isFetching) {
+          button = <button type="submit" className="btn btn-default" disabled>Submit</button>
+     } else {
+          button = <button type="submit" className="btn btn-default">Submit</button>
+     }
+     return (
 
        <div>
         <form onSubmit={this.handleSubmitSearch}>
@@ -85,7 +99,7 @@ export class SearchForm extends Component {
             <label>With none of these words</label>
             <input type="text" ref={(ref) => this.noMatch = ref} className="form-control"/>
           </div>
-          <button type="submit" className="btn btn-default">Submit</button>
+          {button}
         </form>
 
         { /* <SearchResults /> */ }
@@ -108,6 +122,13 @@ import { connect } from 'react-redux'
 // get greeting from query params now that we have routes
 const mapStateToProps = (search, ownProps) => {
   return search
+  /*  
+  return {
+    isFetching: search.isFetching,
+    query: search.query
+  }
+  */
+  //  search
 }
 
 // wrap the dashboard componet with redux functions

@@ -10,7 +10,6 @@ export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
 
 var config = require('config');
 
-
 // FIXME: need a solr query builder that's like these two combined
 import xr from 'xr'
 
@@ -24,7 +23,6 @@ export default class SolrQuery {
   }
 
   set query(query) {
-  //setQuery(query) {
     this._query = query
     return this  
   }
@@ -34,7 +32,6 @@ export default class SolrQuery {
   }
 
   set options(options) {
-  //setOptions(options){
     Object.assign(this._options,options)
     return this
   }
@@ -47,8 +44,6 @@ export default class SolrQuery {
     delete this.options[option];
     return this
   }
-
-  //set facetField(name, options={}) {
 
   setFacetField(name,options={}) {
     this._facetFields[name] = options
@@ -101,8 +96,6 @@ export default class SolrQuery {
   // Build QueryString manually since built-in xr function won't duplicate array params
   // Need this for multiple facet.field parameters
   get queryString() {
-
-  //getQueryString() {
     var queryOptions = Object.assign({q: this.query},this.options,this.getFilterOptions(),this.getFacetFieldOptions())
     var params =  Object.keys(queryOptions).map(key => {
       let value = queryOptions[key]
@@ -123,23 +116,6 @@ export default class SolrQuery {
 }
 
 
-/*
- *
- solr.setOptions({
-      wt: "json",
-      rows: 50,
-      hl: true
-    }).setFilter("type","classgroup:*people").setFacetField("department_facet_string",{
-      prefix: "1|",
-      mincount: "1"
-    })
-
-
-
-        xr.get(config.org_url).then(r => this.setState({organizations: JSON.parse(r.response)}))
- 
-
-*/
 /*
 export class Solr {
 
@@ -276,8 +252,6 @@ export function fetchSearch(compoundSearch, start=0) {
     //
     // just searching first field now
     solr.query = compoundSearch.allWords
-    //solr.setQuery(compoundSearch)
-
 
     console.log(`query: ${compoundSearch.allWords}`)
 
