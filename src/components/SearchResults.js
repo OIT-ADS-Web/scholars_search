@@ -73,7 +73,6 @@ class SearchResults extends Component {
     
     let resultSet = "";
 
-
     // NOTE: this will change depending on type e.g.
     // <PublicationDisplay ..
     // <PersonDisplay ..
@@ -93,7 +92,7 @@ class SearchResults extends Component {
       );
     }
     return (
-      <section>
+      <section className="search-results">
         <h3>Results found: {numFound} </h3>
         <ul>
           {resultSet}

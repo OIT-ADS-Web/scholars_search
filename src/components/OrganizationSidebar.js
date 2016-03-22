@@ -8,11 +8,44 @@ class OrganizationSidebar extends Component {
     super(props);
   }
 
-  /*
+
   render() {
+
+    console.log("Organization#render")
+    console.log(this.props)
+
+    const { orgs: orgs } = this.props //organizations;
+    //const { orgs : organizations } = this.props;
+    console.log(orgs)
+    
+    let resultSet = "";
+
+    // NOTE: this will change depending on type e.g.
+    // <PublicationDisplay ..
+    // <PersonDisplay ..
+    // etc...
+    if (orgs) {
+      console.log("****organizations****")
+      console.log(orgs.organizations)
+     
+      resultSet = orgs.organizations.map(org => <li>{org.name}</li> );
+    }
+    else {
+      console.log("OrganizationSidebar.render() - NO ORGS")
+    }
+
+ 
     return (
           <section className="facets">
             <ul>
+              {resultSet}
+            </ul>
+          </section>
+   )
+  }
+
+  /*
+
             { departmentCounts.map(d => {
                return (
                  <li key={d.depth.toString() + "|" + d.uri}>
@@ -22,13 +55,7 @@ class OrganizationSidebar extends Component {
                  </li>
                )
             })}
-            </ul>
-          </section>
-   )
-  }
-
-
-
+ 
   parseDepartmentCounts() {
     var departments = this.state.searchResult.facet_counts.facet_fields.department_facet_string
 
@@ -92,5 +119,19 @@ class OrganizationSidebar extends Component {
 
 
 }
+
+
+// FIXME: this is just returning the same state
+// seems like no point in that, but otherwise says
+// no property 'results'
+const mapStateToProps = (orgs) => {
+//  const { search } = state;
+  return orgs ;
+};
+
+// NOTE: doesn't seem to ever call unless I connect ...
+//export default SearchResults
+
+export default connect(mapStateToProps)(OrganizationSidebar);
 
 

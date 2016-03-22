@@ -59,6 +59,7 @@ export class SearchForm extends Component {
 
     dispatch(actions.fetchSearch(compoundSearch, 0))
     //actions.fetchSearch(compoundSearch, 0)
+    dispatch(actions.fetchOrgs())
  
   }
 

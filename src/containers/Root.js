@@ -19,6 +19,8 @@ import { browserHistory } from 'react-router'
 
 const history = syncHistoryWithStore(browserHistory, store)
 
+//import fetchOrgs from '../actions/search'
+
 // FIXME: routes - named match to determine 'tab'
 //
 //
@@ -34,6 +36,35 @@ const history = syncHistoryWithStore(browserHistory, store)
 //            basename: '/whatever'
 //        });
 
+//https://github.com/Download/redux-load-api
+//
+/*
+ *
+import { onload, load } from 'redux-load-api';
+
+  export function onload(fn) {
+  return Component => {Component.onload = fn;   return Component;};
+}
+
+export function load(components, params) {
+  return Promise.all(components
+    .filter(component => component.onload)
+    .map(component => Promise.resolve(component.onload(params)))
+  );
+}
+
+*/
+
+
+  /*
+  match({ routes, location:req.url }, (err, redirect, renderProps) => {
+  load(renderProps.components, renderProps.params);
+
+  // at this point, the `load` function has been called on
+  // those components matched by `match` that were decorated with `onload`
+  });
+
+  */
 export default class Root extends Component {
   
   render() {

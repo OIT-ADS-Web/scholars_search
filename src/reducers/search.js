@@ -26,13 +26,39 @@ function sort(search, action) {
 }
 */
 
+import {
+  REQUEST_ORGS, RECEIVE_ORGS
+} from '../actions/search';
+
+
+//function init(search = {isLoading: false }, action) {
+function orgs(orgs = { isLoading: false, organizations: []}, action) {
+ 
+  switch (action.type) {
+    case REQUEST_ORGS:
+      return { ...orgs,
+        isLoading: true,
+        organizations: action.organizations
+    }
+    case RECEIVE_ORGS:
+      return { ...orgs,
+        isLoading: false,
+        organizations: action.organizations
+    }
+    default:
+      return orgs;
+    }
+
+}
+
+
 function search(search = { isFetching: false, results: {}, start: 0 }, action) {
   switch (action.type) {
   case REQUEST_SEARCH:
     return { ...search, 
       isFetching: true,
       results: action.results,
-      query: action.query
+      //query: action.query
     }
   case RECEIVE_SEARCH:
     return { ...search, 
@@ -60,7 +86,11 @@ function search(search = { isFetching: false, results: {}, start: 0 }, action) {
 // import init from './init'  ????
 //
 //
+//
+//import init from './init'
+
 const searchReducer = combineReducers({
+  orgs: orgs,
   search: search,
   routing: routerReducer
 });

@@ -5,6 +5,8 @@ import SearchForm from '../components/SearchForm'
 
 import SearchResults from '../components/SearchResults'
 
+import OrganizationSidebar from '../components/OrganizationSidebar'
+
 
 // export class directly for unit testing of this component
 // 'import { ScholarsSearchApp }' will get the unwrapped component
@@ -38,6 +40,7 @@ export class ScholarsSearchApp extends Component {
       <Page title="Scholars Search">
         <SearchForm />
         <SearchResults />
+        <OrganizationSidebar />
       </Page>
     )
   }

@@ -11,7 +11,13 @@ const createStoreWithMiddleware = applyMiddleware(
 )(createStore)
 
 
-export default function configureStore(initialState = {}) {
+//import fetchOrgs from './utils/fetch'
+
+const initialState = {
+  //organizations: fetchOrgs()
+}
+
+export default function configureStore(initialState = initialState) {
   return createStoreWithMiddleware(searchReducer, initialState)
 }
 

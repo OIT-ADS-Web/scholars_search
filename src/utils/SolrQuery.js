@@ -2,12 +2,8 @@
 // likely still in dependencies
 //import fetch from 'isomorphic-fetch'
 
-
-//export const SOLR_URL =  "http://localhost/ROOTsolr/collection1/select"
-
 var config = require('config');
 
-// FIXME: need a solr query builder that's like these two combined
 import xr from 'xr'
 
 export default class SolrQuery {
@@ -111,5 +107,4 @@ export default class SolrQuery {
   }
 
 }
-
 

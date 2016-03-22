@@ -31,14 +31,14 @@ function receiveSearch(json) {
 function requestOrgs() {
   return {
     type: REQUEST_ORGS,
-    orgs: {docs: []}
+    organizations: []
   }
 }
 
 function receiveOrgs(json) {
   return {
     type: RECEIVE_ORGS,
-    orgs: json.response
+    organizations: json
   }
 }
 
@@ -46,7 +46,7 @@ function receiveOrgs(json) {
 // instead of reducuer? e.g.
 // start: search.start + PAGE_ROWS
 //  
-export function nextPage() {
+function nextPage() {
   return {
     type: NEXT_PAGE
   }
@@ -76,8 +76,11 @@ it should get them from there?
 
 */
 
+import xr from 'xr'
+
 export function fetchOrgs() {
   const org_url = config.solr_url
+  console.log("search#fetchOrgs")
 
   return dispatch => {
 
@@ -110,7 +113,7 @@ export function fetchOrgs() {
  
 */
 
-export function fetchSearch(compoundSearch, start=0) {
+function fetchSearch(compoundSearch, start=0) {
   const solr_url = config.solr_url
 
   // NOTE: recreate SolrQuery object every time there is a
