@@ -29,7 +29,34 @@ export class ScholarsSearchApp extends Component {
     getChildContext: function() {
          return { bar: "I am the parent" };
     },
+
+
+  http://stackoverflow.com/questions/26632415/where-should-ajax-request-be-made-in-flux-app
+  https://facebook.github.io/react/tips/initial-ajax.html
+
+  componentDidMount: function() {
+    this.serverRequest = $.get(this.props.source, function (result) {
+      var lastGist = result[0];
+      this.setState({
+        username: lastGist.owner.login,
+        lastGistUrl: lastGist.html_url
+      });
+    }.bind(this));
+  },
+
+  componentWillUnmount: function() {
+    this.serverRequest.abort();
+  },
+
+
+  };
+  }
+
   */
+
+  // FIXME: should I load organzations here and then
+  // send down as props? e.g.
+  // <OrganizationSidebar organizations=organizations/>
 
   constructor(props,context) {
     super(props,context)
@@ -67,11 +94,18 @@ import { connect } from 'react-redux'
 //The dynamic segments of the URL.
 
 
-const mapStateToProps = (state, ownProps) => {
-  return {
+
+//{
+// organizaitons: search.organizations
+// }
+//
+// export function loadOrganizationsIfNeeded() {
+ 
+// NOTE: I don't believe this actually has to be called mapStateToProps
+const mapStateToProps = (search, ownProps) => {
+  return { ...search,
     searchParams: ownProps.location.query,
-    typeParam: ownProps.params//,
-    //isFetching: state.isFetching
+    typeParam: ownProps.params
   }
 }
 

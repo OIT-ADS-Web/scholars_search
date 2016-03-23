@@ -1,11 +1,24 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 
+var _ = require('lodash');
+
+import loadOrganizationsIfNeeded from '../actions/search'
+import fetchOrgs from '../actions/search'
+
 class OrganizationSidebar extends Component {
 
 
+  //this.props.dispatch ( fetchUsersFromServer () );
+  // import loadOrganizationsIfNeeded from '../actions/search'
+  // 
+  // dispatch(loadOrganizationsIfNeeded)
+ 
   constructor(props) {
     super(props);
+    // FIXME: ??
+    //this.props.dispatch (loadOrganizationsIfNeeded);
+    //this.props.dispatch (fetchOrgs);
   }
 
 
@@ -27,8 +40,12 @@ class OrganizationSidebar extends Component {
     if (orgs) {
       console.log("****organizations****")
       console.log(orgs.organizations)
-     
-      resultSet = orgs.organizations.map(org => <li>{org.name}</li> );
+
+      const organizations = _.sortBy(orgs.organizations, function(o) {
+        return o.name;
+      });
+
+      resultSet = organizations.map(org => <li>{org.name}</li> );
     }
     else {
       console.log("OrganizationSidebar.render() - NO ORGS")
@@ -124,6 +141,7 @@ class OrganizationSidebar extends Component {
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
 // no property 'results'
+
 const mapStateToProps = (orgs) => {
 //  const { search } = state;
   return orgs ;
@@ -133,5 +151,7 @@ const mapStateToProps = (orgs) => {
 //export default SearchResults
 
 export default connect(mapStateToProps)(OrganizationSidebar);
+
+//export default OrganizationSidebar;
 
 

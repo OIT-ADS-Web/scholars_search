@@ -30,7 +30,9 @@ import {
   REQUEST_ORGS, RECEIVE_ORGS
 } from '../actions/search';
 
-
+// FIXME: seems like this should be part of search state .. not 'orgs'
+// but 'start' doesn't really apply
+//
 //function init(search = {isLoading: false }, action) {
 function orgs(orgs = { isLoading: false, organizations: []}, action) {
  

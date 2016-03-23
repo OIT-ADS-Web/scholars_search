@@ -74,9 +74,38 @@ function nextPage() {
 FIXME since these are added to route - and state - maybe
 it should get them from there?
 
+
+https://github.com/reactjs/redux/issues/239
+
 */
 
 import xr from 'xr'
+
+export function loadOrganizationList() {
+  // I don't know how you wrote it—maybe using redux-promise or something
+  const org_url = config.solr_url
+  console.log("search#loadOrganizationList")
+
+  return { 
+    type: RECEIVE_ORGS,
+    fn: xr.get(config.org_url)
+        .then(r => JSON.parse(r.response))
+  }
+    //.then(json => dispatch(receiveOrgs(json)))
+}
+
+export function loadOrganizationsIfNeeded() {
+  // This “return a function” form is supported thanks to redux-thunk
+  return (dispatch, getState) => {
+    if (getState().search.organizations) {
+      return; // Exit early!
+    }
+
+    return dispatch(loadOrganizationList()); // OK, do that loady thing!
+  };
+}
+
+
 
 export function fetchOrgs() {
   const org_url = config.solr_url
