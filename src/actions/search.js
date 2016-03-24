@@ -12,6 +12,10 @@ var config = require('config');
 
 import SolrQuery from '../utils/SolrQuery'
 
+// FIXME: should these go here?  that's sort of convention
+// but they are sparse routing directions or flag switches
+// or traffic directions - not like  actual functions that do 
+// anything
 function requestSearch(searchFields) {
   return {
     type: REQUEST_SEARCH,
@@ -69,23 +73,33 @@ export function loadOrganizationList() {
   const org_url = config.solr_url
   console.log("search#loadOrganizationList")
 
-  return { 
-    type: RECEIVE_ORGS,
-    fn: xr.get(config.org_url)
-        .then(r => JSON.parse(r.response))
-  }
+  return xr.get(config.org_url)
+    .then(r => JSON.parse(r.response))
+  
+
+
+  //return { 
+  //  type: RECEIVE_ORGS,
+  //  fn: xr.get(config.org_url)
+  //      .then(r => JSON.parse(r.response))
+  //}
     //.then(json => dispatch(receiveOrgs(json)))
 }
 
 export function loadOrganizationsIfNeeded() {
   // This “return a function” form is supported thanks to redux-thunk
-  return (dispatch, getState) => {
-    if (getState().search.organizations) {
-      return; // Exit early!
-    }
+  return dispatch => {
 
-    return dispatch(loadOrganizationList()); // OK, do that loady thing!
-  };
+    return loadOrganizationList()
+  }
+
+  //return (dispatch, getState) => {
+    //if (getState().search.organizations) {
+    //  return; // Exit early!
+    //}
+    return loadOrganizationList(); // OK, do that loady thing!
+    //return dispatch(loadOrganizationList()); // OK, do that loady thing!
+  //};
 }
 
 

@@ -58,14 +58,24 @@ export class SearchForm extends Component {
     })
 
     dispatch(actions.fetchSearch(compoundSearch, 0))
+    
+    // FIXME: would be cool if it were just a function call
     //actions.fetchSearch(compoundSearch, 0)
+    // instead of 'dispatch' --
+    // 'dispatch' is a magic, unspecified function is it 
+    //  perhaps made available when calling 'connect'
+    //  a Component must have render() method (I think) so it's kind of 
+    //  more like an interface
     dispatch(actions.fetchOrgs())
  
   }
 
   render() {
-    //const { query, isFetching } = this.props;
-     const { search : { isFetching } } = this.props;
+    // FIXME: 'search' seems passed down from 'connect()'
+    // not sure why it's empty if I don't connect ... how
+    // do 'props' get sent down - if we have to 'connect'
+    // everytime, then what's the point of a hierarchy of components? 
+    const { search : { isFetching } } = this.props;
 
      // FIXME: need to populate fields if in router URL 
 

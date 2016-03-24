@@ -5,6 +5,26 @@ import ScholarsSearchApp from './ScholarsSearchApp'
 
 const store = configureStore()
 
+// FIXME: is there a way to preload orgs/departments like
+// this (see below)?
+//
+// http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
+
+//import fetchOrgs from '../actions/search'
+
+//store.dispatch(fetchOrgs)
+/*
+store.dispatch({
+  type: 'REQUEST_ORGS',
+  state: {
+    vote: {
+      pair: ['Sunshine', '28 Days Later'],
+      tally: {Sunshine: 2}
+    }
+  }
+});
+*/
+
 import { Router, Route, IndexRoute } from 'react-router'
 //import { createHistory } from 'history';
 
@@ -65,17 +85,33 @@ export function load(components, params) {
   });
 
   */
+
+// http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
+
+const routes = <Route path="scholars_search/" component={ScholarsSearchApp} >
+  <IndexRoute component={ScholarsSearchApp}/>
+  <Route path=":tab" component={ScholarsSearchApp}/> 
+</Route>;
+ 
+
+import loadOrganizationsIfNeeded from '../actions/search'
+
 export default class Root extends Component {
+  
+  constructor(props) {
+    super(props)
+    // FIXME: can't get this to work so far, just
+    // trying to load organization at init time
+    //Root.js:105 Uncaught TypeError: (0 , _search2.default) is not a function
+
+    //this.props.dispatch(loadOrganizationsIfNeeded())
+  }
+
   
   render() {
     return (
       <Provider store={store}>
-        <Router history={history}>
-          <Route path="scholars_search/" component={ScholarsSearchApp} >
-            <IndexRoute component={ScholarsSearchApp}/>
-            <Route path=":tab" component={ScholarsSearchApp}/> 
-          </Route>
-        </Router>
+        <Router history={history}>{routes}</Router>
       </Provider>
     )        
   }

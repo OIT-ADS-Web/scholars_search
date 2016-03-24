@@ -7,7 +7,9 @@ import SearchResults from '../components/SearchResults'
 
 import OrganizationSidebar from '../components/OrganizationSidebar'
 
-
+import fetchOrgs from '../actions/search'
+import loadOrganizationsIfNeeded from '../actions/search'
+ 
 // export class directly for unit testing of this component
 // 'import { ScholarsSearchApp }' will get the unwrapped component
 export class ScholarsSearchApp extends Component {
@@ -60,6 +62,9 @@ export class ScholarsSearchApp extends Component {
 
   constructor(props,context) {
     super(props,context)
+    // FIXME: can't get this to work so far, just
+    // trying to load organization at init time
+    //this.props.dispatch(loadOrganizationsIfNeeded())
   }
 
   render() {
@@ -102,6 +107,7 @@ import { connect } from 'react-redux'
 // export function loadOrganizationsIfNeeded() {
  
 // NOTE: I don't believe this actually has to be called mapStateToProps
+// techincally, it's just the convention
 const mapStateToProps = (search, ownProps) => {
   return { ...search,
     searchParams: ownProps.location.query,

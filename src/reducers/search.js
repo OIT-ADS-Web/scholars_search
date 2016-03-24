@@ -1,40 +1,13 @@
-import { combineReducers } from 'redux'
-import { routerReducer  } from 'react-router-redux'
-
-import {
-  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PAGE_ROWS
-} from '../actions/search';
-
-
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
-
-
-/*
- * will need to sort at some point
- *
-
-function sort(search, action) {
-  switch (action.type) {
-  case SORT:
-    return { ...search,
-    
-       sort_order: ...?? 
-    }
- 
-}
-
-}
-*/
 
 import {
   REQUEST_ORGS, RECEIVE_ORGS
 } from '../actions/search';
 
 // FIXME: seems like this should be part of search state .. not 'orgs'
-// but 'start' doesn't really apply
+// but 'start' as a parameter doesn't really apply
 //
-//function init(search = {isLoading: false }, action) {
-function orgs(orgs = { isLoading: false, organizations: []}, action) {
+function orgReducer(orgs = { isLoading: false, organizations: []}, action) {
  
   switch (action.type) {
     case REQUEST_ORGS:
@@ -53,8 +26,30 @@ function orgs(orgs = { isLoading: false, organizations: []}, action) {
 
 }
 
+import {
+  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PAGE_ROWS
+} from '../actions/search';
 
-function search(search = { isFetching: false, results: {}, start: 0 }, action) {
+
+/* FIXME: 
+ * will need to sort at some point
+ *
+
+function sort(search, action) {
+  switch (action.type) {
+  case SORT:
+    return { ...search,
+       sort_order: ...?? 
+    }
+  }
+}
+*/
+
+
+// could call it search, just called it searchReducer to be explicit about the key name
+// in the combineReducers method
+//
+function searchReducer(search = { isFetching: false, results: {}, start: 0 }, action) {
   switch (action.type) {
   case REQUEST_SEARCH:
     return { ...search, 
@@ -85,16 +80,22 @@ function search(search = { isFetching: false, results: {}, start: 0 }, action) {
 // just naming 'search' to be explicit, not necessary
 //
 //
-// import init from './init'  ????
 //
+//export default {
+//  orgReducer,
+//  searchReducer
 //
-//
-//import init from './init'
+//} 
 
-const searchReducer = combineReducers({
-  orgs: orgs,
-  search: search,
+import { combineReducers } from 'redux'
+import { routerReducer  } from 'react-router-redux'
+
+
+const mainReducer = combineReducers({
+  orgs: orgReducer,
+  search: searchReducer,
   routing: routerReducer
 });
 
-export default searchReducer;
+export default mainReducer;
+
