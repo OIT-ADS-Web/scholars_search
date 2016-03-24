@@ -42,10 +42,6 @@ function receiveOrgs(json) {
   }
 }
 
-// FIXME: should this set nextPage variable 
-// instead of reducuer? e.g.
-// start: search.start + PAGE_ROWS
-//  
 function nextPage() {
   return {
     type: NEXT_PAGE
@@ -53,22 +49,6 @@ function nextPage() {
 }
 
 
-// all words = ( word AND word .. )   
-// exact match = " word phrase "
-// at least one = ( word OR word ..)
-// no match = NOT word
-
-//  NOTE: NOT that is alone returns no results
-//
-//
-//  this method will get an object that looks like this?
-//
-//    const compoundSearch = {
-//         'allWords': allWords.value,
-//         'exactMatch': exactMatch.value,
-//         'atLeastOne': atLeastOne.value,
-//         'noMatch': noMatch.value
-//      }
  
 /*
 FIXME since these are added to route - and state - maybe
@@ -79,6 +59,9 @@ https://github.com/reactjs/redux/issues/239
 
 */
 
+/* FIXME: couldn't quite these to hook up to an application
+ * 'init' event
+ */
 import xr from 'xr'
 
 export function loadOrganizationList() {
@@ -123,8 +106,13 @@ export function fetchOrgs() {
 }
  
 /*
- *
- *     this.state = {
+ 
+  this was in the original component, so like need some stuff
+  like this to appear in 'state' as some point
+
+ 
+ 
+      this.state = {
       query: "",
       departments: [],
       organizations: [],
@@ -159,48 +147,29 @@ function fetchSearch(compoundSearch, start=0) {
     start: start
   }
     
-  //solr.setFilter("type","classgroup:*people")
- 
   return dispatch => {
 
-    // FIXME: has to actually do something with search fields
-    //
+    // NOTE: this is sort of like a flag saying "search has kicked off" 
     dispatch(requestSearch(compoundSearch));
 
-
-    //const solr_url = config.solr_url
-
-    // NOTE: recreate SolrQuery object every time there is a
-    // search??  
-    // FIXME: add start parameter
-    //let solr = new SolrQuery(solr_url)
-    
-    //solr.options = {
-    //  wt: "json",
-    //  rows: PAGE_ROWS,
-    //  hl: true,
-    //  start: start
-    //}
-    
     solr.setFilter("type","classgroup:*people")
       
-    //solr.setFacetField("department_facet_string",{
-    //  prefix: "1|",
-    //  mincount: "1"
-    //})
+    solr.setFacetField("department_facet_string",{
+      prefix: "1|",
+      mincount: "1"
+    })
 
 
     console.log("actions.fetchSearch")
 
-    // FIXME: much do more here to actually build query
-    // const qry = solr.buildQuery(compoundSearch) ?
-    // solr.setQuery(qry)
-    //
-    // just searching first field now
-    solr.query = compoundSearch.allWords
+    const qry = solr.buildComplexQuery(compoundSearch)
 
-    console.log(`query: ${compoundSearch.allWords}`)
+    solr.query = qry
 
+    console.log(`query: ${qry}`)
+
+    // receiveSearch is the counterpart fo requestSearch, like a flag
+    // saying "search has completed"
     return solr.execute()
       .then(r => JSON.parse(r.response))
       .then(json => dispatch(receiveSearch(json)))

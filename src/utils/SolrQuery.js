@@ -102,6 +102,34 @@ export default class SolrQuery {
     return this.selectUrl + '?' + params
   }
 
+  buildComplexQuery(compoundSearch = {}) {
+    var query = ""
+
+    // FIXME: just defaulting to this now
+    // various problems with that - not even checking
+    // for blank, for instance
+    query = compoundSearch.allWords
+
+    //  this method will get an object that looks like this?
+    //
+    //    const compoundSearch = {
+    //         'allWords': allWords.value,
+    //         'exactMatch': exactMatch.value,
+    //         'atLeastOne': atLeastOne.value,
+    //         'noMatch': noMatch.value
+    // }
+
+    // all words = ( word AND word .. )   
+    // exact match = " word phrase "
+    // at least one = ( word OR word ..)
+    // no match = NOT word
+  
+    //  NOTE: NOT that is alone returns no results
+
+    return query
+
+  }
+
   execute() {
     return xr.get(this.queryString)
   }

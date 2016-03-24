@@ -33,10 +33,6 @@ class OrganizationSidebar extends Component {
     
     let resultSet = "";
 
-    // NOTE: this will change depending on type e.g.
-    // <PublicationDisplay ..
-    // <PersonDisplay ..
-    // etc...
     if (orgs) {
       console.log("****organizations****")
       console.log(orgs.organizations)
@@ -45,7 +41,7 @@ class OrganizationSidebar extends Component {
         return o.name;
       });
 
-      resultSet = organizations.map(org => <li>{org.name}</li> );
+      resultSet = organizations.map(org => <div><input type="checkbox" ref="{org.URI}" /> {org.name}</div> );
     }
     else {
       console.log("OrganizationSidebar.render() - NO ORGS")
