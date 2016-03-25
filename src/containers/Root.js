@@ -96,6 +96,9 @@ const routes = <Route path="scholars_search/" component={ScholarsSearchApp} >
 
 import loadOrganizationsIfNeeded from '../actions/search'
 
+import appInit from '../actions/search'
+import helloTest from '../actions/search'
+
 export default class Root extends Component {
   
   constructor(props) {
@@ -105,9 +108,22 @@ export default class Root extends Component {
     //Root.js:105 Uncaught TypeError: (0 , _search2.default) is not a function
 
     //this.props.dispatch(loadOrganizationsIfNeeded())
+  
+    //helloTest()
+
+    //this.props.dispatch(helloTest())
+
   }
 
-  
+
+  componentDidMount() {
+    // FIXME: is this still something called?
+    console.log("Root#componentDidMount")
+    //this.props.dispatch(appInit())
+    //appInit()
+     
+  }
+
   render() {
     return (
       <Provider store={store}>

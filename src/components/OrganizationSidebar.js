@@ -30,9 +30,15 @@ class OrganizationSidebar extends Component {
     const { orgs: orgs } = this.props //organizations;
     //const { orgs : organizations } = this.props;
     console.log(orgs)
+    const { init: departments } = this.props // initial departments
     
     let resultSet = "";
 
+    if (departments) {
+      console.log("****departments****")
+      console.log(departments)
+
+    }
     if (orgs) {
       console.log("****organizations****")
       console.log(orgs.organizations)
@@ -47,7 +53,10 @@ class OrganizationSidebar extends Component {
       console.log("OrganizationSidebar.render() - NO ORGS")
     }
 
+    //const { search: results } = this.props //organizations;
+    const { search : { results } } = this.props;
  
+   // 
     return (
           <section className="facets">
             <ul>

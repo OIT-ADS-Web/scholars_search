@@ -27,9 +27,11 @@ class SearchResults extends Component {
 
   handleNextPage(e) {
     e.preventDefault();
-    const { dispatch, search: { query, start } } = this.props;
+    // FIXME: have not run a query so far with more than 50 results
+    //
+    const { dispatch, search: { searchFields, start } } = this.props;
 
-    // FIXME: need to recreate compoundSearch ... from URL params?
+    // FIXME: need to recreate compoundSearch here ... from URL params?
     //
     //dispatch(actions.fetchSearch(compoundSearch, 0))
      
@@ -39,35 +41,10 @@ class SearchResults extends Component {
   }
   
   render() {
-    /*
-    if (this.props.search == undefined) {
-      console.log("SearchResults.render() - props.search == undefined")
 
-      return (
-          <div>
-          </div>
-      )
-    }
-    */
-
-
-    const { search : { results } } = this.props;
-    //console.log("SearchResults.render()")
-    //console.log(this.props)
-
-
-    //if (this.props.search.results == undefined) {
-    //  console.log("SearchResults.render() - search.results == undefined")
-    //
-    //  return (
-    //      <div>
-    //      </div>
-    //  )
-    //}
-
-
-    //    xr.get(config.org_url).then(r => this.setState({organizations: JSON.parse(r.response)}))
- 
+    const { search : { results, searchFields } } = this.props;
+    console.log("SearchResults.render()")
+    console.log(this.props)
 
     let { numFound=0,docs,start=0 } = results;
     
@@ -77,9 +54,10 @@ class SearchResults extends Component {
     // <PublicationDisplay ..
     // <PersonDisplay ..
     // etc...
+    //
     if (docs) {
       resultSet = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
-      // sidebar = ... <FacetSidebar />
+      // sidebar = ... <FacetSidebar />  --- likely will become big component
     }
     else {
       console.log("SearchResults.render() - NO DOCS")
@@ -91,8 +69,16 @@ class SearchResults extends Component {
           <button onClick={this.handleNextPage}>Next</button>
       );
     }
+    // NOTE: searchFields is undefined
+   console.log("SearchResults#renders")
+   console.log(searchFields)
+
+   // FIXME: should expand this to illustrate advanced search
+   const query = searchFields ? searchFields.allWords : ''
+
     return (
       <section className="search-results">
+        <h2>Query: {query}</h2>
         <h3>Results found: {numFound} </h3>
         <ul>
           {resultSet}
@@ -182,9 +168,8 @@ class SearchResults extends Component {
 
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
-// no property 'results'
+// no property 'results' etc...
 const mapStateToProps = (search) => {
-//  const { search } = state;
   return  search ;
 };
 
@@ -193,5 +178,5 @@ const mapStateToProps = (search) => {
 
 export default connect(mapStateToProps)(SearchResults);
 
-// this doesn't seem to pass along state
+// this doesn't seem to pass along state either
 //export default connect()(SearchResults);

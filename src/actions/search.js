@@ -68,43 +68,42 @@ https://github.com/reactjs/redux/issues/239
  */
 import xr from 'xr'
 
-export function loadOrganizationList() {
-  // I don't know how you wrote it—maybe using redux-promise or something
-  const org_url = config.solr_url
-  console.log("search#loadOrganizationList")
+// FIXME: still experimenting with how to initialize
+// the app with some values
+export const APP_INIT_BEGIN = 'APP_INIT_BEGIN'
+export const APP_INIT_END = 'APP_INIT_END'
 
-  return xr.get(config.org_url)
-    .then(r => JSON.parse(r.response))
-  
-
-
-  //return { 
-  //  type: RECEIVE_ORGS,
-  //  fn: xr.get(config.org_url)
-  //      .then(r => JSON.parse(r.response))
-  //}
-    //.then(json => dispatch(receiveOrgs(json)))
+export function appInitBegin() {
+  return {
+    type: APP_INIT_BEGIN,
+    departments: []
+  }
 }
 
-export function loadOrganizationsIfNeeded() {
-  // This “return a function” form is supported thanks to redux-thunk
+export function appInitEnd(json) {
+  return {
+    type: APP_INIT_END,
+    departments: json
+  }
+}
+
+
+function appInit() {
+  const org_url = config.solr_url
+  console.log("search#appInit")
+
   return dispatch => {
 
-    return loadOrganizationList()
+    dispatch(appInitBegin());
+
+    return xr.get(config.org_url)
+      .then(r => JSON.parse(r.response))
+      .then(json => dispatch(appInitEnd(json)))
+ 
   }
-
-  //return (dispatch, getState) => {
-    //if (getState().search.organizations) {
-    //  return; // Exit early!
-    //}
-    return loadOrganizationList(); // OK, do that loady thing!
-    //return dispatch(loadOrganizationList()); // OK, do that loady thing!
-  //};
 }
-
-
-
-export function fetchOrgs() {
+ 
+function fetchOrgs() {
   const org_url = config.solr_url
   console.log("search#fetchOrgs")
 
@@ -196,6 +195,7 @@ function fetchSearch(compoundSearch, start=0) {
 export default {
   fetchSearch,
   nextPage,
-  fetchOrgs
+  fetchOrgs,
+  appInit
 }
 

@@ -45,6 +45,25 @@ function sort(search, action) {
 }
 */
 
+import { APP_INIT_BEGIN, APP_INIT_END } from '../actions/search'
+
+function appInitReducer(init = {isLoading: false, departments: []}, action) {
+
+  switch(action.type) {
+    case APP_INIT_BEGIN:
+      return { ...init,
+        isLoading: true,
+        departments: action.departments
+    }
+    case APP_INIT_END:
+      return { ...init,
+        isLoading: false,
+        departments: action.departments
+    }
+    default:
+      return init
+    }
+}
 
 // could call it search, just called it searchReducer to be explicit about the key name
 // in the combineReducers method
@@ -55,7 +74,7 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0 }, ac
     return { ...search, 
       isFetching: true,
       results: action.results,
-      //query: action.query
+      searchFields: action.searchFields
     }
   case RECEIVE_SEARCH:
     return { ...search, 
@@ -73,29 +92,40 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0 }, ac
 }
 
 
+import { combineReducers } from 'redux'
+import { routerReducer  } from 'react-router-redux'
+
 // FIXME: tabs as different reducers?
 // peopleSearch
 // publicationSearch
 // will get into that later - just need advanced search first
 // just naming 'search' to be explicit, not necessary
-//
-//
-//
-//export default {
-//  orgReducer,
-//  searchReducer
-//
-//} 
-
-import { combineReducers } from 'redux'
-import { routerReducer  } from 'react-router-redux'
 
 
 const mainReducer = combineReducers({
   orgs: orgReducer,
   search: searchReducer,
-  routing: routerReducer
+  routing: routerReducer,
+  init: appInitReducer
 });
 
 export default mainReducer;
+
+// FIXME: could make a reducers/main.js that merely combines them
+// sort of like this (depending on how many reducers we end up with):
+// tried it and didn't work, but probably just forgot something
+//
+// import { combineReducers } from 'redux'
+//import { routerReducer  } from 'react-router-redux'
+//
+//
+//import { orgReducer, searchReducer } from './search'
+//
+//const mainReducer = combineReducers({
+//  orgs: orgReducer,
+//  search: searchReducer,
+//  routing: routerReducer
+//});
+
+//export default mainReducer;
 

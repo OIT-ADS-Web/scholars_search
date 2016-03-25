@@ -77,6 +77,7 @@ export class SearchForm extends Component {
     // everytime, then what's the point of a hierarchy of components? 
     const { search : { isFetching } } = this.props;
 
+
      // FIXME: need to populate fields if in router URL 
 
      console.log("SearchForm#render()")

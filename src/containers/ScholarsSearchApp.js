@@ -7,9 +7,12 @@ import SearchResults from '../components/SearchResults'
 
 import OrganizationSidebar from '../components/OrganizationSidebar'
 
-import fetchOrgs from '../actions/search'
-import loadOrganizationsIfNeeded from '../actions/search'
- 
+
+import actions from '../actions/search'
+
+// NOTE: doing this import and dispatch(fetchOrgs) does NOT work
+//import fetchOrgs from '../actions/search'
+
 // export class directly for unit testing of this component
 // 'import { ScholarsSearchApp }' will get the unwrapped component
 export class ScholarsSearchApp extends Component {
@@ -54,17 +57,30 @@ export class ScholarsSearchApp extends Component {
   };
   }
 
+
   */
 
   // FIXME: should I load organzations here and then
   // send down as props? e.g.
   // <OrganizationSidebar organizations=organizations/>
+  // NOTE: appInit will add a init.departments to store
+  //
+  componentDidMount() {
+    //this.props.dispatch(actions.fetchOrgs())
+    this.props.dispatch(actions.appInit())
+  }
+
+/*
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.userId !== this.props.userId) {
+      this.props.dispatch(loadPosts(nextProps.userId))
+    }
+  }
+*/
 
   constructor(props,context) {
     super(props,context)
-    // FIXME: can't get this to work so far, just
-    // trying to load organization at init time
-    //this.props.dispatch(loadOrganizationsIfNeeded())
+
   }
 
   render() {
