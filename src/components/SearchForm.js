@@ -27,18 +27,21 @@ export class SearchForm extends Component {
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
+
   }
+
 
   handleSubmitSearch(e) {
     e.preventDefault();
 
     const { dispatch } = this.props;
-      
+ 
     const allWords = this.allWords
     const exactMatch = this.exactMatch
     const atLeastOne = this.atLeastOne
     const noMatch = this.noMatch
 
+    
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
@@ -83,6 +86,7 @@ export class SearchForm extends Component {
      console.log("SearchForm#render()")
      console.log("isFetching="+isFetching)
 
+     //  checked={'all' === this.state.searchOptions}/
      // FIXME: probably better way to do this
      let button
      if (isFetching) {
@@ -90,15 +94,17 @@ export class SearchForm extends Component {
      } else {
           button = <button type="submit" className="btn btn-default">Submit</button>
      }
+     
      return (
 
        <div>
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
-            <label>With all these words</label>
+            <label>Search all words</label>
             <input type="text" ref={(ref) => this.allWords = ref} className="form-control"/>
           </div>
-           <div className="form-group">
+          
+          <div className="form-group">
             <label>With the exact phrase</label>
             <input type="text" ref={(ref) => this.exactMatch = ref} className="form-control"/>
           </div>
@@ -106,10 +112,12 @@ export class SearchForm extends Component {
             <label>With at least one of these words</label>
             <input type="text" ref={(ref) => this.atLeastOne = ref} className="form-control"/>
           </div>
+
            <div className="form-group">
-            <label>With none of these words</label>
+            <label>and (optionally) none of these words</label>
             <input type="text" ref={(ref) => this.noMatch = ref} className="form-control"/>
           </div>
+          
           {button}
         </form>
 
@@ -122,10 +130,6 @@ export class SearchForm extends Component {
 
 }
 
-//export default SearchForm
-
-// import react-redux helper to create a wrapped  Dashboard that
-// can be connected to a store
 import { connect } from 'react-redux'
 // make a function that maps the stores state to the props
 // of our top-level component, anything goes here, just return
@@ -142,7 +146,5 @@ const mapStateToProps = (search, ownProps) => {
   //  search
 }
 
-// wrap the dashboard componet with redux functions
-// standared imports will get this 'connected' component
 export default connect(mapStateToProps)(SearchForm);
 

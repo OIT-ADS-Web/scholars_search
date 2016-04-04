@@ -102,14 +102,14 @@ export default class SolrQuery {
     return this.selectUrl + '?' + params
   }
 
+  parseQuery(compoundSearch = {}) {
+
+
+
+
+  }
+
   buildComplexQuery(compoundSearch = {}) {
-    var query = ""
-
-    // FIXME: just defaulting to this now
-    // various problems with that - not even checking
-    // for blank, for instance
-    query = compoundSearch.allWords
-
     //  this method will get an object that looks like this?
     //
     //    const compoundSearch = {
@@ -123,8 +123,57 @@ export default class SolrQuery {
     // exact match = " word phrase "
     // at least one = ( word OR word ..)
     // no match = NOT word
+    // NOTE: NOT that is alone returns no results
+
+    //
+    var query = ""
+
+    // FIXME: just defaulting to this now
+    // various problems with that - not even checking
+    // for blank, for instance
+    //query = searchParams.allWords
+
+    // split by "," or <space>
+    //
+    // allWords => array
+    // exactMatch != array
+    // atLeastOne => array
+    // noMatch => array
+    const allWords = compoundSearch.allWords.split(/[ ,]+/)
+    const exactMatch = compoundSearch.exactMatch//.split(/[ ,]+/)
+    const atLeastOne = compoundSearch.atLeastOne.split(/[ ,]+/)
+    const noMatch = compoundSearch.noMatch.split(/[ ,]+/)
+
+
+    // split by "," or <space>
+    //
+    // allWords => array
+    // exactMatch => array
+    // atLeastOne => array
+    // noMatch => array
   
-    //  NOTE: NOT that is alone returns no results
+    // 1) if allWords  allWords
+    // 2) if exactMatch exactMatch
+    // 3) if atLeastOne atLeastOne
+    // 4) if noMatch    noMatch
+    //
+    //
+    if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
+       //   then -- (can't NOT without something to match to begin with)
+       return ''
+    }
+
+    query += allWords.join(" AND ")
+    if (exactMatch) {
+      query += "\""+exactMatch+"\""
+    }
+    query += atLeastOne.join(" OR ")
+    
+    if (noMatch != false) {
+     query += "NOT (" + noMatch.join(" OR ") + ")"
+    }
+
+    console.log(`QUERY=${query}`)
 
     return query
 

@@ -166,12 +166,13 @@ function fetchSearch(compoundSearch, start=0) {
     dispatch(requestSearch(compoundSearch));
 
     solr.setFilter("type","classgroup:*people")
-      
+    
+    /*  
     solr.setFacetField("department_facet_string",{
       prefix: "1|",
       mincount: "1"
     })
-
+    */
 
     console.log("actions.fetchSearch")
 
