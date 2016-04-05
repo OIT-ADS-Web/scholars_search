@@ -19,7 +19,8 @@ import SolrQuery from '../utils/SolrQuery'
 function requestSearch(searchFields) {
   return {
     type: REQUEST_SEARCH,
-    results: {docs: []},
+    results: {responseHeader: {}, response: {}, highlighting: {}},
+    //results: {docs: []},
     searchFields
    }
 }
@@ -27,7 +28,7 @@ function requestSearch(searchFields) {
 function receiveSearch(json) {
   return {
     type: RECEIVE_SEARCH,
-    results: json.response,
+    results: json/*.response*/,
     receivedAt: Date.now()
   }
 }
@@ -132,7 +133,7 @@ function fetchOrgs() {
       searchResult: {
         response: {
           highlighting: {},
-        docs: []
+          docs: []
         },
         facet_counts: {
           facet_fields: {

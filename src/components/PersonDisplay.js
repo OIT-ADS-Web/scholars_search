@@ -10,6 +10,7 @@ class PersonDisplay extends Component {
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
+    this.display = this.props.display;
   }
 
   f(str) {
@@ -35,6 +36,10 @@ class PersonDisplay extends Component {
     return this.doc.DocId
   }
 
+  get allText() {
+    return this.doc.ALLTEXT.join(" ")
+  }
+
   get pictureUri() {
     let host = "https://scholars.duke.edu";
     //
@@ -52,7 +57,9 @@ class PersonDisplay extends Component {
          <div>
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
-         </div>
+            <div style={{display:'none'}}>{this.allText}</div>
+            <div dangerouslySetInnerHTML={{__html: this.display}}></div>
+          </div>
       </li>
     );
   }

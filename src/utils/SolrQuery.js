@@ -172,8 +172,10 @@ export default class SolrQuery {
     }
 
     // take out empty "" entries, just in case made it this far
-    queryArray = queryArray.filter(Boolean)
-
+    // http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
+    queryArray = queryArray.filter(function() { return true; })
+    //queryArray = queryArray.filter(Boolean)
+ 
     query = queryArray.join(" AND ")
 
     console.log(`QUERY=${query}`)

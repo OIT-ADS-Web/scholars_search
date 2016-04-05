@@ -46,8 +46,13 @@ class SearchResults extends Component {
     console.log("SearchResults.render()")
     console.log(this.props)
 
-    let { numFound=0,docs,start=0 } = results;
-    
+    //let { numFound=0,docs,start=0, highlighting={} } = results;
+    let { highlighting={}, response={} } = results;
+    let { numFound=0,docs,start=0 } = response;
+
+    console.log("SearchResults#render()highlighting***")
+    console.log(highlighting)
+
     let resultSet = "";
 
     // NOTE: this will change depending on type e.g.
@@ -56,7 +61,13 @@ class SearchResults extends Component {
     // etc...
     //
     if (docs) {
-      resultSet = docs.map(doc => <PersonDisplay key={doc.path} doc={doc} /> );
+
+      //let display = highlighting[doc.DocId] || doc.ALLTEXT; 
+      resultSet = docs.map(doc => { 
+          let display = highlighting[doc.DocId].ALLTEXT[0] || doc.ALLTEXT[0]; 
+          console.log(display)
+          return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+      });
       // sidebar = ... <FacetSidebar />  --- likely will become big component
     }
     else {
