@@ -100,7 +100,7 @@ export class SearchForm extends Component {
        <div>
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
-            <label>Search all words</label>
+            <label>With all these words</label>
             <input type="text" ref={(ref) => this.allWords = ref} className="form-control"/>
           </div>
           
@@ -114,7 +114,7 @@ export class SearchForm extends Component {
           </div>
 
            <div className="form-group">
-            <label>and (optionally) none of these words</label>
+            <label>With none of these words</label>
             <input type="text" ref={(ref) => this.noMatch = ref} className="form-control"/>
           </div>
           

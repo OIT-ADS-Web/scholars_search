@@ -102,36 +102,42 @@ export default class SolrQuery {
     return this.selectUrl + '?' + params
   }
 
-  parseQuery(compoundSearch = {}) {
+  gatherStatements(words, delimiter) {
+    // given an array and a delimiter, join with that delimiter
+    // but also group by parenthesis if necessary
+    var exp = words.join(delimiter)
+    if (exp) {
+      if (words.length > 1) {
+        // group if more than 1 - just to be unambigous
+        exp = "(" + exp + ")"
+      }
+    }
 
-
-
-
+   return exp 
   }
 
+
   buildComplexQuery(compoundSearch = {}) {
-    //  this method will get an object that looks like this?
+    // NOTE: this method will get an object that looks like this:
     //
-    //    const compoundSearch = {
-    //         'allWords': allWords.value,
-    //         'exactMatch': exactMatch.value,
-    //         'atLeastOne': atLeastOne.value,
-    //         'noMatch': noMatch.value
+    // const compoundSearch = {
+    //    'allWords': allWords.value,
+    //    'exactMatch': exactMatch.value,
+    //    'atLeastOne': atLeastOne.value,
+    //    'noMatch': noMatch.value
     // }
 
+    // and constructs a solr query based on this template:
+    //
     // all words = ( word AND word .. )   
-    // exact match = " word phrase "
+    // exact match = "word phrase"
     // at least one = ( word OR word ..)
-    // no match = NOT word
+    // no match = NOT (word OR word ..)
+    //
     // NOTE: NOT that is alone returns no results
 
     //
     var query = ""
-
-    // FIXME: just defaulting to this now
-    // various problems with that - not even checking
-    // for blank, for instance
-    //query = searchParams.allWords
 
     // split by "," or <space>
     //
@@ -139,39 +145,36 @@ export default class SolrQuery {
     // exactMatch != array
     // atLeastOne => array
     // noMatch => array
+    // listing in same order as form
     const allWords = compoundSearch.allWords.split(/[ ,]+/)
-    const exactMatch = compoundSearch.exactMatch//.split(/[ ,]+/)
+    const exactMatch = compoundSearch.exactMatch
     const atLeastOne = compoundSearch.atLeastOne.split(/[ ,]+/)
     const noMatch = compoundSearch.noMatch.split(/[ ,]+/)
 
-
-    // split by "," or <space>
-    //
-    // allWords => array
-    // exactMatch => array
-    // atLeastOne => array
-    // noMatch => array
-  
-    // 1) if allWords  allWords
-    // 2) if exactMatch exactMatch
-    // 3) if atLeastOne atLeastOne
-    // 4) if noMatch    noMatch
-    //
-    //
     if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
-       //   then -- (can't NOT without something to match to begin with)
+       //NOTE:  (can't NOT without something to match to begin with)
        return ''
     }
 
-    query += allWords.join(" AND ")
-    if (exactMatch) {
-      query += "\""+exactMatch+"\""
-    }
-    query += atLeastOne.join(" OR ")
+    var queryArray = []
     
+    var allWordsExp = this.gatherStatements(allWords, " AND ")
+    if (allWordsExp) { queryArray.push(allWordsExp) }
+    
+    if (exactMatch) { queryArray.push("\""+exactMatch+"\"") }
+
+    var atLeastOneExp = this.gatherStatements(atLeastOne,  " OR ")
+    if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
+
     if (noMatch != false) {
-     query += "NOT (" + noMatch.join(" OR ") + ")"
+     var noMatchExp = "NOT " + this.gatherStatements(noMatch, " OR ")
+     if (noMatchExp) { queryArray.push(noMatchExp) }
     }
+
+    // take out empty "" entries, just in case made it this far
+    queryArray = queryArray.filter(Boolean)
+
+    query = queryArray.join(" AND ")
 
     console.log(`QUERY=${query}`)
 
