@@ -57,8 +57,11 @@ class PersonDisplay extends Component {
          <div>
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
-            <div style={{display:'none'}}>{this.allText}</div>
-            <div dangerouslySetInnerHTML={{__html: this.display}}></div>
+            <div>
+              <span>...</span>
+              <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+              <span>...</span>
+            </div>
           </div>
       </li>
     );
