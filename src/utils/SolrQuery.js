@@ -6,7 +6,7 @@
 
 import xr from 'xr'
 
-import fetch from 'isomorphic-fetch'
+//import fetch from 'isomorphic-fetch'
 
 //if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
 //  var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -230,20 +230,6 @@ export default class SolrQuery {
   }
 
 
-  /*
-  function makeRequest (method, url, done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.onload = function () {
-      done(null, xhr.response);
-    };
-    xhr.onerror = function () {
-      done(xhr.response);
-    };
-    xhr.send();
-  }
-  */
-
   execute_and_print() {
     var xhr = new XMLHttpRequest()
     xhr.open("GET", this.queryString)
@@ -265,55 +251,16 @@ export default class SolrQuery {
     // 
     return xr.get(this.queryString)
     //}
+    //return fetch(this.queryString, { method: 'get' })
     //return fetch(this.queryString)
   }
   
   execute_console() {
 
-   //import xr from 'xr'
-
-    //var X = require("xmlhttprequest").XMLHttpRequest;
-    
-    //if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     console.log("trying xmlhttprequest")
 
     //return fetch(this.queryString)
     return this.makeRequest("GET", this.queryString)
-    //} else {
-    //  console.log("trying xr")
-    //  var xr = require("xr").xr
-    //  return xr.get(this.queryString)
-    //}
-
-  
-    //var xhr = new XMLHttpRequest()
-
-    //var result = new Promise(function(resolve, reject) {
-    //  xhr.open("GET", this.queryString)
-   //
-   //   xhr.send();  
- 
-     
-   //   if (/* everything turned out fine */) {
-   //     resolve(console.log(xhr.responseText));
-        // 
-        //resolve("Stuff worked!");
-   //   }
-   //   else {
-   //     reject(Error("It broke"));
-   //   }
-   // });
-
-   //xhr.open("GET", this.queryString)
-
-   //xhr.onload = function() {
-   // console.log(xhr.responseText);
-   //};
-   //xhr.send();  
-
-    //return this.makeRequest("GET", this.queryString)
-
-   //return xr.get(this.queryString)
   }
 
 }
