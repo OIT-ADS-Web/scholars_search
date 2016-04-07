@@ -21,6 +21,7 @@
     "redux-logger": "^2.4.0",
     "redux-thunk": "^1.0.3",
     "style-loader": "^0.13.0",
+    "xmlhttprequest": "^1.8.0",
     "xr": "^0.2.0"
   },
   "devDependencies": {

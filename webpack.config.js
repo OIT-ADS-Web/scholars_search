@@ -2,7 +2,7 @@
 // it also allows us to use template to build the rest of that file
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path');
-
+var webpack = require('webpack')
 
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
@@ -50,6 +50,13 @@ module.exports = {
       hash: true,
       title: "Scholars Search",
       template: 'src/index.ejs/'
-    })
+    }),
+   //http://stackoverflow.com/questions/32217165/can-i-detect-if-my-script-is-being-processed-by-webpack
+   new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+        APP_ENV: JSON.stringify('browser')
+      },
+    }),
   ]
 }

@@ -166,8 +166,18 @@ function fetchSearch(compoundSearch, start=0) {
     // NOTE: this is sort of like a flag saying "search has kicked off" 
     dispatch(requestSearch(compoundSearch));
 
-    solr.setFilter("type","classgroup:*people")
-    
+    //
+    //solr.setFilter("type","classgroup:*people")
+
+    /*
+    "classgroup": [
+    "http://vivoweb.org/ontology#vitroClassGrouporganizations",
+
+    *
+    *
+    */
+
+
     /*  
     solr.setFacetField("department_facet_string",{
       prefix: "1|",
@@ -185,6 +195,7 @@ function fetchSearch(compoundSearch, start=0) {
 
     // receiveSearch is the counterpart fo requestSearch, like a flag
     // saying "search has completed"
+    //   .then(r => JSON.parse(r.response.json()))
     return solr.execute()
       .then(r => JSON.parse(r.response))
       .then(json => dispatch(receiveSearch(json)))

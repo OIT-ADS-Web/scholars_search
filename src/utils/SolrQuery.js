@@ -2,9 +2,17 @@
 // likely still in dependencies
 //import fetch from 'isomorphic-fetch'
 
-var config = require('config');
+//var config = require('config');
 
 import xr from 'xr'
+
+import fetch from 'isomorphic-fetch'
+
+//if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+//  var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+//}
+
+//var xr = new XMLHttpRequest();
 
 export default class SolrQuery {
   constructor(selectUrl){
@@ -184,8 +192,128 @@ export default class SolrQuery {
 
   }
 
+  // http://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr
+  makeRequest(method, url) {
+  
+    return new Promise(function (resolve, reject) {
+      
+      if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+        var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+      }
+
+
+      var xhr = new XMLHttpRequest()
+      xhr.open(method, url)
+      console.log("makeRequest"+url)
+
+      xhr.onload = function () {
+        if (this.status >= 200 && this.status < 300) {
+          //console.log("got > 200 or < 300")
+          //console.log(xhr.responseText)
+          resolve(xhr.responseText)
+        } else {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          })
+        }
+      }
+
+      xhr.onerror = function () {
+        reject({
+          status: this.status,
+          statusText: xhr.statusText
+        })
+      }
+      xhr.send();
+    })
+  }
+
+
+  /*
+  function makeRequest (method, url, done) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = function () {
+      done(null, xhr.response);
+    };
+    xhr.onerror = function () {
+      done(xhr.response);
+    };
+    xhr.send();
+  }
+  */
+
+  execute_and_print() {
+    var xhr = new XMLHttpRequest()
+    xhr.open("GET", this.queryString)
+
+    xhr.onload = function() {
+      console.log(xhr.responseText);
+    }
+    xhr.send()  
+
+  }
+
   execute() {
+    console.log("SolrQuery.execute()")
+
+    console.log(process.env.APP_ENV)
+
+    // FIXME: don't really like this
+    //if (process.env.APP_ENV === 'browser') {
+    // 
     return xr.get(this.queryString)
+    //}
+    //return fetch(this.queryString)
+  }
+  
+  execute_console() {
+
+   //import xr from 'xr'
+
+    //var X = require("xmlhttprequest").XMLHttpRequest;
+    
+    //if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+    console.log("trying xmlhttprequest")
+
+    //return fetch(this.queryString)
+    return this.makeRequest("GET", this.queryString)
+    //} else {
+    //  console.log("trying xr")
+    //  var xr = require("xr").xr
+    //  return xr.get(this.queryString)
+    //}
+
+  
+    //var xhr = new XMLHttpRequest()
+
+    //var result = new Promise(function(resolve, reject) {
+    //  xhr.open("GET", this.queryString)
+   //
+   //   xhr.send();  
+ 
+     
+   //   if (/* everything turned out fine */) {
+   //     resolve(console.log(xhr.responseText));
+        // 
+        //resolve("Stuff worked!");
+   //   }
+   //   else {
+   //     reject(Error("It broke"));
+   //   }
+   // });
+
+   //xhr.open("GET", this.queryString)
+
+   //xhr.onload = function() {
+   // console.log(xhr.responseText);
+   //};
+   //xhr.send();  
+
+    //return this.makeRequest("GET", this.queryString)
+
+   //return xr.get(this.queryString)
   }
 
 }

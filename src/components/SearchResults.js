@@ -9,17 +9,6 @@ import PersonDisplay from './PersonDisplay'
 
 class SearchResults extends Component {
 
-  /*
-    static get defaultProps() {
-    return {
-      search : { 
-        results: { num 
-        // stuff you want :)
-    }
-  }
-  */
-
-
   constructor(props) {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
@@ -27,17 +16,21 @@ class SearchResults extends Component {
 
   handleNextPage(e) {
     e.preventDefault();
-    // FIXME: have not run a query so far with more than 50 results
-    //
-    const { dispatch, search: { searchFields, start } } = this.props;
-
+    
+    //const { dispatch, search: { searchFields, start } } = this.props;
+    const { search : { start }, dispatch } = this.props;
+    //const { dispatch } = this.props;
+ 
     // FIXME: need to recreate compoundSearch here ... from URL params?
     //
-    //dispatch(actions.fetchSearch(compoundSearch, 0))
-     
-    //dispatch(actions.nextPage());
-    //console.log(`....----> query: ${query} / ${start}`);
-    //dispatch(fetchSearch(query, start));
+    console.log("SearchResults#handleNextPage")
+    
+    console.log("start=")
+    //console.log(dispatch)
+    dispatch(nextPage());
+    console.log("after dispatch")
+ 
+    //dispatch(actions.fetchSearch(compoundSearch, start));
   }
   
   render() {
@@ -62,9 +55,15 @@ class SearchResults extends Component {
     //
     if (docs) {
 
-      //let display = highlighting[doc.DocId] || doc.ALLTEXT; 
       resultSet = docs.map(doc => { 
-          let display = highlighting[doc.DocId].ALLTEXT[0] || doc.ALLTEXT[0]; 
+          let highlight = highlighting[doc.DocId]
+          var display = ""
+          if (highlight) {
+             display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
+          } else {
+             display = doc.ALLTEXT[0]
+          }
+
           console.log(display)
           return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
       });
@@ -181,7 +180,7 @@ class SearchResults extends Component {
 // seems like no point in that, but otherwise says
 // no property 'results' etc...
 const mapStateToProps = (search) => {
-  return  search ;
+  return  search;
 };
 
 // NOTE: doesn't seem to ever call unless I connect ...
