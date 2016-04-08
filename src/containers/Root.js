@@ -103,16 +103,6 @@ export default class Root extends Component {
   
   constructor(props) {
     super(props)
-    // FIXME: can't get this to work so far, just
-    // trying to load organization at init time
-    //Root.js:105 Uncaught TypeError: (0 , _search2.default) is not a function
-
-    //this.props.dispatch(loadOrganizationsIfNeeded())
-  
-    //helloTest()
-
-    //this.props.dispatch(helloTest())
-
   }
 
 

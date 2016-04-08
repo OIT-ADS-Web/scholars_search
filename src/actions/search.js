@@ -112,8 +112,8 @@ function fetchOrgs() {
 
     dispatch(requestOrgs());
 
-    return xr.get(config.org_url)
-      .then(r => JSON.parse(r.response))
+    return fetch(config.org_url)
+      .then(r => r.json())
       .then(json => dispatch(receiveOrgs(json)))
  
   }
@@ -197,7 +197,7 @@ function fetchSearch(compoundSearch, start=0) {
     // saying "search has completed"
     //   .then(r => JSON.parse(r.response.json()))
     return solr.execute()
-      .then(r => JSON.parse(r.response))
+      .then(r => r.json())
       .then(json => dispatch(receiveSearch(json)))
  
   }

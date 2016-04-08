@@ -24,42 +24,6 @@ export class ScholarsSearchApp extends Component {
     })
   }
 
-  /*
-  static get childContextTypes() {
-    return ({
-         router: PropTypes.object
-     })
-  }
-
-    getChildContext: function() {
-         return { bar: "I am the parent" };
-    },
-
-
-  http://stackoverflow.com/questions/26632415/where-should-ajax-request-be-made-in-flux-app
-  https://facebook.github.io/react/tips/initial-ajax.html
-
-  componentDidMount: function() {
-    this.serverRequest = $.get(this.props.source, function (result) {
-      var lastGist = result[0];
-      this.setState({
-        username: lastGist.owner.login,
-        lastGistUrl: lastGist.html_url
-      });
-    }.bind(this));
-  },
-
-  componentWillUnmount: function() {
-    this.serverRequest.abort();
-  },
-
-
-  };
-  }
-
-
-  */
-
   // FIXME: should I load organzations here and then
   // send down as props? e.g.
   // <OrganizationSidebar organizations=organizations/>
@@ -88,7 +52,7 @@ export class ScholarsSearchApp extends Component {
       <Page title="Scholars Search">
         <SearchForm />
         <SearchResults />
-        <OrganizationSidebar />
+        { /*<OrganizationSidebar /> */ }
       </Page>
     )
   }

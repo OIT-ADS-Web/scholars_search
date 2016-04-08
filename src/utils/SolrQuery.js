@@ -1,18 +1,4 @@
-// FIXME: not using this at the moment
-// likely still in dependencies
-//import fetch from 'isomorphic-fetch'
-
-//var config = require('config');
-
-import xr from 'xr'
-
-//import fetch from 'isomorphic-fetch'
-
-//if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-//  var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-//}
-
-//var xr = new XMLHttpRequest();
+import fetch from 'isomorphic-fetch'
 
 export default class SolrQuery {
   constructor(selectUrl){
@@ -192,76 +178,14 @@ export default class SolrQuery {
 
   }
 
-  // http://stackoverflow.com/questions/30008114/how-do-i-promisify-native-xhr
-  makeRequest(method, url) {
-  
-    return new Promise(function (resolve, reject) {
-      
-      if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-        var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-      }
-
-
-      var xhr = new XMLHttpRequest()
-      xhr.open(method, url)
-      console.log("makeRequest"+url)
-
-      xhr.onload = function () {
-        if (this.status >= 200 && this.status < 300) {
-          //console.log("got > 200 or < 300")
-          //console.log(xhr.responseText)
-          resolve(xhr.responseText)
-        } else {
-          reject({
-            status: this.status,
-            statusText: xhr.statusText
-          })
-        }
-      }
-
-      xhr.onerror = function () {
-        reject({
-          status: this.status,
-          statusText: xhr.statusText
-        })
-      }
-      xhr.send();
-    })
-  }
-
-
-  execute_and_print() {
-    var xhr = new XMLHttpRequest()
-    xhr.open("GET", this.queryString)
-
-    xhr.onload = function() {
-      console.log(xhr.responseText);
-    }
-    xhr.send()  
-
-  }
-
   execute() {
     console.log("SolrQuery.execute()")
 
-    console.log(process.env.APP_ENV)
+    let attempt = fetch(this.queryString)
+    console.log(attempt)
+    return attempt
 
-    // FIXME: don't really like this
-    //if (process.env.APP_ENV === 'browser') {
-    // 
-    return xr.get(this.queryString)
-    //}
-    //return fetch(this.queryString, { method: 'get' })
-    //return fetch(this.queryString)
   }
   
-  execute_console() {
-
-    console.log("trying xmlhttprequest")
-
-    //return fetch(this.queryString)
-    return this.makeRequest("GET", this.queryString)
-  }
-
 }
 

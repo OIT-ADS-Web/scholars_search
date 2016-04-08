@@ -2,10 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 
 import { PAGE_ROWS } from '../actions/search'
-import { nextPage, fetchSearch } from '../actions/search'
+//import { nextPage, fetchSearch } from '../actions/search'
 
 import PersonDisplay from './PersonDisplay'
 
+import actions from '../actions/search'
 
 class SearchResults extends Component {
 
@@ -18,19 +19,24 @@ class SearchResults extends Component {
     e.preventDefault();
     
     //const { dispatch, search: { searchFields, start } } = this.props;
-    const { search : { start }, dispatch } = this.props;
+    const { search, dispatch } = this.props;
     //const { dispatch } = this.props;
  
     // FIXME: need to recreate compoundSearch here ... from URL params?
     //
     console.log("SearchResults#handleNextPage")
-    
-    console.log("start=")
+    console.log(`SEARCH=${search}`)
+    console.log(search)
+
+    console.log("Does dispatch() exist here?")
+    console.log(dispatch)
+
+    //console.log(`start=${start}`)
     //console.log(dispatch)
-    dispatch(nextPage());
+    dispatch(actions.nextPage());
     console.log("after dispatch")
  
-    //dispatch(actions.fetchSearch(compoundSearch, start));
+    dispatch(actions.fetchSearch(search.searchFields, search.start));
   }
   
   render() {
@@ -100,81 +106,6 @@ class SearchResults extends Component {
   }
   
 }
-
-/*
- *
-  // parseHighlighting
-  render() {
-    var docs = this.state.searchResult.response.docs
-    var departmentCounts = this.parseDepartmentCounts.bind(this)()
-    var selectedDepartments = Array.from(this.state.departments)
-    var currentDepartment = selectedDepartments.pop()
-    var departmentBreadCrumbs = []
-    var setDepartmentFacet = this.setDepartmentFacet;
-    var removeDepartmentFilter = this.removeDepartmentFilter
-
-      // highlighting looks like this:
-      // {"vitroIndividual:https://scholars.duke.edu/individual/per4284062":
-      // {"ALLTEXT":[" Nucleus Models, Biological GTP-Binding Proteins Mutagenesis, Insertional Endoplasmic Reticulum Genes <strong>Gram-Positive</strong> Bacterial Infections Active Transport, Cell Nucleus"]}}
- 
-    
-    //var highlighting = this.state.searchResult.response.highlighting
-    //console.log(this.state.searchResult.response)
-
-    selectedDepartments.forEach(sd => departmentBreadCrumbs.push(<span key={"bc_" + sd.uri}><a href="#" onClick={function(e){ e.preventDefault(); setDepartmentFacet(sd)}}>{sd.name}</a> &rarr; </span>))
-    if (currentDepartment) {
-      departmentBreadCrumbs.push(<span key={"bc_" + currentDepartment.uri}>{currentDepartment.name}</span>)
-      departmentBreadCrumbs.push(<span key={"remove_dept_filter" + currentDepartment.uri}><a onClick={function(e){ e.preventDefault(); removeDepartmentFilter()}}> &otimes; </a></span>)
-    }
-
-    return(
-      <div className="wrapper">
-        <h1>Find People</h1>
-        <section className="search-form">
-          <input type="text" onChange={this.setQuery.bind(this)}/>
-          <button onClick={this.executeQuery.bind(this)}>search</button>
-        </section>
-        <section className="search-summary">
-          <div>Query: {this.state.query}</div>
-          <div>
-            Department: {departmentBreadCrumbs}
-          </div>
-        </section>
-        <section className="search-results">
-          <section className="people">
-          <ul>
-          {docs.map( doc => {
-             return (
-                 <li key={doc.DocId}>
-                  <div>
-                    <strong>{doc.nameRaw[0]}</strong>
-                    <span> - {doc.PREFERRED_TITLE}</span>
-                    <div>{doc.DocId}</div>
-                  </div>
-                 </li>
-             )
-          })}
-          </ul>
-          </section>
-          <section className="facets">
-            <ul>
-            { departmentCounts.map(d => {
-               return (
-                 <li key={d.depth.toString() + "|" + d.uri}>
-                   <a href="#" onClick={(e) => { e.preventDefault();this.setDepartmentFacet(d)}}>
-                   {d.name} ({d.count})
-                   </a>
-                 </li>
-               )
-            })}
-            </ul>
-          </section>
-        </section>
-      </div>
-    )
-  }
-}
-*/
 
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
