@@ -108,7 +108,7 @@ export default class Root extends Component {
 
   componentDidMount() {
     // FIXME: is this still something called?
-    console.log("Root#componentDidMount")
+    // console.log("Root#componentDidMount")
     //this.props.dispatch(appInit())
     //appInit()
      

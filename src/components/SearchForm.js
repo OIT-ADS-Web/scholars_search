@@ -60,8 +60,12 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
+    dispatch(actions.resetPage())
+
     dispatch(actions.fetchSearch(compoundSearch, 0))
-    
+
+    //dispatch(actions.resetPage())
+
     // FIXME: would be cool if it were just a function call
     //actions.fetchSearch(compoundSearch, 0)
     // instead of 'dispatch' --
@@ -69,7 +73,7 @@ export class SearchForm extends Component {
     //  perhaps made available when calling 'connect'
     //  a Component must have render() method (I think) so it's kind of 
     //  more like an interface
-    dispatch(actions.fetchOrgs())
+    //dispatch(actions.fetchOrgs())
  
   }
 
@@ -80,13 +84,6 @@ export class SearchForm extends Component {
     // everytime, then what's the point of a hierarchy of components? 
     const { search : { isFetching } } = this.props;
 
-
-     // FIXME: need to populate fields if in router URL 
-
-     console.log("SearchForm#render()")
-     console.log("isFetching="+isFetching)
-
-     //  checked={'all' === this.state.searchOptions}/
      // FIXME: probably better way to do this
      let button
      if (isFetching) {

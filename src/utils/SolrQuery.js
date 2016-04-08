@@ -1,12 +1,104 @@
 import fetch from 'isomorphic-fetch'
 
-export default class SolrQuery {
+var _ = require('lodash');
+
+
+function gatherStatements(words, delimiter) {
+  // given an array and a delimiter, join with that delimiter
+  // but also group by parenthesis if necessary
+  var exp = words.join(delimiter)
+  if (exp) {
+    if (words.length > 1) {
+        // group if more than 1 - just to be unambigous
+        exp = "(" + exp + ")"
+      }
+    }
+
+   return exp 
+  }
+
+// FIXME: need a string representation for display purposes - is this the
+// best place for that?
+
+function buildComplexQuery(compoundSearch = {}) {
+  // NOTE: this method will get an object that looks like this:
+  //
+  // const compoundSearch = {
+  //    'allWords': allWords.value,
+  //    'exactMatch': exactMatch.value,
+  //    'atLeastOne': atLeastOne.value,
+  //    'noMatch': noMatch.value
+  // }
+
+  // and constructs a solr query based on this template:
+  //
+  // all words = ( word AND word .. )   
+  // exact match = "word phrase"
+  // at least one = ( word OR word ..)
+  // no match = NOT (word OR word ..)
+  //
+  // NOTE: NOT that is alone returns no results
+
+  //
+  var query = ""
+  if (_.isEmpty(compoundSearch)) {
+    return query
+  }
+
+  // split by "," or <space>
+  //
+  // allWords => array
+  // exactMatch != array
+  // atLeastOne => array
+  // noMatch => array
+  // listing in same order as form
+  const allWords = compoundSearch.allWords.split(/[ ,]+/)
+  const exactMatch = compoundSearch.exactMatch
+  const atLeastOne = compoundSearch.atLeastOne.split(/[ ,]+/)
+  const noMatch = compoundSearch.noMatch.split(/[ ,]+/)
+
+  if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
+     //NOTE:  (can't NOT without something to match to begin with)
+     return ''
+  }
+
+  var queryArray = []
+    
+  var allWordsExp = gatherStatements(allWords, " AND ")
+  if (allWordsExp) { queryArray.push(allWordsExp) }
+    
+  if (exactMatch) { queryArray.push("\""+exactMatch+"\"") }
+
+  var atLeastOneExp = gatherStatements(atLeastOne,  " OR ")
+  if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
+
+  if (noMatch != false) {
+   var noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
+   if (noMatchExp) { queryArray.push(noMatchExp) }
+  }
+
+  // take out empty "" entries, just in case made it this far
+  // http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
+  queryArray = queryArray.filter(function() { return true; })
+  //queryArray = queryArray.filter(Boolean)
+ 
+  query = queryArray.join(" AND ")
+
+  return query
+
+}
+
+
+class SolrQuery {
+ 
   constructor(selectUrl){
     this.selectUrl = selectUrl
     this._query = "*.*"
     this._facetFields = {}
     this._options = {}
     this._filters = {}
+
+    this._search = {}
   }
 
   set query(query) {
@@ -25,6 +117,17 @@ export default class SolrQuery {
 
   get options() {
     return this._options
+  }
+
+  
+  set search(compoundSearch) {
+    this._search = compoundSearch
+    // FIXME: is this a good idea or not, want
+    // to hide the implementation
+    let qry = this.buildQuery(compoundSearch)
+    this.query = qry
+
+    return this;
   }
 
   deleteOption(option){
@@ -96,96 +199,20 @@ export default class SolrQuery {
     return this.selectUrl + '?' + params
   }
 
-  gatherStatements(words, delimiter) {
-    // given an array and a delimiter, join with that delimiter
-    // but also group by parenthesis if necessary
-    var exp = words.join(delimiter)
-    if (exp) {
-      if (words.length > 1) {
-        // group if more than 1 - just to be unambigous
-        exp = "(" + exp + ")"
-      }
-    }
-
-   return exp 
-  }
-
-
-  buildComplexQuery(compoundSearch = {}) {
-    // NOTE: this method will get an object that looks like this:
-    //
-    // const compoundSearch = {
-    //    'allWords': allWords.value,
-    //    'exactMatch': exactMatch.value,
-    //    'atLeastOne': atLeastOne.value,
-    //    'noMatch': noMatch.value
-    // }
-
-    // and constructs a solr query based on this template:
-    //
-    // all words = ( word AND word .. )   
-    // exact match = "word phrase"
-    // at least one = ( word OR word ..)
-    // no match = NOT (word OR word ..)
-    //
-    // NOTE: NOT that is alone returns no results
-
-    //
-    var query = ""
-
-    // split by "," or <space>
-    //
-    // allWords => array
-    // exactMatch != array
-    // atLeastOne => array
-    // noMatch => array
-    // listing in same order as form
-    const allWords = compoundSearch.allWords.split(/[ ,]+/)
-    const exactMatch = compoundSearch.exactMatch
-    const atLeastOne = compoundSearch.atLeastOne.split(/[ ,]+/)
-    const noMatch = compoundSearch.noMatch.split(/[ ,]+/)
-
-    if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
-       //NOTE:  (can't NOT without something to match to begin with)
-       return ''
-    }
-
-    var queryArray = []
-    
-    var allWordsExp = this.gatherStatements(allWords, " AND ")
-    if (allWordsExp) { queryArray.push(allWordsExp) }
-    
-    if (exactMatch) { queryArray.push("\""+exactMatch+"\"") }
-
-    var atLeastOneExp = this.gatherStatements(atLeastOne,  " OR ")
-    if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
-
-    if (noMatch != false) {
-     var noMatchExp = "NOT " + this.gatherStatements(noMatch, " OR ")
-     if (noMatchExp) { queryArray.push(noMatchExp) }
-    }
-
-    // take out empty "" entries, just in case made it this far
-    // http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
-    queryArray = queryArray.filter(function() { return true; })
-    //queryArray = queryArray.filter(Boolean)
- 
-    query = queryArray.join(" AND ")
-
-    console.log(`QUERY=${query}`)
-
+  buildQuery(compoundSearch = {}) {
+    let query = buildComplexQuery(compoundSearch)
     return query
-
   }
 
   execute() {
-    console.log("SolrQuery.execute()")
 
     let attempt = fetch(this.queryString)
-    console.log(attempt)
     return attempt
 
   }
   
 }
+
+export default { SolrQuery, buildComplexQuery }
+
 

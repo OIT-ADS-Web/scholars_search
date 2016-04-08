@@ -8,49 +8,56 @@ import PersonDisplay from './PersonDisplay'
 
 import actions from '../actions/search'
 
+import solr from '../utils/SolrQuery'
+import classNames from 'classnames'
+
 class SearchResults extends Component {
 
   constructor(props) {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
+    this.handlePreviousPage = this.handlePreviousPage.bind(this);
   }
 
   handleNextPage(e) {
     e.preventDefault();
     
-    //const { dispatch, search: { searchFields, start } } = this.props;
     const { search, dispatch } = this.props;
-    //const { dispatch } = this.props;
  
-    // FIXME: need to recreate compoundSearch here ... from URL params?
-    //
-    console.log("SearchResults#handleNextPage")
-    console.log(`SEARCH=${search}`)
-    console.log(search)
-
-    console.log("Does dispatch() exist here?")
-    console.log(dispatch)
-
-    //console.log(`start=${start}`)
-    //console.log(dispatch)
     dispatch(actions.nextPage());
-    console.log("after dispatch")
  
-    dispatch(actions.fetchSearch(search.searchFields, search.start));
+    // FIXME: doesn't seem to reset when we do a new search
+    // 50 goes up to 100
+    const start = search.start
+    // 
+    dispatch(actions.fetchSearch(search.searchFields, start));
   }
-  
+
+  handlePreviousPage(e) {
+    e.preventDefault();
+    
+    const { search, dispatch } = this.props;
+ 
+    dispatch(actions.previousPage());
+ 
+    // FIXME: doesn't seem to reset when we do a new search
+    // 50 goes up to 100
+    //
+    // FIXME: add 'start' to route?
+    // is the action updating the state yet?  
+    const start = search.start
+    // 
+    dispatch(actions.fetchSearch(search.searchFields, start));
+  }
+   
   render() {
 
-    const { search : { results, searchFields } } = this.props;
-    console.log("SearchResults.render()")
-    console.log(this.props)
+    // so start should be coming from search object (state)
+    const { search : { results, searchFields, start=0 } } = this.props;
 
-    //let { numFound=0,docs,start=0, highlighting={} } = results;
     let { highlighting={}, response={} } = results;
-    let { numFound=0,docs,start=0 } = response;
+    let { numFound=0,docs } = response;
 
-    console.log("SearchResults#render()highlighting***")
-    console.log(highlighting)
 
     let resultSet = "";
 
@@ -70,27 +77,46 @@ class SearchResults extends Component {
              display = doc.ALLTEXT[0]
           }
 
-          console.log(display)
           return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
       });
       // sidebar = ... <FacetSidebar />  --- likely will become big component
     }
     else {
+      //
       console.log("SearchResults.render() - NO DOCS")
     }
 
-    let page = "";
-    if ( (start + PAGE_ROWS ) < numFound ) {
-      page = (
-          <button onClick={this.handleNextPage}>Next</button>
-      );
-    }
-    // NOTE: searchFields is undefined
-   console.log("SearchResults#renders")
-   console.log(searchFields)
+    console.log("SearchResults.render() - start="+start)
 
-   // FIXME: should expand this to illustrate advanced search
-   const query = searchFields ? searchFields.allWords : ''
+    const paging = (prev, next) => {
+      const nextClasses = classNames({disabled: 'true' ? next : 'false'})     
+      const prevClasses = classNames({disabled: 'true'? prev : 'false'})     
+      
+      return (
+        <div>
+            <button onClick={this.handlePreviousPage} className={prevClasses}>Previous</button>
+            <button onClick={this.handleNextPage} className={nextClasses}>Next</button>
+        </div>
+      )
+    }
+
+    var next = false
+    var previous = false
+
+    if ((start + PAGE_ROWS) < numFound) {
+      next = true
+    }
+    if ((start >= PAGE_ROWS) && (numFound > 0)) {
+      previous = true
+    }
+
+    const page = paging(next, previous)
+
+    // FIXME: should expand this to illustrate advanced search
+    // e.g. (? AND ?) AND (? OR ?) and NOT .. etc...
+    //
+    //const query = searchFields ? searchFields.allWords : ''
+    let query = solr.buildComplexQuery(searchFields)
 
     return (
       <section className="search-results">

@@ -27,7 +27,7 @@ function orgReducer(orgs = { isLoading: false, organizations: []}, action) {
 }
 
 import {
-  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PAGE_ROWS
+  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, PAGE_ROWS
 } from '../actions/search';
 
 
@@ -86,6 +86,14 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0 }, ac
     return { ...search, 
       start: search.start + PAGE_ROWS
     }
+  case PREVIOUS_PAGE:
+    return { ...search, 
+      start: search.start - PAGE_ROWS
+  }
+  case RESET_PAGE:
+    return { ...search, 
+      start: 0 
+  }
   default:
     return search;
   }

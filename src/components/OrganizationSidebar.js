@@ -24,24 +24,16 @@ class OrganizationSidebar extends Component {
 
   render() {
 
-    console.log("Organization#render")
-    console.log(this.props)
-
     const { orgs: orgs } = this.props //organizations;
     //const { orgs : organizations } = this.props;
-    console.log(orgs)
     const { init: departments } = this.props // initial departments
     
     let resultSet = "";
 
     if (departments) {
-      console.log("****departments****")
-      console.log(departments)
-
+      // ?
     }
     if (orgs) {
-      console.log("****organizations****")
-      console.log(orgs.organizations)
 
       const organizations = _.sortBy(orgs.organizations, function(o) {
         return o.name;
@@ -66,7 +58,7 @@ class OrganizationSidebar extends Component {
    )
   }
 
-  /*
+  /* FIXME: this was code that counted ... need to integrate
 
             { departmentCounts.map(d => {
                return (

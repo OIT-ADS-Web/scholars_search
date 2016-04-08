@@ -4,13 +4,13 @@
 // run via babel-node examples/example_search.js (must npm install babel-cli --global)
 //
 //
-import SolrQuery from '../src/utils/SolrQuery'
+import solr from '../src/utils/SolrQuery'
 
 const solr_url = "http://localhost/ROOTsolr/collection1/select"
 
-let solr = new SolrQuery(solr_url)
+let searcher = new solr.SolrQuery(solr_url)
  
-solr.options = {
+searcher.options = {
   wt: "json",
   rows: 20,
   hl: true,
@@ -28,9 +28,8 @@ const compoundSearch = {
     'noMatch': ''
 }
 
-const qry = solr.buildComplexQuery(compoundSearch)
-
-solr.query = qry
+const qry = searcher.buildQuery(compoundSearch)
+searcher.query = qry
 
 console.log(`query: ${qry}`)
 
@@ -39,7 +38,7 @@ function printResults(json) {
   console.log(json)
 }
 
-solr.execute().then(function(response) {
+searcher.execute().then(function(response) {
     return response.json()
 }).then(function(json) {
     printResults(json)
