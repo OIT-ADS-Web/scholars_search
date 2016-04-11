@@ -21,23 +21,61 @@ class SearchResults extends Component {
 
   handleNextPage(e) {
     e.preventDefault();
+
+    // FIXME: where to skip when it's reached the max    
+    const { search : { results, searchFields, start }, dispatch } = this.props;
     
-    const { search, dispatch } = this.props;
- 
+    console.log(`handleNextPage->start=${start}`)
+
+    let { response={} } = results;
+    let { numFound=0 } = response;
+
+    // before here?
+    //if (start + PAGE_ROWS > (numFound - PAGE_ROWS)) {
+    //  return
+    //}
+
     dispatch(actions.nextPage());
- 
+    
+    // FIXME: where to skip when it's reached the max    
+    //const { search : { results, searchFields, start }, dispatch } = this.props;
+    
+    //let { response={} } = results;
+    //let { numFound=0 } = response;
+
+
     // FIXME: doesn't seem to reset when we do a new search
     // 50 goes up to 100
-    const start = search.start
-    // 
-    dispatch(actions.fetchSearch(search.searchFields, start));
+    //const start = search.start
+    //
+    // ? get the new start value?
+    //
+    //const newStart = { search: { start } } = this.props
+    //
+    //
+
+    console.log(`handleNextPage->start(after nextPage())=${start}`)
+   
+    // start + PAGE_ROWS
+    dispatch(actions.fetchSearch(searchFields, start + PAGE_ROWS));
   }
 
   handlePreviousPage(e) {
     e.preventDefault();
     
-    const { search, dispatch } = this.props;
- 
+    //const { search, dispatch } = this.props;
+    const { search : { results, searchFields, start }, dispatch } = this.props;
+
+    console.log(`handlePreviousPage->start=${start}`)
+
+    let { response={} } = results;
+    //let { numFound=0 } = response;
+
+
+    //if ((start - PAGE_ROWS) < PAGE_ROWS) {
+    //  return
+    //}
+
     dispatch(actions.previousPage());
  
     // FIXME: doesn't seem to reset when we do a new search
@@ -45,9 +83,15 @@ class SearchResults extends Component {
     //
     // FIXME: add 'start' to route?
     // is the action updating the state yet?  
-    const start = search.start
+    //const start = search.start
     // 
-    dispatch(actions.fetchSearch(search.searchFields, start));
+    console.log(`handlePreviousPage->start(after previousPage())=${start}`)
+
+    // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
+    // but otherwise it uses the the start from const { search : { start ...
+    // which is still what it was when the method was called (not updated)
+    //
+    dispatch(actions.fetchSearch(searchFields, start - PAGE_ROWS));
   }
    
   render() {
@@ -66,7 +110,12 @@ class SearchResults extends Component {
     // <PersonDisplay ..
     // etc...
     //
+    //
+    // FIXME: during iteration - for now - gather classification groups?
+    // then later send that as a filter for the search ??
+    //
     if (docs) {
+
 
       resultSet = docs.map(doc => { 
           let highlight = highlighting[doc.DocId]
@@ -88,9 +137,9 @@ class SearchResults extends Component {
 
     console.log("SearchResults.render() - start="+start)
 
-    const paging = (prev, next) => {
-      const nextClasses = classNames({disabled: 'true' ? next : 'false'})     
-      const prevClasses = classNames({disabled: 'true'? prev : 'false'})     
+    const paging = (next, prev) => {
+      const nextClasses = classNames({disabled: !next})     
+      const prevClasses = classNames({disabled: !prev})     
       
       return (
         <div>
@@ -103,12 +152,21 @@ class SearchResults extends Component {
     var next = false
     var previous = false
 
+    // (50 + 50 < 105)
     if ((start + PAGE_ROWS) < numFound) {
       next = true
     }
-    if ((start >= PAGE_ROWS) && (numFound > 0)) {
+    // (100 > 50 and some found)
+    if (start >= PAGE_ROWS) {
       previous = true
     }
+
+    if (numFound == 0) {
+      next = false
+      previous = false
+    }
+
+    console.log(`next=${next}, prev=${previous}`)
 
     const page = paging(next, previous)
 
@@ -118,6 +176,22 @@ class SearchResults extends Component {
     //const query = searchFields ? searchFields.allWords : ''
     let query = solr.buildComplexQuery(searchFields)
 
+
+    // sidebar of classifications - with counts
+    //
+    //classgroup": [
+    //  "http://vivoweb.org/ontology#vitroClassGroupactivities",
+    //  "http://vivoweb.org/ontology#vitroClassGroupactivities"
+
+    /*
+     *           <PagingPanel count={count} page={page} onNextPage={() => {
+            changePage(page+1);
+            loadBooks()
+        }} onPreviousPage={ () => {
+            changePage(page-1);
+            loadBooks()
+        }} />
+    */
     return (
       <section className="search-results">
         <h2>Query: {query}</h2>
@@ -126,6 +200,7 @@ class SearchResults extends Component {
           {resultSet}
         </ul>
         <div>{page}</div>
+
       </section>
 
     );

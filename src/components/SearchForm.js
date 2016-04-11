@@ -34,7 +34,8 @@ export class SearchForm extends Component {
   handleSubmitSearch(e) {
     e.preventDefault();
 
-    const { dispatch } = this.props;
+    //const { dispatch } = this.props;
+    const { search : { start }, dispatch } = this.props;
  
     const allWords = this.allWords
     const exactMatch = this.exactMatch
@@ -46,7 +47,8 @@ export class SearchForm extends Component {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
        'atLeastOne': atLeastOne.value,
-       'noMatch': noMatch.value
+       'noMatch': noMatch.value,
+       'start': start
      }
 
     /*
@@ -62,18 +64,18 @@ export class SearchForm extends Component {
 
     dispatch(actions.resetPage())
 
-    dispatch(actions.fetchSearch(compoundSearch, 0))
+    dispatch(actions.fetchSearch(compoundSearch, start))
 
     //dispatch(actions.resetPage())
 
     // FIXME: would be cool if it were just a function call
     //actions.fetchSearch(compoundSearch, 0)
     // instead of 'dispatch' --
-    // 'dispatch' is a magic, unspecified function is it 
-    //  perhaps made available when calling 'connect'
+    // 'dispatch' is a magic function  
+    //  made available when calling 'connect' (see below)
+    //
     //  a Component must have render() method (I think) so it's kind of 
     //  more like an interface
-    //dispatch(actions.fetchOrgs())
  
   }
 
