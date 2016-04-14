@@ -27,9 +27,9 @@ export class SearchForm extends Component {
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
-
+    // FIXME: what about if router starts with values already ?
+    //
   }
-
 
   handleSubmitSearch(e) {
     e.preventDefault();

@@ -164,7 +164,7 @@ class SolrQuery {
     return facetOptions
   }
 
-  setFilter(name,query) {
+  addFilter(name,query) {
     var filter = {}
     filter[name]=query
     Object.assign(this._filters,filter)

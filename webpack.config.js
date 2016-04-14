@@ -4,6 +4,9 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path');
 var webpack = require('webpack')
 
+var config = require('dotenv').config()
+console.log(config)
+
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
@@ -18,11 +21,12 @@ module.exports = {
     path: __dirname + "/dist/",
     filename: "[name].js"
   },
-  resolve: {
-    alias: {
-       config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')
-    }
-  },
+  //resolve: {
+  //  alias: {
+  //     config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')
+  //  }
+  //},
+  //node: { fs: "empty" },
   module: {
     loaders: [
       // style pre-processing
@@ -51,12 +55,19 @@ module.exports = {
       title: "Scholars Search",
       template: 'src/index.ejs/'
     }),
+    //new webpack.DefinePlugin({
+    //  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
+    //  __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+    //});
+    //https://github.com/mderrick/webpack-react-boilerplate/blob/master/webpack.default.config.js
+     //new webpack.DefinePlugin({
+     //   ENV: require(path.join(__dirname, './', process.env.NODE_ENV || 'development'))
+    //}), 
    //http://stackoverflow.com/questions/32217165/can-i-detect-if-my-script-is-being-processed-by-webpack
-   new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        APP_ENV: JSON.stringify('browser')
-      },
-    }),
+   // 
+    new webpack.DefinePlugin({
+        'process.env.SOLR_URL': JSON.stringify(process.env.SOLR_URL),
+        'process.env.ORG_URL':  JSON.stringify(process.env.ORG_URL)
+    })
   ]
 }

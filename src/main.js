@@ -58,12 +58,3 @@ render(
   )
 
 
-//render(
-//    <Provider store={store}>
-//      <Router history={history}>
-//        <Route path="/" component={SearchForm}/>
-//      </Router>
-//    </Provider>,
-//    document.getElementById('content')
-//)
-

@@ -11,8 +11,6 @@ export const PAGE_ROWS   = 50;
 export const REQUEST_ORGS  = 'REQUEST_ORGS';
 export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
 
-var config = require('config');
-
 import solr from '../utils/SolrQuery'
 
 // FIXME: should these go here?  that's sort of convention
@@ -101,13 +99,16 @@ export function appInitEnd(json) {
 
 
 function appInit() {
-  const org_url = config.solr_url
+  const org_url = process.env.ORG_URL
+
+  //const org_url = "http://localhost/orgservice?getIndex=1&uri=https://scholars.duke.edu/individual/org50000021"
+
 
   return dispatch => {
 
     dispatch(appInitBegin());
 
-    return fetch(config.org_url)
+    return fetch(org_url)
       .then(r => r.json())
       .then(json => dispatch(appInitEnd(json)))
  
@@ -115,13 +116,13 @@ function appInit() {
 }
  
 function fetchOrgs() {
-  const org_url = config.solr_url
+  const org_url = process.env.ORG_URL
 
   return dispatch => {
 
     dispatch(requestOrgs());
 
-    return fetch(config.org_url)
+    return fetch(org_url)
       .then(r => r.json())
       .then(json => dispatch(receiveOrgs(json)))
  
@@ -154,15 +155,20 @@ function fetchOrgs() {
 */
 
 function fetchSearch(compoundSearch, start=0) {
-  const solr_url = config.solr_url
+  const solr_url = process.env.SOLR_URL
+  //const solr_url = "http://localhost/ROOTsolr/collection1/select"
+  
+  //console.log(`fetchSearch=${process.env.SOLR_URL}`)
 
-  // NOTE: recreate SolrQuery object every time there is a
+  //console.log("****** PROCESS *******")
+  //console.log(process.env)
+
+    // NOTE: recreate SolrQuery object every time there is a
   // search?? should probably be a global object - in the
   // store?   that way we set facets on it etc...
   //
   // FIXME: add start parameter
   let searcher = new solr.SolrQuery(solr_url)
-
 
   // if start = 0 then reset start here ???
   // start ??  

@@ -31,7 +31,35 @@ export class ScholarsSearchApp extends Component {
   //
   componentDidMount() {
     //this.props.dispatch(actions.fetchOrgs())
-    this.props.dispatch(actions.appInit())
+    //this.props.dispatch(actions.appInit())
+
+    // FIXME: should this read in router values - and if compoundSearch
+    // exists - go ahead and do search?
+    //
+    //
+    //
+    //const router = this.context.router
+    
+    //console.log(`QUERY=${router.query}`)
+    
+    const { search : { searchParams }, dispatch } = this.props;
+
+    dispatch(actions.appInit())
+
+    //const searchParams = 
+    //console.log(`QUERY=${search}`)
+
+    console.log(`QUERY=${searchParams}`)
+
+
+    //.push({
+    //
+    //  pathname: '/scholars_search/',
+    //  query: searchFields
+    //
+    //})
+
+
   }
 
 /*
@@ -78,16 +106,6 @@ import { connect } from 'react-redux'
 
 //The dynamic segments of the URL.
 
-
-
-//{
-// organizaitons: search.organizations
-// }
-//
-// export function loadOrganizationsIfNeeded() {
- 
-// NOTE: I don't believe this actually has to be called mapStateToProps
-// techincally, it's just the convention
 const mapStateToProps = (search, ownProps) => {
   return { ...search,
     searchParams: ownProps.location.query,

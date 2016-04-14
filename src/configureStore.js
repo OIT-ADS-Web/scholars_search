@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
-//import searchReducer from './reducers/search'
 
 const loggerMiddleware = createLogger()
 
@@ -10,21 +9,23 @@ const createStoreWithMiddleware = applyMiddleware(
   loggerMiddleware
 )(createStore)
 
+const createStoreWithThunkMiddleware = applyMiddleware(
+  thunkMiddleware
+)(createStore)
 
-//import fetchOrgs from './utils/fetch'
 
-const initialState = {
-  //organizations: fetchOrgs()
-}
-
+const initialState = {}
 
 import mainReducer from './reducers/search'
-//import mainReducer from './reducers/main'
-
 
 export default function configureStore(initialState = initialState) {
   return createStoreWithMiddleware(mainReducer, initialState)
 }
+
+export function configureStoreWithoutLogger(initialState = initialState) {
+  return createStoreWithThunkMiddleware(mainReducer, initialState)
+}
+
 
 /*
  

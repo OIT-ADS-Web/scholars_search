@@ -13,6 +13,16 @@ import classNames from 'classnames'
 
 class SearchResults extends Component {
 
+
+  // FIXME: don't necessarily like this down at SearchForm
+  // level just to get at router and add values to router
+  // so they go into state
+  static get contextTypes() {
+    return({
+        router: PropTypes.object
+    })
+  }
+
   constructor(props) {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
@@ -53,6 +63,16 @@ class SearchResults extends Component {
     //const newStart = { search: { start } } = this.props
     //
     //
+    //
+    //
+    searchFields['start'] = start + PAGE_ROWS
+
+    this.context.router.push({
+      pathname: '/scholars_search/',
+      query: searchFields
+
+    })
+
 
     console.log(`handleNextPage->start(after nextPage())=${start}`)
    
@@ -86,6 +106,15 @@ class SearchResults extends Component {
     //const start = search.start
     // 
     console.log(`handlePreviousPage->start(after previousPage())=${start}`)
+    
+    searchFields['start'] = start - PAGE_ROWS
+
+    this.context.router.push({
+      pathname: '/scholars_search/',
+      query: searchFields
+
+    })
+
 
     // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
     // but otherwise it uses the the start from const { search : { start ...
