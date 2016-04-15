@@ -11,6 +11,10 @@ export const PAGE_ROWS   = 50;
 export const REQUEST_ORGS  = 'REQUEST_ORGS';
 export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
 
+//export const SWITCH_TAB_BEGIN  = 'SWITCH_TAB_BEGIN';
+//export const SWITCH_TAB_END  = 'SWITCH_TAB_END';
+
+
 import solr from '../utils/SolrQuery'
 
 // FIXME: should these go here?  that's sort of convention
@@ -66,12 +70,16 @@ function resetPage() {
   }
 }
 
+export const SET_FILTER = 'SET_FILTER'
 
- 
+function filterSearch(filter) {
+  return { type: SET_FILTER, filter: filter }
+}
+
+
 /*
 FIXME since these are added to route - and state - maybe
 it should get them from there?
-
 
 https://github.com/reactjs/redux/issues/239
 
@@ -153,17 +161,14 @@ function fetchOrgs() {
       }
  
 */
+/* add filter agrument here? 
+ *
+ */
 
-function fetchSearch(compoundSearch, start=0) {
+function fetchSearch(compoundSearch, start=0, filter=null) {
   const solr_url = process.env.SOLR_URL
-  //const solr_url = "http://localhost/ROOTsolr/collection1/select"
   
-  //console.log(`fetchSearch=${process.env.SOLR_URL}`)
-
-  //console.log("****** PROCESS *******")
-  //console.log(process.env)
-
-    // NOTE: recreate SolrQuery object every time there is a
+  // NOTE: recreate SolrQuery object every time there is a
   // search?? should probably be a global object - in the
   // store?   that way we set facets on it etc...
   //
@@ -178,13 +183,26 @@ function fetchSearch(compoundSearch, start=0) {
     hl: true,
     start: start
   }
-    
+
+  // NOTE: since we re-create searcher object every time
+  // there is no need to use search.deleteFilter("type")
+  //
+  if (filter) {
+    const typeFilters = solr.namedFilters["type"]
+    const foundFilter = typeFilters[filter]
+    searcher.addFilter("type", foundFilter)
+  }
+
   return dispatch => {
 
     // NOTE: this is sort of like a flag saying "search has kicked off" 
     dispatch(requestSearch(compoundSearch));
 
-    //solr.setFilter("type","classgroup:*people")
+    // const typeFilters = solr.baseFilters["type"]
+    // const findFilter = solr.addFilter(typeFilters[filter])
+    //
+    // solr.addFilter("type", findFilter)
+    //
 
     /*  
     solr.setFacetField("department_facet_string",{
@@ -210,6 +228,7 @@ export default {
   previousPage,
   resetPage,
   fetchOrgs,
-  appInit
+  appInit,
+  filterSearch
 }
 

@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import Page from '../layouts/page'
 
 import SearchForm from '../components/SearchForm'
-
 import SearchResults from '../components/SearchResults'
 
-import OrganizationSidebar from '../components/OrganizationSidebar'
+//import OrganizationSidebar from '../components/OrganizationSidebar'
 
 
 import actions from '../actions/search'
@@ -24,20 +23,7 @@ export class ScholarsSearchApp extends Component {
     })
   }
 
-  // FIXME: should I load organzations here and then
-  // send down as props? e.g.
-  // <OrganizationSidebar organizations=organizations/>
-  // NOTE: appInit will add a init.departments to store
-  //
   componentDidMount() {
-    //this.props.dispatch(actions.fetchOrgs())
-    //this.props.dispatch(actions.appInit())
-
-    // FIXME: should this read in router values - and if compoundSearch
-    // exists - go ahead and do search?
-    //
-    //
-    //
     //const router = this.context.router
     
     //console.log(`QUERY=${router.query}`)
@@ -46,29 +32,8 @@ export class ScholarsSearchApp extends Component {
 
     dispatch(actions.appInit())
 
-    //const searchParams = 
-    //console.log(`QUERY=${search}`)
-
     console.log(`QUERY=${searchParams}`)
-
-
-    //.push({
-    //
-    //  pathname: '/scholars_search/',
-    //  query: searchFields
-    //
-    //})
-
-
   }
-
-/*
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.userId !== this.props.userId) {
-      this.props.dispatch(loadPosts(nextProps.userId))
-    }
-  }
-*/
 
   constructor(props,context) {
     super(props,context)
@@ -77,10 +42,10 @@ export class ScholarsSearchApp extends Component {
 
   render() {
     return (
+
       <Page title="Scholars Search">
         <SearchForm />
         <SearchResults />
-        { /*<OrganizationSidebar /> */ }
       </Page>
     )
   }

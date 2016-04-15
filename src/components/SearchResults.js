@@ -1,18 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import classNames from 'classnames'
+import { Link } from 'react-router'
 
+/* our stuff */
 import { PAGE_ROWS } from '../actions/search'
-//import { nextPage, fetchSearch } from '../actions/search'
-
-import PersonDisplay from './PersonDisplay'
-
 import actions from '../actions/search'
 
+import PersonDisplay from './PersonDisplay'
+// NOTE: this is to get the text output of the search
 import solr from '../utils/SolrQuery'
-import classNames from 'classnames'
 
 class SearchResults extends Component {
-
 
   // FIXME: don't necessarily like this down at SearchForm
   // level just to get at router and add values to router
@@ -27,6 +26,12 @@ class SearchResults extends Component {
     super(props);
     this.handleNextPage = this.handleNextPage.bind(this);
     this.handlePreviousPage = this.handlePreviousPage.bind(this);
+    
+    this.handlePersonTab = this.handlePersonTab.bind(this);
+    this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
+    this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
+
+
   }
 
   handleNextPage(e) {
@@ -40,35 +45,12 @@ class SearchResults extends Component {
     let { response={} } = results;
     let { numFound=0 } = response;
 
-    // before here?
-    //if (start + PAGE_ROWS > (numFound - PAGE_ROWS)) {
-    //  return
-    //}
-
     dispatch(actions.nextPage());
     
-    // FIXME: where to skip when it's reached the max    
-    //const { search : { results, searchFields, start }, dispatch } = this.props;
-    
-    //let { response={} } = results;
-    //let { numFound=0 } = response;
-
-
-    // FIXME: doesn't seem to reset when we do a new search
-    // 50 goes up to 100
-    //const start = search.start
-    //
-    // ? get the new start value?
-    //
-    //const newStart = { search: { start } } = this.props
-    //
-    //
-    //
-    //
     searchFields['start'] = start + PAGE_ROWS
 
     this.context.router.push({
-      pathname: '/scholars_search/',
+      pathname: '/',
       query: searchFields
 
     })
@@ -76,41 +58,26 @@ class SearchResults extends Component {
 
     console.log(`handleNextPage->start(after nextPage())=${start}`)
    
-    // start + PAGE_ROWS
     dispatch(actions.fetchSearch(searchFields, start + PAGE_ROWS));
   }
 
   handlePreviousPage(e) {
     e.preventDefault();
     
-    //const { search, dispatch } = this.props;
     const { search : { results, searchFields, start }, dispatch } = this.props;
 
     console.log(`handlePreviousPage->start=${start}`)
 
     let { response={} } = results;
-    //let { numFound=0 } = response;
-
-
-    //if ((start - PAGE_ROWS) < PAGE_ROWS) {
-    //  return
-    //}
 
     dispatch(actions.previousPage());
  
-    // FIXME: doesn't seem to reset when we do a new search
-    // 50 goes up to 100
-    //
-    // FIXME: add 'start' to route?
-    // is the action updating the state yet?  
-    //const start = search.start
-    // 
     console.log(`handlePreviousPage->start(after previousPage())=${start}`)
     
     searchFields['start'] = start - PAGE_ROWS
 
     this.context.router.push({
-      pathname: '/scholars_search/',
+      pathname: '/',
       query: searchFields
 
     })
@@ -122,7 +89,34 @@ class SearchResults extends Component {
     //
     dispatch(actions.fetchSearch(searchFields, start - PAGE_ROWS));
   }
-   
+
+
+  handlePersonTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    // FIXME: don't really like this 
+    dispatch(actions.filterSearch("people"));
+    dispatch(actions.fetchSearch(searchFields, 0, "people"));
+  }
+  
+  handlePublicationsTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    // FIXME: no point in this - just repeating right after
+    dispatch(actions.filterSearch("publications"));
+    dispatch(actions.fetchSearch(searchFields, 0, "publications"));
+  }
+
+  handleOrganizationsTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("organizations"));
+    dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
+  }
+  
   render() {
 
     // so start should be coming from search object (state)
@@ -145,9 +139,13 @@ class SearchResults extends Component {
     //
     if (docs) {
 
-
+      // if tab == ? <PersonDisplay ..
+      // if tab == ? <PublicationDisplay ..
+      //
       resultSet = docs.map(doc => { 
           let highlight = highlighting[doc.DocId]
+          
+          // seems like this needs to be pulled out as a callback-ish thing
           var display = ""
           if (highlight) {
              display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
@@ -166,12 +164,32 @@ class SearchResults extends Component {
 
     console.log("SearchResults.render() - start="+start)
 
+
+    // FIXME: need to update this the [<<][<][1][2]...[>][>>] kind of thing
+    
+    // 105 results
+    // start at 50
+    // would be page 2 of 3
+    //   
+    var totalPages = Math.floor(numFound/PAGE_ROWS)
+    const remainder = numFound % PAGE_ROWS
+    if (remainder) {
+      totalPages +=1
+    }
+
+    //const totalPages = numFound / PAGE_ROWS 
+    console.log(`pages=${totalPages}`)
+    const currentPage = Math.floor(start/PAGE_ROWS) + 1
+   
+    console.log(`currentPage=${currentPage}`) 
+
     const paging = (next, prev) => {
       const nextClasses = classNames({disabled: !next})     
       const prevClasses = classNames({disabled: !prev})     
       
       return (
         <div>
+            <div>Pages={totalPages}; currentPage={currentPage}</div>
             <button onClick={this.handlePreviousPage} className={prevClasses}>Previous</button>
             <button onClick={this.handleNextPage} className={nextClasses}>Next</button>
         </div>
@@ -213,16 +231,22 @@ class SearchResults extends Component {
     //  "http://vivoweb.org/ontology#vitroClassGroupactivities"
 
     /*
-     *           <PagingPanel count={count} page={page} onNextPage={() => {
+     * <PagingPanel count={count} page={page} onNextPage={() => {
             changePage(page+1);
-            loadBooks()
+            fetchResults()
         }} onPreviousPage={ () => {
             changePage(page-1);
-            loadBooks()
+            fetchResults()
         }} />
     */
     return (
       <section className="search-results">
+        <div className="tab-group">
+          <div className="tab" onClick={this.handlePersonTab}>People</div> 
+          <div className="tab" onClick={this.handlePublicationsTab}>Publications</div> 
+          <div className="tab" onClick={this.handleOrganizationsTab}>Organizations</div>
+        </div>
+
         <h2>Query: {query}</h2>
         <h3>Results found: {numFound} </h3>
         <ul>
@@ -230,11 +254,13 @@ class SearchResults extends Component {
         </ul>
         <div>{page}</div>
 
-      </section>
-
-    );
-  }
   
+
+    </section>
+
+  );
+}
+
 }
 
 // FIXME: this is just returning the same state
@@ -242,7 +268,7 @@ class SearchResults extends Component {
 // no property 'results' etc...
 const mapStateToProps = (search) => {
   return  search;
-};
+}
 
 // NOTE: doesn't seem to ever call unless I connect ...
 //export default SearchResults

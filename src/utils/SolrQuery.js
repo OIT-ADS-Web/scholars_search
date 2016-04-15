@@ -2,7 +2,6 @@ import fetch from 'isomorphic-fetch'
 
 var _ = require('lodash');
 
-
 function gatherStatements(words, delimiter) {
   // given an array and a delimiter, join with that delimiter
   // but also group by parenthesis if necessary
@@ -80,7 +79,6 @@ function buildComplexQuery(compoundSearch = {}) {
   // take out empty "" entries, just in case made it this far
   // http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
   queryArray = queryArray.filter(function() { return true; })
-  //queryArray = queryArray.filter(Boolean)
  
   query = queryArray.join(" AND ")
 
@@ -88,6 +86,15 @@ function buildComplexQuery(compoundSearch = {}) {
 
 }
 
+
+export const namedFilters = {
+  type: 
+    {
+      people: "classgroup:*people",
+      publications: "classgroup:*publications",
+      organizations: "classgroup:*organizations"
+     }
+}
 
 class SolrQuery {
  
@@ -213,6 +220,6 @@ class SolrQuery {
   
 }
 
-export default { SolrQuery, buildComplexQuery }
-
+export default { SolrQuery, buildComplexQuery, namedFilters }
+// FIXME: could make default = SolrQuerh, then export others
 

@@ -65,11 +65,25 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
     }
 }
 
+import { SET_FILTER } from '../actions/search'
+
+/*
+function filterReducer(search = {}, action) {
+   switch (action.type) {
+    case SET_FILTER:
+      return action.filter
+    default:
+      return search
+    }
+}
+*/
+
 // could call it search, just called it searchReducer to be explicit about the key name
 // in the combineReducers method
-//
-function searchReducer(search = { isFetching: false, results: {}, start: 0 }, action) {
+// put filter up here?   as a new parameter?  or like tab changing below?
+function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: null }, action) {
   switch (action.type) {
+  
   case REQUEST_SEARCH:
     return { ...search, 
       isFetching: true,
@@ -94,11 +108,37 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0 }, ac
     return { ...search, 
       start: 0 
   }
+  case SET_FILTER:
+    return { ...search, 
+      filter: action.filter
+  }
   default:
     return search;
   }
 }
 
+//
+//const CHANGE_SELECTED_TAB = 'CHANGE_SELECTED_TAB';
+//
+//function changeSelectedTab(selectedTab, tabNamespace) {
+//    return {
+//        type: CHANGE_SELECTED_TAB,
+//        tab: selectedTab,
+//        namespace: tabNamespace
+//    };
+//}
+
+// function tabReducer(state, action) {
+//
+// switch(action.type) {
+//   case SWITCH_TAB_START:
+//     return { ...state, tab: null}
+//   case SWITCH_TAB_END:
+//     return { ...state, tab: action.tab}
+//   default:
+//     return ...
+//  }
+// }
 
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'
@@ -114,10 +154,25 @@ const mainReducer = combineReducers({
   orgs: orgReducer,
   search: searchReducer,
   routing: routerReducer,
-  init: appInitReducer
+  init: appInitReducer/*,*/
+  //filter: filterReducer
 });
 
 export default mainReducer;
+
+/*
+const exampleReducer = combineReducers({
+  //orgs: orgReducer,
+  search: searchReducer,
+  filter: filterReducer,
+  //routing: routerReducer,
+  //init: appInitReducer
+});
+
+export exampleReducer
+
+*/
+
 
 // FIXME: could make a reducers/main.js that merely combines them
 // sort of like this (depending on how many reducers we end up with):

@@ -55,6 +55,6 @@ import Root from './containers/Root';
 render(
   <Root />,
   document.getElementById('content')
-  )
+)
 
 

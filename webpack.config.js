@@ -4,35 +4,42 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var path = require('path');
 var webpack = require('webpack')
 
-var config = require('dotenv').config()
+// FIXME: how to vary this per build ... 
+//require('dotenv').config({path: '/custom/path/to/your/env/vars'});
+var environment = process.env.NODE_ENV || 'development'
+console.log(environment)
+// FIXME: how to vary this per build ... 
+//require('dotenv').config({path: '/custom/path/to/your/env/vars'});
+var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 console.log(config)
 
+// can do this too:
+// node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
+// (see) https://www.npmjs.com/package/dotenv#preload
+//
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
     app: "./src/main.js",
   },
-
   // put all built files in dist
   // use 'name' variable to make 
   // bundles named after the entryoints
   // above
   output: {
     path: __dirname + "/dist/",
-    filename: "[name].js"
+    filename: "[name].js"/*,*/
   },
   //resolve: {
   //  alias: {
   //     config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')
   //  }
   //},
-  //node: { fs: "empty" },
   module: {
     loaders: [
       // style pre-processing
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-
       // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
@@ -55,16 +62,6 @@ module.exports = {
       title: "Scholars Search",
       template: 'src/index.ejs/'
     }),
-    //new webpack.DefinePlugin({
-    //  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
-    //  __PRERELEASE__: JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
-    //});
-    //https://github.com/mderrick/webpack-react-boilerplate/blob/master/webpack.default.config.js
-     //new webpack.DefinePlugin({
-     //   ENV: require(path.join(__dirname, './', process.env.NODE_ENV || 'development'))
-    //}), 
-   //http://stackoverflow.com/questions/32217165/can-i-detect-if-my-script-is-being-processed-by-webpack
-   // 
     new webpack.DefinePlugin({
         'process.env.SOLR_URL': JSON.stringify(process.env.SOLR_URL),
         'process.env.ORG_URL':  JSON.stringify(process.env.ORG_URL)

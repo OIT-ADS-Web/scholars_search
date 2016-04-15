@@ -28,6 +28,7 @@ export class SearchForm extends Component {
     // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
     // FIXME: what about if router starts with values already ?
+    // need to run that search on init ....
     //
   }
 
@@ -58,7 +59,7 @@ export class SearchForm extends Component {
      * FIXME: this path should be global, configurable
      */
     this.context.router.push({
-      pathname: '/scholars_search/',
+      pathname: '/',
       query: compoundSearch 
     })
 
@@ -119,6 +120,7 @@ export class SearchForm extends Component {
           
           {button}
         </form>
+
 
         { /* <SearchResults /> */ }
  

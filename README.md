@@ -14,9 +14,17 @@ Install node dependencies:
     NODE_ENV=(development|development_acceptance) npm start
 
 
+## Proxy
+
 Navigate to:
 
     http://localhost:8333/
+
+*NOTE*
+
+  Because of "No 'Access-Control-Allow-Origin' header" (since this application has to query SOLR) to do anything meaningful
+  you have to follow the connecting to SOLR directions below
+
 
 This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
 

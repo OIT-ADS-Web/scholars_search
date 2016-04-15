@@ -48,12 +48,20 @@ const compoundSearch2 = {
     'noMatch': ''
 }
 
+
+// adding a filter now - 
 const qry2 = searcher.buildQuery(compoundSearch2)
 searcher.query = qry2
 
-// NOTE: can also add filters by type 
-// might be better terms "addFilter"
-searcher.addFilter("type", "classgroup:*people")
+const namedFilters = solr.namedFilters 
+console.log(namedFilters)
+
+//searcher.addFilter("type", "classgroup:*people")
+const filterStr = namedFilters["type"]["people"]
+console.log("adding filter..."+ filterStr)
+if (filterStr) {
+  searcher.addFilter("type", filterStr)
+}
 
 // then run again
 searcher.execute().then(function(response) {
