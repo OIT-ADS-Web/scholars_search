@@ -8,12 +8,8 @@ export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE';
 
 export const PAGE_ROWS   = 50;
 
-export const REQUEST_ORGS  = 'REQUEST_ORGS';
-export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
-
-//export const SWITCH_TAB_BEGIN  = 'SWITCH_TAB_BEGIN';
-//export const SWITCH_TAB_END  = 'SWITCH_TAB_END';
-
+//export const REQUEST_ORGS  = 'REQUEST_ORGS';
+//export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
 
 import solr from '../utils/SolrQuery'
 
@@ -38,6 +34,7 @@ function receiveSearch(json) {
   }
 }
 
+/*
 function requestOrgs() {
   return {
     type: REQUEST_ORGS,
@@ -51,6 +48,7 @@ function receiveOrgs(json) {
     organizations: json
   }
 }
+*/
 
 function nextPage() {
   return {
@@ -74,6 +72,10 @@ export const SET_FILTER = 'SET_FILTER'
 
 function filterSearch(filter) {
   return { type: SET_FILTER, filter: filter }
+}
+
+function resetFilter() {
+  return { type: SET_FILTER, filter: null }
 }
 
 
@@ -109,9 +111,6 @@ export function appInitEnd(json) {
 function appInit() {
   const org_url = process.env.ORG_URL
 
-  //const org_url = "http://localhost/orgservice?getIndex=1&uri=https://scholars.duke.edu/individual/org50000021"
-
-
   return dispatch => {
 
     dispatch(appInitBegin());
@@ -122,7 +121,8 @@ function appInit() {
  
   }
 }
- 
+
+/*
 function fetchOrgs() {
   const org_url = process.env.ORG_URL
 
@@ -136,7 +136,8 @@ function fetchOrgs() {
  
   }
 }
- 
+*/
+
 /*
  
   this was in the original component, so like need some stuff
@@ -227,8 +228,9 @@ export default {
   nextPage,
   previousPage,
   resetPage,
-  fetchOrgs,
+  //fetchOrgs,
   appInit,
-  filterSearch
+  filterSearch,
+  resetFilter
 }
 

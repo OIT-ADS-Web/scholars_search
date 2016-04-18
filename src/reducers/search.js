@@ -1,12 +1,14 @@
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
 
-import {
-  REQUEST_ORGS, RECEIVE_ORGS
-} from '../actions/search';
+
+//import {
+//  REQUEST_ORGS, RECEIVE_ORGS
+//} from '../actions/search';
 
 // FIXME: seems like this should be part of search state .. not 'orgs'
 // but 'start' as a parameter doesn't really apply
 //
+/*
 function orgReducer(orgs = { isLoading: false, organizations: []}, action) {
  
   switch (action.type) {
@@ -25,6 +27,7 @@ function orgReducer(orgs = { isLoading: false, organizations: []}, action) {
     }
 
 }
+*/
 
 import {
   REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, PAGE_ROWS
@@ -151,7 +154,7 @@ import { routerReducer  } from 'react-router-redux'
 
 
 const mainReducer = combineReducers({
-  orgs: orgReducer,
+  //orgs: orgReducer,
   search: searchReducer,
   routing: routerReducer,
   init: appInitReducer/*,*/

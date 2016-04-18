@@ -120,7 +120,13 @@ class SearchResults extends Component {
   render() {
 
     // so start should be coming from search object (state)
-    const { search : { results, searchFields, start=0 } } = this.props;
+    const { search : { results, searchFields, start=0, filter } } = this.props;
+
+    // FIXME: how to initial this from routes?
+    // search is undefined
+    //if (!search.searchFields) {
+       //searchFields = this.context.router.query --
+    //}
 
     let { highlighting={}, response={} } = results;
     let { numFound=0,docs } = response;
@@ -139,9 +145,9 @@ class SearchResults extends Component {
     //
     if (docs) {
 
-      // if tab == ? <PersonDisplay ..
-      // if tab == ? <PublicationDisplay ..
-      //
+      // if filter == 'people' <PersonDisplay ..
+      // if filter == 'publication' <PublicationDisplay ..
+      // etc...
       resultSet = docs.map(doc => { 
           let highlight = highlighting[doc.DocId]
           
@@ -238,13 +244,22 @@ class SearchResults extends Component {
             changePage(page-1);
             fetchResults()
         }} />
+
+     const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
+ 
     */
+
+    // FIXME: too much duplicated code
+     const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
+     const publicationsClasses = classNames({tab:true}, {selected: filter == 'publications'})     
+     const organizationsClasses = classNames({tab:true}, {selected: filter == 'organizations'})     
+ 
     return (
       <section className="search-results">
         <div className="tab-group">
-          <div className="tab" onClick={this.handlePersonTab}>People</div> 
-          <div className="tab" onClick={this.handlePublicationsTab}>Publications</div> 
-          <div className="tab" onClick={this.handleOrganizationsTab}>Organizations</div>
+          <div className={personClasses} onClick={this.handlePersonTab}>People</div> 
+          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications</div> 
+          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations</div>
         </div>
 
         <h2>Query: {query}</h2>

@@ -27,9 +27,28 @@ export class SearchForm extends Component {
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
+    
     // FIXME: what about if router starts with values already ?
     // need to run that search on init ....
     //
+    // context undefined ...
+    
+    //if (this.context.router.query) {
+    //  console.log(`Got query from routes=${this.context.query}`)
+    //}
+
+
+  }
+
+  componentDidMount () {
+    //this.context.redux.getState()
+    //if (this.context.router.query) {
+    // NOTE: this.context.router.query is undefined here
+    //
+    console.log(`query from routes=${this.context.router.query}`)
+    //}
+    console.log(this.context.router)
+    // maybe it should go in APP_INIT
   }
 
   handleSubmitSearch(e) {
@@ -43,7 +62,16 @@ export class SearchForm extends Component {
     const atLeastOne = this.atLeastOne
     const noMatch = this.noMatch
 
-    
+    var add = "";
+    if (allWords.value.lastIndexOf('*', 0) != 0) {
+     add = "*"
+    }
+    // NOTE: allWords search is more complicated,
+    // needs a '*' possibly after every word ...
+    //
+    // then add to term + update UI
+    // could also just add as event handler
+    // to allWords ...
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
@@ -64,6 +92,10 @@ export class SearchForm extends Component {
     })
 
     dispatch(actions.resetPage())
+    
+    // reset filter
+    dispatch(actions.resetFilter())
+
 
     dispatch(actions.fetchSearch(compoundSearch, start))
 
