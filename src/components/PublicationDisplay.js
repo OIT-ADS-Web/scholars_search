@@ -1,11 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// Person = struct of some sort???
-// 
-//
 // NOTE: props are sent to components
-class PersonDisplay extends Component {
+class PublicationDisplay extends Component {
 
   constructor(props) {
     super(props);
@@ -40,32 +37,17 @@ class PersonDisplay extends Component {
     return this.doc.ALLTEXT.join(" ")
   }
 
-  get pictureUri() {
-    let host = "https://scholars.duke.edu";
-    //
-    //if (this.doc.ts_picture_uri === undefined) {
-    //  return `${host}/sites/all/modules/custom/solutionset/images/photo_placeholder_114x154.jpg`;
-    //}
-    //return host + this.doc.ts_picture_uri.replace(/public:\//,'/sites/default/files');
-    return host
-  }
-
   render() {
 
     return (
-         <div className="person" key="{this.docId}">
+         <div key="{this.docId}" className="publication">
             <strong>{this.name}</strong>
-            <span> - {this.preferredTitle}</span>
-            <div>
-              <span>...</span>
-              <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-              <span>...</span>
-            </div>
-          </div>
+            <span> - {this.allText}</span>
+         </div>
     );
   }
 
 }
 
 
-export default PersonDisplay
+export default PublicationDisplay

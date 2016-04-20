@@ -1,53 +1,5 @@
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
 
-
-//import {
-//  REQUEST_ORGS, RECEIVE_ORGS
-//} from '../actions/search';
-
-// FIXME: seems like this should be part of search state .. not 'orgs'
-// but 'start' as a parameter doesn't really apply
-//
-/*
-function orgReducer(orgs = { isLoading: false, organizations: []}, action) {
- 
-  switch (action.type) {
-    case REQUEST_ORGS:
-      return { ...orgs,
-        isLoading: true,
-        organizations: action.organizations
-    }
-    case RECEIVE_ORGS:
-      return { ...orgs,
-        isLoading: false,
-        organizations: action.organizations
-    }
-    default:
-      return orgs;
-    }
-
-}
-*/
-
-import {
-  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, PAGE_ROWS
-} from '../actions/search';
-
-
-/* FIXME: 
- * will need to sort at some point
- *
-
-function sort(search, action) {
-  switch (action.type) {
-  case SORT:
-    return { ...search,
-       sort_order: ...?? 
-    }
-  }
-}
-*/
-
 import { APP_INIT_BEGIN, APP_INIT_END } from '../actions/search'
 
 function appInitReducer(init = {isLoading: false, departments: []}, action) {
@@ -68,23 +20,57 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
     }
 }
 
+import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search';
+
+
+// an action [action.grouped, action.searchFields] is the result of 
+// a dispatch() call - the reducers (such as below) change the
+// global state based on the action call results
+
+function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
+
+  switch (action.type) {
+ 
+    case REQUEST_TABCOUNTS:
+
+      return { ...tabs, 
+        isFetching: true,
+        grouped: action.grouped,
+        searchFields: action.searchFields
+    }
+    case RECEIVE_TABCOUNTS:
+
+      return { ...tabs, 
+        isFetching: false,
+        grouped: action.grouped,
+        lastUpdated: action.receivedAt
+    }
+    default:
+      return tabs;
+  }
+}
+
+
+import {
+  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, PAGE_ROWS
+} from '../actions/search';
+
+
 import { SET_FILTER } from '../actions/search'
 
-/*
-function filterReducer(search = {}, action) {
-   switch (action.type) {
-    case SET_FILTER:
-      return action.filter
-    default:
-      return search
-    }
-}
-*/
-
+// initialSearch = {
+//  isFetching: false,
+//  results: {},
+//  start: 0,
+//  filter: null
+// }
 // could call it search, just called it searchReducer to be explicit about the key name
 // in the combineReducers method
 // put filter up here?   as a new parameter?  or like tab changing below?
-function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: null }, action) {
+// 
+// FIXME: grouped is showing up in 'results' - so maybe 'grouped' is not necessary
+//
+function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: null}, action) {
   switch (action.type) {
   
   case REQUEST_SEARCH:
@@ -152,13 +138,16 @@ import { routerReducer  } from 'react-router-redux'
 // will get into that later - just need advanced search first
 // just naming 'search' to be explicit, not necessary
 
-
+// NOTE: each reducer combines to effect the global state,
+// but only the named one - so, in effect, it's like
+// a set of named states within the global state
+// e.g. state = {'search': .., 'routing': .. 'init': .. }
+//
 const mainReducer = combineReducers({
-  //orgs: orgReducer,
   search: searchReducer,
   routing: routerReducer,
-  init: appInitReducer/*,*/
-  //filter: filterReducer
+  init: appInitReducer,
+  tabs: tabReducer
 });
 
 export default mainReducer;

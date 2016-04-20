@@ -8,20 +8,17 @@ export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE';
 
 export const PAGE_ROWS   = 50;
 
-//export const REQUEST_ORGS  = 'REQUEST_ORGS';
-//export const RECEIVE_ORGS  = 'RECEIVE_ORGS';
-
 import solr from '../utils/SolrQuery'
 
 // FIXME: should these go here?  that's sort of convention
 // but they are sparse routing directions or flag switches
 // or traffic directions - not like  actual functions that do 
-// anything
+// anything (as opposed to fetchSearch)
 function requestSearch(searchFields) {
   return {
     type: REQUEST_SEARCH,
     results: {responseHeader: {}, response: {}, highlighting: {}},
-    //results: {docs: []},
+    isFetching: true,
     searchFields
    }
 }
@@ -29,26 +26,37 @@ function requestSearch(searchFields) {
 function receiveSearch(json) {
   return {
     type: RECEIVE_SEARCH,
-    results: json/*.response*/,
+    results: json,
+    isFetching: false,
     receivedAt: Date.now()
   }
 }
 
-/*
-function requestOrgs() {
+export const REQUEST_TABCOUNTS = 'REQUEST_TABCOUNTS'
+export const RECEIVE_TABCOUNTS = 'RECEIVE_TABCOUNTS'
+
+function requestTabCount(searchFields) {
   return {
-    type: REQUEST_ORGS,
-    organizations: []
-  }
+    type: REQUEST_TABCOUNTS,
+    grouped: {},
+    isFetching: true,
+    searchFields
+   }
+
 }
 
-function receiveOrgs(json) {
+function receiveTabCount(json) {
+  let grouped = json.grouped
+
   return {
-    type: RECEIVE_ORGS,
-    organizations: json
+    type: RECEIVE_TABCOUNTS,
+    grouped: grouped,
+    isFetching: false,
+    receivedAt: Date.now()
   }
+
 }
-*/
+
 
 function nextPage() {
   return {
@@ -123,22 +131,6 @@ function appInit() {
 }
 
 /*
-function fetchOrgs() {
-  const org_url = process.env.ORG_URL
-
-  return dispatch => {
-
-    dispatch(requestOrgs());
-
-    return fetch(org_url)
-      .then(r => r.json())
-      .then(json => dispatch(receiveOrgs(json)))
- 
-  }
-}
-*/
-
-/*
  
   this was in the original component, so like need some stuff
   like this to appear in 'state' as some point
@@ -166,6 +158,36 @@ function fetchOrgs() {
  *
  */
 
+function fetchTabCounts(compoundSearch) {
+  const solr_url = process.env.SOLR_URL
+  
+  let searcher = new solr.SolrQuery(solr_url)
+
+  searcher.options = {
+    wt: "json",
+    rows: 0,
+    group: true
+  }
+
+  searcher.addGroupQuery("type-concept", "type:(*Concept)")
+  searcher.addGroupQuery("type-publication", "type:(*Publication)")
+  searcher.addGroupQuery("type-person", "type:(*Person)")
+  searcher.addGroupQuery("type-organization", "type:(*Organization)")
+
+  return dispatch => {
+
+    dispatch(requestTabCount(compoundSearch));
+
+    searcher.search = compoundSearch
+
+    return searcher.execute()
+      .then(r => r.json())
+      .then(json => dispatch(receiveTabCount(json)))
+ 
+  }
+
+}
+
 function fetchSearch(compoundSearch, start=0, filter=null) {
   const solr_url = process.env.SOLR_URL
   
@@ -176,8 +198,6 @@ function fetchSearch(compoundSearch, start=0, filter=null) {
   // FIXME: add start parameter
   let searcher = new solr.SolrQuery(solr_url)
 
-  // if start = 0 then reset start here ???
-  // start ??  
   searcher.options = {
     wt: "json",
     rows: PAGE_ROWS,
@@ -199,19 +219,6 @@ function fetchSearch(compoundSearch, start=0, filter=null) {
     // NOTE: this is sort of like a flag saying "search has kicked off" 
     dispatch(requestSearch(compoundSearch));
 
-    // const typeFilters = solr.baseFilters["type"]
-    // const findFilter = solr.addFilter(typeFilters[filter])
-    //
-    // solr.addFilter("type", findFilter)
-    //
-
-    /*  
-    solr.setFacetField("department_facet_string",{
-      prefix: "1|",
-      mincount: "1"
-    })
-    */
-
     searcher.search = compoundSearch
 
     return searcher.execute()
@@ -228,9 +235,9 @@ export default {
   nextPage,
   previousPage,
   resetPage,
-  //fetchOrgs,
   appInit,
   filterSearch,
-  resetFilter
+  resetFilter,
+  fetchTabCounts
 }
 

@@ -27,30 +27,3 @@ export function configureStoreWithoutLogger(initialState = initialState) {
 }
 
 
-/*
- 
-FIXME: here's a beginning place to at least document what the 
-potential state in the store would look like:
-
-
-      this.state = {
-      query: "",
-      departments: [],
-      organizations: [],
-      searchResult: {
-        response: {
-          highlighting: {},
-          docs: []
-        },
-        facet_counts: {
-          facet_fields: {
-            department_facet_string: []
-          }
-        }
-      }
-    }
-
-
-
-*/
-

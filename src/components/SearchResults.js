@@ -8,6 +8,10 @@ import { PAGE_ROWS } from '../actions/search'
 import actions from '../actions/search'
 
 import PersonDisplay from './PersonDisplay'
+import PublicationDisplay from './PublicationDisplay'
+import OrganizationDisplay from './OrganizationDisplay'
+
+
 // NOTE: this is to get the text output of the search
 import solr from '../utils/SolrQuery'
 
@@ -106,6 +110,7 @@ class SearchResults extends Component {
 
     // FIXME: no point in this - just repeating right after
     dispatch(actions.filterSearch("publications"));
+    // make waiting thing here??
     dispatch(actions.fetchSearch(searchFields, 0, "publications"));
   }
 
@@ -122,6 +127,12 @@ class SearchResults extends Component {
     // so start should be coming from search object (state)
     const { search : { results, searchFields, start=0, filter } } = this.props;
 
+    const { tabs : {grouped} } = this.props
+
+    // grouped:
+    //{ 'type:(*Concept)': { matches: 66, doclist: [Object] },
+    //  'type:(*Publication)': { matches: 66, doclist: [Object] } },
+
     // FIXME: how to initial this from routes?
     // search is undefined
     //if (!search.searchFields) {
@@ -131,9 +142,15 @@ class SearchResults extends Component {
     let { highlighting={}, response={} } = results;
     let { numFound=0,docs } = response;
 
+    // FIXME: grouped gets erased from search 
+    //console.log(results)
+    //console.log(grouped)
 
     let resultSet = "";
 
+    // FIXME: make it so results don't require inside knowledge of SOLR
+    //
+    //
     // NOTE: this will change depending on type e.g.
     // <PublicationDisplay ..
     // <PersonDisplay ..
@@ -144,6 +161,7 @@ class SearchResults extends Component {
     // then later send that as a filter for the search ??
     //
     if (docs) {
+      console.log(`filter=${filter}`)
 
       // if filter == 'people' <PersonDisplay ..
       // if filter == 'publication' <PublicationDisplay ..
@@ -158,8 +176,20 @@ class SearchResults extends Component {
           } else {
              display = doc.ALLTEXT[0]
           }
-
-          return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+          
+          switch(filter) {
+            case 'people':
+              return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+              break
+            case 'publications':
+              return <PublicationDisplay key={doc.path} doc={doc} display={display}/> 
+              break
+            case 'organizations':  
+              return <OrganizationDisplay key={doc.path} doc={doc} display={display}/> 
+              break
+            default:  
+              return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+          }
       });
       // sidebar = ... <FacetSidebar />  --- likely will become big component
     }
@@ -168,6 +198,13 @@ class SearchResults extends Component {
       console.log("SearchResults.render() - NO DOCS")
     }
 
+    // if no docs --  ??
+    // return (
+    //  <div>
+    //    <p>Type search...</p>
+    //  </div>
+    // )
+    //
     console.log("SearchResults.render() - start="+start)
 
 
@@ -248,18 +285,37 @@ class SearchResults extends Component {
      const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
  
     */
+    // tab data (in the 'grouped' const) looks like this (for now)
+    //
+    // grouped:
+    //{ 'type:(*Concept)': { matches: 66, doclist: [Object] },
+    //  'type:(*Publication)': { matches: 66, doclist: [Object] } },
+
 
     // FIXME: too much duplicated code
      const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
      const publicationsClasses = classNames({tab:true}, {selected: filter == 'publications'})     
      const organizationsClasses = classNames({tab:true}, {selected: filter == 'organizations'})     
+
+     // FIXME: this has several problems 
+     // a) doesn't handle key existing but not 'doclist'
+     // b) requies to much solr inside knowledge
+     // c) similarly too coupled to implementation that exists in other code in the project
+     // d) ../actions/search.js - adds the tabs (in #fetchTabCounts method - so have to keep synchronized
+     //    with this.  Would be better configured in one place elsewhere, maybe a FilterTab Component?
  
+     let peopleCount = 'type:(*Person)' in grouped ? grouped['type:(*Person)'].doclist.numFound : 0
+     let pubCount = 'type:(*Publication)' in grouped ? grouped['type:(*Publication)'].doclist.numFound : 0
+     let orgCount = 'type:(*Organization)' in grouped ? grouped['type:(*Organization)'].doclist.numFound : 0
+
+
+
     return (
       <section className="search-results">
         <div className="tab-group">
-          <div className={personClasses} onClick={this.handlePersonTab}>People</div> 
-          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications</div> 
-          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations</div>
+          <div className={personClasses} onClick={this.handlePersonTab}>People ({peopleCount})</div> 
+          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications ({pubCount})</div> 
+          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations ({orgCount})</div>
         </div>
 
         <h2>Query: {query}</h2>

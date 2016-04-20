@@ -96,10 +96,12 @@ export class SearchForm extends Component {
     // reset filter
     dispatch(actions.resetFilter())
 
+    // FIXME: is this going to work???
+    //
+    // why is this not updating state ... ???
+    dispatch(actions.fetchTabCounts(compoundSearch))
 
     dispatch(actions.fetchSearch(compoundSearch, start))
-
-    //dispatch(actions.resetPage())
 
     // FIXME: would be cool if it were just a function call
     //actions.fetchSearch(compoundSearch, 0)

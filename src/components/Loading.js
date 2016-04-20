@@ -12,9 +12,9 @@ class Loading extends Component {
 
   render() {
 
-    const { isLoading } = this.props
+    const { isFetching } = this.props
 
-      if (isLoading) {
+      if (isFetching) {
         return (
             <div className="loading">Loading&#8230;</div>
         )
