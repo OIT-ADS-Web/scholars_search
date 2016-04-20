@@ -1,20 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// Person = struct of some sort???
-// 
-//
-// NOTE: props are sent to components
-class PersonDisplay extends Component {
+class GenericDisplay extends Component {
 
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
     this.display = this.props.display;
-  }
-
-  f(str) {
-    return (str || "").replace(/&#039;/g,"'");
   }
 
   get name() {
@@ -40,35 +32,12 @@ class PersonDisplay extends Component {
     return this.doc.ALLTEXT.join(" ")
   }
 
-  hasThumbnail() {
-    var flag = false
-
-    if (this.doc.THUMBNAIL != "0") {
-      flag = true
-    }
-
-    return flag
-  }
-
-  get thumbnailUrl() {
-    return this.doc.THUMBNAIL_URL
-  }
-
 
   render() {
 
-    var picture
-    
-    if (this.hasThumbnail()) {
-      picture = <img src={this.thumbnailUrl} height="125"></img>
-    } else {
-      picture = <span></span>
-    }
-
-    // FIXME: there are some pitfalls to having disembodied <tr> tables built up
     return (
          <tr className="person" key="{this.docId}">
-           <td>{picture}</td>
+           <td></td>
            <td>
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
@@ -85,4 +54,4 @@ class PersonDisplay extends Component {
 }
 
 
-export default PersonDisplay
+export default GenericDisplay

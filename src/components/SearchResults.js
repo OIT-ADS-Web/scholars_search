@@ -10,6 +10,7 @@ import actions from '../actions/search'
 import PersonDisplay from './PersonDisplay'
 import PublicationDisplay from './PublicationDisplay'
 import OrganizationDisplay from './OrganizationDisplay'
+import GenericDisplay from './GenericDisplay'
 
 
 // NOTE: this is to get the text output of the search
@@ -188,7 +189,7 @@ class SearchResults extends Component {
               return <OrganizationDisplay key={doc.path} doc={doc} display={display}/> 
               break
             default:  
-              return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+              return <GenericDisplay key={doc.path} doc={doc} display={display}/> 
           }
       });
       // sidebar = ... <FacetSidebar />  --- likely will become big component
@@ -320,12 +321,10 @@ class SearchResults extends Component {
 
         <h2>Query: {query}</h2>
         <h3>Results found: {numFound} </h3>
-        <ul>
+        <table className="search-result-table">
           {resultSet}
-        </ul>
+        </table>
         <div>{page}</div>
-
-  
 
     </section>
 
