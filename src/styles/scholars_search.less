@@ -30,11 +30,11 @@ header, footer {
    padding: 0 @sideBuffer @sideBuffer;
 }
 
-.search-results {
-  float:left;
+section.search-results {
+  //float:left;
 }
 
-.facets {
+section.facets {
   float:right;
 }
 
@@ -74,20 +74,20 @@ header, footer {
 
 }
 
-table.search-results {
+div.search-results-table {
     width: 100%;
 }
 
-table.search-results {
-    border-collapse: collapse;
+
+div.search-results {
+    //border: 1px dotted #d3d3d3;
 }
 
-table.search-results, th, td {
-    border: 1px solid black;
-}
-
-td {
+div.search-result-row {
+  border: 1px dotted #d3d3d3;
   text-align: left;
   vertical-align: top;
-
+  margin-bottom: 1em;
+  width: 100%;
 }
+

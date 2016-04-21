@@ -11,9 +11,16 @@ import PersonDisplay from './PersonDisplay'
 import PublicationDisplay from './PublicationDisplay'
 import OrganizationDisplay from './OrganizationDisplay'
 import GenericDisplay from './GenericDisplay'
+import Loading from './Loading'
+import SearchTabs from './SearchTabs'
+import PagingPanel from './PagingPanel'
 
 
-// NOTE: this is to get the text output of the search
+
+// FIXME: we don't want to do the actual SolrQuery here,
+// so this should be something more like
+// import solr from '../SolrConfig' e.g. site specific
+// utils and such
 import solr from '../utils/SolrQuery'
 
 class SearchResults extends Component {
@@ -32,9 +39,9 @@ class SearchResults extends Component {
     this.handleNextPage = this.handleNextPage.bind(this);
     this.handlePreviousPage = this.handlePreviousPage.bind(this);
     
-    this.handlePersonTab = this.handlePersonTab.bind(this);
-    this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
-    this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
+    //this.handlePersonTab = this.handlePersonTab.bind(this);
+    //this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
+    //this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
 
 
   }
@@ -96,56 +103,13 @@ class SearchResults extends Component {
   }
 
 
-  handlePersonTab(e) {
-    e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
-
-    // FIXME: don't really like this 
-    dispatch(actions.filterSearch("people"));
-    dispatch(actions.fetchSearch(searchFields, 0, "people"));
-  }
-  
-  handlePublicationsTab(e) {
-    e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
-
-    // FIXME: no point in this - just repeating right after
-    dispatch(actions.filterSearch("publications"));
-    // make waiting thing here??
-    dispatch(actions.fetchSearch(searchFields, 0, "publications"));
-  }
-
-  handleOrganizationsTab(e) {
-    e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
-
-    dispatch(actions.filterSearch("organizations"));
-    dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
-  }
-  
   render() {
 
     // so start should be coming from search object (state)
-    const { search : { results, searchFields, start=0, filter } } = this.props;
-
-    const { tabs : {grouped} } = this.props
-
-    // grouped:
-    //{ 'type:(*Concept)': { matches: 66, doclist: [Object] },
-    //  'type:(*Publication)': { matches: 66, doclist: [Object] } },
-
-    // FIXME: how to initial this from routes?
-    // search is undefined
-    //if (!search.searchFields) {
-       //searchFields = this.context.router.query --
-    //}
+    const { search : { results, searchFields, start=0, filter, isFetching } } = this.props;
 
     let { highlighting={}, response={} } = results;
     let { numFound=0,docs } = response;
-
-    // FIXME: grouped gets erased from search 
-    //console.log(results)
-    //console.log(grouped)
 
     let resultSet = "";
 
@@ -162,7 +126,6 @@ class SearchResults extends Component {
     // then later send that as a filter for the search ??
     //
     if (docs) {
-      console.log(`filter=${filter}`)
 
       // if filter == 'people' <PersonDisplay ..
       // if filter == 'publication' <PublicationDisplay ..
@@ -208,59 +171,6 @@ class SearchResults extends Component {
     //
     console.log("SearchResults.render() - start="+start)
 
-
-    // FIXME: need to update this the [<<][<][1][2]...[>][>>] kind of thing
-    
-    // 105 results
-    // start at 50
-    // would be page 2 of 3
-    //   
-    var totalPages = Math.floor(numFound/PAGE_ROWS)
-    const remainder = numFound % PAGE_ROWS
-    if (remainder) {
-      totalPages +=1
-    }
-
-    //const totalPages = numFound / PAGE_ROWS 
-    console.log(`pages=${totalPages}`)
-    const currentPage = Math.floor(start/PAGE_ROWS) + 1
-   
-    console.log(`currentPage=${currentPage}`) 
-
-    const paging = (next, prev) => {
-      const nextClasses = classNames({disabled: !next})     
-      const prevClasses = classNames({disabled: !prev})     
-      
-      return (
-        <div>
-            <div>Pages={totalPages}; currentPage={currentPage}</div>
-            <button onClick={this.handlePreviousPage} className={prevClasses}>Previous</button>
-            <button onClick={this.handleNextPage} className={nextClasses}>Next</button>
-        </div>
-      )
-    }
-
-    var next = false
-    var previous = false
-
-    // (50 + 50 < 105)
-    if ((start + PAGE_ROWS) < numFound) {
-      next = true
-    }
-    // (100 > 50 and some found)
-    if (start >= PAGE_ROWS) {
-      previous = true
-    }
-
-    if (numFound == 0) {
-      next = false
-      previous = false
-    }
-
-    console.log(`next=${next}, prev=${previous}`)
-
-    const page = paging(next, previous)
-
     // FIXME: should expand this to illustrate advanced search
     // e.g. (? AND ?) AND (? OR ?) and NOT .. etc...
     //
@@ -268,63 +178,19 @@ class SearchResults extends Component {
     let query = solr.buildComplexQuery(searchFields)
 
 
-    // sidebar of classifications - with counts
-    //
-    //classgroup": [
-    //  "http://vivoweb.org/ontology#vitroClassGroupactivities",
-    //  "http://vivoweb.org/ontology#vitroClassGroupactivities"
-
-    /*
-     * <PagingPanel count={count} page={page} onNextPage={() => {
-            changePage(page+1);
-            fetchResults()
-        }} onPreviousPage={ () => {
-            changePage(page-1);
-            fetchResults()
-        }} />
-
-     const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
- 
-    */
-    // tab data (in the 'grouped' const) looks like this (for now)
-    //
-    // grouped:
-    //{ 'type:(*Concept)': { matches: 66, doclist: [Object] },
-    //  'type:(*Publication)': { matches: 66, doclist: [Object] } },
-
-
-    // FIXME: too much duplicated code
-     const personClasses = classNames({tab:true}, {selected: filter == 'people'})     
-     const publicationsClasses = classNames({tab:true}, {selected: filter == 'publications'})     
-     const organizationsClasses = classNames({tab:true}, {selected: filter == 'organizations'})     
-
-     // FIXME: this has several problems 
-     // a) doesn't handle key existing but not 'doclist'
-     // b) requies to much solr inside knowledge
-     // c) similarly too coupled to implementation that exists in other code in the project
-     // d) ../actions/search.js - adds the tabs (in #fetchTabCounts method - so have to keep synchronized
-     //    with this.  Would be better configured in one place elsewhere, maybe a FilterTab Component?
- 
-     let peopleCount = 'type:(*Person)' in grouped ? grouped['type:(*Person)'].doclist.numFound : 0
-     let pubCount = 'type:(*Publication)' in grouped ? grouped['type:(*Publication)'].doclist.numFound : 0
-     let orgCount = 'type:(*Organization)' in grouped ? grouped['type:(*Organization)'].doclist.numFound : 0
-
-
-
     return (
       <section className="search-results">
-        <div className="tab-group">
-          <div className={personClasses} onClick={this.handlePersonTab}>People ({peopleCount})</div> 
-          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications ({pubCount})</div> 
-          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations ({orgCount})</div>
-        </div>
+        
+        <SearchTabs></SearchTabs>
+        <Loading isFetching={isFetching}></Loading>
 
         <h2>Query: {query}</h2>
         <h3>Results found: {numFound} </h3>
-        <table className="search-result-table">
+        <div className="search-results-table">
           {resultSet}
-        </table>
-        <div>{page}</div>
+        </div>
+
+        <PagingPanel></PagingPanel>
 
     </section>
 

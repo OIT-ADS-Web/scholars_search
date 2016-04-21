@@ -163,16 +163,27 @@ function fetchTabCounts(compoundSearch) {
   
   let searcher = new solr.SolrQuery(solr_url)
 
-  searcher.options = {
-    wt: "json",
-    rows: 0,
-    group: true
-  }
+  searcher.setupTabGroups()
 
-  searcher.addGroupQuery("type-concept", "type:(*Concept)")
-  searcher.addGroupQuery("type-publication", "type:(*Publication)")
-  searcher.addGroupQuery("type-person", "type:(*Person)")
-  searcher.addGroupQuery("type-organization", "type:(*Organization)")
+  // instead of this long-winded code:
+  //
+  //searcher.options = {
+  //  wt: "json",
+  //  rows: 0,
+  //  group: true
+  //}
+
+  // FIXME: these are the tabs - so the definition should be
+  // centralized in some way e.g.
+  // for each solr.namedFilters ...
+  //
+  //
+  //
+  //
+  //searcher.addGroupQuery("type-concept", "type:(*Concept)")
+  //searcher.addGroupQuery("type-publication", "type:(*Publication)")
+  //searcher.addGroupQuery("type-person", "type:(*Person)")
+  //searcher.addGroupQuery("type-organization", "type:(*Organization)")
 
   return dispatch => {
 
@@ -198,21 +209,34 @@ function fetchSearch(compoundSearch, start=0, filter=null) {
   // FIXME: add start parameter
   let searcher = new solr.SolrQuery(solr_url)
 
-  searcher.options = {
-    wt: "json",
-    rows: PAGE_ROWS,
-    hl: true,
-    start: start
-  }
+  searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
+
+  // instead of this long-winded code:
+  //
+  // FIXME: could have a set of defaults already defined
+  // in SolrQuery class e.g.
+  // searcher.setDefaultOptions(start)
+  // maybe even
+  // searcher.init(start, filter)
+  //
+  //searcher.options = {
+  //  wt: "json",
+  //  rows: PAGE_ROWS,
+  //  hl: true,
+  //  start: start
+ // }
 
   // NOTE: since we re-create searcher object every time
   // there is no need to use search.deleteFilter("type")
   //
-  if (filter) {
-    const typeFilters = solr.namedFilters["type"]
-    const foundFilter = typeFilters[filter]
-    searcher.addFilter("type", foundFilter)
-  }
+  //if (filter) {
+    // FIXME: need to more centralize this since it's 
+    // related to tabs (therefore grouping etc...)
+    //
+  //  const typeFilters = solr.namedFilters["type"]
+  //  const foundFilter = typeFilters[filter]
+  //  searcher.addFilter("type", foundFilter)
+  //}
 
   return dispatch => {
 

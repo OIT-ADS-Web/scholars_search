@@ -27,11 +27,8 @@ class OrganizationDisplay extends Component {
   }
 
   render() {
-    // FIXME: probably dont want to stick with this <tr> approach
     return (
-         <tr key="{this.docId}" className="organization">
-           <td></td>
-           <td>   
+         <div key="{this.docId}" className="organization search-result-row">
               <strong>{this.name}</strong>
               <span> - {this.preferredTitle}</span>
               <div>
@@ -39,8 +36,7 @@ class OrganizationDisplay extends Component {
                 <span dangerouslySetInnerHTML={{__html: this.display}}></span>
                 <span>...</span>
               </div>
-            </td>
-          </tr>
+          </div>
     );
   }
 

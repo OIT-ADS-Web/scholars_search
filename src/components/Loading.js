@@ -1,8 +1,4 @@
-/*
-export default ({Loading}) => <div>
-    {isLoading?<div className="loading">Loading&#8230;</div>:null}
-</div>
-*/
+import React, { Component, PropTypes } from 'react'
 
 class Loading extends Component {
 
@@ -17,6 +13,10 @@ class Loading extends Component {
       if (isFetching) {
         return (
             <div className="loading">Loading&#8230;</div>
+        )
+      } else {
+        return (
+            <span></span>
         )
       }
   }

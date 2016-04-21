@@ -88,95 +88,14 @@ function buildComplexQuery(compoundSearch = {}) {
 
 }
 
-//
-//"mostSpecificTypeURIs": [
-//"http://www.w3.org/2004/02/skos/core#Concept"
-// or 
-//
-//"type": [
-//"http://www.w3.org/2004/02/skos/core#Concept"
-//],
-//
-//"http://xmlns.com/foaf/0.1/Organization"
-//
-//"type": [
-//"http://vivo.duke.edu/vivo/ontology/duke-activity-extension#Presentation",
-//"http://vivo.duke.edu/vivo/ontology/duke-activity-extension#ProfessionalActivity"
-//],
-//
-//"http://vivoweb.org/ontology/core#Program"
-//"http://vivoweb.org/ontology/core#Center",
-//"http://vivoweb.org/ontology/core#AcademicDepartment",
-
-
-//"http://xmlns.com/foaf/0.1/Person"
-// "http://vivoweb.org/ontology/core#FacultyMember",
-//
-//
-// ---> gather 'type'?
-//
-//
-// NOTE: not 'classgroup': *person anymore
-// or this?  -- Person
-//
-// &classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppeople
-// -- Research
-// https://scholars2-test.oit.duke.edu/search?querytext=medicine&classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications
-//
-// -- concept
-// https://scholars2-test.oit.duke.edu/search?querytext=medicine&type=http%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23Concept
-// -- grant
-// https://scholars2-test.oit.duke.edu/search?querytext=medicine&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant
-// -- publication
-// https://scholars2-test.oit.duke.edu/search?querytext=medicine&type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FAcademicArticle
-//
-//
-// e.g. first level is classgroup (with count)
-// 2nd level is type .. (with count)
-//
-// all classgroups -->
-//
-// People, Publications, Artistic Works, Grants, Subject Headings, Other... [Activities, Courses]
-// with counts
-// e.g. [People (100)][Publications (2500)][Artistic etc...]
-// 
-// 
-// https://scholars2-test.oit.duke.edu/search?querytext=medicine&classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGroupcourses
-//
-//
-//
-//http://localhost/ROOTsolr/collection1/select?q=medicine&wt=json&rows=50&hl=true&start=0&group=true&group.query=type:(*Concept)&group.query=type:(*Publication)
-//
-// returns --
-//
-//
-// "grouped": {
-//   type:(*Concept) {
-//    matches:  66,
-//    doclist: {
-//      numFound: 8,
-//      ...
-//      docs: [
-//
-//      ]
-//    }
-//  }, 
-//  type:(*Publication) {
-//    ....
-//  }
-//
-// class SolrResultsParoser {
-//
-//  ???
-//
-// }  
-//
-// courses??
-//
-//
+// NOTE: SOLR accepts a JSON POST as a query
 // $ curl http://localhost:8983/solr/query -d '
 //{
 //  query:"hero"
+//}'
+// but I can't
+// seem to get it to work - so defaulting to 
+// building GET with params
 //}'
 
 
@@ -261,15 +180,85 @@ class SolrResultsParser {
 
 
 // these correspond to tabs
+// tabs should be: 
+// [People][Publications][Artistic Works][Grants][Subject Headings]
+// might need a misc - type NOT (*Articisic OR *Publication etc...)
+//
 export const namedFilters = {
-  type: 
-    {
-      people: "type:(*Person)",
-      publications: "type:(*Publication)",
-      organizations: "type:(*Organization)",
-      keywords: "type:(*Concept)"
-     }
+  type: {
+    person: "type:(*Person)",
+    publications: "type:(*Publication)",
+    organizations: "type:(*Organization)",
+    grants: "type:(*Grant)",
+    courses: "type:(*Course)",
+    artisticworks: "type:(*Artistic)",
+    subjectheadings: "type:(*Concept)"
+  }
 }
+
+
+function setupDefaultSearch(searcher, start, rows, filter) {
+
+  searcher.options = {
+    wt: "json",
+    rows: rows,
+    hl: true,
+    start: start
+  }
+
+  // FIXME: should probalby delete filter just in case
+  // e.g. searcher.deleteFilter("type")
+  // even though in the action/search.js
+  // we re-create searcher object every time
+  // 
+  // there is no need to use search.deleteFilter("type")
+  //
+  if (filter) {
+    // FIXME: need to more centralize this since it's 
+    // related to tabs (therefore grouping etc...)
+    //
+    const typeFilters = namedFilters["type"]
+    const foundFilter = typeFilters[filter]
+    searcher.addFilter("type", foundFilter)
+  }
+
+  return searcher
+}
+
+function setupTabGroups(searcher) {
+  // take a SolrQuery object and set up for tabs
+  // this is stop-gap until I think of a better way
+  // should be these: 
+  //
+  // [People][Publications][Artistic Works][Grants][Subject Headings] ??? + [Courses][Misc]
+  //
+  // e.g.
+  //
+  // FIXME: these are the tabs - so the definition should be
+  // centralized in some way
+  //
+  //  searcher.addGroupQuery("type-subject-heading", "type:(*Concept)")
+  //  searcher.addGroupQuery("type-publication", "type:(*Publication)")
+  //  searcher.addGroupQuery("type-person", "type:(*Person)")
+  //  searcher.addGroupQuery("type-organization", "type:(*Organization)")
+
+
+  searcher.options = {
+    wt: "json",
+    rows: 0,
+    group: true
+  }
+
+
+  _.forEach(namedFilters['type'], function(value, key) {
+    searcher.addGroupQuery("type-"+key, value)
+  })
+
+  return searcher
+
+}
+
+export { setupTabGroups, setupDefaultSearch }
 
 class SolrQuery {
  
@@ -284,22 +273,21 @@ class SolrQuery {
 
     this._rows = 50 // FIXME: should this pull from a config or global var
 
+
+    // NOTE: to add group queries the options[group:true] needs to be set
     //this._group = false
     this._groupQueries = {}
 
     //
   }
 
-  /*
-  set group(group) {
-    this._group = group
-    return this
+  setupDefaultSearch(start, rows, filter) {
+    return setupDefaultSearch(this, start, rows, filter)
   }
-  
-  get group() {
-    return this._group
+
+  setupTabGroups() {
+    return setupTabGroups(this)
   }
-  */
 
   addGroupQuery(name, query) {
     var groupQuery = {}

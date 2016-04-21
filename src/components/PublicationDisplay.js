@@ -41,13 +41,10 @@ class PublicationDisplay extends Component {
 
     // FIXME: there are some pitfalls to having disembodied <tr> tables built up
     return (
-         <tr key="{this.docId}" className="publication">
-           <td></td>
-           <td> 
+         <div key="{this.docId}" className="publication search-result-row">
              <strong>{this.name}</strong>
             <span> - {this.allText}</span>
-           </td>
-         </tr>
+         </div>
     );
   }
 

@@ -67,9 +67,10 @@ class PersonDisplay extends Component {
 
     // FIXME: there are some pitfalls to having disembodied <tr> tables built up
     return (
-         <tr className="person" key="{this.docId}">
-           <td>{picture}</td>
-           <td>
+         <div className="person search-result-row" key="{this.docId}">
+           <div>{picture}</div>
+           
+           <div>
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
             <div>
@@ -77,8 +78,9 @@ class PersonDisplay extends Component {
               <span dangerouslySetInnerHTML={{__html: this.display}}></span>
               <span>...</span>
             </div>
-           </td>
-        </tr>
+           </div>
+        
+        </div>
     );
   }
 

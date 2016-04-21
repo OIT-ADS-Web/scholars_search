@@ -36,9 +36,7 @@ class GenericDisplay extends Component {
   render() {
 
     return (
-         <tr className="person" key="{this.docId}">
-           <td></td>
-           <td>
+         <div className="generic search-result-row" key="{this.docId}">
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
             <div>
@@ -46,8 +44,7 @@ class GenericDisplay extends Component {
               <span dangerouslySetInnerHTML={{__html: this.display}}></span>
               <span>...</span>
             </div>
-           </td>
-        </tr>
+        </div>
     );
   }
 
