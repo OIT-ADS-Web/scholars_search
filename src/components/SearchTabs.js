@@ -28,6 +28,34 @@ class SearchTabs extends Component {
     this.handlePersonTab = this.handlePersonTab.bind(this);
     this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
     this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
+
+    this.handleGrantsTab = this.handleGrantsTab.bind(this);
+    this.handleCoursesTab = this.handleCoursesTab.bind(this);
+    this.handleArtisticWorksTab = this.handleArtisticWorksTab.bind(this);
+    this.handleSubjectHeadingsTab = this.handleSubjectHeadingsTab.bind(this);
+
+    this.handleMiscTab = this.handleMiscTab.bind(this);
+
+
+  }
+
+  resetPage() {
+
+    dispatch(actions.resetPage());
+
+    // FIXME: this would need to be called after every handle...Tab method
+    // but also needs to update routes
+    // possibly not the best place for this to happen
+    /*
+       searchFields['start'] = start + PAGE_ROWS
+
+    this.context.router.push({
+      pathname: '/',
+      query: searchFields
+
+    })
+   */
+ 
   }
 
   handlePersonTab(e) {
@@ -38,7 +66,7 @@ class SearchTabs extends Component {
     dispatch(actions.filterSearch("person"));
     // can we do this here?
     dispatch(actions.fetchSearch(searchFields, 0, "person"));
-    // NOTE: these should all probably reset page too
+  
   }
   
   handlePublicationsTab(e) {
@@ -48,6 +76,7 @@ class SearchTabs extends Component {
     // FIXME: no point in this - just repeating right after
     dispatch(actions.filterSearch("publications"));
     dispatch(actions.fetchSearch(searchFields, 0, "publications"));
+    dispatch(actions.resetPage());
   }
 
   handleOrganizationsTab(e) {
@@ -57,10 +86,53 @@ class SearchTabs extends Component {
     dispatch(actions.filterSearch("organizations"));
     dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
   }
+
+  handleGrantsTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("grants"));
+    dispatch(actions.fetchSearch(searchFields, 0, "grants"));
+  }
+  
+  handleCoursesTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("courses"));
+    dispatch(actions.fetchSearch(searchFields, 0, "courses"));
+  }
+
+  handleArtisticWorksTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("artisticworks"));
+    dispatch(actions.fetchSearch(searchFields, 0, "artisticworks"));
+  }
+  
+  handleSubjectHeadingsTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("subjectheadings"));
+    dispatch(actions.fetchSearch(searchFields, 0, "subjectheadings"));
+  }
+
+  handleMiscTab(e) {
+    e.preventDefault()
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+
+    dispatch(actions.filterSearch("misc"));
+    dispatch(actions.fetchSearch(searchFields, 0, "misc"));
+  }
   
   render() {
      const { search : {filter} } = this.props
 
+     // filter ???
+     //     dispatch(actions.filterSearch("publications"));
+ 
      const { tabs : {grouped} } = this.props
 
      const namedFilters = solr.nameFilters
@@ -69,6 +141,14 @@ class SearchTabs extends Component {
      const personClasses = classNames({tab:true}, {selected: filter == 'person'})     
      const publicationsClasses = classNames({tab:true}, {selected: filter == 'publications'})     
      const organizationsClasses = classNames({tab:true}, {selected: filter == 'organizations'})     
+
+     const grantsClasses = classNames({tab:true}, {selected: filter == 'grants'})     
+     const coursesClasses = classNames({tab:true}, {selected: filter == 'courses'})     
+     const artisticWorksClasses = classNames({tab:true}, {selected: filter == 'artisticworks'})     
+     const subjectHeadingsClasses = classNames({tab:true}, {selected: filter == 'subjectheadings'})     
+
+     const miscClasses = classNames({tab:true}, {selected: filter == 'misc'})     
+
 
      // FIXME: this has several problems 
      // a) doesn't handle key existing but not 'doclist'
@@ -81,14 +161,21 @@ class SearchTabs extends Component {
      //
      //
      let peopleCount = 'type:(*Person)' in grouped ? grouped['type:(*Person)'].doclist.numFound : 0
-     let pubCount = 'type:(*Publication)' in grouped ? grouped['type:(*Publication)'].doclist.numFound : 0
-     let orgCount = 'type:(*Organization)' in grouped ? grouped['type:(*Organization)'].doclist.numFound : 0
+     let pubsCount = 'type:(*Publication)' in grouped ? grouped['type:(*Publication)'].doclist.numFound : 0
+     let orgsCount = 'type:(*Organization)' in grouped ? grouped['type:(*Organization)'].doclist.numFound : 0
      
     
-     //let grantCount = 'type:(*Grant)' in grouped ? grouped['type:(*Grant)'].doclist.numFound : 0
-     //let courseCount = 'type:(*Course)' in grouped ? grouped['type:(*Course)'].doclist.numFound : 0
-     //let artisticWorksCount = 'type:(*Artistic)' in grouped ? grouped['type:(*Artistic)'].doclist.numFound : 0
-     //let subjectHeadingsCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
+     let grantsCount = 'type:(*Grant)' in grouped ? grouped['type:(*Grant)'].doclist.numFound : 0
+     let coursesCount = 'type:(*Course)' in grouped ? grouped['type:(*Course)'].doclist.numFound : 0
+     let artisticWorksCount = 'type:(*Artistic)' in grouped ? grouped['type:(*Artistic)'].doclist.numFound : 0
+     let subjectHeadingsCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
+
+     // NOTE: this key will be large and change based on the others e.g.
+     // (NOT((*Publication) OR (*Person) AND ... ))
+     //let miscCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
+     let miscKey = "type:(NOT((*Person) OR (*Publication) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
+
+     let miscCount = miscKey in grouped ? grouped[miscKey].doclist.numFound: 0
 
 
     // FIXME: break out tabs into it's own component?
@@ -96,8 +183,15 @@ class SearchTabs extends Component {
     return (
         <div className="tab-group">
           <div className={personClasses} onClick={this.handlePersonTab}>People ({peopleCount})</div> 
-          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications ({pubCount})</div> 
-          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations ({orgCount})</div>
+          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications ({pubsCount})</div> 
+          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations ({orgsCount})</div>
+          
+          <div className={grantsClasses} onClick={this.handleGrantsTab}>Grant ({grantsCount})</div> 
+          <div className={coursesClasses} onClick={this.handleCoursesTab}>Courses ({coursesCount})</div> 
+          <div className={artisticWorksClasses}  onClick={this.handleArtisticWorksTab}>Artistic Works ({artisticWorksCount})</div>
+          <div className={subjectHeadingsClasses}  onClick={this.handleSubjectHeadingsTab}>Subject Headings ({subjectHeadingsCount})</div>
+           
+          <div className={miscClasses}  onClick={this.handleMiscTab}>Misc ({miscCount})</div>
         </div>
 
       )

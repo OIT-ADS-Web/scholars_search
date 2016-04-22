@@ -39,10 +39,10 @@ class SearchResults extends Component {
     this.handleNextPage = this.handleNextPage.bind(this);
     this.handlePreviousPage = this.handlePreviousPage.bind(this);
     
-    //this.handlePersonTab = this.handlePersonTab.bind(this);
-    //this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
-    //this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
-
+    // filter ???
+    //     this.props.dispatch(actions.filterSearch("person"));
+ 
+ 
 
   }
 
@@ -138,11 +138,12 @@ class SearchResults extends Component {
           if (highlight) {
              display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
           } else {
-             display = doc.ALLTEXT[0]
+             display = ""
+             //display = doc.ALLTEXT[0]
           }
           
           switch(filter) {
-            case 'people':
+            case 'person':
               return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
               break
             case 'publications':

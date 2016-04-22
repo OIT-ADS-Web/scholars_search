@@ -73,7 +73,7 @@ class PersonDisplay extends Component {
            <div>
             <strong>{this.name}</strong>
             <span> - {this.preferredTitle}</span>
-            <div>
+            <div className="highlight-text">
               <span>...</span>
               <span dangerouslySetInnerHTML={{__html: this.display}}></span>
               <span>...</span>

@@ -31,6 +31,10 @@ class PagingPanel extends Component {
   handleNextPage(e) {
     e.preventDefault();
 
+    if (e.currentTarget.className == 'disabled') {
+       return false
+    }  
+     
     // FIXME: where to skip when it's reached the max    
     const { search : { results, searchFields, start }, dispatch } = this.props;
     
@@ -57,6 +61,10 @@ class PagingPanel extends Component {
 
   handlePreviousPage(e) {
     e.preventDefault();
+
+    if (e.currentTarget.className == 'disabled') {
+       return false
+    }  
     
     const { search : { results, searchFields, start }, dispatch } = this.props;
 
@@ -117,8 +125,8 @@ class PagingPanel extends Component {
       
       return (
         <div>
-            <div>Pages={totalPages}; currentPage={currentPage}</div>
             <button onClick={this.handlePreviousPage} className={prevClasses}>Previous</button>
+            <span className="pages-summary">[Page {currentPage} of {totalPages}]</span>
             <button onClick={this.handleNextPage} className={nextClasses}>Next</button>
         </div>
       )

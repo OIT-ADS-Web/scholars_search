@@ -192,7 +192,8 @@ export const namedFilters = {
     grants: "type:(*Grant)",
     courses: "type:(*Course)",
     artisticworks: "type:(*Artistic)",
-    subjectheadings: "type:(*Concept)"
+    subjectheadings: "type:(*Concept)",
+    misc: "type:(NOT((*Person) OR (*Publication) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
   }
 }
 
