@@ -4,23 +4,6 @@ var _ = require('lodash');
 
 import querystring from 'querystring'
 
-function gatherStatements(words, delimiter) {
-  // given an array and a delimiter, join with that delimiter
-  // but also group by parenthesis if necessary
-  var exp = words.join(delimiter)
-  if (exp) {
-    if (words.length > 1) {
-        // group if more than 1 - just to be unambigous
-        exp = "(" + exp + ")"
-      }
-    }
-
-   return exp 
-  }
-
-// FIXME: need a string representation for display purposes - is this the
-// best place for that?
-
 function buildComplexQuery(compoundSearch = {}) {
   // NOTE: this method will get an object that looks like this:
   //
@@ -39,11 +22,31 @@ function buildComplexQuery(compoundSearch = {}) {
   // no match = NOT (word OR word ..)
   //
   // NOTE: NOT that is alone returns no results
+  //
+  // FIXME: this is also used for display to show the user what the search
+  // looks like - that may be ill-advised because it's also the actual
+  // query sent to SOLR
 
   //
   var query = ""
   if (_.isEmpty(compoundSearch)) {
     return query
+  }
+
+  // NOTE: was a separate function, but unlikely to call outside
+  // of this context
+  let gatherStatements = function(words, delimiter) {
+    // given an array and a delimiter, join with that delimiter
+    // but also group by parenthesis if necessary
+    var exp = words.join(delimiter)
+    if (exp) {
+      if (words.length > 1) {
+          // group if more than 1 - just to be unambigous
+          exp = "(" + exp + ")"
+        }
+      }
+
+    return exp 
   }
 
   // split by "," or <space>
@@ -105,7 +108,6 @@ class SolrResultsParser {
    // FIXME: is this really necessary?
    // solr results are already an object
    constructor() {
-
      //let { highlighting={}, response={} } = results;
      //let { numFound=0,docs } = response;
 
@@ -134,11 +136,7 @@ class SolrResultsParser {
         "vitroIndividual:https://scholars.duke.edu/individual/org50000844": {
         "ALLTEXT": [...]
       }
-
-
     */
-
-
    }
 
    parseGroups(grouped) {
@@ -212,12 +210,7 @@ function setupDefaultSearch(searcher, start, rows, filter) {
   // even though in the action/search.js
   // we re-create searcher object every time
   // 
-  // there is no need to use search.deleteFilter("type")
-  //
   if (filter) {
-    // FIXME: need to more centralize this since it's 
-    // related to tabs (therefore grouping etc...)
-    //
     const typeFilters = namedFilters["type"]
     const foundFilter = typeFilters[filter]
     searcher.addFilter("type", foundFilter)
@@ -229,28 +222,24 @@ function setupDefaultSearch(searcher, start, rows, filter) {
 function setupTabGroups(searcher) {
   // take a SolrQuery object and set up for tabs
   // this is stop-gap until I think of a better way
-  // should be these: 
+  // 
+  // tabs should be these: 
   //
   // [People][Publications][Artistic Works][Grants][Subject Headings] ??? + [Courses][Misc]
   //
-  // e.g.
-  //
-  // FIXME: these are the tabs - so the definition should be
-  // centralized in some way
-  //
-  //  searcher.addGroupQuery("type-subject-heading", "type:(*Concept)")
-  //  searcher.addGroupQuery("type-publication", "type:(*Publication)")
-  //  searcher.addGroupQuery("type-person", "type:(*Person)")
-  //  searcher.addGroupQuery("type-organization", "type:(*Organization)")
-
-
+  // have to set group = true
   searcher.options = {
     wt: "json",
     rows: 0,
     group: true
   }
 
-
+  // e.g.
+  // it's doing something like this...
+  //
+  // searcher.addGroupQuery("type-subject-heading", "type:(*Concept)")
+  // searcher.addGroupQuery("type-publication", "type:(*Publication)")
+  // etc...
   _.forEach(namedFilters['type'], function(value, key) {
     searcher.addGroupQuery("type-"+key, value)
   })
@@ -261,8 +250,12 @@ function setupTabGroups(searcher) {
 
 export { setupTabGroups, setupDefaultSearch }
 
+
+// export const PAGE_ROWS   = 50;
+
 class SolrQuery {
  
+  // NOTE: 'rows' is in the options {} property
   constructor(selectUrl){
     this.selectUrl = selectUrl
     this._query = "*.*"
@@ -271,9 +264,6 @@ class SolrQuery {
     this._filters = {}
 
     this._search = {}
-
-    this._rows = 50 // FIXME: should this pull from a config or global var
-
 
     // NOTE: to add group queries the options[group:true] needs to be set
     this._groupQueries = {}
@@ -307,14 +297,14 @@ class SolrQuery {
     return this._query
   }
 
-  set rows(rows) {
-    this._rows = rows
-    return this  
-  }
+  //set rows(rows) {
+  //  this._rows = rows
+  //  return this  
+  //}
 
-  get rows() {
-    return this._rows
-  }
+  //get rows() {
+  //  return this._rows
+  //}
 
 
   set options(options) {

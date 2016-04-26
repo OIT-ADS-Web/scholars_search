@@ -61,6 +61,7 @@ class SearchResults extends Component {
     // FIXME: during iteration - for now - gather classification groups?
     // then later send that as a filter for the search ??
     //
+
     if (docs) {
 
       // if filter == 'people' <PersonDisplay ..
@@ -96,16 +97,10 @@ class SearchResults extends Component {
     }
     else {
       //
+      return ( <div><p>Try search fields above.</p></div> )
       console.log("SearchResults.render() - NO DOCS")
     }
 
-    // if no docs --  ??
-    // return (
-    //  <div>
-    //    <p>Type search...</p>
-    //  </div>
-    // )
-    //
     console.log("SearchResults.render() - start="+start)
 
     // FIXME: should expand this to illustrate advanced search

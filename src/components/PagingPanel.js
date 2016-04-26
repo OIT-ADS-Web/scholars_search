@@ -21,25 +21,25 @@ class PagingPanel extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
     
-    this.handleNextPage = this.handleNextPage.bind(this);
-    this.handlePreviousPage = this.handlePreviousPage.bind(this);
+    this.handleNextPage = this.handleNextPage.bind(this)
+    this.handlePreviousPage = this.handlePreviousPage.bind(this)
   }
 
 
   handleNextPage(e) {
     // FIXME: right now this is NOT taking into account tabs
     //
-    e.preventDefault();
+    e.preventDefault()
 
     if (e.currentTarget.className == 'disabled') {
        return false
     }  
      
-    const { search : { searchFields, start, filter }, dispatch } = this.props;
+    const { search : { searchFields, start, filter }, dispatch } = this.props
     
-    dispatch(actions.nextPage());
+    dispatch(actions.nextPage())
     
     // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
     //
@@ -54,20 +54,19 @@ class PagingPanel extends Component {
 
     })
 
-   
-    dispatch(actions.fetchSearch(searchFields, newStart, filter));
+    dispatch(actions.fetchSearch(searchFields, newStart, filter))
   }
 
   handlePreviousPage(e) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (e.currentTarget.className == 'disabled') {
        return false
     }  
     
-    const { search : { searchFields, start, filter }, dispatch } = this.props;
+    const { search : { searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.previousPage());
+    dispatch(actions.previousPage())
 
     let newStart = start - PAGE_ROWS 
     // FIXME: seems like actions.previousPage() would take care of this    
@@ -84,17 +83,22 @@ class PagingPanel extends Component {
     // but otherwise it uses the the start from const { search : { start ...
     // which is still what it was when the method was called (not updated)
     //
-    dispatch(actions.fetchSearch(searchFields, newStart, filter));
+    dispatch(actions.fetchSearch(searchFields, newStart, filter))
   }
 
   render() {
     //const { search : {filter} } = this.props
 
+    //
     // so start should be coming from search object (state)
-    const { search : { results, searchFields, start=0, filter, isFetching } } = this.props;
+    const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
 
-    let { highlighting={}, response={} } = results;
-    let { numFound=0,docs } = response;
+    let { highlighting={}, response={} } = results
+    let { numFound=0,docs } = response
+    
+    if (!docs) {
+      return ( <div></div> )
+    }
 
      // FIXME: need to update this the [<<][<][1][2]...[>][>>] kind of thing
     
@@ -120,9 +124,9 @@ class PagingPanel extends Component {
       
       return (
         <div>
-            <button onClick={this.handlePreviousPage} className={prevClasses}>Previous</button>
+            <button onClick={this.handlePreviousPage} className={prevClasses}>&laquo; &laquo; Previous</button>
             <span className="pages-summary">[Page {currentPage} of {totalPages}]</span>
-            <button onClick={this.handleNextPage} className={nextClasses}>Next</button>
+            <button onClick={this.handleNextPage} className={nextClasses}>Next &raquo; &raquo;</button>
         </div>
       )
     }
