@@ -29,14 +29,22 @@ class OrganizationDisplay extends Component {
   render() {
     return (
          <div key="{this.docId}" className="organization search-result-row">
-              <strong>{this.name}</strong>
-              <span> - {this.preferredTitle}</span>
-              <div>
-                <span>...</span>
-                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                <span>...</span>
+            
+            <div className="row"> 
+              <div className="col-md-12"> 
+                <strong>{this.name}</strong>
               </div>
-          </div>
+            </div>
+            
+            <div className="row">
+              <div className="col-md-12">
+                  <span>...</span>
+                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                  <span>...</span>
+              </div>
+            </div>
+
+        </div>
     );
   }
 

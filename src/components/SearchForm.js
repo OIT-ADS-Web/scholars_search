@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import actions from '../actions/search'
 
-require('../styles/forms.less');
+//require('../styles/forms.less');
 
 import SearchResults from './SearchResults'
 //
@@ -131,7 +131,7 @@ export class SearchForm extends Component {
      
      return (
 
-       <div>
+       <section>
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
             <label>With all these words</label>
@@ -154,11 +154,9 @@ export class SearchForm extends Component {
           
           {button}
         </form>
+       <hr/>
 
-
-        { /* <SearchResults /> */ }
- 
-      </div>
+      </section>
 
     )
   }

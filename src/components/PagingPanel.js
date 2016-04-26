@@ -123,11 +123,26 @@ class PagingPanel extends Component {
       const prevClasses = classNames({disabled: !prev})     
       
       return (
-        <div>
-            <button onClick={this.handlePreviousPage} className={prevClasses}>&laquo; &laquo; Previous</button>
-            <span className="pages-summary">[Page {currentPage} of {totalPages}]</span>
-            <button onClick={this.handleNextPage} className={nextClasses}>Next &raquo; &raquo;</button>
-        </div>
+        <nav>
+          <ul className="pagination">
+            <li className={prevClasses}>
+              <a href="#" aria-label="Previous" onClick={this.handlePreviousPage} className={prevClasses}>
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            
+            <li>
+              <span>Page {currentPage} of {totalPages}</span>
+            </li>
+
+            <li className={nextClasses}>
+              <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
+                  <span aria-hidden="true">&raquo;</span>
+               </a>
+            </li>
+
+          </ul>
+        </nav>
       )
     }
 

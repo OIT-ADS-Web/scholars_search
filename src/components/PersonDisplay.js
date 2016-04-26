@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+require('../styles/scholars_search.less');
+
+
 // Person = struct of some sort???
 // 
 //
@@ -60,27 +63,36 @@ class PersonDisplay extends Component {
     var picture
     
     if (this.hasThumbnail()) {
-      picture = <img src={this.thumbnailUrl} height="125"></img>
+      picture = <div className="crop"><img src={this.thumbnailUrl} className="profile-thumbnail"></img></div>
     } else {
-      picture = <span></span>
+      picture = <img className="profile-thumbnail"></img>
     }
 
     // FIXME: there are some pitfalls to having disembodied <tr> tables built up
     return (
          <div className="person search-result-row" key="{this.docId}">
-           <div>{picture}</div>
-           
-           <div>
-            <strong>{this.name}</strong>
-            <span> - {this.preferredTitle}</span>
-            <div className="highlight-text">
-              <span>...</span>
-              <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-              <span>...</span>
-            </div>
-           </div>
+            <div className="row">
+              
+              <div className="col-md-1">
+                {picture}
+              </div>
+            
+              <div className="col-md-11">
+                <strong>{this.name}</strong>
+                <span> - {this.preferredTitle}</span>
+              </div>
+
+              <div className="col-md-12">
+                <div className="highlight-text">
+                  <span>...</span>
+                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                  <span>...</span>
+                </div>
+              </div>
         
-        </div>
+          </div>
+      </div>
+
     );
   }
 

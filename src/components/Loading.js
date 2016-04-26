@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
+require('../styles/scholars_search.less');
+
 class Loading extends Component {
 
   constructor(props) {
@@ -12,11 +14,14 @@ class Loading extends Component {
 
       if (isFetching) {
         return (
-            <div className="loading">Loading&#8230;</div>
+            <div className="row">
+              <span className="bg-danger loading-image" aria-label="loading results"></span>
+            </div>
         )
       } else {
         return (
-            <span></span>
+            <div className="not-loading">
+            </div>
         )
       }
   }

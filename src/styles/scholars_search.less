@@ -1,59 +1,5 @@
-@dukeBlueDark: #001A57;
-@headerTextColor: #ffffff;
-@headerBGColor: @dukeBlueDark;
-@sideBuffer: 1em;
-
-.reset-whitespace {
-  margin: 0;
-  padding: 0;
-}
-
-.note {
-  font-size: 0.8em;
-  font-style: italic;
-  font-weight: bold;
-  color: darkred;
-}
-
-body {
-  .reset-whitespace;
-}
-
-header, footer {
-  .reset-whitespace;
-   background-color: @headerBGColor;
-   color: @headerTextColor;
-   padding: @sideBuffer;
-}
-
-#main {
-   padding: 0 @sideBuffer @sideBuffer;
-}
-
-section.search-results {
-  //float:left;
-}
-
 section.facets {
   float:right;
-}
-
-.tab-group {
-  padding: 1em;
-  margin: 1em;
-}
-
-.tab {
-  background-color: #EFEFEF;
-  padding: 8px;
-  margin: 8px;
-  cursor: pointer;
-  width: 100px;
-  display:inline;
-}
-
-.tab.selected {
-  background-color: #FFF2A8;
 }
 
 .publication {
@@ -70,10 +16,6 @@ section.facets {
 
 }
 
-div.search-results-table {
-    width: 100%;
-}
-
 
 div.search-results {
 }
@@ -84,26 +26,9 @@ div.search-result-row {
   vertical-align: top;
   margin-bottom: 1em;
   width: 100%;
+  padding: 4px;
 }
  
-div.dataRow {
-  clear:both;
-}
-
-span.label {
-  display: block;
-  float: left;
-  width: 5%;
-  font-weight: bold;
-  font-style: italic;
-}
-
-span.data {
-  display: block;
-  float:right;
-  width: 95%;
-}
-
 div.highlight-text {
   margin: 4px;
 }
@@ -112,11 +37,18 @@ span.pages-summary {
   padding: 8px;
 }
 
-div.loading {
+span.loading-image {
   display: block;
   margin: 1em;
   background: url(../images/spinner.gif) no-repeat;
   width:52px;
   height:52px;
 }
+
+
+img.profile-thumbnail {
+    width: 90px;
+    height: 90px;
+}
+
 

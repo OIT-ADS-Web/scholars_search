@@ -73,7 +73,8 @@ class SearchTabs extends Component {
     // FIXME: no point in this - just repeating right after
     dispatch(actions.filterSearch("publications"));
     dispatch(actions.fetchSearch(searchFields, 0, "publications"));
-  
+    
+    this.resetPage(dispatch, searchFields)  
   }
 
   handleOrganizationsTab(e) {
@@ -82,6 +83,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("organizations"));
     dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
+    this.resetPage(dispatch, searchFields)  
   }
 
   handleGrantsTab(e) {
@@ -90,6 +92,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("grants"));
     dispatch(actions.fetchSearch(searchFields, 0, "grants"));
+    this.resetPage(dispatch, searchFields)  
   }
   
   handleCoursesTab(e) {
@@ -98,6 +101,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("courses"));
     dispatch(actions.fetchSearch(searchFields, 0, "courses"));
+    this.resetPage(dispatch, searchFields)  
   }
 
   handleArtisticWorksTab(e) {
@@ -106,6 +110,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("artisticworks"));
     dispatch(actions.fetchSearch(searchFields, 0, "artisticworks"));
+    this.resetPage(dispatch, searchFields)  
   }
   
   handleSubjectHeadingsTab(e) {
@@ -114,6 +119,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("subjectheadings"));
     dispatch(actions.fetchSearch(searchFields, 0, "subjectheadings"));
+    this.resetPage(dispatch, searchFields)  
   }
 
   handleMiscTab(e) {
@@ -122,6 +128,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("misc"));
     dispatch(actions.fetchSearch(searchFields, 0, "misc"));
+    this.resetPage(dispatch, searchFields)  
   }
   
   render() {
@@ -135,16 +142,16 @@ class SearchTabs extends Component {
      const namedFilters = solr.nameFilters
 
      // FIXME: too much duplicated code
-     const personClasses = classNames({tab:true}, {selected: filter == 'person'})     
-     const publicationsClasses = classNames({tab:true}, {selected: filter == 'publications'})     
-     const organizationsClasses = classNames({tab:true}, {selected: filter == 'organizations'})     
+     const personClasses = classNames({active: filter == 'person'})     
+     const publicationsClasses = classNames({active: filter == 'publications'})     
+     const organizationsClasses = classNames({active: filter == 'organizations'})     
 
-     const grantsClasses = classNames({tab:true}, {selected: filter == 'grants'})     
-     const coursesClasses = classNames({tab:true}, {selected: filter == 'courses'})     
-     const artisticWorksClasses = classNames({tab:true}, {selected: filter == 'artisticworks'})     
-     const subjectHeadingsClasses = classNames({tab:true}, {selected: filter == 'subjectheadings'})     
+     const grantsClasses = classNames({active: filter == 'grants'})     
+     const coursesClasses = classNames({active: filter == 'courses'})     
+     const artisticWorksClasses = classNames({active: filter == 'artisticworks'})     
+     const subjectHeadingsClasses = classNames({active: filter == 'subjectheadings'})     
 
-     const miscClasses = classNames({tab:true}, {selected: filter == 'misc'})     
+     const miscClasses = classNames({active: filter == 'misc'})     
 
 
      // FIXME: this has several problems 
@@ -164,13 +171,13 @@ class SearchTabs extends Component {
     
      let grantsCount = 'type:(*Grant)' in grouped ? grouped['type:(*Grant)'].doclist.numFound : 0
      let coursesCount = 'type:(*Course)' in grouped ? grouped['type:(*Course)'].doclist.numFound : 0
-     let artisticWorksCount = 'type:(*Artistic)' in grouped ? grouped['type:(*Artistic)'].doclist.numFound : 0
+     let artisticWorksCount = 'type:(*ArtisticWork)' in grouped ? grouped['type:(*ArtisticWork)'].doclist.numFound : 0
      let subjectHeadingsCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
 
      // NOTE: this key will be large and change based on the others e.g.
      // (NOT((*Publication) OR (*Person) AND ... ))
      //let miscCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
-     let miscKey = "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
+     let miscKey = "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))"
 
      let miscCount = miscKey in grouped ? grouped[miscKey].doclist.numFound: 0
 
@@ -181,18 +188,18 @@ class SearchTabs extends Component {
     // FIXME: break out tabs into it's own component?
 
     return (
-        <div className="tab-group">
-          <div className={personClasses} onClick={this.handlePersonTab}>People ({peopleCount})</div> 
-          <div className={publicationsClasses} onClick={this.handlePublicationsTab}>Publications ({pubsCount})</div> 
-          <div className={organizationsClasses}  onClick={this.handleOrganizationsTab}>Organizations ({orgsCount})</div>
+        <ul className="nav nav-pills">
+          <li className={personClasses}><a href="#" onClick={this.handlePersonTab}>People ({peopleCount})</a></li> 
+          <li className={publicationsClasses}><a href="#" onClick={this.handlePublicationsTab}>Publications ({pubsCount})</a></li> 
+          <li className={organizationsClasses}><a href="#" onClick={this.handleOrganizationsTab}>Organizations ({orgsCount})</a></li>
           
-          <div className={grantsClasses} onClick={this.handleGrantsTab}>Grant ({grantsCount})</div> 
-          <div className={coursesClasses} onClick={this.handleCoursesTab}>Courses ({coursesCount})</div> 
-          <div className={artisticWorksClasses}  onClick={this.handleArtisticWorksTab}>Artistic Works ({artisticWorksCount})</div>
-          <div className={subjectHeadingsClasses}  onClick={this.handleSubjectHeadingsTab}>Subject Headings ({subjectHeadingsCount})</div>
+          <li className={grantsClasses}><a href="#" onClick={this.handleGrantsTab}>Grant ({grantsCount})</a></li> 
+          <li className={coursesClasses}><a href="#" onClick={this.handleCoursesTab}>Courses ({coursesCount})</a></li> 
+          <li className={artisticWorksClasses}><a href="#" onClick={this.handleArtisticWorksTab}>Artistic Works ({artisticWorksCount})</a></li>
+          <li className={subjectHeadingsClasses}><a href="#" onClick={this.handleSubjectHeadingsTab}>Subject Headings ({subjectHeadingsCount})</a></li>
            
-          <div className={miscClasses}  onClick={this.handleMiscTab}>Misc ({miscCount})</div>
-        </div>
+          <li className={miscClasses}><a href="#" onClick={this.handleMiscTab}>Misc ({miscCount})</a></li>
+        </ul>
 
       )
   }

@@ -38,12 +38,25 @@ class PublicationDisplay extends Component {
   }
 
   render() {
-
-    // FIXME: there are some pitfalls to having disembodied <tr> tables built up
+    
     return (
          <div key="{this.docId}" className="publication search-result-row">
-             <strong>{this.name}</strong>
-            <span> - {this.allText}</span>
+            <div className="row">
+             <div className="col-md-12"> 
+              <strong>
+                 <span dangerouslySetInnerHTML={{__html: this.name}}></span>
+              </strong>
+             </div>
+            </div>
+            
+            <div className="row highlight-text">
+              <div className="col-md-12">
+                <span>...</span>
+                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                <span>...</span>
+              </div>
+            </div>
+         
          </div>
     );
   }

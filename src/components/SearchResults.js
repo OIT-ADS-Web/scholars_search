@@ -4,7 +4,6 @@ import classNames from 'classnames'
 import { Link } from 'react-router'
 
 /* our stuff */
-import { PAGE_ROWS } from '../actions/search'
 import actions from '../actions/search'
 
 import PersonDisplay from './PersonDisplay'
@@ -16,6 +15,7 @@ import SearchTabs from './SearchTabs'
 import PagingPanel from './PagingPanel'
 
 
+require('../styles/scholars_search.less');
 
 // FIXME: we don't want to do the actual SolrQuery here,
 // so this should be something more like
@@ -97,7 +97,12 @@ class SearchResults extends Component {
     }
     else {
       //
-      return ( <div><p>Try search fields above.</p></div> )
+      return ( 
+          <div className="row">
+            <h3>Try search fields above.</h3>
+            <Loading isFetching={isFetching}></Loading>
+          </div>
+      )
       console.log("SearchResults.render() - NO DOCS")
     }
 

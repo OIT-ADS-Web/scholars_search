@@ -64,12 +64,16 @@ class GenericDisplay extends Component {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <strong>{this.name}</strong>
-            <div className="dataRow"><span className="label">type</span> <span className="data">{this.mostSpecificType}</span></div>
-            <div className="dataRow"><span className="label">title</span> <span className="data">{this.preferredTitle}</span></div>
-            <div className="dataRow highlight-text">
-              <span>...</span>
-              <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-              <span>...</span>
+            <div className="row">
+              <div className="col-md-1">Type</div> 
+              <div className="col-md-11">{this.mostSpecificType}</div>
+            </div>
+            <div className="row highlight-text">
+              <div className="col-md-12">
+                <span>...</span>
+                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                <span>...</span>
+              </div>
             </div>
         </div>
     );
