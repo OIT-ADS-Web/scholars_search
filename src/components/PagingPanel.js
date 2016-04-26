@@ -29,23 +29,24 @@ class PagingPanel extends Component {
 
 
   handleNextPage(e) {
+    // FIXME: right now this is NOT taking into account tabs
+    //
     e.preventDefault();
 
     if (e.currentTarget.className == 'disabled') {
        return false
     }  
      
-    // FIXME: where to skip when it's reached the max    
-    const { search : { results, searchFields, start }, dispatch } = this.props;
+    const { search : { searchFields, start, filter }, dispatch } = this.props;
     
-    console.log(`handleNextPage->start=${start}`)
-
-    let { response={} } = results;
-    let { numFound=0 } = response;
-
     dispatch(actions.nextPage());
     
-    searchFields['start'] = start + PAGE_ROWS
+    // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
+    //
+
+    let newStart = start + PAGE_ROWS
+
+    searchFields['start'] =  newStart
 
     this.context.router.push({
       pathname: '/',
@@ -53,10 +54,8 @@ class PagingPanel extends Component {
 
     })
 
-
-    console.log(`handleNextPage->start(after nextPage())=${start}`)
    
-    dispatch(actions.fetchSearch(searchFields, start + PAGE_ROWS));
+    dispatch(actions.fetchSearch(searchFields, newStart, filter));
   }
 
   handlePreviousPage(e) {
@@ -66,17 +65,13 @@ class PagingPanel extends Component {
        return false
     }  
     
-    const { search : { results, searchFields, start }, dispatch } = this.props;
-
-    console.log(`handlePreviousPage->start=${start}`)
-
-    let { response={} } = results;
+    const { search : { searchFields, start, filter }, dispatch } = this.props;
 
     dispatch(actions.previousPage());
- 
-    console.log(`handlePreviousPage->start(after previousPage())=${start}`)
-    
-    searchFields['start'] = start - PAGE_ROWS
+
+    let newStart = start - PAGE_ROWS 
+    // FIXME: seems like actions.previousPage() would take care of this    
+    searchFields['start'] = newStart
 
     this.context.router.push({
       pathname: '/',
@@ -89,7 +84,7 @@ class PagingPanel extends Component {
     // but otherwise it uses the the start from const { search : { start ...
     // which is still what it was when the method was called (not updated)
     //
-    dispatch(actions.fetchSearch(searchFields, start - PAGE_ROWS));
+    dispatch(actions.fetchSearch(searchFields, newStart, filter));
   }
 
   render() {

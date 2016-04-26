@@ -39,22 +39,18 @@ class SearchTabs extends Component {
 
   }
 
-  resetPage() {
+  resetPage(dispatch, searchFields) {
 
+    // FIXME: this seems wrong to me
     dispatch(actions.resetPage());
 
-    // FIXME: this would need to be called after every handle...Tab method
-    // but also needs to update routes
-    // possibly not the best place for this to happen
-    /*
-       searchFields['start'] = start + PAGE_ROWS
+    searchFields['start'] = 0 
 
     this.context.router.push({
       pathname: '/',
       query: searchFields
-
     })
-   */
+   
  
   }
 
@@ -66,7 +62,8 @@ class SearchTabs extends Component {
     dispatch(actions.filterSearch("person"));
     // can we do this here?
     dispatch(actions.fetchSearch(searchFields, 0, "person"));
-  
+
+    this.resetPage(dispatch, searchFields)  
   }
   
   handlePublicationsTab(e) {
@@ -76,7 +73,7 @@ class SearchTabs extends Component {
     // FIXME: no point in this - just repeating right after
     dispatch(actions.filterSearch("publications"));
     dispatch(actions.fetchSearch(searchFields, 0, "publications"));
-    dispatch(actions.resetPage());
+  
   }
 
   handleOrganizationsTab(e) {
@@ -161,7 +158,7 @@ class SearchTabs extends Component {
      //
      //
      let peopleCount = 'type:(*Person)' in grouped ? grouped['type:(*Person)'].doclist.numFound : 0
-     let pubsCount = 'type:(*Publication)' in grouped ? grouped['type:(*Publication)'].doclist.numFound : 0
+     let pubsCount = 'type:(*AcademicArticle)' in grouped ? grouped['type:(*AcademicArticle)'].doclist.numFound : 0
      let orgsCount = 'type:(*Organization)' in grouped ? grouped['type:(*Organization)'].doclist.numFound : 0
      
     
@@ -173,10 +170,13 @@ class SearchTabs extends Component {
      // NOTE: this key will be large and change based on the others e.g.
      // (NOT((*Publication) OR (*Person) AND ... ))
      //let miscCount = 'type:(*Concept)' in grouped ? grouped['type:(*Concept)'].doclist.numFound : 0
-     let miscKey = "type:(NOT((*Person) OR (*Publication) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
+     let miscKey = "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
 
      let miscCount = miscKey in grouped ? grouped[miscKey].doclist.numFound: 0
 
+
+     //"http://purl.org/ontology/bibo/Journal",
+     //"http://purl.org/ontology/bibo/Periodical"
 
     // FIXME: break out tabs into it's own component?
 
@@ -202,7 +202,8 @@ class SearchTabs extends Component {
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
 // no property 'results' etc...
-const mapStateToProps = (tabs) => {
+const mapStateToProps = (tabs, ownProps) => {
+//const mapStateToProps = (tabs) => {
   return  tabs;
 }
 

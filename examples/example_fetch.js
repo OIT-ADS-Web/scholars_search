@@ -2,6 +2,8 @@ require('dotenv').config();
 
 import configureStore, { configureStoreWithoutLogger } from '../src/configureStore'
 
+// just a simpler store so we don't have to see full
+// trace of state after every action
 const Store = configureStoreWithoutLogger()
 
 import actions from '../src/actions/search'

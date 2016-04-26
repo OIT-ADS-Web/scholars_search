@@ -53,9 +53,9 @@ export class ScholarsSearchApp extends Component {
 }
 
 
-ScholarsSearchApp.propTypes = {
-  searchParams: PropTypes.object
-}
+//ScholarsSearchApp.propTypes = {
+//  searchParams: PropTypes.object
+//}
 
 // import react-redux helper to create a wrapped ScholarsSearchApp that
 // can be connected to a store
@@ -73,7 +73,7 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = (search, ownProps) => {
   return { ...search,
-    searchParams: ownProps.location.query,
+    searchFields: ownProps.location.query,
     typeParam: ownProps.params
   }
 }

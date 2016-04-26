@@ -98,7 +98,7 @@ function buildComplexQuery(compoundSearch = {}) {
 // building GET with params
 //}'
 
-
+// NOTE: not using this at the moment
 class SolrResultsParser {
 
 
@@ -187,13 +187,13 @@ class SolrResultsParser {
 export const namedFilters = {
   type: {
     person: "type:(*Person)",
-    publications: "type:(*Publication)",
+    publications: "type:(*AcademicArticle)",
     organizations: "type:(*Organization)",
     grants: "type:(*Grant)",
     courses: "type:(*Course)",
     artisticworks: "type:(*Artistic)",
     subjectheadings: "type:(*Concept)",
-    misc: "type:(NOT((*Person) OR (*Publication) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
+    misc: "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*Artistic) OR (*Concept)))"
   }
 }
 
@@ -276,7 +276,6 @@ class SolrQuery {
 
 
     // NOTE: to add group queries the options[group:true] needs to be set
-    //this._group = false
     this._groupQueries = {}
 
     //
@@ -291,6 +290,8 @@ class SolrQuery {
   }
 
   addGroupQuery(name, query) {
+    // FIXME: should add a check to make sure options[:group] = true is set
+    //
     var groupQuery = {}
     groupQuery[name]=query
     Object.assign(this._groupQueries,groupQuery)
@@ -446,19 +447,8 @@ class SolrQuery {
   }
 
 
-  //getGroupQueryOptions() {
-  //  var groupQueries = Object.keys(this._groupQuery).map(queryName => this._groupQueries[queryName])
-    
-    //
-    //return {
-    //  group.query:filterQueries
-    //}
-  //}
-
-
   // NOTE: just like above - except for making a URL like so:
   //  ...&group=true&group.query=type:(*Concept)&group.query=type:(*Publication)
-
   getGroupQueryOptions() {
 
     var groupOptions = {}
@@ -469,24 +459,10 @@ class SolrQuery {
       groupOptions = { group: true, "group.query": groups }
     }
     
-    //groups.forEach(groupQuery => {
-    //   
-    //  var groupProperties = this._groupQueries[groupQuery]
-    //  Object.keys(groupProperties).forEach(facetProp => {
-    //    groupOptions["group.query" ] = facetProperties[facetProp]
-    //  })
-    //})
-    //
-    //
     return groupOptions
   }
 
 
-  // NOTE: group must be true for this...
-  //
-  // addGroupQuery() { }
-  // deleteGroupQuery() { }
-  //
   addFilter(name,query) {
     var filter = {}
     filter[name]=query
@@ -506,8 +482,6 @@ class SolrQuery {
     }
   }
 
-  // Build QueryString manually since built-in xr function won't duplicate array params
-  // Need this for multiple facet.field parameters
   get queryString() {
     // FIXME: look into querystring.stringify
     // querystring.stringify({ foo: 'bar', baz: ['qux', 'quux'], corge: '' })
@@ -521,27 +495,11 @@ class SolrQuery {
         this.getFacetFieldOptions(),
         this.getGroupQueryOptions())
 
-    // for each key in queryOptions     
-    /* 
-    var params =  Object.keys(queryOptions).map(key => {
-      let value = queryOptions[key]
-      if (Array.isArray(value)) {
-        // duplicate param name for any array values
-        return value.map(v => key + "=" + escape(v)).join('&')
-      } else {
-        return key + "=" + escape(value)
-      }
-    }).join('&')
-     
-    console.log(params)
-    */
+    // NOTE: switched to querystring.stringify, as opposed to manual
     let params = querystring.stringify(queryOptions)
-
-    //console.log(querystring.stringify(queryOptions))
-    
+    // still printing for fun
     console.log(params)
    
-    // 
     return this.selectUrl + '?' + params
   }
 
@@ -552,6 +510,7 @@ class SolrQuery {
 
   execute() {
 
+    // FIXME: would be great if I could send JSON
     // fetch(queryString, {method: 'GET',  
     //  header: {
     //    'Accept': 'application/json',

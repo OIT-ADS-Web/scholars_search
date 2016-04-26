@@ -1,16 +1,14 @@
 require('dotenv').config();
 
-
-    // fetch(queryString, {method: 'GET',  
-    //  header: {
-    //    'Accept': 'application/json',
-    //    'Content-Type': 'application/json'
-    //  }
-    // })
-    //
+// fetch(queryString, {method: 'GET',  
+//  header: {
+//    'Accept': 'application/json',
+//    'Content-Type': 'application/json'
+//  }
+// })
+//
 
 import fetch from 'isomorphic-fetch'
-
 
 
 // how to do this?
