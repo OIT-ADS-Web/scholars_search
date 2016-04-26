@@ -124,9 +124,9 @@ export class SearchForm extends Component {
      // FIXME: probably better way to do this
      let button
      if (isFetching) {
-          button = <button type="submit" className="btn btn-default" disabled>Submit</button>
+          button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
      } else {
-          button = <button type="submit" className="btn btn-default">Submit</button>
+          button = <button type="submit" className="btn btn-primary">Submit</button>
      }
      
      return (
@@ -135,27 +135,30 @@ export class SearchForm extends Component {
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
             <label>With all these words</label>
-            <input type="text" ref={(ref) => this.allWords = ref} className="form-control"/>
-          </div>
+            <input type="text" ref={(ref) => this.allWords = ref} className="form-control"  placeholder="Multiple, Terms, use, Comma"/>
+            </div>
           
           <div className="form-group">
             <label>With the exact phrase</label>
-            <input type="text" ref={(ref) => this.exactMatch = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.exactMatch = ref} className="form-control" placeholder="Exact match"/>
           </div>
            <div className="form-group">
             <label>With at least one of these words</label>
-            <input type="text" ref={(ref) => this.atLeastOne = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.atLeastOne = ref} className="form-control"  placeholder="Multiple, Terms, use, Comma" />
           </div>
 
            <div className="form-group">
             <label>With none of these words</label>
-            <input type="text" ref={(ref) => this.noMatch = ref} className="form-control"/>
+            <input type="text" ref={(ref) => this.noMatch = ref} className="form-control" placeholder="Multiple, Terms, use, Comma" />
           </div>
-          
+                   
           {button}
-        </form>
-       <hr/>
 
+        </form>
+       
+           
+        <hr/>
+ 
       </section>
 
     )

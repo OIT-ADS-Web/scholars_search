@@ -96,10 +96,10 @@ class SearchResults extends Component {
       // sidebar = ... <FacetSidebar />  --- likely will become big component
     }
     else {
-      //
+      // e.g. if there are no docs - could be fetching, or could just be no
+      // search.  So ... add <Loading> just in case.
       return ( 
           <div className="row">
-            <h3>Try search fields above.</h3>
             <Loading isFetching={isFetching}></Loading>
           </div>
       )
@@ -114,13 +114,10 @@ class SearchResults extends Component {
     //const query = searchFields ? searchFields.allWords : ''
     let query = solr.buildComplexQuery(searchFields)
 
-
     return (
       <section className="search-results">
         
         <SearchTabs></SearchTabs>
-        <Loading isFetching={isFetching}></Loading>
-
         <h2>Query: {query}</h2>
         <h3>Results found: {numFound} </h3>
         <div className="search-results-table">
