@@ -18,10 +18,7 @@ searcher.options = {
 }
 
 const compoundSearch = {
-    'allWords': 'medicine',
-    'exactMatch': '',
-    'atLeastOne': '',
-    'noMatch': ''
+    'allWords': 'medicine'
 }
 
 const qry = searcher.buildQuery(compoundSearch)
@@ -42,10 +39,7 @@ searcher.execute().then(function(response) {
 
 // NOTE: it's random which one returns first
 const compoundSearch2 = {
-    'allWords': 'alejandro',
-    'exactMatch': '',
-    'atLeastOne': '',
-    'noMatch': ''
+    'allWords': 'alejandro'
 }
 
 

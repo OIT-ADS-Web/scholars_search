@@ -6,14 +6,8 @@ import SearchResults from '../components/SearchResults'
 
 //import OrganizationSidebar from '../components/OrganizationSidebar'
 
-
 import actions from '../actions/search'
 
-// NOTE: doing this import and dispatch(fetchOrgs) does NOT work
-//import fetchOrgs from '../actions/search'
-
-// export class directly for unit testing of this component
-// 'import { ScholarsSearchApp }' will get the unwrapped component
 export class ScholarsSearchApp extends Component {
   // NOTE: this allows getting the ownProps --> location (see way below)
   //
@@ -24,23 +18,25 @@ export class ScholarsSearchApp extends Component {
   }
 
   componentDidMount() {
-    //const router = this.context.router
-    
-    //console.log(`QUERY=${router.query}`)
-    
-    const { search : { searchParams }, dispatch } = this.props;
+    const { search : { searchFields, start, filter }, dispatch } = this.props;
+    //const { dispatch } = this.props;
 
     dispatch(actions.appInit())
+    // filter causing errors
+    dispatch(actions.fetchSearch(searchFields, start))
 
-    console.log(`QUERY=${searchParams}`)
+    dispatch(actions.fetchTabCounts(searchFields))
+
+    //console.log(`QUERY=${searchFields}`)
   }
 
   constructor(props,context) {
     super(props,context)
-
   }
 
   render() {
+   // const { search : { searchFields, start }, dispatch } = this.props;
+    
     return (
 
       <Page title="Scholars Search">

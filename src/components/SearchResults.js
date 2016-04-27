@@ -34,8 +34,8 @@ class SearchResults extends Component {
     })
   }
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
   }
 
 
@@ -62,6 +62,8 @@ class SearchResults extends Component {
     // then later send that as a filter for the search ??
     //
 
+    // FIXME: need to re-work this slightly to get rid of warnings 
+    // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
     if (docs) {
 
       // if filter == 'people' <PersonDisplay ..
@@ -106,8 +108,6 @@ class SearchResults extends Component {
       console.log("SearchResults.render() - NO DOCS")
     }
 
-    console.log("SearchResults.render() - start="+start)
-
     // FIXME: should expand this to illustrate advanced search
     // e.g. (? AND ?) AND (? OR ?) and NOT .. etc...
     //
@@ -137,7 +137,7 @@ class SearchResults extends Component {
 // seems like no point in that, but otherwise says
 // no property 'results' etc...
 const mapStateToProps = (search) => {
-  return  search;
+  return  search
 }
 
 // NOTE: doesn't seem to ever call unless I connect ...

@@ -20,8 +20,8 @@ class PagingPanel extends Component {
     })
   }
 
-  constructor(props) {
-    super(props)
+  constructor(props, context) {
+    super(props, context)
     
     this.handleNextPage = this.handleNextPage.bind(this)
     this.handlePreviousPage = this.handlePreviousPage.bind(this)
@@ -93,6 +93,9 @@ class PagingPanel extends Component {
     // so start should be coming from search object (state)
     const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
 
+    // FIXME: paging does not work when form is purely initialized from query parameters
+    // because searchFields is undefined
+    //
     let { highlighting={}, response={} } = results
     let { numFound=0,docs } = response
     
@@ -175,33 +178,6 @@ class PagingPanel extends Component {
 
 }
 
-/*
-export default ({page=1, page_size=5, count, onNextPage, onPreviousPage, ...props}) => {
-    const total_pages = Math.ceil(count / page_size);
-
-    return <div className="row">
-        {page==1?null:<button onClick={e => {
-            e.preventDefault();
-            onPreviousPage();
-        }}>&lt;</button>}
-        &nbsp; Page {page} of {total_pages} &nbsp;
-        {page==total_pages?null:<button onClick={e => {
-            e.preventDefault();
-            onNextPage();
-        }}>&gt;</button>}
-    </div>
-}
-*/
-
-//export default PagingPanel
-
-
-// NOTE: I think I need to connect to make this communicate - but it seems 
-// like it should be a subcomponent of SearchResults
-// maybe this.parent->
-//
-//
-
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
 // no property 'results' etc...
@@ -213,16 +189,4 @@ const mapStateToProps = (search) => {
 //export default SearchResults
 
 export default connect(mapStateToProps)(PagingPanel);
-
-
-/*
- *
- * export default ({page=1, page_size=5, count, onNextPage, onPreviousPage, ...props}) => (
-    total_pages => <div className="row">
-        {page==1?null:<button onClick={e => {  }}>&lt;</button>}
-        &nbsp; Page {page} of {total_pages} &nbsp;
-        {page==total_pages?null:<button onClick={e => {  }}>&gt;</button>}
-    </div>
-)(Math.ceil(count / page_size))
-  */
 

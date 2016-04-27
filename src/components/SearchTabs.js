@@ -22,8 +22,8 @@ class SearchTabs extends Component {
     })
   }
 
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     
     this.handlePersonTab = this.handlePersonTab.bind(this);
     this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
@@ -39,12 +39,14 @@ class SearchTabs extends Component {
 
   }
 
-  resetPage(dispatch, searchFields) {
+  resetPage(dispatch, searchFields, filter) {
 
     // FIXME: this seems wrong to me
     dispatch(actions.resetPage());
 
     searchFields['start'] = 0 
+
+    searchFields['filter'] = filter
 
     this.context.router.push({
       pathname: '/',
@@ -54,6 +56,8 @@ class SearchTabs extends Component {
  
   }
 
+  // FIXME: ideally not have to have a different method for every tab - just a generic
+  // handleTab() --
   handlePersonTab(e) {
     e.preventDefault()
     const { search : { results, searchFields, start, filter }, dispatch } = this.props;
@@ -63,7 +67,7 @@ class SearchTabs extends Component {
     // can we do this here?
     dispatch(actions.fetchSearch(searchFields, 0, "person"));
 
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "person")  
   }
   
   handlePublicationsTab(e) {
@@ -74,7 +78,7 @@ class SearchTabs extends Component {
     dispatch(actions.filterSearch("publications"));
     dispatch(actions.fetchSearch(searchFields, 0, "publications"));
     
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "publications")  
   }
 
   handleOrganizationsTab(e) {
@@ -83,7 +87,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("organizations"));
     dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "organizations")  
   }
 
   handleGrantsTab(e) {
@@ -92,7 +96,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("grants"));
     dispatch(actions.fetchSearch(searchFields, 0, "grants"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "grants")  
   }
   
   handleCoursesTab(e) {
@@ -101,7 +105,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("courses"));
     dispatch(actions.fetchSearch(searchFields, 0, "courses"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "courses")  
   }
 
   handleArtisticWorksTab(e) {
@@ -110,7 +114,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("artisticworks"));
     dispatch(actions.fetchSearch(searchFields, 0, "artisticworks"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "artisticworks")  
   }
   
   handleSubjectHeadingsTab(e) {
@@ -119,7 +123,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("subjectheadings"));
     dispatch(actions.fetchSearch(searchFields, 0, "subjectheadings"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "subjectheadings")  
   }
 
   handleMiscTab(e) {
@@ -128,7 +132,7 @@ class SearchTabs extends Component {
 
     dispatch(actions.filterSearch("misc"));
     dispatch(actions.fetchSearch(searchFields, 0, "misc"));
-    this.resetPage(dispatch, searchFields)  
+    this.resetPage(dispatch, searchFields, "misc")  
   }
   
   render() {

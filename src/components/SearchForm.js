@@ -22,8 +22,8 @@ export class SearchForm extends Component {
     })
   }
 
-  constructor(props) {
-    super(props)
+  constructor(props, context) {
+    super(props, context)
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     // NOTE: could do like this too
     //this.handleSubmitSearch = () => this.handleSubmitSearch();
@@ -45,10 +45,11 @@ export class SearchForm extends Component {
     //if (this.context.router.query) {
     // NOTE: this.context.router.query is undefined here
     //
-    console.log(`query from routes=${this.context.router.query}`)
+    console.log(`SearchForm#componentDidMount() query from routes=${this.context.router.query}`)
     //}
     console.log(this.context.router)
     // maybe it should go in APP_INIT
+
   }
 
   handleSubmitSearch(e) {
@@ -93,7 +94,7 @@ export class SearchForm extends Component {
 
     dispatch(actions.resetPage())
     
-    // reset filter
+    // reset filter? to person --
     dispatch(actions.resetFilter())
 
     // FIXME: is this going to work???
@@ -119,15 +120,27 @@ export class SearchForm extends Component {
     // not sure why it's empty if I don't connect ... how
     // do 'props' get sent down - if we have to 'connect'
     // everytime, then what's the point of a hierarchy of components? 
-    const { search : { isFetching } } = this.props;
+    
+    // FIXME: more - don't like locationBeforeTransitions at all
+    const { search : { isFetching, searchFields }, routing: { locationBeforeTransitions } } = this.props;
 
-     // FIXME: probably better way to do this
-     let button
-     if (isFetching) {
-          button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
-     } else {
-          button = <button type="submit" className="btn btn-primary">Submit</button>
-     }
+    console.log(`SearchForm#render()****`)
+    console.log(locationBeforeTransitions)
+
+    let query = locationBeforeTransitions.query
+
+    const allWords = query.allWords
+    const exactMatch = query.exactMatch
+    const atLeastOne = query.atLeastOne
+    const noMatch = query.noMatch
+
+    // FIXME: probably better way to do this
+    let button
+    if (isFetching) {
+         button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
+    } else {
+         button = <button type="submit" className="btn btn-primary">Submit</button>
+    }
      
      return (
 
@@ -135,21 +148,21 @@ export class SearchForm extends Component {
         <form onSubmit={this.handleSubmitSearch}>
           <div className="form-group">
             <label>With all these words</label>
-            <input type="text" ref={(ref) => this.allWords = ref} className="form-control"  placeholder="Multiple, Terms, use, Comma"/>
+            <input type="text" ref={(ref) => this.allWords = ref} defaultValue={allWords} className="form-control"  placeholder="Multiple, Terms, Use, Comma"/>
             </div>
           
           <div className="form-group">
             <label>With the exact phrase</label>
-            <input type="text" ref={(ref) => this.exactMatch = ref} className="form-control" placeholder="Exact match"/>
+            <input type="text" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} className="form-control" placeholder="Exact match"/>
           </div>
            <div className="form-group">
             <label>With at least one of these words</label>
-            <input type="text" ref={(ref) => this.atLeastOne = ref} className="form-control"  placeholder="Multiple, Terms, use, Comma" />
+            <input type="text" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} className="form-control"  placeholder="Multiple, Terms, Use, Comma" />
           </div>
 
            <div className="form-group">
             <label>With none of these words</label>
-            <input type="text" ref={(ref) => this.noMatch = ref} className="form-control" placeholder="Multiple, Terms, use, Comma" />
+            <input type="text" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} className="form-control" placeholder="Multiple, Terms, Use, Comma" />
           </div>
                    
           {button}
@@ -173,14 +186,12 @@ import { connect } from 'react-redux'
 // get greeting from query params now that we have routes
 const mapStateToProps = (search, ownProps) => {
   return search
-  /*  
-  return {
-    isFetching: search.isFetching,
-    query: search.query
-  }
-  */
-  //  search
+  // FIXME: this says cannot read "property query of undefined"
+  //return { ...search,
+  //  searchFields: ownProps.location.query
+ //  }
 }
+
 
 export default connect(mapStateToProps)(SearchForm);
 
