@@ -21,7 +21,7 @@ function buildComplexQuery(compoundSearch = {}) {
   // at least one = ( word OR word ..)
   // no match = NOT (word OR word ..)
   //
-  // NOTE: NOT that is alone returns no results
+  // NOTE: "NOT" that is alone returns no results
   //
   // FIXME: this is also used for display to show the user what the search
   // looks like - that may be ill-advised because it's also the actual
@@ -91,57 +91,46 @@ function buildComplexQuery(compoundSearch = {}) {
 
 }
 
-// NOTE: SOLR accepts a JSON POST as a query
-// $ curl http://localhost:8983/solr/query -d '
-//{
-//  query:"hero"
-//}'
-// but I can't
-// seem to get it to work - so defaulting to 
-// building GET with params
-//}'
-
-// NOTE: not using this at the moment
+// NOTE: not using this quite yet, except in one
+// example script
 class SolrResultsParser {
 
 
-   // FIXME: is this really necessary?
+   // FIXME: is this class really necessary?
    // solr results are already an object
+   // just wanted a wrapper cause it's seems obtuse sometimes
    constructor() {
-     //let { highlighting={}, response={} } = results;
-     //let { numFound=0,docs } = response;
-
-     //this.highlighting = highlighting
-     //this.response = response
-     //this.numFound = numFound
-     //this.docs = docs
 
    }
 
    parseResponse(results) {
+    /* 
+       NOTE: a basic solr query will return stuff looking like this:
+
+     results {
+       response": {
+        "numFound": 66,
+        "start": 0,
+        "maxScore": 21.456455,
+        "docs": [{ ... }]
+      },
+      "highlighting": {
+          "vitroIndividual:https://scholars.duke.edu/individual/org50000844": {
+          "ALLTEXT": [...]
+        }
+      }
+    */
+ 
      let { highlighting={}, response={} } = results;
      let { numFound=0,docs } = response;
      
-     // 
      return { numFound: numFound, docs: docs, highlighting: highlighting }
     
-     /* results {
-     response": {
-      "numFound": 66,
-      "start": 0,
-      "maxScore": 21.456455,
-      "docs": [{ ... }]
-    },
-    "highlighting": {
-        "vitroIndividual:https://scholars.duke.edu/individual/org50000844": {
-        "ALLTEXT": [...]
-      }
-    */
    }
 
    parseGroups(grouped) {
 
-   // this is what is received
+   // NOTE: this is what is received
     /*
      grouped": {
         "type:(*Concept)": {
@@ -297,16 +286,6 @@ class SolrQuery {
     return this._query
   }
 
-  //set rows(rows) {
-  //  this._rows = rows
-  //  return this  
-  //}
-
-  //get rows() {
-  //  return this._rows
-  //}
-
-
   set options(options) {
     Object.assign(this._options,options)
     return this
@@ -358,61 +337,10 @@ class SolrQuery {
     }
     // so the hash looks like this now
     // { facet: true, facet.fields: [field1, field2 ...]}
+    // 
+    // see here for more complete example of other thigns 'faceting' can do:
     //
     // http://yonik.com/json-facet-api/
-    //
-    //example:
-    //&facet=true
-    //&facet.range={!key=age_ranges}age
-    //&f.age.facet.range.start=0
-    //&f.age.facet.range.end=100
-    //&f.age.facet.range.gap=10
-    //&facet.range={!key=price_ranges}price
-    //&f.price.facet.range.start=0
-    //&f.price.facet.range.end=1000
-    //&f.price.facet.range.gap=50
-
-
-    // or json
-    /*
-    {
-      age_ranges: {
-        type : range
-        field : age,
-        start : 0,
-        end : 100,
-        gap : 10
-      }
-      ,
-      price_ranges: {
-        type : range
-        field : price,
-        start : 0,
-        end : 1000,
-        gap : 50 
-      }
-    }
-
-    field – The field name to facet over.
-    offset – Used for paging, this skips the first N buckets. Defaults to 0.
-    limit – Limits the number of buckets returned. Defaults to 10.
-    mincount – Only return buckets with a count of at least this number. Defaults to 1.
-    sort – Specifies how to sort the buckets produced. “count” specifies document count, “index” 
-      sorts by the index (natural) order of the bucket value. One can also sort by any facet function / statistic 
-      that occurs in the bucket. The default is “count desc”. This parameter may also be specified in JSON like 
-      sort:{count:desc}. The sort order may either be “asc” or “desc”
-    missing – A boolean that specifies if a special “missing” bucket should be returned that is defined by documents without a value in the field. Defaults to false.
-    numBuckets – A boolean. If true, adds “numBuckets” to the response, an integer representing the number of buckets for the facet (as opposed to the number of buckets returned). Defaults to false.
-    allBuckets – A boolean. If true, adds an “allBuckets” bucket to the response, representing the union of all of the buckets. For multi-valued fields, 
-      this is different than a bucket for all of the documents in the domain since a single document can belong to multiple buckets. Defaults to false.
-    prefix – Only produce buckets for terms starting with the specified prefix.
-    method – Provides an execution hint for how to facet the field.
-      method:uif – Stands for UninvertedField, a method of faceting indexed, multi-valued fields using top-level data structures that optimize for performance over NRT capabilities.
-      method:dv – Stands for DocValues, a method of faceting indexed, multi-valued fields using per-segment data structures. This method mirrors faceting on real 
-        docValues fields but works by building on-heap docValues on the fly from the index when docValues aren’t available. This method is better for a quickly changing index.
-      method:stream – This method creates each individual facet bucket (including any sub-facets) on-the-fly while streaming the response back to the requester. 
-        Currently only supports sorting by index order.    
-   */
 
     facets.forEach(facetField => {
       var facetProperties = this._facetFields[facetField]
@@ -421,18 +349,12 @@ class SolrQuery {
       })
     })
 
-    // example from original person search
+    // example from Jim's original person search
     //}).setFilter("type","classgroup:*people").setFacetField("department_facet_string",{
     //  prefix: "1|",
     //  mincount: "1"
     //})
 
-
-    // it would look like this now:
-    // { facet: true, facet.fields: [field1, field2 ...], f.field1.facet.range.start=0, etc... }
-    // facetFields = {field1: 'facet.range.start
-    //
-    //
     return facetOptions
   }
 
@@ -473,11 +395,12 @@ class SolrQuery {
   }
 
   get queryString() {
-    // FIXME: look into querystring.stringify
+    // NOTE: querystring turns javascript data into queryParams
+    //
     // querystring.stringify({ foo: 'bar', baz: ['qux', 'quux'], corge: '' })
     // returns 'foo=bar&baz=qux&baz=quux&corge='
 
-    // e.g. making a big {} - the keys being
+    // e.g. making a big hash {} - the keys being
     // [q, rows, start etc..., fq,   
     var queryOptions = Object.assign({q: this.query},
         this.options,

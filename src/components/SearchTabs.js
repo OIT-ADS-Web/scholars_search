@@ -189,7 +189,7 @@ class SearchTabs extends Component {
      //"http://purl.org/ontology/bibo/Journal",
      //"http://purl.org/ontology/bibo/Periodical"
 
-    // FIXME: break out tabs into it's own component?
+    // FIXME: break out tab into it's own component?
 
     return (
         <ul className="nav nav-pills">
