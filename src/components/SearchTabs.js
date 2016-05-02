@@ -19,7 +19,8 @@ class SearchTabs extends Component {
   static get contextTypes() {
     return({
         router: PropTypes.object
-    })
+        //router: PropTypes.object.isRequired
+     })
   }
 
   constructor(props, context) {
@@ -44,15 +45,13 @@ class SearchTabs extends Component {
     // FIXME: this seems wrong to me
     dispatch(actions.resetPage());
 
-    searchFields['start'] = 0 
-
-    searchFields['filter'] = filter
+    const query  = {...searchFields, start: 0, filter: filter }
 
     this.context.router.push({
       pathname: '/',
-      query: searchFields
+      query: query
     })
-   
+
  
   }
 
@@ -88,6 +87,11 @@ class SearchTabs extends Component {
     dispatch(actions.filterSearch("organizations"));
     dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
     this.resetPage(dispatch, searchFields, "organizations")  
+  
+    //console.log("handleOrganizationTab")
+    //console.log(this.props)
+    //console.log(this.context)
+
   }
 
   handleGrantsTab(e) {

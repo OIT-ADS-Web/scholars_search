@@ -16,7 +16,8 @@ class PagingPanel extends Component {
   // so they go into state
   static get contextTypes() {
     return({
-        router: PropTypes.object
+        //router: PropTypes.object
+      router: PropTypes.object.isRequired
     })
   }
 
@@ -28,31 +29,38 @@ class PagingPanel extends Component {
   }
 
 
+  componentDidMount () {
+    console.log("PagingPanel#componentDidMount()")
+    console.log(this.props)
+  } 
+
   handleNextPage(e) {
-    // FIXME: right now this is NOT taking into account tabs
-    //
     e.preventDefault()
 
     if (e.currentTarget.className == 'disabled') {
        return false
     }  
-     
+
     const { search : { searchFields, start, filter }, dispatch } = this.props
+
+    console.log("PagingPanel#handleNextPage")
     
     dispatch(actions.nextPage())
     
     // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
+    // but I had to add it here to make it work
+    // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     //
-
     let newStart = start + PAGE_ROWS
 
-    searchFields['start'] =  newStart
+    const query = { ...searchFields, start: newStart }
 
     this.context.router.push({
       pathname: '/',
-      query: searchFields
+      query: query
 
     })
+      
 
     dispatch(actions.fetchSearch(searchFields, newStart, filter))
   }
@@ -70,14 +78,17 @@ class PagingPanel extends Component {
 
     let newStart = start - PAGE_ROWS 
     // FIXME: seems like actions.previousPage() would take care of this    
-    searchFields['start'] = newStart
+    
+    console.log(this.props)
+    
+    const query = { ...searchFields, start: newStart }
 
     this.context.router.push({
       pathname: '/',
-      query: searchFields
+      query: query
 
     })
-
+ 
 
     // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
     // but otherwise it uses the the start from const { search : { start ...
@@ -181,7 +192,7 @@ class PagingPanel extends Component {
 // FIXME: this is just returning the same state
 // seems like no point in that, but otherwise says
 // no property 'results' etc...
-const mapStateToProps = (search) => {
+const mapStateToProps = (search, ownProps) => {
   return  search;
 }
 

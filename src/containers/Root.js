@@ -27,32 +27,16 @@ const browserHistory = useRouterHistory(createHistory)({
 
 const history = syncHistoryWithStore(browserHistory, store)
 
-  /*
-  match({ routes, location:req.url }, (err, redirect, renderProps) => {
-  load(renderProps.components, renderProps.params);
-
-  // at this point, the `load` function has been called on
-  // those components matched by `match` that were decorated with `onload`
-  });
-
-  */
-
 // http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
 // https://github.com/reactjs/react-router/blob/master/docs/guides/RouteConfiguration.md#decoupling-the-ui-from-the-url
 
 import routes from '../routes'
 
 /*
-const routes = 
-  <Route path="/" component={App} >
-    <IndexRoute component={ScholarsSearchApp}/>
-    <Route path="/scholars_search/" component={ScholarsSearchApp} >
-      <Route path="people/" component={PersonSearchApp} />
-    </Route>
-</Route>;
-*/
-
-/*
+ *
+ * FIXME: Another way to make routes??
+ *
+ *
 const CourseRoute = {
   path: 'course/:courseId',
 
@@ -84,8 +68,6 @@ const CourseRoute = {
 // https://github.com/newtriks/generator-react-webpack/issues/141
 https://github.com/emmenko/redux-react-router-async-example/blob/master/package.json
 
-
-"dist": "npm run clean && npm run lint && NODE_ENV=production webpack --config webpack.config.production.js",
 
 */
 

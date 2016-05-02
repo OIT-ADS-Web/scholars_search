@@ -72,7 +72,7 @@ import { SET_FILTER } from '../actions/search'
 //
 function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: null}, action) {
   switch (action.type) {
-  
+
   case REQUEST_SEARCH:
     return { ...search, 
       isFetching: true,
@@ -105,29 +105,6 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0, filt
     return search;
   }
 }
-
-//
-//const CHANGE_SELECTED_TAB = 'CHANGE_SELECTED_TAB';
-//
-//function changeSelectedTab(selectedTab, tabNamespace) {
-//    return {
-//        type: CHANGE_SELECTED_TAB,
-//        tab: selectedTab,
-//        namespace: tabNamespace
-//    };
-//}
-
-// function tabReducer(state, action) {
-//
-// switch(action.type) {
-//   case SWITCH_TAB_START:
-//     return { ...state, tab: null}
-//   case SWITCH_TAB_END:
-//     return { ...state, tab: action.tab}
-//   default:
-//     return ...
-//  }
-// }
 
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'

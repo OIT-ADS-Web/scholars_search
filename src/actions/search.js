@@ -130,31 +130,7 @@ function appInit() {
   }
 }
 
-/*
- 
-  this was in the original component, so like need some stuff
-  like this to appear in 'state' as some point
-
- 
- 
-      this.state = {
-      query: "",
-      departments: [],
-      organizations: [],
-      searchResult: {
-        response: {
-          highlighting: {},
-          docs: []
-        },
-        facet_counts: {
-          facet_fields: {
-            department_facet_string: []
-          }
-        }
-      }
- 
-*/
-/* add filter agrument here? 
+/* FIXME: add filter agrument here? 
  *
  */
 

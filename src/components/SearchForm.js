@@ -1,4 +1,7 @@
 import React, { Component, PropTypes } from 'react'
+
+import ReactDOM from 'react-dom'
+
 import actions from '../actions/search'
 
 //require('../styles/forms.less');
@@ -41,14 +44,10 @@ export class SearchForm extends Component {
   }
 
   componentDidMount () {
-    //this.context.redux.getState()
-    //if (this.context.router.query) {
-    // NOTE: this.context.router.query is undefined here
-    //
     console.log(`SearchForm#componentDidMount() query from routes=${this.context.router.query}`)
-    //}
     console.log(this.context.router)
-    // maybe it should go in APP_INIT
+    
+    console.log(this.props)
 
   }
 
@@ -73,12 +72,14 @@ export class SearchForm extends Component {
     // then add to term + update UI
     // could also just add as event handler
     // to allWords ...
+    // default filter to 'person' ?
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
        'atLeastOne': atLeastOne.value,
        'noMatch': noMatch.value,
-       'start': start
+       'start': start,
+       'filter': 'person'
      }
 
     /*
@@ -127,12 +128,16 @@ export class SearchForm extends Component {
     console.log(`SearchForm#render()****`)
     console.log(locationBeforeTransitions)
 
+    // FIXME: this seems way wrong
     let query = locationBeforeTransitions.query
 
     const allWords = query.allWords
     const exactMatch = query.exactMatch
     const atLeastOne = query.atLeastOne
     const noMatch = query.noMatch
+
+    // if something is defined here - run the search ???
+    //
 
     // FIXME: probably better way to do this
     let button
