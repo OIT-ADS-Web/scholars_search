@@ -1,4 +1,8 @@
 import React, { Component, PropTypes } from 'react'
+//var _ = require('lodash');
+// FIXME: should just import function used
+import _ from 'lodash'
+
 import Page from '../layouts/page'
 
 import SearchForm from '../components/SearchForm'
@@ -32,8 +36,10 @@ export class ScholarsSearchApp extends Component {
 
     // FIXME: not sure if this is a good place for this
     dispatch(actions.appInit())
-    
-    if (query) {
+
+    // NOTE: was searching if no query parameters in route path, just searching everything
+    if (!_.isEmpty(query)) {
+
       let start = query['start']
       dispatch(actions.fetchSearch(query, start))
       dispatch(actions.fetchTabCounts(query))

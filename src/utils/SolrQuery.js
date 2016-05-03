@@ -1,6 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
-var _ = require('lodash');
+//var _ = require('lodash');
+// FIXME: could just import functions used
+import _ from 'lodash'
+
 
 import querystring from 'querystring'
 

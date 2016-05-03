@@ -70,9 +70,11 @@ function previousPage() {
   }
 }
 
+// ?
 function resetPage() {
   return {
-    type: RESET_PAGE
+    type: RESET_PAGE,
+    start: 0
   }
 }
 
@@ -83,7 +85,7 @@ function filterSearch(filter) {
 }
 
 function resetFilter() {
-  return { type: SET_FILTER, filter: null }
+  return { type: SET_FILTER, filter: 'person' }
 }
 
 

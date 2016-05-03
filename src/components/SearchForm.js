@@ -24,7 +24,7 @@ export class SearchForm extends Component {
   handleSubmitSearch(e) {
     e.preventDefault();
     
-    const { search : { start }, dispatch } = this.props;
+    const { search : { start, filter }, dispatch } = this.props;
  
     const allWords = this.allWords
     const exactMatch = this.exactMatch
@@ -44,13 +44,18 @@ export class SearchForm extends Component {
     // to allWords ...
     // default filter to 'person' ?
     //
+    //
+    // NOTE: having problems with 'start' - setting
+    // it to 0 here
+    //
+    // not sure what to do with filter
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
        'atLeastOne': atLeastOne.value,
        'noMatch': noMatch.value,
-       'start': start,
-       'filter': 'person'
+       'start': 0,
+       'filter': filter
      }
 
     /*
@@ -64,14 +69,24 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-    dispatch(actions.resetPage())
-    
-    // reset filter? to person --
-    dispatch(actions.resetFilter())
-
+    // reset filter? to person? -- since it calls
+    //
+    //dispatch(actions.resetFilter())
+    //
     dispatch(actions.fetchTabCounts(compoundSearch))
-    dispatch(actions.fetchSearch(compoundSearch, start))
+    dispatch(actions.fetchSearch(compoundSearch, 0, filter))
 
+    // NOTE: was having problems with resetting page - so 
+    // defaulted to setting start to 0 in function
+    // calls - but I was getting [ page 2 of 0] if I didn't do this
+    //
+    dispatch(actions.resetPage())
+
+    // FIXME: ??? is this what should be happening
+    // or should filter be 'sticky'
+    //dispatch(actions.filterSearch('person'))
+    dispatch(actions.filterSearch(filter))
+ 
   }
 
   render() {
