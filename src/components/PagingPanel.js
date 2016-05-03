@@ -7,16 +7,14 @@ import classNames from 'classnames'
 
 import actions from '../actions/search'
 
-// NOTE: props are sent to components
 class PagingPanel extends Component {
 
-
-  // FIXME: don't necessarily like this down at SearchForm
+  // FIXME: don't necessarily like this down at Paging 
   // level just to get at router and add values to router
   // so they go into state
   static get contextTypes() {
     return({
-        //router: PropTypes.object
+      //router: PropTypes.object
       router: PropTypes.object.isRequired
     })
   }
@@ -28,12 +26,6 @@ class PagingPanel extends Component {
     this.handlePreviousPage = this.handlePreviousPage.bind(this)
   }
 
-
-  componentDidMount () {
-    console.log("PagingPanel#componentDidMount()")
-    console.log(this.props)
-  } 
-
   handleNextPage(e) {
     e.preventDefault()
 
@@ -43,8 +35,6 @@ class PagingPanel extends Component {
 
     const { search : { searchFields, start, filter }, dispatch } = this.props
 
-    console.log("PagingPanel#handleNextPage")
-    
     dispatch(actions.nextPage())
     
     // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
@@ -79,8 +69,6 @@ class PagingPanel extends Component {
     let newStart = start - PAGE_ROWS 
     // FIXME: seems like actions.previousPage() would take care of this    
     
-    console.log(this.props)
-    
     const query = { ...searchFields, start: newStart }
 
     this.context.router.push({
@@ -89,7 +77,6 @@ class PagingPanel extends Component {
 
     })
  
-
     // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
     // but otherwise it uses the the start from const { search : { start ...
     // which is still what it was when the method was called (not updated)
@@ -98,15 +85,9 @@ class PagingPanel extends Component {
   }
 
   render() {
-    //const { search : {filter} } = this.props
-
-    //
     // so start should be coming from search object (state)
     const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
 
-    // FIXME: paging does not work when form is purely initialized from query parameters
-    // because searchFields is undefined
-    //
     let { highlighting={}, response={} } = results
     let { numFound=0,docs } = response
     
@@ -126,12 +107,8 @@ class PagingPanel extends Component {
       totalPages +=1
     }
 
-    //const totalPages = numFound / PAGE_ROWS 
-    console.log(`pages=${totalPages}`)
     const currentPage = Math.floor(start/PAGE_ROWS) + 1
    
-    console.log(`currentPage=${currentPage}`) 
-
     const paging = (next, prev) => {
       const nextClasses = classNames({disabled: !next})     
       const prevClasses = classNames({disabled: !prev})     
@@ -176,8 +153,6 @@ class PagingPanel extends Component {
       next = false
       previous = false
     }
-
-    console.log(`next=${next}, prev=${previous}`)
 
     const page = paging(next, previous)
 

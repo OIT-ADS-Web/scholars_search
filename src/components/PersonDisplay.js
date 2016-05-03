@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+// needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
 
-
-// Person = struct of some sort???
-// 
-//
-// NOTE: props are sent to components
 class PersonDisplay extends Component {
 
   constructor(props) {
@@ -22,13 +18,6 @@ class PersonDisplay extends Component {
 
   get name() {
     return this.doc.nameRaw[0]
-
-    //return ""
-    //if (this.doc.ts_duke_header_hero_name) {
-    //  return this.f(this.doc.ts_duke_header_hero_name);
-    //}
-    //return this.f(this.doc.ts_duke_goes_by_name);
-    // return this.f(`${this.doc.ts_duke_header_hero_name} // ${this.doc.ts_duke_goes_by_name}`);
   }
 
   get preferredTitle() {
@@ -68,7 +57,6 @@ class PersonDisplay extends Component {
       picture = <img className="profile-thumbnail"></img>
     }
 
-    // FIXME: there are some pitfalls to having disembodied <tr> tables built up
     return (
          <div className="person search-result-row" key="{this.docId}">
             <div className="row">
@@ -93,7 +81,7 @@ class PersonDisplay extends Component {
           </div>
       </div>
 
-    );
+    )
   }
 
 }

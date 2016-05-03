@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import classNames from 'classnames'
 
 import actions from '../actions/search'
@@ -7,44 +7,41 @@ import actions from '../actions/search'
 // FIXME: we don't want to do the actual SolrQuery here,
 // so this should be something more like
 // import solr from '../SolrConfig' e.g. site specific
-// utils and such
+// utils and such - in this case filter list
 import solr from '../utils/SolrQuery'
 
-// NOTE: props are sent to components
 class SearchTabs extends Component {
 
-  // FIXME: don't necessarily like this down at SearchForm
-  // level just to get at router and add values to router
-  // so they go into state
   static get contextTypes() {
     return({
         router: PropTypes.object
-        //router: PropTypes.object.isRequired
      })
   }
 
   constructor(props, context) {
-    super(props, context);
-    
-    this.handlePersonTab = this.handlePersonTab.bind(this);
-    this.handlePublicationsTab = this.handlePublicationsTab.bind(this);
-    this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this);
+    super(props, context)
 
-    this.handleGrantsTab = this.handleGrantsTab.bind(this);
-    this.handleCoursesTab = this.handleCoursesTab.bind(this);
-    this.handleArtisticWorksTab = this.handleArtisticWorksTab.bind(this);
-    this.handleSubjectHeadingsTab = this.handleSubjectHeadingsTab.bind(this);
+    // FIXME: should not have 7 separate methods etc...
+    // just roll it all up into one (at some point)    
+    this.handlePersonTab = this.handlePersonTab.bind(this)
+    this.handlePublicationsTab = this.handlePublicationsTab.bind(this)
+    this.handleOrganizationsTab = this.handleOrganizationsTab.bind(this)
 
-    this.handleMiscTab = this.handleMiscTab.bind(this);
+    this.handleGrantsTab = this.handleGrantsTab.bind(this)
+    this.handleCoursesTab = this.handleCoursesTab.bind(this)
+    this.handleArtisticWorksTab = this.handleArtisticWorksTab.bind(this)
+    this.handleSubjectHeadingsTab = this.handleSubjectHeadingsTab.bind(this)
+
+    this.handleMiscTab = this.handleMiscTab.bind(this)
 
 
   }
 
   resetPage(dispatch, searchFields, filter) {
+    dispatch(actions.resetPage())
 
-    // FIXME: this seems wrong to me
-    dispatch(actions.resetPage());
-
+    // NOTE: took me a while to figure out I couldn't just pass
+    // searchFields as {query: searchFields} had to copy it
     const query  = {...searchFields, start: 0, filter: filter }
 
     this.context.router.push({
@@ -59,92 +56,84 @@ class SearchTabs extends Component {
   // handleTab() --
   handlePersonTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    // FIXME: don't really like this 
-    dispatch(actions.filterSearch("person"));
+    dispatch(actions.filterSearch("person"))
     // can we do this here?
-    dispatch(actions.fetchSearch(searchFields, 0, "person"));
+    dispatch(actions.fetchSearch(searchFields, 0, "person"))
 
     this.resetPage(dispatch, searchFields, "person")  
   }
   
   handlePublicationsTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
     // FIXME: no point in this - just repeating right after
-    dispatch(actions.filterSearch("publications"));
-    dispatch(actions.fetchSearch(searchFields, 0, "publications"));
+    dispatch(actions.filterSearch("publications"))
+    dispatch(actions.fetchSearch(searchFields, 0, "publications"))
     
     this.resetPage(dispatch, searchFields, "publications")  
   }
 
   handleOrganizationsTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("organizations"));
-    dispatch(actions.fetchSearch(searchFields, 0, "organizations"));
+    dispatch(actions.filterSearch("organizations"))
+    dispatch(actions.fetchSearch(searchFields, 0, "organizations"))
     this.resetPage(dispatch, searchFields, "organizations")  
   
-    //console.log("handleOrganizationTab")
-    //console.log(this.props)
-    //console.log(this.context)
-
   }
 
   handleGrantsTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("grants"));
-    dispatch(actions.fetchSearch(searchFields, 0, "grants"));
+    dispatch(actions.filterSearch("grants"))
+    dispatch(actions.fetchSearch(searchFields, 0, "grants"))
     this.resetPage(dispatch, searchFields, "grants")  
   }
   
   handleCoursesTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("courses"));
-    dispatch(actions.fetchSearch(searchFields, 0, "courses"));
+    dispatch(actions.filterSearch("courses"))
+    dispatch(actions.fetchSearch(searchFields, 0, "courses"))
     this.resetPage(dispatch, searchFields, "courses")  
   }
 
   handleArtisticWorksTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("artisticworks"));
-    dispatch(actions.fetchSearch(searchFields, 0, "artisticworks"));
+    dispatch(actions.filterSearch("artisticworks"))
+    dispatch(actions.fetchSearch(searchFields, 0, "artisticworks"))
     this.resetPage(dispatch, searchFields, "artisticworks")  
   }
   
   handleSubjectHeadingsTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("subjectheadings"));
-    dispatch(actions.fetchSearch(searchFields, 0, "subjectheadings"));
+    dispatch(actions.filterSearch("subjectheadings"))
+    dispatch(actions.fetchSearch(searchFields, 0, "subjectheadings"))
     this.resetPage(dispatch, searchFields, "subjectheadings")  
   }
 
   handleMiscTab(e) {
     e.preventDefault()
-    const { search : { results, searchFields, start, filter }, dispatch } = this.props;
+    const { search : { results, searchFields, start, filter }, dispatch } = this.props
 
-    dispatch(actions.filterSearch("misc"));
-    dispatch(actions.fetchSearch(searchFields, 0, "misc"));
+    dispatch(actions.filterSearch("misc"))
+    dispatch(actions.fetchSearch(searchFields, 0, "misc"))
     this.resetPage(dispatch, searchFields, "misc")  
   }
   
   render() {
      const { search : {filter} } = this.props
 
-     // filter ???
-     //     dispatch(actions.filterSearch("publications"));
- 
      const { tabs : {grouped} } = this.props
 
      const namedFilters = solr.nameFilters
@@ -190,10 +179,7 @@ class SearchTabs extends Component {
      let miscCount = miscKey in grouped ? grouped[miscKey].doclist.numFound: 0
 
 
-     //"http://purl.org/ontology/bibo/Journal",
-     //"http://purl.org/ontology/bibo/Periodical"
-
-    // FIXME: break out tab into it's own component?
+    // FIXME: break out each tab into it's own component?
 
     return (
         <ul className="nav nav-pills">
@@ -214,18 +200,10 @@ class SearchTabs extends Component {
 
 }
 
-// FIXME: this is just returning the same state
-// seems like no point in that, but otherwise says
-// no property 'results' etc...
 const mapStateToProps = (tabs, ownProps) => {
-//const mapStateToProps = (tabs) => {
-  return  tabs;
+  return  tabs
 }
 
-// NOTE: doesn't seem to ever call unless I connect ...
-//export default SearchResults
 
-export default connect(mapStateToProps)(SearchTabs);
+export default connect(mapStateToProps)(SearchTabs)
 
-// this doesn't seem to pass along state either
-//export default connect()(SearchResults);

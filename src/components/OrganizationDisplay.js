@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// NOTE: props are sent to components
 class OrganizationDisplay extends Component {
 
   constructor(props) {

@@ -92,16 +92,19 @@ function buildComplexQuery(compoundSearch = {}) {
 }
 
 // NOTE: not using this quite yet, except in one
-// example script
+// example script, but the general idea is to allow the UI
+// code to not have to know internals of Solr, like
+// highlighting, doc.DocId, ALLTEXT etc...
 class SolrResultsParser {
 
-
-   // FIXME: is this class really necessary?
-   // solr results are already an object
-   // just wanted a wrapper cause it's seems obtuse sometimes
+  // FIXME: if a constructor falls in the forest but noone hears
+  // it, does it exist?  i.e. what does javascript do with
+  // empty constructors?
+  /*
    constructor() {
 
    }
+  */
 
    parseResponse(results) {
     /* 
@@ -167,9 +170,10 @@ class SolrResultsParser {
 
 
 // these correspond to tabs
-// tabs should be: 
-// [People][Publications][Artistic Works][Grants][Subject Headings]
-// might need a misc - type NOT (*Articisic OR *Publication etc...)
+//
+// The tabs are these (at the moment):
+//
+// [People][Publications][Artistic Works][Grants][Subject Headings][Misc]
 //
 export const namedFilters = {
   type: {
@@ -185,6 +189,7 @@ export const namedFilters = {
 }
 
 
+// just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, start, rows, filter) {
 
   searcher.options = {
@@ -208,14 +213,11 @@ function setupDefaultSearch(searcher, start, rows, filter) {
   return searcher
 }
 
+// another helper to avoid boilerplate
 function setupTabGroups(searcher) {
   // take a SolrQuery object and set up for tabs
   // this is stop-gap until I think of a better way
   // 
-  // tabs should be these: 
-  //
-  // [People][Publications][Artistic Works][Grants][Subject Headings] ??? + [Courses][Misc]
-  //
   // have to set group = true
   searcher.options = {
     wt: "json",
@@ -238,9 +240,6 @@ function setupTabGroups(searcher) {
 }
 
 export { setupTabGroups, setupDefaultSearch }
-
-
-// export const PAGE_ROWS   = 50;
 
 class SolrQuery {
  
@@ -326,7 +325,8 @@ class SolrQuery {
     // NOTE: facet queries build up like this: 
     // f.<fieldName>.<FacetParam>=<value>
     // https://wiki.apache.org/solr/SimpleFacetParameters
-    //
+    // 
+    // am not actually using quite yet
     var facetOptions = {}
     var facets = Object.keys(this._facetFields)
     if (facets.length > 0) {
@@ -440,5 +440,6 @@ class SolrQuery {
 }
 
 export default { SolrQuery, buildComplexQuery, namedFilters, SolrResultsParser }
-// FIXME: could make default = SolrQuerh, then export others
+// FIXME: could make default = SolrQuery, then export others
+// just makes importing a little easier
 

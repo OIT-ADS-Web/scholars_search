@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// NOTE: props are sent to components
 class PublicationDisplay extends Component {
 
   constructor(props) {
@@ -16,13 +15,6 @@ class PublicationDisplay extends Component {
 
   get name() {
     return this.doc.nameRaw[0]
-
-    //return ""
-    //if (this.doc.ts_duke_header_hero_name) {
-    //  return this.f(this.doc.ts_duke_header_hero_name);
-    //}
-    //return this.f(this.doc.ts_duke_goes_by_name);
-    // return this.f(`${this.doc.ts_duke_header_hero_name} // ${this.doc.ts_duke_goes_by_name}`);
   }
 
   get preferredTitle() {
@@ -58,7 +50,7 @@ class PublicationDisplay extends Component {
             </div>
          
          </div>
-    );
+    )
   }
 
 }

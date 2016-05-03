@@ -1,12 +1,12 @@
 import fetch from 'isomorphic-fetch'
 
-export const REQUEST_SEARCH  = 'REQUEST_SEARCH';
-export const RECEIVE_SEARCH  = 'RECEIVE_SEARCH';
-export const NEXT_PAGE       = 'NEXT_PAGE';
-export const RESET_PAGE      = 'RESET_PAGE';
-export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE';
+export const REQUEST_SEARCH  = 'REQUEST_SEARCH'
+export const RECEIVE_SEARCH  = 'RECEIVE_SEARCH'
+export const NEXT_PAGE       = 'NEXT_PAGE'
+export const RESET_PAGE      = 'RESET_PAGE'
+export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE'
 
-export const PAGE_ROWS   = 50;
+export const PAGE_ROWS   = 50
 
 import solr from '../utils/SolrQuery'
 
@@ -121,7 +121,7 @@ function appInit() {
 
   return dispatch => {
 
-    dispatch(appInitBegin());
+    dispatch(appInitBegin())
 
     return fetch(org_url)
       .then(r => r.json())
@@ -129,10 +129,6 @@ function appInit() {
  
   }
 }
-
-/* FIXME: add filter agrument here? 
- *
- */
 
 function fetchTabCounts(compoundSearch) {
   const solr_url = process.env.SOLR_URL
@@ -143,7 +139,7 @@ function fetchTabCounts(compoundSearch) {
 
   return dispatch => {
 
-    dispatch(requestTabCount(compoundSearch));
+    dispatch(requestTabCount(compoundSearch))
 
     searcher.search = compoundSearch
 
@@ -156,13 +152,14 @@ function fetchTabCounts(compoundSearch) {
 }
 
 // FIXME: don't like how filter='person' cause you have to know the
-// precise tab list key to put there
+// precise tab list key to put in there, maybe fine though
 function fetchSearch(compoundSearch, start=0, filter='person') {
   const solr_url = process.env.SOLR_URL
   
   // NOTE: recreate SolrQuery object every time there is a
   // search?? should probably be a global object - in the
   // store?   that way we set facets on it etc...
+  // for now it's fine
   //
   // FIXME: add start parameter
   let searcher = new solr.SolrQuery(solr_url)
@@ -172,7 +169,7 @@ function fetchSearch(compoundSearch, start=0, filter='person') {
   return dispatch => {
 
     // NOTE: this is sort of like a flag saying "search has kicked off" 
-    dispatch(requestSearch(compoundSearch));
+    dispatch(requestSearch(compoundSearch))
 
     searcher.search = compoundSearch
 

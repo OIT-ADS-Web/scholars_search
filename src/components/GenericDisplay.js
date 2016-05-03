@@ -26,12 +26,7 @@ class GenericDisplay extends Component {
 
   // get Types() {
   // FIXME: types can look like this...
-  // maybe we should list them?  Or have images to represent them,
-  // or take the topmost? or ??? just mostSpecificType --
-  //
-  // "mostSpecificTypeURIs": [ "http://vivoweb.org/ontology/core#Program" ],
-  /* 
-   * "type": [
+  /* "type": [
       "http://xmlns.com/foaf/0.1/Agent",
       "http://purl.obolibrary.org/obo/BFO_0000002",
       "http://purl.obolibrary.org/obo/BFO_0000001",
@@ -40,6 +35,10 @@ class GenericDisplay extends Component {
       "http://vivoweb.org/ontology/core#Program"
     ],
   */
+  // maybe we should list them?  Or have images to represent them,
+  // or take the topmost? or ??? just mostSpecificType --
+  // 
+  // "mostSpecificTypeURIs": [ "http://vivoweb.org/ontology/core#Program" ],
   //
   //}
 
