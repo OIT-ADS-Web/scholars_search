@@ -4,12 +4,6 @@ import classNames from 'classnames'
 
 import actions from '../actions/search'
 
-// FIXME: we don't want to do the actual SolrQuery here,
-// so this should be something more like
-// import solr from '../SolrConfig' e.g. site specific
-// utils and such - in this case filter list
-import solr from '../utils/SolrQuery'
-
 class SearchTab extends Component {
 
   // this is necessary to get the router
@@ -30,7 +24,6 @@ class SearchTab extends Component {
     this.handleTab = this.handleTab.bind(this)
   
   }
-
 
   handleTab(e) {
     e.preventDefault()
@@ -54,7 +47,7 @@ class SearchTab extends Component {
   }
 
   render() {
-     let classList = classNames({active: this.active})
+    let classList = classNames({active: this.active})
       
     return (
        <li className={classList}><a href="#" onClick={this.handleTab}>{this.label} ({this.count})</a></li>

@@ -24,11 +24,10 @@ class SearchTabs extends Component {
      const { search : {filter} } = this.props
      const { tabs : {grouped, isFetching } } = this.props
 
-     const filterConfig = solr.filterConfig
+     const tabList = solr.tabList
 
-     // FIXME: is iteration order preserved? seems to be
-     // but I don't know why
-     let tabs = _.map(filterConfig, (value, key) => {
+     // NOTE: made it into an array so order would be preserved
+     let tabs = _.map(tabList, (tab) => {
       
       // if we're still fetching - there will be nothing in 'grouped' to pull counts from
       if (isFetching) {
@@ -36,9 +35,9 @@ class SearchTabs extends Component {
       }
 
       // get the count - default to 0 just in case something wrong
-      let count = value.filter in grouped ? grouped[value.filter].doclist.numFound : 0
-      let label = value.label
-      return <SearchTab key={key} filter={key} active={filter == key} label={label} count={count}/>
+      let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      let label = tab.label
+      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count}/>
 
     })
 
