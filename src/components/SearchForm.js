@@ -69,24 +69,20 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-    // reset filter? to person? -- since it calls
-    //
     //dispatch(actions.resetFilter())
-    //
+
     dispatch(actions.fetchTabCounts(compoundSearch))
     dispatch(actions.fetchSearch(compoundSearch, 0, filter))
 
-    // NOTE: was having problems with resetting page - so 
+    // NOTE: was having problems with reseting page - so 
     // defaulted to setting start to 0 in function
     // calls - but I was getting [ page 2 of 0] if I didn't do this
     //
     dispatch(actions.resetPage())
-
-    // FIXME: ??? is this what should be happening
-    // or should filter be 'sticky'
-    //dispatch(actions.filterSearch('person'))
     dispatch(actions.filterSearch(filter))
- 
+    //dispatch(actions.resetFilter())
+
+
   }
 
   render() {

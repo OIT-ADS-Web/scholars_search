@@ -41,7 +41,9 @@ export class ScholarsSearchApp extends Component {
     if (!_.isEmpty(query)) {
 
       let start = query['start']
-      dispatch(actions.fetchSearch(query, start))
+      // NOTE: seems to be necessary to fetchSearch(... filter) with filter specified
+      // but also filterSearch(filter) -- probably doing something wrong
+      dispatch(actions.fetchSearch(query, start, query['filter'] || 'person'))
       dispatch(actions.fetchTabCounts(query))
       
       // FIXME: how to initialize tab? this sort of works
@@ -54,7 +56,7 @@ export class ScholarsSearchApp extends Component {
  }
 
   render() {
-    // FIXME: nonoe of these 'props' are used, why get them?
+    // FIXME: none of these props are used, why get them?
     const { search : { searchFields }, dispatch } = this.props;
 
     return (

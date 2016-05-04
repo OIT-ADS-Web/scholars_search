@@ -107,6 +107,10 @@ class PagingPanel extends Component {
       totalPages +=1
     }
 
+    if (totalPages == 0) {
+      return ( <div></div> )
+    }
+
     const currentPage = Math.floor(start/PAGE_ROWS) + 1
    
     const paging = (next, prev) => {
