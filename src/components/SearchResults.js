@@ -76,16 +76,16 @@ class SearchResults extends Component {
           
           switch(filter) {
             case 'person':
-              return <PersonDisplay key={doc.path} doc={doc} display={display}/> 
+              return <PersonDisplay key={doc.DocId} doc={doc} display={display}/> 
               break
             case 'publications':
-              return <PublicationDisplay key={doc.path} doc={doc} display={display}/> 
+              return <PublicationDisplay key={doc.DocId} doc={doc} display={display}/> 
               break
             case 'organizations':  
-              return <OrganizationDisplay key={doc.path} doc={doc} display={display}/> 
+              return <OrganizationDisplay key={doc.DocId} doc={doc} display={display}/> 
               break
             default:  
-              return <GenericDisplay key={doc.path} doc={doc} display={display}/> 
+              return <GenericDisplay key={doc.DocId} doc={doc} display={display}/> 
           }
       })
     }

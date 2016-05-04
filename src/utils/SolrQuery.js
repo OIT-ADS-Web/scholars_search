@@ -156,7 +156,7 @@ class SolrResultsParser {
       * }
       *
       *  with "type:(*Concept)" leading easily to label: "Subject Headings"
-      *  etc...
+      *  etc... (see filterConfig)
       */
 
       //let { doclist={} } = grouped;
@@ -177,20 +177,22 @@ class SolrResultsParser {
 // The tabs are these (at the moment):
 //
 // [People][Publications][Artistic Works][Grants][Subject Headings][Misc]
+// disadvantage of this structure - ORDER is possibly random, I'm not sure
 //
-export const namedFilters = {
-  type: {
-    person: "type:(*Person)",
-    publications: "type:(*AcademicArticle)",
-    organizations: "type:(*Organization)",
-    grants: "type:(*Grant)",
-    courses: "type:(*Course)",
-    artisticworks: "type:(*ArtisticWork)",
-    subjectheadings: "type:(*Concept)",
-    misc: "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))"
+// FIXME: could put in array to assure order
+export const filterConfig = {
+  person: { filter: "type:(*Person)", label: "People" },
+  publications: { filter: "type:(*AcademicArticle)", label: "Publications" },
+  organizations: { filter: "type:(*Organization)", label: "Organizations" }, 
+  grants: { filter: "type:(*Grant)", label: "Grants" }, 
+  courses: { filter: "type:(*Course)", label: "Courses" },
+  artisticworks: { filter: "type:(*ArtisticWork)", label: "Artistic Works" },
+  subjectheadings: { filter: "type:(*Concept)", label: "Subject Headings" },
+  misc: { filter: "type:(NOT((*Person) OR (*AcademicArticle) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
+   label: "Misc"
   }
 }
-
+ 
 
 // just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, start, rows, filter) {
@@ -208,9 +210,10 @@ function setupDefaultSearch(searcher, start, rows, filter) {
   // we re-create searcher object every time
   // 
   if (filter) {
-    const typeFilters = namedFilters["type"]
-    const foundFilter = typeFilters[filter]
-    searcher.addFilter("type", foundFilter)
+    // could be other kinds of filters (that's why I did 'type')
+    
+    const foundFilter = filterConfig[filter]
+    searcher.addFilter("type", foundFilter.filter)
   }
 
   return searcher
@@ -231,11 +234,11 @@ function setupTabGroups(searcher) {
   // e.g.
   // it's doing something like this...
   //
-  // searcher.addGroupQuery("type-subject-heading", "type:(*Concept)")
+  // searcher.addGroupQuery("type-subjectheading", "type:(*Concept)")
   // searcher.addGroupQuery("type-publication", "type:(*Publication)")
   // etc...
-  _.forEach(namedFilters['type'], function(value, key) {
-    searcher.addGroupQuery("type-"+key, value)
+  _.forEach(filterConfig, function(value, key) {
+    searcher.addGroupQuery("type-"+key, value.filter)
   })
 
   return searcher
@@ -442,7 +445,7 @@ class SolrQuery {
   
 }
 
-export default { SolrQuery, buildComplexQuery, namedFilters, SolrResultsParser }
+export default { SolrQuery, buildComplexQuery, SolrResultsParser, filterConfig }
 // FIXME: could make default = SolrQuery, then export others
 // just makes importing a little easier
 
