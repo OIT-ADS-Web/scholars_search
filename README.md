@@ -28,15 +28,14 @@ Navigate to:
   Because of "No 'Access-Control-Allow-Origin' header" (since this application has to query SOLR) to do anything meaningful
   you have to follow the connecting to SOLR directions below
 
-
-  Therefore need these lines in /etc/apache2/others/scholars.conf
+  Add these lines to the apache configuration (perhaps /etc/apache2/others/scholars.conf)
 
   ProxyPass /scholars_search/ http://localhost:8333/
   ProxyPassReverse /scholars_search/ http://localhost:8333/
 
+  # this is for a local VIVO instance
   ProxyPass / http://localhost:9080/
   ProxyPassReverse / http://localhost:9080/
-
 
   NOTE: this means you have to do this to connect (note trailing slash)
 
