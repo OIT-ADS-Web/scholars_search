@@ -9,13 +9,15 @@ Install node dependencies:
 
     ```
     > npm start
-
+    
     ```
 
     or (if need to set an environment):
 
+
     ```
     > NODE_ENV=(development|development_acceptance) npm start
+    
     ```
 
 This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
@@ -67,13 +69,11 @@ Navigate to:
     
   *SOLR_URL*
   
-  example: http://localhost/ROOTsolr/collection1/select
+  example: "http://localhost/ROOTsolr/collection1/select"
   
   *ORG_URL*
   
-  example: http://localhost/orgservice?getIndex=1&uri=https://scholars.duke.edu/individual/org50000021
-
-  Connecting to a local SOLR via this url: "http://localhost/ROOTsolr/collection1/select"
+  example: "http://localhost/orgservice?getIndex=1&uri=https://scholars.duke.edu/individual/org50000021"
 
 
 ## Connection to *acceptance* server during local development
