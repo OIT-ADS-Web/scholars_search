@@ -1,15 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-//import classNames from 'classnames'
 import _ from 'lodash'
 
 import actions from '../actions/search'
-
-// FIXME: we don't want to do the actual SolrQuery here,
-// so this should be something more like
-// import solr from '../SolrConfig' e.g. site specific
-// utils and such - in this case filter list
-import solr from '../utils/SolrQuery'
+import solr from '../utils/SolrHelpers'
 
 import SearchTab from './SearchTab'
 

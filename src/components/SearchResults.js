@@ -17,11 +17,7 @@ import PagingPanel from './PagingPanel'
 
 require('../styles/scholars_search.less');
 
-// FIXME: we don't want to do the actual SolrQuery here,
-// so this should be something more like
-// import solr from '../SolrConfig' e.g. site specific
-// utils and such
-import solr from '../utils/SolrQuery'
+import solr from '../utils/SolrHelpers'
 
 class SearchResults extends Component {
 

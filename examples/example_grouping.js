@@ -4,11 +4,13 @@ require('dotenv').config();
 // Example of grouping using the SolrQuery class
 //
 // run via babel-node examples/example_search.js (must npm install babel-cli --global)
-import solr from '../src/utils/SolrQuery'
+import SolrQuery from '../src/utils/SolrQuery'
+
+import solr from '../src/utils/SolrHelpers'
 
 const solr_url = process.env.SOLR_URL
 
-let searcher = new solr.SolrQuery(solr_url)
+let searcher = new SolrQuery(solr_url)
  
 searcher.options = {
   wt: "json",

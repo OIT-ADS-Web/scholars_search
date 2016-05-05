@@ -8,7 +8,7 @@ export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE'
 
 export const PAGE_ROWS   = 50
 
-import solr from '../utils/SolrQuery'
+import SolrQuery from '../utils/SolrQuery'
 
 // FIXME: should these go here?  that's sort of convention
 // but they are sparse routing directions or flag switches
@@ -135,7 +135,7 @@ function appInit() {
 function fetchTabCounts(compoundSearch) {
   const solr_url = process.env.SOLR_URL
   
-  let searcher = new solr.SolrQuery(solr_url)
+  let searcher = new SolrQuery(solr_url)
 
   searcher.setupTabGroups()
 
@@ -164,7 +164,7 @@ function fetchSearch(compoundSearch, start=0, filter='person') {
   // for now it's fine
   //
   // FIXME: add start parameter
-  let searcher = new solr.SolrQuery(solr_url)
+  let searcher = new SolrQuery(solr_url)
 
   searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
 

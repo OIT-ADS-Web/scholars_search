@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 
 import actions from '../actions/search'
 
-
 import SearchResults from './SearchResults'
 import SearchField from './SearchField'
 

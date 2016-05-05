@@ -4,11 +4,13 @@ require('dotenv').config();
 // Example of searching using the SolrQuery class
 //
 // run via babel-node examples/example_search.js (must npm install babel-cli --global)
-import solr from '../src/utils/SolrQuery'
+import SolrQuery from '../src/utils/SolrQuery'
+
+import solr from '../src/utils/SolrHelpers'
 
 const solr_url = process.env.SOLR_URL
 
-let searcher = new solr.SolrQuery(solr_url)
+let searcher = new SolrQuery(solr_url)
  
 searcher.options = {
   wt: "json",
@@ -47,11 +49,10 @@ const compoundSearch2 = {
 const qry2 = searcher.buildQuery(compoundSearch2)
 searcher.query = qry2
 
-const namedFilters = solr.namedFilters 
-console.log(namedFilters)
+const tabs = solr.tabList 
+console.log(tabs)
 
-//searcher.addFilter("type", "classgroup:*people")
-const filterStr = namedFilters["type"]["people"]
+const filterStr = tabs[0].filter
 console.log("adding filter..."+ filterStr)
 if (filterStr) {
   searcher.addFilter("type", filterStr)
@@ -64,7 +65,6 @@ searcher.execute().then(function(response) {
     printResults(json)
 })
   
-
 // NOTE: can remove a filter too via
 // deleteFilter("type")  {
  
