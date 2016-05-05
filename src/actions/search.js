@@ -8,17 +8,30 @@ export const RESET_PAGE = 'RESET_PAGE'
 export const PREVIOUS_PAGE = 'PREVIOUS_PAGE'
 export const REQUEST_TABCOUNTS = 'REQUEST_TABCOUNTS'
 export const RECEIVE_TABCOUNTS = 'RECEIVE_TABCOUNTS'
-
 export const SET_FILTER = 'SET_FILTER'
-
 export const APP_INIT_BEGIN = 'APP_INIT_BEGIN'
 export const APP_INIT_END = 'APP_INIT_END'
-
-
 // FIXME: make this configurable? e.g. process.env.DEFAULT_PAGE_ROWS
 export const PAGE_ROWS   = 50
 
 import SolrQuery from '../utils/SolrQuery'
+
+// NOTE: to split these off into files you would have to do this:
+//import * as constants from './constants'
+//import * as dispatcher from './dispatcher'
+//
+// which would mean qualifying everything with a namespace 
+// ...
+// type: constants.REQUEST_SEARCH
+// ...
+// and
+// 
+// ...
+// dispatch(dispatcher.requestSearch(compoundSearch))
+// ...
+//
+// which is a bit annoying, so that's why they're all in this one file
+
 
 // FIXME: should these functions go here?  that's sort of convention
 // but they are sparse routing directions or flag switches

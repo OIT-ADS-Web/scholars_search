@@ -19,8 +19,7 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
     }
 }
 
-import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search';
-
+import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search'
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -50,21 +49,20 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 
 
 import {
-  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, PAGE_ROWS
-} from '../actions/search';
+  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, 
+  PAGE_ROWS, SET_FILTER
+} from '../actions/search'
 
-
-import { SET_FILTER } from '../actions/search'
 
 // initialSearch = {
 //  isFetching: false,
 //  results: {},
 //  start: 0,
-//  filter: null
+//  filter: 'person'
 // }
-// could call it search, just called it searchReducer to be explicit about the key name
+//
+// could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
-// FIXME: put filter here?  
 //
 function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
@@ -107,16 +105,22 @@ import { routerReducer  } from 'react-router-redux'
 
 // FIXME: should tabs be different reducers?
 //
-// peopleSearch
-// publicationSearch
+// e.g. 
+// * peopleSearch
+// * publicationSearch
+// * etc...
+//
 // will get into that later - just need advanced search first
 // just naming 'search' to be explicit, not necessary
+//
 
 // NOTE: each reducer combines to effect the global state,
 // but only the named one - so, in effect, it's like
 // a set of named sub-states within the global state
 // e.g. state = {'search': .., 'routing': .. 'init': .. }
-//
+// it's not necessary to explicitly set the key like this,
+// as it will default to the name of the function.  I just
+// did it to be obvious
 const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
@@ -126,21 +130,4 @@ const mainReducer = combineReducers({
 
 export default mainReducer;
 
-// FIXME: could make a reducers/main.js that merely combines them
-// sort of like this (depending on how many reducers we end up with):
-// tried it and didn't work, but probably just forgot something
-//
-// import { combineReducers } from 'redux'
-// import { routerReducer  } from 'react-router-redux'
-//
-//
-// import { orgReducer, searchReducer } from './search'
-//
-// const mainReducer = combineReducers({
-//  orgs: orgReducer,
-//  search: searchReducer,
-//  routing: routerReducer
-// })
-
-// export default mainReducer
 
