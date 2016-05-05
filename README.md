@@ -7,11 +7,16 @@ Install node dependencies:
 
 ## Start the development server:
 
-    npm start
+    ```
+    > npm start
+
+    ```
 
     or (if need to set an environment):
 
-    NODE_ENV=(development|development_acceptance) npm start
+    ```
+    > NODE_ENV=(development|development_acceptance) npm start
+    ```
 
 This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
 
@@ -23,7 +28,7 @@ Navigate to:
 ## Proxy
 
 
-  *NOTE*
+  **NOTE**
 
   Because of "No 'Access-Control-Allow-Origin' header" (since this application has to query SOLR) to do anything meaningful
   you have to follow the connecting to SOLR directions below
@@ -40,7 +45,7 @@ Navigate to:
 
   ```
 
-  NOTE: this means you have to do this to connect (note trailing slash)
+  This means you would now have to do this to connect (note trailing slash)
 
   http://localhost/scholars_search/
 
@@ -52,7 +57,10 @@ Navigate to:
 
   So to connect to another enviroment, you would run it like this:
 
+  ```
   > NODE_ENV=acceptance npm start
+
+  ```
 
 ## .env variables
 
@@ -75,9 +83,12 @@ much destructive about that.
 
 To connect to acceptance server, make a few ssh tunnels:
 
+    ```
     [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
 
     [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
+
+    ```
 
 And add these lines to /etc/apache2/others/scholars.conf
 
