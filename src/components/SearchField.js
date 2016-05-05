@@ -49,8 +49,6 @@ export default class SearchField extends Component {
   handleBlur(e) {
     // FIXME: getting error "cannot read property 'setState' of null"
     
-    // should it 'preventDefault' - what is default 'blur'
-    //e.preventDefault()
     if(this) {
       this.setState({value: e.target.value})
      }

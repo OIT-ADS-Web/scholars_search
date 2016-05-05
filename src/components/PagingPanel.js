@@ -9,9 +9,8 @@ import actions from '../actions/search'
 
 class PagingPanel extends Component {
 
-  // FIXME: don't necessarily like this down at Paging 
-  // level just to get at router and add values to router
-  // so they go into state
+  // FIXME: don't necessarily like this down at PagingPanel component
+  // level just to get at router and add values to router so they go into state
   static get contextTypes() {
     return({
       //router: PropTypes.object
@@ -39,10 +38,11 @@ class PagingPanel extends Component {
     
     // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
     // but I had to add it here to make it work
-    // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     //
     let newStart = start + PAGE_ROWS
 
+    // NOTE: if not a new 'query' obj - this error happens:
+    // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     const query = { ...searchFields, start: newStart }
 
     this.context.router.push({
