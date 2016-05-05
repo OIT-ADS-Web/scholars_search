@@ -13,24 +13,21 @@ Install node dependencies:
 
     NODE_ENV=(development|development_acceptance) npm start
 
-
-## Proxy
+This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
 
 Navigate to:
 
     http://localhost:8333/
 
-*NOTE*
+
+## Proxy
+
+
+  *NOTE*
 
   Because of "No 'Access-Control-Allow-Origin' header" (since this application has to query SOLR) to do anything meaningful
   you have to follow the connecting to SOLR directions below
 
-
-This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
-
-## Connecting to SOLR
-  
-  Connecting to a local SOLR via this url: "http://localhost/ROOTsolr/collection1/select"
 
   Therefore need these lines in /etc/apache2/others/scholars.conf
 
@@ -45,13 +42,40 @@ This will watch all files, rebuild and hot-load the running dev server code with
 
   http://localhost/scholars_search/
 
-## Connection to *acceptance* server
+
+## Connecting to SOLR
+
+  This uses two environmental variables to determine how to connect to Solr.  Those are initialized by `dotenv` by means
+  of a file named from the `process.env.NODE_ENV` + `.env` (defaulting to `development.env`)  
+
+  So to connect to another enviroment, you would run it like this:
+
+  > NODE_ENV=acceptance npm start
+
+## .env variables
+
+    
+  *SOLR_URL*
+  
+  example: http://localhost/ROOTsolr/collection1/select
+  
+  *ORG_URL*
+  
+  example: http://localhost/orgservice?getIndex=1&uri=https://scholars.duke.edu/individual/org50000021
+
+  Connecting to a local SOLR via this url: "http://localhost/ROOTsolr/collection1/select"
+
+
+## Connection to *acceptance* server during local development
+
+Sometimes it's useful to see what would happen with the real data.  It's only a search so there is nothing
+much destructive about that.
 
 To connect to acceptance server, make a few ssh tunnels:
 
-    [scholars] ssh -L 8082:localhost:8080 scholars-web-test-04.oit.duke.edu
+    [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
 
-    [solr] ssh -L 8081:localhost:8081 scholars-solr-test-01.oit.duke.edu
+    [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
 
 And add these lines to /etc/apache2/others/scholars.conf
 
@@ -75,3 +99,5 @@ To run tests:
     npm run test
 
 This will watch all files involved in the defined tests and automatically rebuild/test on save.
+
+
