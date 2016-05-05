@@ -30,12 +30,15 @@ Navigate to:
 
   Add these lines to the apache configuration (perhaps /etc/apache2/others/scholars.conf)
 
+  ```
   ProxyPass /scholars_search/ http://localhost:8333/
   ProxyPassReverse /scholars_search/ http://localhost:8333/
 
   # this is for a local VIVO instance
   ProxyPass / http://localhost:9080/
   ProxyPassReverse / http://localhost:9080/
+
+  ```
 
   NOTE: this means you have to do this to connect (note trailing slash)
 
@@ -79,6 +82,7 @@ To connect to acceptance server, make a few ssh tunnels:
 And add these lines to /etc/apache2/others/scholars.conf
 
 
+  ```
   ProxyPass /orgs/ http://localhost:8082/
   ProxyPassReverse /orgs/ http://localhost:8082/
 
@@ -89,6 +93,7 @@ And add these lines to /etc/apache2/others/scholars.conf
   ProxyPass / http://localhost:9080/
   ProxyPassReverse / http://localhost:9080/
 
+  ```
 
 ## Tests
 Testing is done with the [Karma]() test runner and the [Jasmine]() framework. Tests in this example are written with es6 syntax.
