@@ -30,6 +30,10 @@ module.exports = {
     path: __dirname + "/dist/",
     filename: "[name].js"/*,*/
   },
+  // NOTE: this is in here so nock can run tests - but they don't work anyway
+  node: {
+   fs: "empty"
+  },
   //resolve: {
   //  alias: {
   //     config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')

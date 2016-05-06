@@ -1,36 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
-// all constants - just used for clarity
-export const REQUEST_SEARCH = 'REQUEST_SEARCH'
-export const RECEIVE_SEARCH = 'RECEIVE_SEARCH'
-export const NEXT_PAGE = 'NEXT_PAGE'
-export const RESET_PAGE = 'RESET_PAGE'
-export const PREVIOUS_PAGE = 'PREVIOUS_PAGE'
-export const REQUEST_TABCOUNTS = 'REQUEST_TABCOUNTS'
-export const RECEIVE_TABCOUNTS = 'RECEIVE_TABCOUNTS'
-export const SET_FILTER = 'SET_FILTER'
-export const APP_INIT_BEGIN = 'APP_INIT_BEGIN'
-export const APP_INIT_END = 'APP_INIT_END'
-// FIXME: make this configurable? e.g. process.env.DEFAULT_PAGE_ROWS
-export const PAGE_ROWS   = 50
-
 import SolrQuery from '../utils/SolrQuery'
 
-// NOTE: to split these off into files you would have to do this:
-//import * as constants from './constants'
-//import * as dispatcher from './dispatcher'
-//
-// which would mean qualifying everything with a namespace 
-// ...
-// type: constants.REQUEST_SEARCH
-// ...
-// and
-// 
-// ...
-// dispatch(dispatcher.requestSearch(compoundSearch))
-// ...
-//
-// which is a bit annoying, so that's why they're all in this one file
+import * as types from './types'
+import { PAGE_ROWS } from './constants'
 
 
 // FIXME: should these functions go here?  that's sort of convention
@@ -39,7 +12,7 @@ import SolrQuery from '../utils/SolrQuery'
 // anything (as opposed to fetchSearch)
 function requestSearch(searchFields) {
   return {
-    type: REQUEST_SEARCH,
+    type: types.REQUEST_SEARCH,
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
     searchFields
@@ -48,7 +21,7 @@ function requestSearch(searchFields) {
 
 function receiveSearch(json) {
   return {
-    type: RECEIVE_SEARCH,
+    type: types.RECEIVE_SEARCH,
     results: json,
     isFetching: false,
     receivedAt: Date.now()
@@ -57,7 +30,7 @@ function receiveSearch(json) {
 
 function requestTabCount(searchFields) {
   return {
-    type: REQUEST_TABCOUNTS,
+    type: types.REQUEST_TABCOUNTS,
     grouped: {},
     isFetching: true,
     searchFields
@@ -69,7 +42,7 @@ function receiveTabCount(json) {
   let grouped = json.grouped
 
   return {
-    type: RECEIVE_TABCOUNTS,
+    type: types.RECEIVE_TABCOUNTS,
     grouped: grouped,
     isFetching: false,
     receivedAt: Date.now()
@@ -80,29 +53,29 @@ function receiveTabCount(json) {
 
 function nextPage() {
   return {
-    type: NEXT_PAGE
+    type: types.NEXT_PAGE
   }
 }
 
 function previousPage() {
   return {
-    type: PREVIOUS_PAGE
+    type: types.PREVIOUS_PAGE
   }
 }
 
 function resetPage() {
   return {
-    type: RESET_PAGE,
+    type: types.RESET_PAGE,
     start: 0
   }
 }
 
 function filterSearch(filter) {
-  return { type: SET_FILTER, filter: filter }
+  return { type: types.SET_FILTER, filter: filter }
 }
 
 function resetFilter() {
-  return { type: SET_FILTER, filter: 'person' }
+  return { type: types.SET_FILTER, filter: 'person' }
 }
 
 
@@ -121,14 +94,14 @@ https://github.com/reactjs/redux/issues/239
 
 export function appInitBegin() {
   return {
-    type: APP_INIT_BEGIN,
+    type: types.APP_INIT_BEGIN,
     departments: []
   }
 }
 
 export function appInitEnd(json) {
   return {
-    type: APP_INIT_END,
+    type: types.APP_INIT_END,
     departments: json
   }
 }

@@ -1,15 +1,20 @@
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
-import { APP_INIT_BEGIN, APP_INIT_END } from '../actions/search'
+//import { APP_INIT_BEGIN, APP_INIT_END } from '../actions/search'
+
+//import * as types from '../constants/ActionTypes'
+import * as types from '../actions/types'
+import { PAGE_ROWS } from '../actions/constants'
+
 
 function appInitReducer(init = {isLoading: false, departments: []}, action) {
 
   switch(action.type) {
-    case APP_INIT_BEGIN:
+    case types.APP_INIT_BEGIN:
       return { ...init,
         isLoading: true,
         departments: action.departments
     }
-    case APP_INIT_END:
+    case types.APP_INIT_END:
       return { ...init,
         isLoading: false,
         departments: action.departments
@@ -19,7 +24,7 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
     }
 }
 
-import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search'
+//import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search'
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -28,14 +33,14 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 
   switch (action.type) {
  
-    case REQUEST_TABCOUNTS:
+    case types.REQUEST_TABCOUNTS:
 
       return { ...tabs, 
         isFetching: true,
         grouped: action.grouped,
         searchFields: action.searchFields
     }
-    case RECEIVE_TABCOUNTS:
+    case types.RECEIVE_TABCOUNTS:
 
       return { ...tabs, 
         isFetching: false,
@@ -48,10 +53,10 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 }
 
 
-import {
-  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, 
-  PAGE_ROWS, SET_FILTER
-} from '../actions/search'
+//import {
+//  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, 
+//  PAGE_ROWS, SET_FILTER
+//} from '../actions/search'
 
 
 // initialSearch = {
@@ -64,34 +69,37 @@ import {
 // could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
 //
+//
+//import { PAGE_ROWS } from '../constants/ActionConfig'
+
 function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
 
-  case REQUEST_SEARCH:
+  case types.REQUEST_SEARCH:
     return { ...search, 
       isFetching: true,
       results: action.results,
       searchFields: action.searchFields
     }
-  case RECEIVE_SEARCH:
+  case types.RECEIVE_SEARCH:
     return { ...search, 
       isFetching: false,
       results: action.results,
       lastUpdated: action.receivedAt
     }
-  case NEXT_PAGE:
+  case types.NEXT_PAGE:
     return { ...search, 
       start: search.start + PAGE_ROWS
     }
-  case PREVIOUS_PAGE:
+  case types.PREVIOUS_PAGE:
     return { ...search, 
       start: search.start - PAGE_ROWS
   }
-  case RESET_PAGE:
+  case types.RESET_PAGE:
     return { ...search, 
       start: 0 
   }
-  case SET_FILTER:
+  case types.SET_FILTER:
     return { ...search, 
       filter: action.filter
   }
