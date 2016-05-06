@@ -96,3 +96,33 @@ describe("Running a Search", () => {
 
 
 })
+
+import reducers from './reducers/search'
+
+// FIXME: I don't know if this is that useful
+describe('search reducer', () => {
+
+  const searchFields = { 'allWords': 'medicine' }
+
+  // why the [] ??
+  it('should handle REQUEST_SEARCH', () => {
+    expect(
+      reducers.searchReducer([], {
+        type: types.REQUEST_SEARCH,
+        searchFields: searchFields,
+        results: null
+      })
+    ).toEqual(
+        {
+          isFetching: true,
+          results: null,
+          searchFields: searchFields
+        }
+    )
+  })
+  
+
+})
+
+
+

@@ -1,7 +1,5 @@
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
-//import { APP_INIT_BEGIN, APP_INIT_END } from '../actions/search'
 
-//import * as types from '../constants/ActionTypes'
 import * as types from '../actions/types'
 import { PAGE_ROWS } from '../actions/constants'
 
@@ -23,8 +21,6 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
       return init
     }
 }
-
-//import { REQUEST_TABCOUNTS, RECEIVE_TABCOUNTS } from '../actions/search'
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -134,8 +130,11 @@ const mainReducer = combineReducers({
   routing: routerReducer,
   init: appInitReducer,
   tabs: tabReducer
-});
+})
 
-export default mainReducer;
+export default {
+  mainReducer,
+  searchReducer
+}
 
 
