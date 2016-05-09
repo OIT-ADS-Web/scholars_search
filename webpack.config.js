@@ -28,12 +28,14 @@ module.exports = {
   // above
   output: {
     path: __dirname + "/dist/",
-    filename: "[name].js"/*,*/
+    filename: "[name].js",
+    library: "Root",
+    libraryTarget: "umd"
   },
   // NOTE: this is in here so nock can run tests - but they don't work anyway
-  node: {
-   fs: "empty"
-  },
+  //node: {
+  // fs: "empty"
+  //},
   //resolve: {
   //  alias: {
   //     config: path.join(__dirname, 'src/config', process.env.NODE_ENV || 'development')
@@ -67,7 +69,13 @@ module.exports = {
     // build index from template, add cach-busting hashes to js bundle urls
     // pass title variable to the template - you can specify any property here
     // and access it in the src/index.ejs template
+    //  inject: 'head',
+    //  hash: true,
+    //  title: "Calendar Demo",
+    //  template: 'src/index.ejs/'
+ 
     new HtmlWebpackPlugin({
+      inject: 'head',
       hash: true,
       title: "Scholars Search",
       template: 'src/index.ejs/'

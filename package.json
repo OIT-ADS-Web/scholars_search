@@ -60,8 +60,9 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
+    "main": "index.ejs",
     "start": "webpack-dev-server --content-base dist --inline --hot --port 8333",
-    "build": "webpack",
+    "build": "webpack --output-library ScholarsSearch",
     "clean": "rm -fr dist/*",
     "test": "karma start"
   },
