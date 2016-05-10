@@ -62,7 +62,7 @@
   "scripts": {
     "main": "index.ejs",
     "start": "webpack-dev-server --content-base dist --inline --hot --port 8333",
-    "build": "webpack --output-library ScholarsSearch",
+    "build": "webpack --output-library Root",
     "clean": "rm -fr dist/*",
     "test": "karma start"
   },

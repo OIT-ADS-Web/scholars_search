@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-import { PAGE_ROWS } from '../actions/search'
+//import { PAGE_ROWS } from '../actions/search'
+import { PAGE_ROWS } from '../actions/constants'
+
 
 import classNames from 'classnames'
 
