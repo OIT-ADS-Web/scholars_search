@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 
 // FIXME: some of these methods are common to all  - so make 
-// PersonDisplay extend GenericDisplay instead?
+// PersonDisplay extend GenericDisplay instead? extending
+// object is too Java-ish though
 //
 class GenericDisplay extends Component {
 
@@ -15,32 +16,7 @@ class GenericDisplay extends Component {
 
   get name() {
     return this.doc.nameRaw[0]
-
-    //return ""
-    //if (this.doc.ts_duke_header_hero_name) {
-    //  return this.f(this.doc.ts_duke_header_hero_name);
-    //}
-    //return this.f(this.doc.ts_duke_goes_by_name);
-    // return this.f(`${this.doc.ts_duke_header_hero_name} // ${this.doc.ts_duke_goes_by_name}`);
   }
-
-  // get Types() {
-  // FIXME: types can look like this...
-  /* "type": [
-      "http://xmlns.com/foaf/0.1/Agent",
-      "http://purl.obolibrary.org/obo/BFO_0000002",
-      "http://purl.obolibrary.org/obo/BFO_0000001",
-      "http://purl.obolibrary.org/obo/BFO_0000004",
-      "http://xmlns.com/foaf/0.1/Organization",
-      "http://vivoweb.org/ontology/core#Program"
-    ],
-  */
-  // maybe we should list them?  Or have images to represent them,
-  // or take the topmost? or ??? just mostSpecificType --
-  // 
-  // "mostSpecificTypeURIs": [ "http://vivoweb.org/ontology/core#Program" ],
-  //
-  //}
 
   get preferredTitle() {
     return this.doc.PREFERRED_TITLE

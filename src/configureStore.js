@@ -16,14 +16,17 @@ const createStoreWithThunkMiddleware = applyMiddleware(
 
 const initialState = {}
 
-import mainReducer from './reducers/search'
+// NOTE: not sure about good naming, organizational method
+// needed to split so I can test individual reducers 
+//
+import reducers from './reducers/search'
 
 export default function configureStore(initialState = initialState) {
-  return createStoreWithMiddleware(mainReducer, initialState)
+  return createStoreWithMiddleware(reducers.mainReducer, initialState)
 }
 
 export function configureStoreWithoutLogger(initialState = initialState) {
-  return createStoreWithThunkMiddleware(mainReducer, initialState)
+  return createStoreWithThunkMiddleware(reducers.mainReducer, initialState)
 }
 
 

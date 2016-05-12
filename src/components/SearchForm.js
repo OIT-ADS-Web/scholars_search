@@ -34,20 +34,11 @@ export class SearchForm extends Component {
     if (allWords.value.lastIndexOf('*', 0) != 0) {
      add = "*"
     }
-    // NOTE: allWords search is more complicated,
-    // needs a '*' possibly after every word, but then again
-    // that's making assumptions
+    // NOTE: allWords search needs a '*' after every word, otherwise it's searching
+    // exactly.  Then again, maybe the user wants the ability to differentiate the two.
     //
-    // would need to add to term + update UI
-    // could also just add as event handler
-    // to allWords ...
-    // default filter to 'person' ?
+    // NOTE: having problems with getting 'start' - setting it to 0 here
     //
-    //
-    // NOTE: having problems with 'start' - setting
-    // it to 0 here
-    //
-    // not sure what to do with filter
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
@@ -61,24 +52,27 @@ export class SearchForm extends Component {
      * FIXME: should only add these to route if there is a value
      *
      *
-     * FIXME: this path should be global, configurable
+     * FIXME: this pathname should be global, configurable, right?
      */
     this.context.router.push({
       pathname: '/',
       query: compoundSearch 
     })
 
-    //dispatch(actions.resetFilter())
 
     dispatch(actions.fetchTabCounts(compoundSearch))
     dispatch(actions.fetchSearch(compoundSearch, 0, filter))
 
     // NOTE: was having problems with reseting page - so 
     // defaulted to setting start to 0 in function
-    // calls - but I was getting [ page 2 of 0] if I didn't do this
+    // calls - but I was getting [page 2 of 0] if I didn't do this
     //
     dispatch(actions.resetPage())
+
+    // even though fetchSearch(...filter) takes filter this was needed
     dispatch(actions.filterSearch(filter))
+    
+    // on the other hand, this does NOT seem necessary.  Why not?
     //dispatch(actions.resetFilter())
 
 
@@ -102,6 +96,9 @@ export class SearchForm extends Component {
          button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
+    // NOTE: it took a while to figure out how to set the defaultValue of the <inputs> below (SearchField) - the typical React lifecycle of components
+    // will just allow setting that value once (which was always initializing to NULL).  I'm pretty sure the code is initializing the form too
+    // many times or too soon or something like that.  I was not able to track that down though.  This works for now.
     return (
        
        <section>

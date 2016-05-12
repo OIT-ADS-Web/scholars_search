@@ -1,22 +1,18 @@
 import fetch from 'isomorphic-fetch'
 
-export const REQUEST_SEARCH  = 'REQUEST_SEARCH'
-export const RECEIVE_SEARCH  = 'RECEIVE_SEARCH'
-export const NEXT_PAGE       = 'NEXT_PAGE'
-export const RESET_PAGE      = 'RESET_PAGE'
-export const PREVIOUS_PAGE   = 'PREVIOUS_PAGE'
-
-export const PAGE_ROWS   = 50
-
 import SolrQuery from '../utils/SolrQuery'
 
-// FIXME: should these go here?  that's sort of convention
+import * as types from './types'
+import { PAGE_ROWS } from './constants'
+
+
+// FIXME: should these functions go here?  that's sort of convention
 // but they are sparse routing directions or flag switches
 // or traffic directions - not like  actual functions that do 
 // anything (as opposed to fetchSearch)
 function requestSearch(searchFields) {
   return {
-    type: REQUEST_SEARCH,
+    type: types.REQUEST_SEARCH,
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
     searchFields
@@ -25,19 +21,16 @@ function requestSearch(searchFields) {
 
 function receiveSearch(json) {
   return {
-    type: RECEIVE_SEARCH,
+    type: types.RECEIVE_SEARCH,
     results: json,
     isFetching: false,
     receivedAt: Date.now()
   }
 }
 
-export const REQUEST_TABCOUNTS = 'REQUEST_TABCOUNTS'
-export const RECEIVE_TABCOUNTS = 'RECEIVE_TABCOUNTS'
-
 function requestTabCount(searchFields) {
   return {
-    type: REQUEST_TABCOUNTS,
+    type: types.REQUEST_TABCOUNTS,
     grouped: {},
     isFetching: true,
     searchFields
@@ -49,7 +42,7 @@ function receiveTabCount(json) {
   let grouped = json.grouped
 
   return {
-    type: RECEIVE_TABCOUNTS,
+    type: types.RECEIVE_TABCOUNTS,
     grouped: grouped,
     isFetching: false,
     receivedAt: Date.now()
@@ -60,32 +53,29 @@ function receiveTabCount(json) {
 
 function nextPage() {
   return {
-    type: NEXT_PAGE
+    type: types.NEXT_PAGE
   }
 }
 
 function previousPage() {
   return {
-    type: PREVIOUS_PAGE
+    type: types.PREVIOUS_PAGE
   }
 }
 
-// ?
 function resetPage() {
   return {
-    type: RESET_PAGE,
+    type: types.RESET_PAGE,
     start: 0
   }
 }
 
-export const SET_FILTER = 'SET_FILTER'
-
 function filterSearch(filter) {
-  return { type: SET_FILTER, filter: filter }
+  return { type: types.SET_FILTER, filter: filter }
 }
 
 function resetFilter() {
-  return { type: SET_FILTER, filter: 'person' }
+  return { type: types.SET_FILTER, filter: 'person' }
 }
 
 
@@ -99,24 +89,25 @@ https://github.com/reactjs/redux/issues/239
 
 
 // FIXME: still experimenting with how to initialize
-// the app with some values
-export const APP_INIT_BEGIN = 'APP_INIT_BEGIN'
-export const APP_INIT_END = 'APP_INIT_END'
+// the app with some values, not actually using
+// these deparments right now
 
 export function appInitBegin() {
   return {
-    type: APP_INIT_BEGIN,
+    type: types.APP_INIT_BEGIN,
     departments: []
   }
 }
 
 export function appInitEnd(json) {
   return {
-    type: APP_INIT_END,
+    type: types.APP_INIT_END,
     departments: json
   }
 }
 
+
+// *********** actions that actually do something **********/
 
 function appInit() {
   const org_url = process.env.ORG_URL
@@ -162,8 +153,6 @@ function fetchSearch(compoundSearch, start=0, filter='person') {
   // search?? should probably be a global object - in the
   // store?   that way we set facets on it etc...
   // for now it's fine
-  //
-  // FIXME: add start parameter
   let searcher = new SolrQuery(solr_url)
 
   searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
@@ -181,7 +170,6 @@ function fetchSearch(compoundSearch, start=0, filter='person') {
  
   }
 }
-
 
 // allow all to be exported at once into an 'action' object
 export default {

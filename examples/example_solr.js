@@ -13,18 +13,20 @@ import fetch from 'isomorphic-fetch'
 var uri = "http://localhost/ROOTsolr/collection1/select?wt=json"
 
 // NOTE: this should work in theory (see https://github.com/github/fetch)
-// but just returns "bad request (400)"
-
+// even though CURL works, fetch raises this:
+//
+// org.apache.solr.common.SolrException: Search requests cannot accept content streams
+// someday it would be cool to use json as the query definition - "turtles all the way down"
 fetch(uri, {
-  method: 'POST',  
+  method: 'post',  
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   },
-  body: JSON.stringify({query: 'med*'})
+  body: JSON.stringify({'query': 'med*'})
 }).then(function(response) {
   console.log(response)
-  console.log(response.json())
+  //console.log(response.json())
 })
 
  
