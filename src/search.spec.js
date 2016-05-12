@@ -23,7 +23,7 @@ describe("Running a Search", () => {
   const store = mockStore({ search: []})
   const compoundSearch = { 'allWords': 'medicine' }
 
-  // a typical response ...
+  // a typical response (abbreviated) ...
   const solrJson = {
       response: {
         numFound: 1, 
@@ -40,7 +40,7 @@ describe("Running a Search", () => {
     }
   }
 
-  // NOTE: I couldn't get the standard Redux wayt work
+  // NOTE: I couldn't get the standard Redux way to work
   // see WritingTests link way above
 
   //const expectedActions = [
@@ -99,7 +99,7 @@ describe("Running a Search", () => {
 
 import reducers from './reducers/search'
 
-// FIXME: I don't know if this is that useful
+// FIXME: I don't know if this is that useful, just tests whether reducers reduce
 describe('search reducer', () => {
 
   const searchFields = { 'allWords': 'medicine' }

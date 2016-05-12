@@ -49,25 +49,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 }
 
 
-//import {
-//  REQUEST_SEARCH, RECEIVE_SEARCH, NEXT_PAGE, PREVIOUS_PAGE, RESET_PAGE, 
-//  PAGE_ROWS, SET_FILTER
-//} from '../actions/search'
-
-
-// initialSearch = {
-//  isFetching: false,
-//  results: {},
-//  start: 0,
-//  filter: 'person'
-// }
-//
 // could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
-//
-//
-//import { PAGE_ROWS } from '../constants/ActionConfig'
-
 function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
 
@@ -107,7 +90,7 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0, filt
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'
 
-// FIXME: should tabs be different reducers?
+// FIXME: should tabs be different, seperate reducers?
 //
 // e.g. 
 // * peopleSearch
@@ -132,6 +115,8 @@ const mainReducer = combineReducers({
   tabs: tabReducer
 })
 
+// FIXME: did this for now to be able to test searchReducer in isolation
+// (instead of combined)
 export default {
   mainReducer,
   searchReducer
