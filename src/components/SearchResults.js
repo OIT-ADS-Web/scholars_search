@@ -19,7 +19,7 @@ require('../styles/scholars_search.less');
 
 import solr from '../utils/SolrHelpers'
 
-class SearchResults extends Component {
+export class SearchResults extends Component {
 
   static get contextTypes() {
     return({

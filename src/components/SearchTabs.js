@@ -7,7 +7,7 @@ import solr from '../utils/SolrHelpers'
 
 import SearchTab from './SearchTab'
 
-class SearchTabs extends Component {
+export class SearchTabs extends Component {
 
   constructor(props) {
     super(props)

@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import actions from '../actions/search'
 
-class SearchTab extends Component {
+export class SearchTab extends Component {
 
   // this is necessary to get the router
   static get contextTypes() {

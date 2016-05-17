@@ -2,6 +2,8 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
+import TestUtils from 'react-addons-test-utils'
+
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
@@ -9,6 +11,10 @@ import actions from './actions/search'
 import * as types from './actions/types'
 
 import configureStoreWithoutLogger from './configureStore'
+
+//import expect, { createSpy, spyOn, isSpy } from 'expect'
+import assert from 'assert'
+
 
 // NOTE: nock throws no module 'fs' found errors
 // tried adding this to webpack-config - no errors at least
@@ -87,7 +93,8 @@ describe("Running a Search", () => {
 
  
   it ("should return at least ONE doc", () => {
-    expect(store.getActions()[1].results.response.docs.length).toBeGreaterThan(1)
+    //expect(store.getActions()[1].results.response.docs.length).toBeGreaterThan(0)
+    assert(store.getActions()[1].results.response.docs.length > 0)
     // NOTE: if it were using 'nock' this would be true
     //expect(store.getActions()[1].results.response.docs.length).toEqual(1)
   
@@ -104,25 +111,111 @@ describe('search reducer', () => {
 
   const searchFields = { 'allWords': 'medicine' }
 
-  // why the [] ??
   it('should handle REQUEST_SEARCH', () => {
-    expect(
-      reducers.searchReducer([], {
+   
+      // FIXME: why is the [] necessary ??
+      let action = reducers.searchReducer([], {
         type: types.REQUEST_SEARCH,
         searchFields: searchFields,
         results: null
       })
-    ).toEqual(
-        {
+
+      let results = {
           isFetching: true,
           results: null,
           searchFields: searchFields
-        }
-    )
+      }
+    
+    assert.deepEqual(action, results)
+
   })
   
 
 })
+
+// http://engineering.pivotal.io/post/tdding-react-and-redux/
+ 
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+
+import { Provider } from 'react-redux'
+
+import ScholarsSearch from './containers/ScholarsSearch'
+import ScholarsSearchApp from './containers/ScholarsSearchApp'
+
+
+import SearchForm from './components/SearchForm'
+import SearchResults from './components/SearchResults'
+
+import { Router, Route } from 'react-router'
+
+import { createStore } from 'redux'
+
+import { mainReducer, searchReducer } from './reducers/search'
+
+import { applyMiddleware } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+
+//<Route path="/" component={ScholarsSearchApp}  onEnter={onRoutesEnter} >
+ 
+describe("<ScholarsSearch />", () => {
+
+  var app 
+  var store 
+  var compoundSearch
+
+  beforeEach(function(done) {
+    // FIXME: tried to create simpler store, but couldn't get to work
+    //store = mockStore({ search: {results: {}, searchFields: {}}}, applyMiddleware(thunkMiddleware))
+    //store = createStore(reducers.searchReducer, { search: {isFetching: false, results: {}}, applyMiddleware(thunkMiddleware))
+    store = configureStoreWithoutLogger()
+     
+    app = TestUtils.renderIntoDocument(<Provider store={store}><div><SearchForm/><SearchResults/></div></Provider>);
+    compoundSearch = { 'allWords': 'medicine'}
+ 
+    store.dispatch(actions.fetchSearch(compoundSearch))
+      .then((results) => {
+        results = results
+        done()
+     })
+ 
+  })
+
+
+  it('passes down search results', function() {
+     var child =TestUtils.findRenderedComponentWithType(app, SearchResults)
+ 
+     const node = ReactDOM.findDOMNode(child)
+     const list = node.querySelectorAll(".search-results-table")
+
+     assert(list[0].children.length > 0)
+
+     const state = store.getState()
+
+     assert(state['search'].searchFields == compoundSearch)
+
+  })
+})
+
+// tests to write?  
+//
+// 1. If you hit search - it puts the searchFields in the store
+// 2. If you hit search - it updates the Route path (url)
+// 3. If I get results on a tab, it should show page number, back <-> next (if pages > PAGE_ROWS)
+ 
+// use this?
+// https://jeremydmiller.com/2016/01/26/how-im-testing-reduxified-react-components/
+
+// describe("Paging Results", () => {
+// 
+//
+//})
+
+// FIXME: use Simulate somewhere?
+// https://facebook.github.io/react/docs/test-utils.html
+// <button ref="button">...</button>
+// var node = this.refs.button;
+// ReactTestUtils.Simulate.click(node);
 
 
 

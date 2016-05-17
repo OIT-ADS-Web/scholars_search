@@ -9,7 +9,7 @@ import classNames from 'classnames'
 
 import actions from '../actions/search'
 
-class PagingPanel extends Component {
+export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
   // level just to get at router and add values to router so they go into state
