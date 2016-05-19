@@ -105,6 +105,18 @@ And add these lines to /etc/apache2/others/scholars.conf
   ProxyPassReverse / http://localhost:9080/
 
   ```
+## Building and Deploying
+
+  First run the build command - this puts something in the `./dist` folder.  *NOTE*: you have to do `npm run build` not just `npm build`
+  
+  ```
+  NODE_ENV=(acceptance|production) npm run build
+  ```
+
+  Then there is a simple script that copies files.
+  ```
+  ./deploy.sh (acceptance|production)
+  ```
 
 ## Tests
 Testing is done with the [Karma]() test runner and the [Jasmine]() framework. Tests in this example are written with es6 syntax.
@@ -115,4 +127,14 @@ To run tests:
 
 This will watch all files involved in the defined tests and automatically rebuild/test on save.
 
+
+## Download
+Results from Scholars@Duke for alejandro on 5/17/2016                           
+Name     Title   Email   URI     VIVO Profile URL
+
+
+Lacanian Analysis & the Naturalizations 
+Project (Special Workshop) in relation to The Screams of Silence: Depression and Other Maladies of Modern Times, a visiting lecture by Alejandro Salamonovitz, PhD, International Exchange Program. September 20, 2008
+https://scholars.duke.edu/individual/presentation31484  
+/display/presentation31484
 

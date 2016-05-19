@@ -100,13 +100,12 @@ export class SearchResults extends Component {
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
-
+    // <h3>Results for group: {numFound} </h3> 
+ 
     return (
       <section className="search-results">
-        
+        <h3>Query: {query}</h3>
         <SearchTabs></SearchTabs>
-        <h2>Query: {query}</h2>
-        <h3>Results found: {numFound} </h3>
         <div className="search-results-table">
           {resultSet}
         </div>

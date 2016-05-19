@@ -20,6 +20,11 @@ export class SearchTabs extends Component {
 
      const tabList = solr.tabList
 
+     // note: every group has this - we only need one though
+     var ungroupedCount = 0
+    
+     // matches - gives total matches ---
+     //
      // NOTE: made it into an array so order would be preserved
      let tabs = _.map(tabList, (tab) => {
       
@@ -29,16 +34,25 @@ export class SearchTabs extends Component {
       }
 
       // get the count - default to 0 just in case something wrong
+      //let matches = 0
+
+
+      let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let label = tab.label
-      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count}/>
+      
+      ungroupedCount = matches
+      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
 
     })
 
     return (
-        <ul className="nav nav-pills">
-          {tabs}
-        </ul>
+        <div>
+          <h4>Total Found: {ungroupedCount}</h4>
+          <ul className="nav nav-pills">
+            {tabs}
+          </ul>
+        </div>
 
       )
   }

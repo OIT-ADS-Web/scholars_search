@@ -21,6 +21,8 @@ export class SearchTab extends Component {
     this.label = this.props.label
     this.count = this.props.count
 
+    this.matches = this.props.matches
+
     this.handleTab = this.handleTab.bind(this)
   
   }
