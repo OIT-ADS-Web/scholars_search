@@ -129,6 +129,7 @@ This will watch all files involved in the defined tests and automatically rebuil
 
 
 ## Download
+
 Results from Scholars@Duke for alejandro on 5/17/2016                           
 Name     Title   Email   URI     VIVO Profile URL
 
