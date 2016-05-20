@@ -127,15 +127,3 @@ To run tests:
 
 This will watch all files involved in the defined tests and automatically rebuild/test on save.
 
-
-## Download
-
-Results from Scholars@Duke for alejandro on 5/17/2016                           
-Name     Title   Email   URI     VIVO Profile URL
-
-
-Lacanian Analysis & the Naturalizations 
-Project (Special Workshop) in relation to The Screams of Silence: Depression and Other Maladies of Modern Times, a visiting lecture by Alejandro Salamonovitz, PhD, International Exchange Program. September 20, 2008
-https://scholars.duke.edu/individual/presentation31484  
-/display/presentation31484
-
