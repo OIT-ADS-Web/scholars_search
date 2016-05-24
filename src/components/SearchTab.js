@@ -4,6 +4,11 @@ import classNames from 'classnames'
 
 import actions from '../actions/search'
 
+//import * from '../actions/types' as types
+import * as types from '../actions/types'
+
+import { requestSearch, requestFilter } from '../actions/search'
+
 export class SearchTab extends Component {
 
   // this is necessary to get the router
@@ -29,17 +34,35 @@ export class SearchTab extends Component {
 
   handleTab(e) {
     e.preventDefault()
+    
     const { search : { results, searchFields }, dispatch } = this.props
     
+    //const { tabs : {  }} = this.props
+
     let filter = this.filter
-    dispatch(actions.filterSearch(filter))
-    dispatch(actions.fetchSearch(searchFields, 0, filter))
+
+    const query  = {...searchFields, start: 0, filter: filter }
+
+
+    // FIXME: can we update searchFeilds here? 
+    //
+    //
+    // need to set filters 
+    dispatch(requestSearch(query))
     
-    dispatch(actions.resetPage())
+    //dispatch(requestSearch(query))
+
+
+    //dispatch({type: types.SET_FILTER, filter: filter})
+    
+    //dispatch(actions.filterSearch(filter))
+    //dispatch(actions.fetchSearch(searchFields, 0, filter))
+    
+    //dispatch(actions.resetPage())
 
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it
-    const query  = {...searchFields, start: 0, filter: filter }
+    //const query  = {...searchFields, start: 0, filter: filter }
 
     this.context.router.push({
       pathname: '/',

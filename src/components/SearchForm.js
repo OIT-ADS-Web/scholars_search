@@ -6,6 +6,10 @@ import actions from '../actions/search'
 import SearchResults from './SearchResults'
 import SearchField from './SearchField'
 
+import * as types from '../actions/types'
+
+import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
+
 export class SearchForm extends Component {
 
 
@@ -60,17 +64,27 @@ export class SearchForm extends Component {
     })
 
 
-    dispatch(actions.fetchTabCounts(compoundSearch))
-    dispatch(actions.fetchSearch(compoundSearch, 0, filter))
+    dispatch(requestSearch(compoundSearch))
+    dispatch(requestTabCount(compoundSearch))
+
+    //dispatch(requestFilter(filter))
+
+
+    // thunk version
+    //dispatch(actions.fetchTabCounts(compoundSearch))
+    //dispatch(actions.fetchSearch(compoundSearch, 0, filter))
 
     // NOTE: was having problems with reseting page - so 
     // defaulted to setting start to 0 in function
     // calls - but I was getting [page 2 of 0] if I didn't do this
     //
-    dispatch(actions.resetPage())
+    //
+    //
+    //dispatch(actions.resetPage())
 
     // even though fetchSearch(...filter) takes filter this was needed
-    dispatch(actions.filterSearch(filter))
+    
+    //dispatch(actions.filterSearch(filter))
     
     // on the other hand, this does NOT seem necessary.  Why not?
     //dispatch(actions.resetFilter())

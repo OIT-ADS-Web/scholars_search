@@ -3,7 +3,6 @@
 import * as types from '../actions/types'
 import { PAGE_ROWS } from '../actions/constants'
 
-
 function appInitReducer(init = {isLoading: false, departments: []}, action) {
 
   switch(action.type) {
@@ -43,6 +42,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
         grouped: action.grouped,
         lastUpdated: action.receivedAt
     }
+
+
     default:
       return tabs;
   }

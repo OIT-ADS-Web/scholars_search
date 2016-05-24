@@ -8,6 +8,9 @@ const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 import actions from './actions/search'
+
+import { requestSearch } from './actions/search'
+
 import * as types from './actions/types'
 
 import configureStoreWithoutLogger from './configureStore'
@@ -51,6 +54,7 @@ describe("Running a Search", () => {
   // NOTE: here's an example supposely using isomporphic-search
   // and nock -- 
   // https://github.com/node-nock/nock/issues/399
+  
   const stub = nock("http://localhost")
     .get("/ROOTsolr/collection1/select")
     .query({q: 'medicine', wt: 'json', rows: '50', hl: 'true', start: '0'})
@@ -60,11 +64,13 @@ describe("Running a Search", () => {
   // NOTE: needed to do this (calling done())
   // found idea here: https://volaresystems.com/blog/post/2014/12/09/Testing-async-calls-with-Jasmine
   beforeEach(function(done) {
-    store.dispatch(actions.fetchSearch(compoundSearch))
-      .then((results) => {
-        results = results
-        done()
-     })
+    store.dispatch(requestSearch(compoundSearch))
+    done()
+    //store.dispatch(actions.fetchSearch(compoundSearch))
+    //  .then((results) => {
+    //    results = results
+    //    done()
+    // })
   
   })
 
@@ -165,7 +171,8 @@ describe("<Routing />", () => {
        
     compoundSearch = { 'allWords': 'medicine'}
  
-    store.dispatch(actions.fetchSearch(compoundSearch))
+    store.dispatch(requestSearch(compoundSearch))
+    //store.dispatch(actions.fetchSearch(compoundSearch))
       .then((results) => {
         results = results
         done()
@@ -196,8 +203,11 @@ describe("<ScholarsSearch />", () => {
     app = TestUtils.renderIntoDocument(<Provider store={store}><SearchResults/></Provider>)
 
     compoundSearch = { 'allWords': 'medicine'}
- 
-    store.dispatch(actions.fetchSearch(compoundSearch))
+
+   // store.dispatch({type: types.REQUEST_SEARCH, compoundSearch})
+   //
+    store.dispatch(requestSearch(compoundSearch))
+    //store.dispatch(actions.fetchSearch(compoundSearch))
       .then((results) => {
         results = results
         done()
@@ -218,6 +228,45 @@ describe("<ScholarsSearch />", () => {
 
 })
 
+import { call, put } from 'redux-saga'  
+
+//const mySaga = loadTodos();  
+import { fetchSearch } from './actions/sagas'
+
+ 
+describe("fetch a search with sagas", () => {
+
+  const compoundSearch = { 'allWords': 'medicine', 'filter': 'people', 'start': '0'}
+
+  const mySaga = fetchSearch({type: types.REQUEST_SEARCH, searchFields: compoundSearch})
+ 
+
+  it ("should return proceed", () => {
+
+   console.log(mySaga.next().value)
+   console.log(mySaga.next().value)
+   
+
+ 
+  })
+
+
+
+})
+//*
+//import { call, put } from 'redux-saga/effects'
+//import Api from '...'
+
+//const iterator = fetchProducts()
+
+// expects a call instruction
+//assert.deepEqual(
+//  iterator.next().value,
+//  call(Api.fetch, '/products'),
+//  "fetchProducts should yield an Effect call(Api.fetch, './products')"
+//  )
+//*/
+
 // tests to write?  
 //
 // 1. If you hit search it updates the Route path (url) with parameters
@@ -226,6 +275,58 @@ describe("<ScholarsSearch />", () => {
 // use this?
 // https://jeremydmiller.com/2016/01/26/how-im-testing-reduxified-react-components/
 
+// import { put, call } from 'saga-effects'
+//
+// import { fetchSearch } from 'actions/sagas'
+//
+// test('fetchSearch saga test', (t) => {
+//
+// const generator = fetchSearch()
+//
+// generator.next().value
+// assert(isFetching == true)
+//
+// put({type: types.REQUEST_SEARCH})
+//
+// generator.next()
+// { isFetching: false }
+// assert(isFetching == false)
+//
+// })
+//
+/* 
+ * saga test example:
+ *
+ * import test from 'tape';
+
+import { put, call } from '../../../src/effects'
+import { incrementAsync, delay } from '../src/sagas'
+
+test('incrementAsync Saga test', (t) => {
+  const generator = incrementAsync()
+
+  t.deepEqual(
+    generator.next().value,
+    call(delay, 1000),
+    'counter Saga must call delay(1000)'
+  )
+
+  t.deepEqual(
+    generator.next().value,
+    put({type: 'INCREMENT'}),
+    'counter Saga must dispatch an INCREMENT action'
+  )
+
+  t.deepEqual(
+    generator.next(),
+    { done: true, value: undefined },
+    'counter Saga must be done'
+  )
+
+  t.end()
+});
+
+*/
 
 
 

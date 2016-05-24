@@ -1,3 +1,5 @@
+// run via babel-node examples/example_search.js (must npm install babel-cli --global)
+
 // NOTE: this is needed in console - because
 // it's not going through webpack
 require('dotenv').config();

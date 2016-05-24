@@ -17,6 +17,14 @@ console.log(config)
 // node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
 // (see) https://www.npmjs.com/package/dotenv#preload
 //
+//
+//'babelPreprocessor': {
+//  options: {
+//    optional: ['runtime'],  // per http://babeljs.io/docs/usage/options/
+//    sourceMap: 'inline'
+//  },
+//
+// http://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined-with-async-await
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
@@ -57,8 +65,10 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+        // http://asdfsafds.blogspot.com/2016/02/referenceerror-regeneratorruntime-is.html
         query: {
-          presets: ['react','es2015']
+          presets: ['react','es2015'],
+          plugins: ["transform-runtime"]
         }
       }
     ]

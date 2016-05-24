@@ -15,7 +15,12 @@ export class SearchTabs extends Component {
 
   
   render() {
-     const { search : {filter} } = this.props
+     const { search : {searchFields} } = this.props
+ 
+     // FIXME: seems like I shouldn't default filter in this place - 
+     // e.g. it should be more global
+     let filter = searchFields ? searchFields['filter'] : 'person'
+
      const { tabs : {grouped, isFetching } } = this.props
 
      const tabList = solr.tabList
@@ -36,12 +41,12 @@ export class SearchTabs extends Component {
       // get the count - default to 0 just in case something wrong
       //let matches = 0
 
-
       let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let label = tab.label
       
       ungroupedCount = matches
+
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
 
     })

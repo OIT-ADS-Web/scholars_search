@@ -9,6 +9,9 @@ import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
 import actions from '../actions/search'
+import * as types from '../actions/types'
+
+import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
 
 export class ScholarsSearchApp extends Component {
 
@@ -22,7 +25,7 @@ export class ScholarsSearchApp extends Component {
 
   //https://facebook.github.io/react/docs/context.html
   //https://medium.com/@skwee357/the-land-of-undocumented-react-js-the-context-99b3f931ff73#.ewo0he7cd
-  static get ChildContext() {
+  static get childContext() {
     return {router: this.props.routing}
   }
 
@@ -32,22 +35,29 @@ export class ScholarsSearchApp extends Component {
 
     let query = location.query
 
-    console.log("ScholarsSearchApp#componentDidMount")
-
     // FIXME: not sure if this is a good place for this
-    dispatch(actions.appInit())
+    //dispatch(actions.appInit())
 
     // NOTE: was searching if no query parameters in route path, just searching everything
     if (!_.isEmpty(query)) {
 
-      let start = query['start']
+      //let start = query['start'] || 0
       // NOTE: seems to be necessary to fetchSearch(... filter) with filter specified
       // but also filterSearch(filter) -- probably doing something wrong
-      dispatch(actions.fetchSearch(query, start, query['filter'] || 'person'))
-      dispatch(actions.fetchTabCounts(query))
+      //let filter = query['filter'] || 'person'
+
+      let builtSearch = { ...query } 
+      
+      dispatch(requestSearch(builtSearch))
+      dispatch(requestTabCount(builtSearch))
+ 
+      // thunk version
+      //dispatch(actions.fetchSearch(query, start, query['filter'] || 'person'))
+      //dispatch(actions.fetchTabCounts(query))
       
       // FIXME: how to initialize tab? this sort of works
-      dispatch(actions.filterSearch(query['filter'] || 'person'))
+      //dispatch(actions.filterSearch(query['filter'] || 'person'))
+    
     }
   }
 

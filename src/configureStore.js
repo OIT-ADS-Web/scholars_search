@@ -2,17 +2,30 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 
+import createSagaMiddleware, { END } from 'redux-saga'
+
+const sagaMiddleware = createSagaMiddleware()
+
 const loggerMiddleware = createLogger()
 
-const createStoreWithMiddleware = applyMiddleware(
+const createStoreWithMiddlewareThunkVersion = applyMiddleware(
   thunkMiddleware,
   loggerMiddleware
 )(createStore)
 
-const createStoreWithThunkMiddleware = applyMiddleware(
+const createStoreWithMiddlewareSagaVersion = applyMiddleware(
+  sagaMiddleware,
+  loggerMiddleware
+)(createStore)
+
+
+const createStoreWithOnlyThunkMiddleware = applyMiddleware(
   thunkMiddleware
 )(createStore)
 
+const createStoreWithOnlySagaMiddleware = applyMiddleware(
+    sagaMiddleware
+)(createStore)
 
 const initialState = {}
 
@@ -21,12 +34,21 @@ const initialState = {}
 //
 import reducers from './reducers/search'
 
-export default function configureStore(initialState = initialState) {
-  return createStoreWithMiddleware(reducers.mainReducer, initialState)
+export default function configureStoreThunk(initialState = initialState) {
+  return createStoreWithMiddlewareThunkVersion(reducers.mainReducer, initialState)
 }
 
-export function configureStoreWithoutLogger(initialState = initialState) {
-  return createStoreWithThunkMiddleware(reducers.mainReducer, initialState)
+export function configureStoreSaga(initialState = initialState) {
+  return createStoreWithMiddlewareSagaVersion(reducers.mainReducer, initialState)
 }
 
+export function configureStoreWithoutOnlyThunk(initialState = initialState) {
+  return createStoreWithOnlyThunkMiddleware(reducers.mainReducer, initialState)
+}
+
+export function configureStoreWithOnlySaga(initialState = initialState) {
+  return createStoreWithOnlySagaMiddleware(reducers.mainReducer, initialState)
+}
+
+export { sagaMiddleware }
 
