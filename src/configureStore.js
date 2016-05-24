@@ -1,13 +1,13 @@
 import { createStore, applyMiddleware } from 'redux'
+
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
-
 import createSagaMiddleware, { END } from 'redux-saga'
 
 const sagaMiddleware = createSagaMiddleware()
-
 const loggerMiddleware = createLogger()
 
+// FIXME: don't like all these versions of basically the same thing
 const createStoreWithMiddlewareThunkVersion = applyMiddleware(
   thunkMiddleware,
   loggerMiddleware

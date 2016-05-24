@@ -193,11 +193,12 @@ export const tabList = [
 // just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, start, rows, filter) {
 
+  // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",
-    rows: rows,
+    rows: Math.floor(rows),
     hl: true,
-    start: start
+    start: Math.floor(start)
   }
 
   // FIXME: should probalby delete filter just in case

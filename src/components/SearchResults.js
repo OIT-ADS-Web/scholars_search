@@ -33,8 +33,9 @@ export class SearchResults extends Component {
 
 
   render() {
-
     // so start should be coming from search object (state)
+    console.log(this.props)
+
     const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
 
     let { highlighting={}, response={} } = results
@@ -64,7 +65,11 @@ export class SearchResults extends Component {
           // seems like this needs to be pulled out as a callback-ish thing
           var display = ""
           if (highlight) {
-             display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
+            // sometimes doc.type is undefined ... ??
+             let docType = doc.type ? doc.type[0] : "?"
+             display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
+            //
+             //display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
           } else {
              display = ""
              //display = doc.ALLTEXT[0]

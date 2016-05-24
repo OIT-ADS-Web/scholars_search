@@ -27,7 +27,8 @@ export class SearchForm extends Component {
   handleSubmitSearch(e) {
     e.preventDefault();
     
-    const { search : { start, filter }, dispatch } = this.props;
+    //const { search : { start, filter }, dispatch } = this.props;
+    const { search : { searchFields }, dispatch } = this.props;
  
     const allWords = this.allWords
     const exactMatch = this.exactMatch
@@ -40,15 +41,19 @@ export class SearchForm extends Component {
     }
     // NOTE: allWords search needs a '*' after every word, otherwise it's searching
     // exactly.  Then again, maybe the user wants the ability to differentiate the two.
-    //
-    // NOTE: having problems with getting 'start' - setting it to 0 here
-    //
+    
+    // NOTE: if someone is searching 'organizations' tab - go ahead and persist
+    // that tab - but default to 'person' tab if nothing is there
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
+    // NOTE: if it's a new search - just default to page 0 instead of something weird
+    let start = 0
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
        'atLeastOne': atLeastOne.value,
        'noMatch': noMatch.value,
-       'start': 0,
+       'start': start,
        'filter': filter
      }
 
@@ -67,28 +72,16 @@ export class SearchForm extends Component {
     dispatch(requestSearch(compoundSearch))
     dispatch(requestTabCount(compoundSearch))
 
-    //dispatch(requestFilter(filter))
-
-
     // thunk version
     //dispatch(actions.fetchTabCounts(compoundSearch))
     //dispatch(actions.fetchSearch(compoundSearch, 0, filter))
-
-    // NOTE: was having problems with reseting page - so 
-    // defaulted to setting start to 0 in function
-    // calls - but I was getting [page 2 of 0] if I didn't do this
-    //
-    //
-    //
     //dispatch(actions.resetPage())
 
     // even though fetchSearch(...filter) takes filter this was needed
-    
     //dispatch(actions.filterSearch(filter))
     
     // on the other hand, this does NOT seem necessary.  Why not?
     //dispatch(actions.resetFilter())
-
 
   }
 

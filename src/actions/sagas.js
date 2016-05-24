@@ -16,12 +16,12 @@ function fetchTabsApi(searchFields) {
 
   searcher.setupTabGroups()
   searcher.search = searchFields
-  
+
   return searcher.execute().then(res => res.json())
 }
 
 // 2. what to do 
-function* fetchTabs(action) {
+export function* fetchTabs(action) {
   const { searchFields } = action
   const results = yield call(fetchTabsApi,searchFields) 
 
@@ -45,17 +45,19 @@ function* watchForTabs() {
 
 // ********* search ******
 // 1. actual function
-function fetchSearchApi(searchFields) {
+export function fetchSearchApi(searchFields) {
   const solr_url = process.env.SOLR_URL
   let searcher = new SolrQuery(solr_url)
 
   // FIXME: need a good way to default these 
-  let start = searchFields ? searchFields['start'] : 0
-  let filter = searchFields ? searchFields['filter'] : 'person'
+  let start = searchFields ? Math.floor(searchFields['start']) : 0
+  let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
   searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
   searcher.search =  searchFields
-  
+ 
+  // FIXME: if this is an error (e.g. the JSON indicates it's an error)
+  // nothing is done differently 
   return searcher.execute().then(res => res.json())
 }
 
@@ -64,6 +66,9 @@ function fetchSearchApi(searchFields) {
 export function* fetchSearch(action) {
   const { searchFields } = action
   const results = yield call(fetchSearchApi, searchFields)
+
+  //console.log(results.responseHeader.status)
+  //console.log(results.responseHeader.params)
 
   try {
     yield put(receiveSearch(results))

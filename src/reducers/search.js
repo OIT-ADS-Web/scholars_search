@@ -52,7 +52,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 
 // could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
-function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
+function searchReducer(search = { isFetching: false, results: {}}, action) {
+//function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
 
   case types.REQUEST_SEARCH:
@@ -67,22 +68,22 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0, filt
       results: action.results,
       lastUpdated: action.receivedAt
     }
-  case types.NEXT_PAGE:
-    return { ...search, 
-      start: search.start + PAGE_ROWS
-    }
-  case types.PREVIOUS_PAGE:
-    return { ...search, 
-      start: search.start - PAGE_ROWS
-  }
-  case types.RESET_PAGE:
-    return { ...search, 
-      start: 0 
-  }
-  case types.SET_FILTER:
-    return { ...search, 
-      filter: action.filter
-  }
+  //case types.NEXT_PAGE:
+  //  return { ...search, 
+  //    start: search.start + PAGE_ROWS
+  //  }
+  //case types.PREVIOUS_PAGE:
+  //  return { ...search, 
+  //    start: search.start - PAGE_ROWS
+  //}
+  //case types.RESET_PAGE:
+  //  return { ...search, 
+  //    start: 0 
+  //}
+  //case types.SET_FILTER:
+  //  return { ...search, 
+  //    filter: action.filter
+  //}
   default:
     return search;
   }
