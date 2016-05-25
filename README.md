@@ -7,18 +7,17 @@ Install node dependencies:
 
 ## Start the development server:
 
-    ```
-    > npm start
+  ```
+  > npm start
     
-    ```
+  ```
 
-    or (if need to set an environment):
+  or (if need to set an environment):
 
+  ```
+  > NODE_ENV=(development|acceptance_dev) npm start
 
-    ```
-    > NODE_ENV=(development|acceptance_dev) npm start
-    
-    ```
+  ```
 
 (see below for other setup necessary to connect to acceptance server during development)
 
@@ -89,12 +88,12 @@ much destructive about that.
 
 To connect to acceptance server, make a few ssh tunnels:
 
-    ```
-    [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
+  ```
+  [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
 
-    [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
+  [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
 
-    ```
+  ```
 
 And add these lines to /etc/apache2/others/scholars.conf
 
