@@ -3,6 +3,7 @@
 import * as types from '../actions/types'
 import { PAGE_ROWS } from '../actions/constants'
 
+/*
 function appInitReducer(init = {isLoading: false, departments: []}, action) {
 
   switch(action.type) {
@@ -20,6 +21,7 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
       return init
     }
 }
+*/
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -113,7 +115,7 @@ import { routerReducer  } from 'react-router-redux'
 const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
-  init: appInitReducer,
+  //init: appInitReducer,
   tabs: tabReducer
 })
 

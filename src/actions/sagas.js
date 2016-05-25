@@ -3,7 +3,7 @@ import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
 import { takeEvery, takeLatest } from 'redux-saga'
-import { call, put, fork, take } from 'redux-saga/effects'
+import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
 import { receiveSearch, receiveTabCount } from './search'
 
@@ -30,7 +30,7 @@ export function* fetchTabs(action) {
   } catch(e) {
     // FIXME: not actually prepared for error in application
     console.log(e.message)
-    yield put({type: "TAB_COUNT_FAILED", message: e.message})
+    yield put({type: types.TABCOUNTS_FAILED, message: e.message})
   }
 
 }
@@ -49,8 +49,11 @@ export function fetchSearchApi(searchFields) {
   const solr_url = process.env.SOLR_URL
   let searcher = new SolrQuery(solr_url)
 
-  // FIXME: need a good way to default these 
-  let start = searchFields ? Math.floor(searchFields['start']) : 0
+  // FIXME: need a good way to default these - there is similar logic
+  // in at least 3 different places - should not have in to do with in
+  // components, and libraries, and sagas ....
+  //
+  let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
   let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
   searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
@@ -61,22 +64,28 @@ export function fetchSearchApi(searchFields) {
   return searcher.execute().then(res => res.json())
 }
 
+// FIXME: how to cancel and how to deal with errors
+// 
+// cancel might look like this:
+// https://yelouafi.github.io/redux-saga/docs/advanced/TaskCancellation.html
 
 // 2. what watcher will do
 export function* fetchSearch(action) {
   const { searchFields } = action
   const results = yield call(fetchSearchApi, searchFields)
 
-  //console.log(results.responseHeader.status)
-  //console.log(results.responseHeader.params)
-
   try {
     yield put(receiveSearch(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
     console.log(e.message)
-    yield put({type: "SEARCH_FAILED", message: e.message})
-  }
+    // yield put(searchFailed(message))
+    yield put({type: types.SEARCH_FAILED, message: e.message})
+  } finally {
+    if (yield cancelled()) {
+      //yield put(searchCancelled(message))
+    }
+  }  
 
 }
 
@@ -84,7 +93,15 @@ export function* fetchSearch(action) {
 function* watchForSearch() {
   while(true) {
     const action = yield take(types.REQUEST_SEARCH)
-    yield fork(fetchSearch, action)
+    
+    // NOTE: if I change it to this (per cancel example)
+    // if spins forever
+    const searchTask = yield fork(fetchSearch, action)
+    //yield fork(fetchSearch, action)
+
+
+    //yield take(types.SEARCH_CANCELLED)
+    //yield cancel(searchTask)
   }
 }
 

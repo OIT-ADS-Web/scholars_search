@@ -26,7 +26,6 @@ export class SearchForm extends Component {
 
   handleSubmitSearch(e) {
     e.preventDefault();
-    
     //const { search : { start, filter }, dispatch } = this.props;
     const { search : { searchFields }, dispatch } = this.props;
  
@@ -59,7 +58,7 @@ export class SearchForm extends Component {
 
     /*
      * FIXME: should only add these to route if there is a value
-     *
+     * e.g. it really shouldn't search a 'blank' search
      *
      * FIXME: this pathname should be global, configurable, right?
      */

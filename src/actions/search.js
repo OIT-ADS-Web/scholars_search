@@ -45,6 +45,18 @@ export function receiveTabCount(json) {
 
 }
 
+export function cancelSearch() {
+  return {
+    type: types.SEARCH_CANCELLED
+  }
+}
+
+export function searchFailed() {
+  return {
+    type: types.SEARCH_FAILED
+  }
+}
+
 /*
 function nextPage() {
   return {

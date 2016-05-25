@@ -32,7 +32,7 @@ class SolrQuery {
 
   addGroupQuery(name, query) {
     // FIXME: should add a check to make sure options[:group] = true is set
-    //
+    // otherwise solr error could occur
     var groupQuery = {}
     groupQuery[name]=query
     Object.assign(this._groupQueries,groupQuery)

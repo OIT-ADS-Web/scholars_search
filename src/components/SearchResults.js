@@ -33,10 +33,10 @@ export class SearchResults extends Component {
 
 
   render() {
-    // so start should be coming from search object (state)
-    console.log(this.props)
+    const { search : { results, searchFields, isFetching } } = this.props
 
-    const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
+    // FIXME: this same logic appears in many places - it should be centralized
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
     let { highlighting={}, response={} } = results
     let { numFound=0,docs } = response
@@ -106,12 +106,32 @@ export class SearchResults extends Component {
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
     // <h3>Results for group: {numFound} </h3> 
- 
+    
+    // FIXME: the sorter - select should be it's own component at least
+    // maybe even entire 'row' - download could be too ...
     return (
       <section className="search-results">
         <h3>Query: {query}</h3>
         <SearchTabs></SearchTabs>
         <div className="search-results-table">
+         {/*  
+          <hr />
+          
+          <div className="row">
+            <div className="col-md-8">
+              <button type="button" className="btn btn-default btn-small">
+                <span className="glyphicon glyphicon-download"> Download </span>
+              </button>
+            </div>
+            <div className="col-md-4">
+              <div className="pull-right">
+                <select className="form-control"><option value="">Sort By...</option></select>
+              </div>
+            </div>
+          </div>
+          */
+          }
+          <hr/>
           {resultSet}
         </div>
 

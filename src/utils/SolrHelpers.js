@@ -213,6 +213,8 @@ function setupDefaultSearch(searcher, start, rows, filter) {
     searcher.addFilter("type", foundFilter.filter)
   }
 
+  // sort: default = score desc
+  //
   return searcher
 }
 
