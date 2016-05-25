@@ -9,7 +9,7 @@ const mockStore = configureMockStore(middlewares)
 
 import actions from './actions/search'
 
-import { requestSearch } from './actions/search'
+import { requestSearch, receiveSearch } from './actions/search'
 
 import * as types from './actions/types'
 
@@ -24,64 +24,73 @@ import assert from 'assert'
 // }
 import nock from 'nock'
 
-/*
+import { fetchSearch, fetchSearchApi } from './actions/sagas'
+
+// a typical response (abbreviated) ...
+const solrJson = {
+    response: {
+      numFound: 1, 
+      docs: [  
+      { 
+        mostSpecificTypeURIs: ["http://vivoweb.org/ontology/core#AcademicDepartment"],            
+        DocId: "vitroIndividual:https://scholars.duke.edu/individual/org50000844",
+        classgroup: ["http://vivoweb.org/ontology#vitroClassGrouporganizations"],
+        URI: "https://scholars.duke.edu/individual/org50000844",
+        ALLTEXT: ["50000844 Medicine"],
+        type: ["http://vivoweb.org/ontology/core#AcademicDepartment"],
+        nameRaw: ["Medicine"]
+      }  
+    ]
+  }
+}
+
+// FIXME: this 'nock' thing is supposed to proxy the call to Solr 
+// (so the test doesn't actually have to hit solr)
+// but it does not do that right now, it just silently skips over
+
+// NOTE: here's an example supposely using isomporphic-search
+// and nock -- 
+// https://github.com/node-nock/nock/issues/399
+  
+const stub = nock("http://localhost")
+  .get("/ROOTsolr/collection1/select")
+  .query({q: 'medicine', wt: 'json', rows: '50', hl: 'true', start: '0'})
+  .reply(200, { body: solrJson })
+ 
+describe("SOLR Query", () => {
+
+  const compoundSearch = { 'allWords': 'medicine' }
+  var json
+  
+  // NOTE: needed to do this (calling done())
+  // found idea here: https://volaresystems.com/blog/post/2014/12/09/Testing-async-calls-with-Jasmine
+  beforeEach(function(done) {
+    let results = fetchSearchApi(compoundSearch)
+
+    results.then((res) => {
+        json = res
+        done()
+     })
+
+  })
+
+
+  it("should connect to solr", () => {
+    let hasResponse = json['response']
+    assert(hasResponse, true)
+
+  })
+
+})
+
 describe("Running a Search", () => {
   var results = {}
   const store = mockStore({ search: []})
   const compoundSearch = { 'allWords': 'medicine' }
 
-  // a typical response (abbreviated) ...
-  const solrJson = {
-      response: {
-        numFound: 1, 
-        docs: [  
-        { 
-          mostSpecificTypeURIs: ["http://vivoweb.org/ontology/core#AcademicDepartment"],            
-          DocId: "vitroIndividual:https://scholars.duke.edu/individual/org50000844",
-          classgroup: ["http://vivoweb.org/ontology#vitroClassGrouporganizations"],
-          URI: "https://scholars.duke.edu/individual/org50000844",
-          ALLTEXT: ["50000844 Medicine"],
-          type: ["http://vivoweb.org/ontology/core#AcademicDepartment"],
-          nameRaw: ["Medicine"]
-        }  
-      ]
-    }
-  }
-
-  // FIXME: just make this call the SolrQuery - not dispatch, Store and all that
-  //
-  //
-  //
-  // FIXME: this 'nock' thing is supposed to proxy the call to Solr 
-  // (so the test doesn't actually have to hit solr)
-  // but it does not do that right now, it just silently skips over
-
-  // NOTE: here's an example supposely using isomporphic-search
-  // and nock -- 
-  // https://github.com/node-nock/nock/issues/399
-  
-  const stub = nock("http://localhost")
-    .get("/ROOTsolr/collection1/select")
-    .query({q: 'medicine', wt: 'json', rows: '50', hl: 'true', start: '0'})
-    .reply(200, { body: solrJson })
- 
-
-  // NOTE: needed to do this (calling done())
-  // found idea here: https://volaresystems.com/blog/post/2014/12/09/Testing-async-calls-with-Jasmine
-  //beforeEach(function(done) {
   beforeEach(function() {
-    // NOTE: with sagas not returning promise anymore ... not
-    // sure how to a test like this anymore
-    //
-    //store.dispatch(requestSearch(compoundSearch))
-    //done()
-
-    store.dispatch(actions.fetchSearch(compoundSearch))
-      .then((results) => {
-        results = results
-        done()
-     })
-  
+    store.dispatch(requestSearch(compoundSearch))
+    store.dispatch(receiveSearch(solrJson))
   })
 
   it("should RECEIVE_SEARCH when running search", () => {
@@ -92,14 +101,11 @@ describe("Running a Search", () => {
  
   it ("should return at least ONE doc", () => {
     assert(store.getActions()[1].results.response.docs.length > 0)
-    // NOTE: if it were using 'nock' this would be true
-    //assert(store.getActions()[1].results.response.docs.length == 1)
   })
 
 
-
 })
-*/
+
 
 import reducers from './reducers/search'
 
@@ -132,114 +138,8 @@ describe('search reducer', () => {
 
 // tried following patterns in this (but largely did not succeed):
 // http://engineering.pivotal.io/post/tdding-react-and-redux/
- 
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-
-import { Provider } from 'react-redux'
-import { Router, Route } from 'react-router'
-
-import { syncHistoryWithStore } from 'react-router-redux'
-import { createHistory } from 'history';
-import { useRouterHistory } from 'react-router';
-
-import ScholarsSearch from './containers/ScholarsSearch'
-
-// NOTE: these are 'unconnected' versions - the problem is SearchTab(s) and PagingPanel
-// are 'connected' -- so even trying to test SearchResults as 'shallow' render
-// (see https://simonsmith.io/unit-testing-react-components-without-a-dom/) is problematic
-//
-//import { ScholarsSearchApp } from './containers/ScholarsSearchApp'
-//import { SearchForm } from './components/SearchForm'
-//import { SearchResults } from './components/SearchResults'
-
-// NOTE: these would be the 'connected' versions
-import  ScholarsSearchApp from './containers/ScholarsSearchApp'
-import  SearchForm from './components/SearchForm'
-import  SearchResults from './components/SearchResults'
-
-//import { mainReducer, searchReducer } from './reducers/search'
-
-/*
-describe("<Routing />", () => {
-
-  var app 
-  var store 
-  var compoundSearch
-
-  beforeEach(function(done) {
-    store = configureStoreWithoutLogger()
-
-    const browserHistory = useRouterHistory(createHistory)({
-      basename: '/scholars_search'
-    });
-
-    const history = syncHistoryWithStore(browserHistory, store)
-
-    app = TestUtils.renderIntoDocument(<Provider store={store}><Router history={history}><ScholarsSearchApp /></Router></Provider>)
-       
-    compoundSearch = { 'allWords': 'medicine'}
- 
-    store.dispatch(requestSearch(compoundSearch))
-    //store.dispatch(actions.fetchSearch(compoundSearch))
-      .then((results) => {
-        results = results
-        done()
-     })
- 
-  })
-
-
-  it('puts search parameters in the route path', function() {
-    var child =TestUtils.findRenderedComponentWithType(app, Router)
-
-    // FIXME: I don't understand how I can git location.query here ?? (to test) 
-    console.debug(child)
-
-  })
-
-
-})
-
-describe("<ScholarsSearch />", () => {
-
-  var app 
-  var store 
-  var compoundSearch
-
-  beforeEach(function(done) {
-    store = configureStoreWithoutLogger()
-    app = TestUtils.renderIntoDocument(<Provider store={store}><SearchResults/></Provider>)
-
-    compoundSearch = { 'allWords': 'medicine'}
-
-   // store.dispatch({type: types.REQUEST_SEARCH, compoundSearch})
-   //
-    store.dispatch(requestSearch(compoundSearch))
-    //store.dispatch(actions.fetchSearch(compoundSearch))
-      .then((results) => {
-        results = results
-        done()
-     })
- 
-  })
-
-
-  it('adds search fields to the store', function() {
-     var child = TestUtils.findRenderedComponentWithType(app, SearchResults)
-      
-     const node = ReactDOM.findDOMNode(child)
-     const list = node.querySelectorAll(".search-results-table")
-
-     assert(list[0].children.length > 0)
-
-  })
-
-})
-*/
 
 import { call, put } from 'redux-saga/effects'  
-import { fetchSearch, fetchSearchApi } from './actions/sagas'
 
 describe("sagas for search", () => {
 
@@ -253,93 +153,10 @@ describe("sagas for search", () => {
    let fetchFunction = call(fetchSearchApi, compoundSearch)
    assert.equal(first.fn, fetchFunction.fn)
    assert.equal(first.args, fetchFunction.args)
-
-   //let second = mySaga.next().value
-   //console.log(second)
-   //let receiveFunction = put({type: types.RECEIVE_SEARCH})
-
-   // wow! this is ugly - too much implementation details
-   // couldn't get equalist test to work otherwise
-   //assert.equal(second.PUT.action.type, receiveFunction.PUT.action.type)
   })
 
-
-
 })
-//*
-//import { call, put } from 'redux-saga/effects'
-//import Api from '...'
 
-//const iterator = fetchProducts()
-
-// expects a call instruction
-//assert.deepEqual(
-//  iterator.next().value,
-//  call(Api.fetch, '/products'),
-//  "fetchProducts should yield an Effect call(Api.fetch, './products')"
-//  )
-//*/
-
-// tests to write?  
-//
-// 1. If you hit search it updates the Route path (url) with parameters
-// 2. If I get results on a tab, it should show page number, back <-> next (if pages > PAGE_ROWS)
- 
-// use this?
-// https://jeremydmiller.com/2016/01/26/how-im-testing-reduxified-react-components/
-
-// import { put, call } from 'saga-effects'
-//
-// import { fetchSearch } from 'actions/sagas'
-//
-// test('fetchSearch saga test', (t) => {
-//
-// const generator = fetchSearch()
-//
-// generator.next().value
-// assert(isFetching == true)
-//
-// put({type: types.REQUEST_SEARCH})
-//
-// generator.next()
-// { isFetching: false }
-// assert(isFetching == false)
-//
-// })
-//
-/* 
- * saga test example:
- *
- * import test from 'tape';
-
-import { put, call } from '../../../src/effects'
-import { incrementAsync, delay } from '../src/sagas'
-
-test('incrementAsync Saga test', (t) => {
-  const generator = incrementAsync()
-
-  t.deepEqual(
-    generator.next().value,
-    call(delay, 1000),
-    'counter Saga must call delay(1000)'
-  )
-
-  t.deepEqual(
-    generator.next().value,
-    put({type: 'INCREMENT'}),
-    'counter Saga must dispatch an INCREMENT action'
-  )
-
-  t.deepEqual(
-    generator.next(),
-    { done: true, value: undefined },
-    'counter Saga must be done'
-  )
-
-  t.end()
-});
-
-*/
 
 
 

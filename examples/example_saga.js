@@ -7,19 +7,19 @@ const compoundSearch = { 'allWords': 'medicine'}
 // see http://yelouafi.github.io/redux-saga/docs/api/index.html#runsagaiterator-subscribe-dispatch-getstate-monitor
 
 // NOTE: this is a way to run the functions ... a little weird
-const myIO = {
+const myRedux = {
   //subscribe: function(input) { console.log(input) },
   dispatch: function(output) { console.log(output) },
 }
 
 const taskSearch = runSaga(
   fetchSearch(compoundSearch),
-  myIO
+  myRedux
 )
 
 const taskTabs = runSaga(
   fetchTabs(compoundSearch),
-  myIO
+  myRedux
 )
 
 import { requestSearch, requestTabCount } from '../src/actions/search'

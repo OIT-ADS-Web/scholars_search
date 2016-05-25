@@ -1,6 +1,6 @@
 // FIXME: this seems the wrong place for this
-// e.g. containers/Root.js - maybe it should be 
-// in ../main.js, or something more like that
+// e.g. containers/ since it does configureStore, sets the Routes
+// etc... maybe most of that should be done in ../main.js
 
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
@@ -10,28 +10,14 @@ import { sagaMiddleware, configureStoreSaga } from '../configureStore'
 
 import ScholarsSearchApp from './ScholarsSearchApp'
 
-//const store = configureStoreThunk()
 const store = configureStoreSaga()
 import rootSaga from '../actions/sagas'
 
 store.runSaga = sagaMiddleware.run
 store.runSaga(rootSaga)
 
+// FIXME: saw this line somewhere, not sure if it's necessary or not
 //store.close = () => store.dispatch(END)
-
-// import sagaMiddleware from '../configureStore'
-//const store = configureStoreWithSagas()
-
-//import configureStoreWithSaga from '../configureStore'
- 
-// import sagaMiddleware from '../configureStore'
-
-// import mySaga from '../actions/sagas'
-//
-//sagaMiddleware.run(helloSaga)
-
-//import rootSaga from '../actions/sagas'
-//store.runSaga(rootSaga)
 
 // http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
 import { Router, Route, IndexRoute } from 'react-router'
