@@ -37,7 +37,7 @@ module.exports = {
   output: {
     path: __dirname + "/dist/",
     filename: "[name].js",
-    library: "Root",
+    library: "ScholarsSearch",
     libraryTarget: "umd"
   },
   // NOTE: this is in here so nock can run tests - but they don't work anyway

@@ -29,7 +29,7 @@ Navigate to:
   http://localhost:8333
 
 
-*NOTE*: you are more likely to want to use this (see 'Proxy' section for setup):
+**NOTE**: you are more likely to want to use this (see 'Proxy' section for setup):
 
   http://localhost/scholars_search
 
