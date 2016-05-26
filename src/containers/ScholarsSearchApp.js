@@ -35,29 +35,24 @@ export class ScholarsSearchApp extends Component {
 
     let query = location.query
 
-    // FIXME: not sure if this is a good place for this
-    //dispatch(actions.appInit())
-
     // NOTE: was searching if no query parameters in route path, just searching everything
     if (!_.isEmpty(query)) {
 
-      //let start = query['start'] || 0
-      // NOTE: seems to be necessary to fetchSearch(... filter) with filter specified
-      // but also filterSearch(filter) -- probably doing something wrong
-      //let filter = query['filter'] || 'person'
+      // FIXME: I have these kinds of checks all over, would like to have it centralized
+      // so don't have to remember to check everywhere
+      
+      if (!query['start']) {
+        query['start'] = 0
+      }
+      if (!query['filter']) {
+        query['filter'] = 'person'
+      }
 
       let builtSearch = { ...query } 
       
       dispatch(requestSearch(builtSearch))
       dispatch(requestTabCount(builtSearch))
  
-      // thunk version
-      //dispatch(actions.fetchSearch(query, start, query['filter'] || 'person'))
-      //dispatch(actions.fetchTabCounts(query))
-      
-      // FIXME: how to initialize tab? this sort of works
-      //dispatch(actions.filterSearch(query['filter'] || 'person'))
-    
     }
   }
 

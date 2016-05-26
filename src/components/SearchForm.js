@@ -67,21 +67,8 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-
     dispatch(requestSearch(compoundSearch))
     dispatch(requestTabCount(compoundSearch))
-
-    // thunk version
-    //dispatch(actions.fetchTabCounts(compoundSearch))
-    //dispatch(actions.fetchSearch(compoundSearch, 0, filter))
-    //dispatch(actions.resetPage())
-
-    // even though fetchSearch(...filter) takes filter this was needed
-    //dispatch(actions.filterSearch(filter))
-    
-    // on the other hand, this does NOT seem necessary.  Why not?
-    //dispatch(actions.resetFilter())
-
   }
 
   render() {

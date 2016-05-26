@@ -16,7 +16,6 @@ export class PagingPanel extends Component {
   // level just to get at router and add values to router so they go into state
   static get contextTypes() {
     return({
-      //router: PropTypes.object
       router: PropTypes.object.isRequired
     })
   }
@@ -37,14 +36,7 @@ export class PagingPanel extends Component {
 
     const { search : { searchFields }, dispatch } = this.props
 
-    // thunk version
-    //dispatch(actions.nextPage())
-    
-    // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
-    // but I had to add it here to make it work
-    //
     let start = searchFields ? searchFields['start'] : 0
-
     let newStart = Math.floor(start + PAGE_ROWS)
 
     // NOTE: if not a new 'query' obj - this error happens:
@@ -59,8 +51,6 @@ export class PagingPanel extends Component {
       
     dispatch(requestSearch(query))
     
-    // thunk version
-    //dispatch(actions.fetchSearch(searchFields, newStart, filter))
   }
 
   handlePreviousPage(e) {
@@ -72,11 +62,8 @@ export class PagingPanel extends Component {
     
     const { search : { searchFields }, dispatch } = this.props
 
-    //dispatch(actions.previousPage())
-
     let start = searchFields ? searchFields['start'] : 0
     let newStart = Math.floor(start - PAGE_ROWS) 
-    // FIXME: seems like actions.previousPage() would take care of this    
     
     const query = { ...searchFields, start: newStart }
 
@@ -86,12 +73,7 @@ export class PagingPanel extends Component {
 
     })
  
-    // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
-    // but otherwise it uses the the start from const { search : { start ...
-    // which is still what it was when the method was called (not updated)
-    //
     dispatch(requestSearch(query))
-    //dispatch(actions.fetchSearch(searchFields, newStart, filter))
   }
 
   render() {
@@ -102,7 +84,6 @@ export class PagingPanel extends Component {
     let { numFound=0,docs } = response
 
     let start = searchFields['start'] || 0
-    //let filter = searchFields['filter'] || 'person'
 
     if (!docs) {
       return ( <div></div> )
@@ -187,9 +168,6 @@ export class PagingPanel extends Component {
 const mapStateToProps = (search, ownProps) => {
   return  search;
 }
-
-// NOTE: doesn't seem to ever call unless I connect ...
-//export default SearchResults
 
 export default connect(mapStateToProps)(PagingPanel);
 

@@ -31,7 +31,6 @@ export class SearchResults extends Component {
     super(props, context);
   }
 
-
   render() {
     const { search : { results, searchFields, isFetching } } = this.props
 
@@ -65,14 +64,12 @@ export class SearchResults extends Component {
           // seems like this needs to be pulled out as a callback-ish thing
           var display = ""
           if (highlight) {
-            // sometimes doc.type is undefined ... ??
+             // NOTE: sometimes doc.type is undefined ... ??
              let docType = doc.type ? doc.type[0] : "?"
              display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
-            //
-             //display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : doc.type[0]
           } else {
-             display = ""
-             //display = doc.ALLTEXT[0]
+            // no highlight -- not sure what to show
+            display = ""
           }
           
           switch(filter) {

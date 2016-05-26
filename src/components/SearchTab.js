@@ -36,34 +36,17 @@ export class SearchTab extends Component {
     e.preventDefault()
     
     const { search : { results, searchFields }, dispatch } = this.props
-    
-    //const { tabs : {  }} = this.props
 
     let filter = this.filter
 
+    // setting default start to 0 - so paging is reset - luckily
+    // filter should always be present
     const query  = {...searchFields, start: 0, filter: filter }
 
-
-    // FIXME: can we update searchFeilds here? 
-    //
-    //
-    // need to set filters 
     dispatch(requestSearch(query))
     
-    //dispatch(requestSearch(query))
-
-
-    //dispatch({type: types.SET_FILTER, filter: filter})
-    
-    //dispatch(actions.filterSearch(filter))
-    //dispatch(actions.fetchSearch(searchFields, 0, filter))
-    
-    //dispatch(actions.resetPage())
-
     // NOTE: took me a while to figure out I couldn't just pass
-    // searchFields as {query: searchFields} had to copy it
-    //const query  = {...searchFields, start: 0, filter: filter }
-
+    // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
       pathname: '/',
       query: query

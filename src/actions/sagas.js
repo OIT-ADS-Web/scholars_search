@@ -5,7 +5,9 @@ import { PAGE_ROWS } from './constants'
 import { takeEvery, takeLatest } from 'redux-saga'
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
-import { receiveSearch, receiveTabCount } from './search'
+// NOTE: not import 'requestSearch', 'requestTabCount' because
+// those are called by containers/components
+import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './search'
 
 // ***** tabs *****
 // 1. actual function
@@ -29,8 +31,7 @@ export function* fetchTabs(action) {
     yield put(receiveTabCount(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
-    console.log(e.message)
-    yield put({type: types.TABCOUNTS_FAILED, message: e.message})
+    yield put(tabcountsFailed(e.message))
   }
 
 }
@@ -51,11 +52,12 @@ export function fetchSearchApi(searchFields) {
 
   // FIXME: need a good way to default these - there is similar logic
   // in at least 3 different places - should not have in to do with in
-  // components, and libraries, and sagas ....
+  // components, AND libraries, AND sagas ....
   //
   let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
   let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
+  //
   searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
   searcher.search =  searchFields
  
@@ -78,9 +80,7 @@ export function* fetchSearch(action) {
     yield put(receiveSearch(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
-    console.log(e.message)
-    // yield put(searchFailed(message))
-    yield put({type: types.SEARCH_FAILED, message: e.message})
+    yield put(searchFailed(e.message))
   } finally {
     if (yield cancelled()) {
       //yield put(searchCancelled(message))

@@ -59,6 +59,9 @@ class SolrQuery {
 
   
   set search(compoundSearch) {
+    // FIXME: would this be a better place to check for
+    // filter and start being empty
+    //
     this._search = compoundSearch
     // FIXME: is this a good idea or not, want
     // to hide the implementation
@@ -101,7 +104,7 @@ class SolrQuery {
     // so the hash looks like this now
     // { facet: true, facet.fields: [field1, field2 ...]}
     // 
-    // see here for more complete example of other thigns 'faceting' can do:
+    // see here for more complete example of other things 'faceting' can do:
     //
     // http://yonik.com/json-facet-api/
 

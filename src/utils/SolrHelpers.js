@@ -193,11 +193,14 @@ export const tabList = [
 // just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, start, rows, filter) {
 
+  //let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
+  //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
   // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",
-    rows: Math.floor(rows),
     hl: true,
+    rows: Math.floor(rows),
     start: Math.floor(start)
   }
 
