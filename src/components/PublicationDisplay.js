@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-class PublicationDisplay extends Component {
+import HasSolrData from './HasSolrData'
+
+class PublicationDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
@@ -13,32 +15,21 @@ class PublicationDisplay extends Component {
     return (str || "").replace(/&#039;/g,"'");
   }
 
-  get name() {
-    return this.doc.nameRaw[0]
-  }
-
-  get preferredTitle() {
-    return this.doc.PREFERRED_TITLE
-  }
-
-  get docId() {
-    return this.doc.DocId
-  }
-
-  get allText() {
-    return this.doc.ALLTEXT.join(" ")
-  }
 
   render() {
     
     return (
          <div key="{this.docId}" className="publication search-result-row">
             <div className="row">
-             <div className="col-md-12"> 
+             <div className="col-md-11"> 
               <strong>
                  <span dangerouslySetInnerHTML={{__html: this.name}}></span>
               </strong>
              </div>
+             <div className="col-md-1">
+                <span className="label label-primary">{this.score}</span>
+              </div>
+ 
             </div>
             
             <div className="row highlight-text">

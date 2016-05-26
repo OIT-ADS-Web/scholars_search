@@ -37,7 +37,7 @@ export class PagingPanel extends Component {
     const { search : { searchFields }, dispatch } = this.props
 
     let start = searchFields ? searchFields['start'] : 0
-    let newStart = Math.floor(start + PAGE_ROWS)
+    let newStart = Math.floor(start) + PAGE_ROWS
 
     // NOTE: if not a new 'query' obj - this error happens:
     // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
@@ -63,7 +63,7 @@ export class PagingPanel extends Component {
     const { search : { searchFields }, dispatch } = this.props
 
     let start = searchFields ? searchFields['start'] : 0
-    let newStart = Math.floor(start - PAGE_ROWS) 
+    let newStart = Math.floor(start) - PAGE_ROWS
     
     const query = { ...searchFields, start: newStart }
 
@@ -94,7 +94,8 @@ export class PagingPanel extends Component {
     // 105 results
     // start at 50
     // would be page 2 of 3
-    //   
+    // NOTE: all these Math.floor(s) are annoying
+    //
     var totalPages = Math.floor(numFound/PAGE_ROWS)
     const remainder = numFound % PAGE_ROWS
     if (remainder) {
@@ -139,11 +140,12 @@ export class PagingPanel extends Component {
     var previous = false
 
     // (50 + 50 < 105)
-    if ((start + PAGE_ROWS) < numFound) {
+
+    if ((Math.floor(start) + Math.floor(PAGE_ROWS)) < numFound) {
       next = true
     }
     // (100 > 50 and some found)
-    if (start >= PAGE_ROWS) {
+    if (Math.floor(start) >= Math.floor(PAGE_ROWS)) {
       previous = true
     }
 

@@ -111,7 +111,7 @@ export class SearchResults extends Component {
         <h3>Query: {query}</h3>
         <SearchTabs></SearchTabs>
         <div className="search-results-table">
-         {/*  
+         
           <hr />
           
           <div className="row">
@@ -121,13 +121,16 @@ export class SearchResults extends Component {
               </button>
             </div>
             <div className="col-md-4">
-              <div className="pull-right">
-                <select className="form-control"><option value="">Sort By...</option></select>
+              <div className="pull-right form-inline">
+                <div className="form-group">
+                  <label>Sort By:</label>
+                  <select className="form-control"><option value="score" selected>Relevance</option></select>
+                </div>
               </div>
             </div>
+
           </div>
-          */
-          }
+          
           <hr/>
           {resultSet}
         </div>

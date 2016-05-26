@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-class OrganizationDisplay extends Component {
+import HasSolrData from './HasSolrData'
+
+class OrganizationDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
@@ -9,30 +11,18 @@ class OrganizationDisplay extends Component {
     this.display = this.props.display;
   }
 
-  get name() {
-    return this.doc.nameRaw[0]
-  }
-
-  get preferredTitle() {
-    return this.doc.PREFERRED_TITLE
-  }
-
-  get docId() {
-    return this.doc.DocId
-  }
-
-  get allText() {
-    return this.doc.ALLTEXT.join(" ")
-  }
-
   render() {
     return (
          <div key="{this.docId}" className="organization search-result-row">
             
             <div className="row"> 
-              <div className="col-md-12"> 
+              <div className="col-md-11"> 
                 <strong>{this.name}</strong>
               </div>
+              <div className="col-md-1">
+                <span className="label label-primary">{this.score}</span>
+              </div>
+ 
             </div>
             
             <div className="row">

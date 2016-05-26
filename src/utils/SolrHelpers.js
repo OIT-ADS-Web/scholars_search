@@ -172,10 +172,8 @@ class SolrResultsParser {
 // [People][Publications][Artistic Works][Grants][Subject Headings][Misc]
 // disadvantage of this structure - ORDER is possibly random, I'm not sure
 //
-// FIXME: could put in array to assure order
-//
 // FIXME: this has solr specific stuff "type:(*Person)" - but is a UI element
-// (tabs) so a bit of crossed concerns, but probably shouldn't be in SolrQuery.js
+// (tabs) so a bit of crossed concerns
 export const tabList = [
   { id: "person", filter: "type:(*Person)", label: "People" },
   { id: "publications",  filter: "type:(*AcademicArticle)", label: "Publications" },
@@ -191,22 +189,23 @@ export const tabList = [
 
 
 // just a helper function to avoid the boilerplate stuff
-function setupDefaultSearch(searcher, start, rows, filter) {
+function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc") {
 
-  //let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
-  //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+  // FIXME: should we check for no filter? filter seems application specific
+  // but they are listed in the tabList above anyway
 
   // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",
     hl: true,
     rows: Math.floor(rows),
-    start: Math.floor(start)
+    start: Math.floor(start),
+    sort: sort
   }
 
-  // FIXME: should probalby delete filter just in case
+  // FIXME: should probably delete filter just in case
   // e.g. searcher.deleteFilter("type")
-  // even though in the action/search.js
+  // even though in the action/sagas.js
   // we re-create searcher object every time
   // 
   if (filter) {
@@ -224,8 +223,7 @@ function setupDefaultSearch(searcher, start, rows, filter) {
 // another helper to avoid boilerplate
 function setupTabGroups(searcher) {
   // take a SolrQuery object and set up for tabs
-  // this is stop-gap until I think of a better way
-  // 
+   
   // have to set group = true
   searcher.options = {
     wt: "json",

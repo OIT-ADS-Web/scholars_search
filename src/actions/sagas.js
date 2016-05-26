@@ -57,8 +57,13 @@ export function fetchSearchApi(searchFields) {
   let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
   let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
+  // FIXME: rows should probably be a parameter too 
+  // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
-  searcher.setupDefaultSearch(start, PAGE_ROWS, filter)
+  searcher.setupDefaultSearch(filter, PAGE_ROWS, start)
+  // searcher.addFilter(filter)
+  // search.addSort(sort)
+  //
   searcher.search =  searchFields
  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
