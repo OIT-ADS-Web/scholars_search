@@ -15,10 +15,14 @@ class GenericDisplay extends HasSolrData(Component) {
 
     return (
          <div className="generic search-result-row" key="{this.docId}">
-            <strong>{this.name}</strong>
             <div className="row">
-              <div className="col-md-1">Type</div> 
-              <div className="col-md-10">{this.mostSpecificType}</div>
+              <div className="col-md-12">
+                <strong><a href={this.URI}>{this.name}</a></strong>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-2"><strong>Most Specific Type</strong></div> 
+              <div className="col-md-9">{this.mostSpecificType}</div>
               <div className="col-md-1">
                 <span className="label label-primary">{this.score}</span>
               </div>
@@ -29,6 +33,15 @@ class GenericDisplay extends HasSolrData(Component) {
                 <span dangerouslySetInnerHTML={{__html: this.display}}></span>
                 <span>...</span>
               </div>
+            </div>
+            <div className="row">
+              <div className="col-md-1">
+               <strong>Type(s)</strong>
+              </div>
+              <div className="col-md-11">
+                <span dangerouslySetInnerHTML={{__html: this.types}}></span>
+              </div>
+
             </div>
         </div>
     );

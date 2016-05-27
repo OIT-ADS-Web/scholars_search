@@ -21,6 +21,11 @@ let HasSolrData = (superclass) => class extends superclass {
     return allText.join(" ")
   }
 
+  get types() {
+    let typeList = this.doc.type || []
+    return typeList.join("<br/>")
+  }
+
   get mostSpecificType() {
     // NOTE: sometimes it's just blank, for some reason
     let specificTypes = this.doc.mostSpecificTypeURIs || []
@@ -30,10 +35,27 @@ let HasSolrData = (superclass) => class extends superclass {
   get score() {
     // maybe just two decimal places
     let score = parseFloat(this.doc.score).toFixed(2)
-    console.log(score)
     return score
   }
 
+  get URI() {
+    return this.doc.URI
+  }
+
+  highlightText(display) {
+
+    // FIXME: need to factor this out since it's in every 'Display'
+    // but putting {this.highlightText} - or even just calling highlightText() in
+    // render() is crashing the entire application now
+    return (
+        <cite>
+          <span>...</span>
+          <span dangerouslySetInnerHTML={{__html: display}}></span>
+          <span>...</span>
+        </cite>
+    )
+
+  }
 
 }
 

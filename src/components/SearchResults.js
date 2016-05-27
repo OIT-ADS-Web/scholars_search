@@ -10,6 +10,12 @@ import PersonDisplay from './PersonDisplay'
 import PublicationDisplay from './PublicationDisplay'
 import OrganizationDisplay from './OrganizationDisplay'
 import GenericDisplay from './GenericDisplay'
+import ArtisticWorkDisplay from './ArtisticWorkDisplay'
+import SubjectHeadingDisplay from './SubjectHeadingDisplay'
+import GrantDisplay from './GrantDisplay'
+
+
+
 import Loading from './Loading'
 import SearchTabs from './SearchTabs'
 import PagingPanel from './PagingPanel'
@@ -82,6 +88,15 @@ export class SearchResults extends Component {
             case 'organizations':  
               return <OrganizationDisplay key={doc.DocId} doc={doc} display={display}/> 
               break
+            case 'subjectheadings':  
+              return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={display}/> 
+              break
+            case 'artisticworks':  
+              return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={display}/> 
+              break
+            case 'grants':  
+              return <GrantDisplay key={doc.DocId} doc={doc} display={display}/> 
+              break
             default:  
               return <GenericDisplay key={doc.DocId} doc={doc} display={display}/> 
           }
@@ -124,7 +139,7 @@ export class SearchResults extends Component {
               <div className="pull-right form-inline">
                 <div className="form-group">
                   <label>Sort By:</label>
-                  <select className="form-control"><option value="score" selected>Relevance</option></select>
+                  <select className="form-control" defaultValue="score"><option value="score">Relevance</option></select>
                 </div>
               </div>
             </div>

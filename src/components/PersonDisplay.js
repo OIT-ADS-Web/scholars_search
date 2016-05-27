@@ -43,6 +43,10 @@ class PersonDisplay extends HasSolrData(Component) {
       picture = <img className="profile-thumbnail"></img>
     }
 
+    // even this crashes
+    //let highlight = this.highlightText(this.display)
+    //console.log(highlight)
+
     return (
          <div className="person search-result-row" key="{this.docId}">
             <div className="row">
@@ -52,7 +56,7 @@ class PersonDisplay extends HasSolrData(Component) {
               </div>
             
               <div className="col-md-10">
-                <strong>{this.name}</strong>
+                <strong><a href={this.URI}>{this.name}</a></strong>
                 <span> - {this.preferredTitle}</span>
               </div>
 
@@ -62,9 +66,14 @@ class PersonDisplay extends HasSolrData(Component) {
 
               <div className="col-md-12">
                 <div className="highlight-text">
-                  <span>...</span>
-                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                  <span>...</span>
+                  
+
+                  <cite>
+                    <span>...</span>
+                    <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                    <span>...</span>
+                  </cite>
+
                 </div>
               </div>
         

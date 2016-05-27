@@ -23,7 +23,9 @@ class PublicationDisplay extends HasSolrData(Component) {
             <div className="row">
              <div className="col-md-11"> 
               <strong>
-                 <span dangerouslySetInnerHTML={{__html: this.name}}></span>
+                 <a href={this.URI}>
+                   <span dangerouslySetInnerHTML={{__html: this.name}}></span>
+                 </a>
               </strong>
              </div>
              <div className="col-md-1">
@@ -34,12 +36,19 @@ class PublicationDisplay extends HasSolrData(Component) {
             
             <div className="row highlight-text">
               <div className="col-md-12">
-                <span>...</span>
-                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                <span>...</span>
+                <cite>
+                  <span>...</span>
+                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                  <span>...</span>
+                </cite>
               </div>
             </div>
-         
+
+            <div className="row">
+              <div className="col-md-2"><strong>Most Specific Type:</strong></div>
+              <div className="col-md-10">{this.mostSpecificType}</div>
+            </div> 
+
          </div>
     )
   }
