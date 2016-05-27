@@ -47,13 +47,13 @@ let HasSolrData = (superclass) => class extends superclass {
     // FIXME: need to factor this out since it's in every 'Display'
     // but putting {this.highlightText} - or even just calling highlightText() in
     // render() is crashing the entire application now
-    return (
-        <cite>
-          <span>...</span>
+    
+    let fragment = <cite><span>...</span>
           <span dangerouslySetInnerHTML={{__html: display}}></span>
           <span>...</span>
         </cite>
-    )
+    
+    return fragment
 
   }
 

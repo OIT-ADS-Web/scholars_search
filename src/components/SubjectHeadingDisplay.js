@@ -16,8 +16,11 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
-              <div className="col-md-12"> 
+              <div className="col-md-11"> 
                 <strong><a href={this.URI}>{this.name}</a></strong>
+              </div>
+              <div className="col-md-1">
+                <span className="label label-primary">{this.score}</span>
               </div>
             </div>
             <div className="row">

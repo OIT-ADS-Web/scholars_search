@@ -13,8 +13,7 @@ import GenericDisplay from './GenericDisplay'
 import ArtisticWorkDisplay from './ArtisticWorkDisplay'
 import SubjectHeadingDisplay from './SubjectHeadingDisplay'
 import GrantDisplay from './GrantDisplay'
-
-
+import CourseDisplay from './CourseDisplay'
 
 import Loading from './Loading'
 import SearchTabs from './SearchTabs'
@@ -96,6 +95,9 @@ export class SearchResults extends Component {
               break
             case 'grants':  
               return <GrantDisplay key={doc.DocId} doc={doc} display={display}/> 
+              break
+            case 'courses':  
+              return <CourseDisplay key={doc.DocId} doc={doc} display={display}/> 
               break
             default:  
               return <GenericDisplay key={doc.DocId} doc={doc} display={display}/> 
