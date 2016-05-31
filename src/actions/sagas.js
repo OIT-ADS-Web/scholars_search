@@ -110,6 +110,10 @@ function* watchForSearch() {
   }
 }
 
+
+// FIXME: add a fork(watchForDownload)
+//
+//
 // all of them, wrapped up for middleware
 export default function* root() {
   yield [

@@ -8,11 +8,77 @@
 
   </head>
   <body>
-      <div id="content"></div>
+
+    <header class="navbar">
+      <div id="header-navbar-inner" class="container">
+        
+          <a href="http://scholars.duke.edu">
+              <div class="navbar-header">
+                <img id="logo-image" class="navbar-brand" alt="Scholars@Duke">
+              </div>
+          </a>
+
+          <nav id="header-pills" class="navbar-right">  
+            <ul class="nav nav-pills navbar-nav">  
+              <li class="hidden-sm"><a href="/browse">Index</a></li>  
+              <li class="hidden-sm"><a href="http://about.scholars.duke.edu/support-duke-faculty-delegates">Support</a></li>  
+            </li></ul>  
+          </nav> 
+
+          <div id="header-search" class="navbar-right">
+            <form method="get" class="navbar-form" action="/search" accept-charset="UTF-8">
+                <input class="form-control" name="querytext" id="querytext" type="text">
+                <input value="Search" name="commit" class="btn btn-success form-control" type="submit">
+            </form>
+          </div>
+
+       </div>
+
+    </header>
+
+
+    <nav class="navbar navbar-default">
+      <div id="tabs-navbar-inner" class="container">
+        <ul class="nav navbar-nav">
+          <li><a href="http://scholars.duke.edu">Home</a></li>
+          <li><a href="http://scholars.duke.edu/people">People</a></li>
+          <li><a href="http://scholars.duke.edu/organizations">Schools / Institutes</a></li>
+          <li><a href="http://scholars.duke.edu/research">Research</a></li>
+          <!--
+          <li><a class="selected" href="/vivo_admin/home">Scholars Admin</a></li>
+          -->
+        </ul>
+      </div>
+    </nav>
+
+    <div id="content" class="container"></div>
       
-      <script type="text/javascript">
-      ScholarsSearch(document.getElementById('content'))
-      </script>
+    <script type="text/javascript">
+    ScholarsSearch(document.getElementById('content'))
+    </script>
+
+
+    <div class="container">
+    <footer role="contentinfo">
+    <img alt="Duke Logo" id="footer-logo" align="left">
+    <div id="footcontent">
+      <nav role="navigation">
+          <ul role="list" id="footer-nav">
+             <li role="listitem"><a href="http://about.scholars.duke.edu/">About</a></li>
+             <li role="listitem"><a href="http://about.scholars.duke.edu/support-duke-faculty-delegates">Support</a></li>
+             <li role="listitem"><a href="/browse">Index</a></li>
+             <li role="listitem"><a title="Manage Scholars Data" href="/vivo_admin/home">Manage Scholars Data</a></li>
+          </ul>
+      </nav>
+    </div>
+    <p class="copyright">
+            <small>©2016
+                Duke University
+             | <a href="/termsOfUse" class="terms">Terms of Use</a></small> |
+        Powered by <a target="_blank" href="http://vivoweb.org" class="powered-by-vivo"><strong>VIVO</strong></a>
+    </p>
+    </footer>
+    </div>
 
 
   </body>

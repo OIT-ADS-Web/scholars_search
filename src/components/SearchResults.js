@@ -24,6 +24,10 @@ require('../styles/scholars_search.less');
 
 import solr from '../utils/SolrHelpers'
 
+import {saveAs} from 'file-saver'
+
+import _ from 'lodash'
+
 export class SearchResults extends Component {
 
   static get contextTypes() {
@@ -34,6 +38,51 @@ export class SearchResults extends Component {
 
   constructor(props, context) {
     super(props, context);
+    
+    this.handleDownload = this.handleDownload.bind(this)
+    //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
+    this.handleDownload= _.debounce(this.handleDownload,1000);
+  }
+
+
+  handleDownload(e) {
+    // NOTE: I get this warning when I used e.preventDefault()
+    // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
+    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
+   
+
+    // FIXME: much more to do here - just proving I can download a file now
+    const { search : { results, searchFields, isFetching } } = this.props
+
+    // FIXME: this same logic appears in many places - it should be centralized
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    // FIXME: I think this needs to:
+    // a) run search (but not dispatch?)
+    // b) or have a new DOWNLOAD_SEARCH action ??
+    // c) get results into csv or xml format
+    // d) the new Blob(--results --, {type: xml or text })
+    // e) make a good name -- with the date at least e.g. search_results_people_2016_05_31.(xml|csv)
+
+    let today = new Date()
+    let todayStr = today.toISOString().substring(0,10) // ISOString Returns 2011-10-05T14:48:00.000Z
+    //
+    // let fileName = `search_results_{filter}_{today}_{filter}.{format}`
+    // let figureType  = function(format) {
+    //   if format == 'xml' return "text/xml"
+    //   else if format == 'csv' return "text/csv"
+    //   else  return "text/plain"
+    // }
+    // let type = `{figureType(format)};charset=utf-8`
+    // let blobResults = fetchResults(searchFields, format, maxRows)
+    // 
+
+    // NOTE: each filter will have a different template - maybe  there should be a higher leve
+    // 'switch' for *Display and *DownloadTemplate based on tab (type)
+    //
+    //
+    let blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"})
+    // FIXME: much more to do here - just proving I can download a file now
+    saveAs(blob, "hello world.txt")
   }
 
   render() {
@@ -76,7 +125,9 @@ export class SearchResults extends Component {
             // no highlight -- not sure what to show
             display = ""
           }
-          
+
+          // FIXME: factor this out DisplayPicker = or possibly something that also
+          // keeps track of download templates          
           switch(filter) {
             case 'person':
               return <PersonDisplay key={doc.DocId} doc={doc} display={display}/> 
@@ -121,21 +172,30 @@ export class SearchResults extends Component {
     let query = solr.buildComplexQuery(searchFields)
     // <h3>Results for group: {numFound} </h3> 
     
+    // FIXME: maybe search results should be a product of the tab
+    // (since it's always in a tab) - that would get rid of the giant 'switch'
+    // statement above
+    //
+    //
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
     return (
       <section className="search-results">
         <h3>Query: {query}</h3>
+        
         <SearchTabs></SearchTabs>
+        
         <div className="search-results-table">
          
           <hr />
           
           <div className="row">
             <div className="col-md-8">
-              <button type="button" className="btn btn-default btn-small">
+              
+              <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                 <span className="glyphicon glyphicon-download"> Download </span>
               </button>
+
             </div>
             <div className="col-md-4">
               <div className="pull-right form-inline">
