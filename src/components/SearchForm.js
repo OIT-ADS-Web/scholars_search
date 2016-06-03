@@ -8,6 +8,8 @@ import SearchField from './SearchField'
 
 import * as types from '../actions/types'
 
+import classNames from 'classnames'
+
 import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
 
 export class SearchForm extends Component {
@@ -89,6 +91,14 @@ export class SearchForm extends Component {
          button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
+    var hideAdvanced = true
+    
+    if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
+       hideAdvanced = false
+       console.log("SHOW advanced search fields")
+    }
+    const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     
+    //
     // NOTE: it took a while to figure out how to set the defaultValue of the <inputs> below (SearchField) - the typical React lifecycle of components
     // will just allow setting that value once (which was always initializing to NULL).  I'm pretty sure the code is initializing the form too
     // many times or too soon or something like that.  I was not able to track that down though.  This works for now.
@@ -96,13 +106,15 @@ export class SearchForm extends Component {
        
        <section>
 
-        <form onSubmit={this.handleSubmitSearch}>
+        <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
           
           <SearchField label="With all these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
-          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
-          <SearchField label="With at least one of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
-          <SearchField label="With none these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
- 
+          <div className={advancedClasses}>
+            <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
+            <SearchField label="With at least one of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With none these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
+          </div>
+
           {button}
 
         </form>

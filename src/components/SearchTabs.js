@@ -13,7 +13,33 @@ export class SearchTabs extends Component {
     super(props)
   }
 
-  
+
+  // FIXME: should there be a -- next tab
+  // e.g.
+  /*
+  handleNextTab(e) {
+    e.preventDefault()
+    
+    const { search : { results, searchFields }, dispatch } = this.props
+
+    //let filter = next -> filter
+
+    // setting default start to 0 - so paging is reset - luckily
+    // filter should always be present
+    const query  = {...searchFields, start: 0, filter: filter }
+
+    dispatch(requestSearch(query))
+    
+    // NOTE: took me a while to figure out I couldn't just pass
+    // searchFields as {query: searchFields} had to copy it (see above)
+    this.context.router.push({
+      pathname: '/',
+      query: query
+    })
+
+  }
+  */
+
   render() {
      const { search : {searchFields} } = this.props
  
@@ -51,12 +77,47 @@ export class SearchTabs extends Component {
 
     })
 
+    // FIXME: not crazy about this - this is basically just different tabs for mobile
+    //
+    let figureCurrentTab = () => {
+
+      if (isFetching) {
+         return <div></div>
+       }
+      
+       let tab = _.find(tabList, { id: filter})
+
+       let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
+       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+       let label = tab.label
+
+        //     <SearchTab key={tab.id} filter={tab.id} active={true} label={tab.label} count={count} matches={matches}/>
+       // FIXME: need a link to the next tab ?  right ? 
+       return (
+           <li className="active"><a>{tab.label} ({count})</a></li>
+       )
+    }
+
+    let currentTab = figureCurrentTab()
+
     return (
         <div>
           <h4>Total Found: {ungroupedCount}</h4>
-          <ul className="nav nav-pills">
-            {tabs}
-          </ul>
+          
+          <nav className="visible-xs">
+
+            <ul className="nav nav-pills">
+               {currentTab}
+            </ul>
+          </nav>
+
+          <nav className="hidden-xs">
+            <ul className="nav nav-pills nav-justified">
+              {tabs}
+            </ul>
+ 
+          </nav>
+
         </div>
 
       )

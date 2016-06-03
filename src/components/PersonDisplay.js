@@ -51,20 +51,20 @@ class PersonDisplay extends HasSolrData(Component) {
          <div className="person search-result-row" key="{this.docId}">
             <div className="row">
               
-              <div className="col-md-1">
+              <div className="col-md-1 col-xs-12">
                 {picture}
               </div>
             
-              <div className="col-md-10">
+              <div className="col-md-10 col-xs-12">
                 <strong><a href={this.URI}>{this.name}</a></strong>
                 <span> - {this.preferredTitle}</span>
               </div>
 
-              <div className="col-md-1">
+              <div className="col-md-1 col-xs-12">
                 <span className="label label-primary">{this.score}</span>
               </div>
 
-              <div className="col-md-12">
+              <div className="col-md-12 col-xs-12">
                 <div className="highlight-text">
                   
 

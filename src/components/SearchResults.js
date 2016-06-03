@@ -189,21 +189,24 @@ export class SearchResults extends Component {
          
           <hr />
           
-          <div className="row">
-            <div className="col-md-8">
+          <div className="row hidden-xs">
+            <div className="col-md-8 col-xs-6">
               
               <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                 <span className="glyphicon glyphicon-download"> Download </span>
               </button>
 
             </div>
-            <div className="col-md-4">
+            <div className="col-md-4 col-xs-6">
+            {/*
               <div className="pull-right form-inline">
                 <div className="form-group">
                   <label>Sort By:</label>
                   <select className="form-control" defaultValue="score"><option value="score">Relevance</option></select>
                 </div>
               </div>
+              */
+            }
             </div>
 
           </div>

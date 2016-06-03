@@ -66,7 +66,7 @@ export class ScholarsSearchApp extends Component {
 
     return (
 
-      <Page title="Scholars Search">
+      <Page>
         <SearchForm />
         <SearchResults />
       </Page>

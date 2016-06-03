@@ -1,19 +1,56 @@
-body {
-    background: rgba(0, 0, 0, 0) url("../images/header-background.png") no-repeat scroll center 0;
+@import "~bootstrap/less/bootstrap"; 
+
+#mobile-header-nav {
+    display: none;
+ }
+
+@media only screen and (min-width: 481px) {
+  #logo-image { 
+    content: url("../images/duke-logo.gif");  
+    height: 105px;
+    padding: 27px 10px 10px 0;
+  }
+
+
 }
 
-#logo-image { 
-  height: 105px;
-  padding: 27px 10px 10px 0;
-  content:url("../images/duke-logo.gif"); 
+@media only screen and (max-width: 480px) {
+  
+ #logo-image {
+    background: url(../images/title_mobile.png) no-repeat scroll 0 0 transparent;
+    padding: 0;
+    margin: 0px 0;
+    height: 80px;
+  }
+
+ 
+  #mobile-header-nav {
+      float: right;
+      display: block;
+      position: absolute;
+      top: 20px;
+      right: 1%;
+  }
+
+  #nonmobile-header-nav {
+    display: none;
+  }
 }
+
+
+body {
+  background: rgba(0, 0, 0, 0) url("../images/header-background.png") no-repeat scroll center 0;
+}
+
+
 #footer-logo {
   content: url("../images/duke-footer-logo.png");
 }
 
 .navbar {
     margin: 0 auto;
-    max-width: 960px;
+    /*width: 95.5%;*/
+    /*max-width: 960px; */
 }
 
 #header-navbar-inner {
@@ -36,6 +73,10 @@ nav#header-pills a, nav#header-pills p {
 
 .input-append .btn.btn-success {
     border: 0 none;
+}
+
+header, hgroup, section, nav, article, aside, footer {
+    display: block;
 }
 
 footer {
@@ -74,4 +115,12 @@ ul#footer-nav li {
 
 ul#footer-nav li:last-child {
     border-right: medium none;
+}
+
+
+footer p.copyright {
+    float: left;
+    margin: 10px 0 0 15px;
+    width: 40%;
+    clear: both;
 }

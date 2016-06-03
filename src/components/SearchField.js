@@ -54,14 +54,23 @@ export default class SearchField extends Component {
      }
   }
 
+  /*
+   *   <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-10">
+      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+    </div>
+    */
   render() {
     const { label, placeholder, defaultValue} = this.props
 
     return (
          <div className="form-group">
-          <label>{label}</label>
-            <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
-          </div>
+            <label className="col-sm-2 control-label">{label}</label>
+            <div className="col-sm-10">
+              <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+            </div>
+         </div>
     )
 
   }

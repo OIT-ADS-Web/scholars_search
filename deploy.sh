@@ -38,5 +38,9 @@ for SERVER in "${SERVERS[@]}"; do
   echo "rsyncing image files to $SERVER..."
   rsync -av dist/*.gif tomcat@$SERVER:$deploy_dir/
 
+  echo "rsyncing image files to $SERVER..."
+  rsync -av dist/*.png tomcat@$SERVER:$deploy_dir/
+
+
 done
 

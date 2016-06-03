@@ -13,6 +13,9 @@ console.log(environment)
 var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 console.log(config)
 
+//require("bootstrap-webpack!../bootstrap.config.js")
+
+
 // can do this too:
 // node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
 // (see) https://www.npmjs.com/package/dotenv#preload
@@ -38,7 +41,8 @@ module.exports = {
     path: __dirname + "/dist/",
     filename: "[name].js",
     library: "ScholarsSearch",
-    libraryTarget: "umd"
+    libraryTarget: "umd"/*,*/
+    /*publicPath: "/src/images/"*/
   },
   // NOTE: this is in here so nock can run tests - but they don't work anyway
   //node: {
