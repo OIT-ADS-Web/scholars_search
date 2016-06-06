@@ -9,9 +9,6 @@ import SearchTab from './SearchTab'
 
 import { requestSearch, requestFilter } from '../actions/search'
 
-//require ('jquery')
-//require ('bootstrap')
-
 export class SearchTabs extends Component {
 
   // this is necessary to get the router
@@ -25,8 +22,6 @@ export class SearchTabs extends Component {
   constructor(props) {
     super(props)
 
-    this.handleTab = this.handleTab.bind(this)
- 
   }
 
 
@@ -54,19 +49,11 @@ export class SearchTabs extends Component {
   }
   
 
-  render() {
-     const { search : {searchFields} } = this.props
- 
-     // FIXME: seems like I shouldn't default filter in this place - 
-     // e.g. it should be more global
-     let filter = searchFields ? searchFields['filter'] : 'person'
-
-     const { tabs : {grouped, isFetching } } = this.props
-
+  desktopTabs(isFetching, grouped, filter) {
      const tabList = solr.tabList
 
      // note: every group has this - we only need one though
-     var ungroupedCount = 0
+     //var ungroupedCount = 0
     
      // matches - gives total matches ---
      //
@@ -85,15 +72,17 @@ export class SearchTabs extends Component {
       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let label = tab.label
       
-      ungroupedCount = matches
+      //ungroupedCount = matches
 
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
 
     })
 
-    // FIXME: not crazy about this - this is basically just different tabs for mobile
-    //
-    let figureCurrentTab = () => {
+    return tabs
+  }
+
+  mobileTabs(isFetching, grouped, filter) {
+    const tabList = solr.tabList
 
       if (isFetching) {
          return <div></div>
@@ -128,34 +117,49 @@ export class SearchTabs extends Component {
         }   
       })
 
-       return (
+     return (
 
-            <div className="btn-group">
-              <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {label} ({count}) <span className="caret"></span>
-              </button>
-              <ul className="dropdown-menu">
-                {rows}          
-     
-              </ul>
-            </div>
+        <div className="btn-group">
+          <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {label} ({count}) <span className="caret"></span>
+          </button>
+          <ul className="dropdown-menu">
+            {rows}          
+          </ul>
+        </div>
 
-       )
-    }
+     )
 
-    let currentTab = figureCurrentTab()
-    
+  }
+
+  render() {
+     const { search : {searchFields} } = this.props
+ 
+     // FIXME: seems like I shouldn't default filter in this place - 
+     // e.g. it should be more global
+     let filter = searchFields ? searchFields['filter'] : 'person'
+
+     const { tabs : {grouped, isFetching } } = this.props
+
+     const tabList = solr.tabList
+     let first = _.head(tabList)
+     // NOTE: every group has matches value, doesn't matter which one we take
+     let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
+
+     let desktopTabs = this.desktopTabs(isFetching, grouped, filter)
+     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
+
     return (
         <div>
           <h4>Total Found: {ungroupedCount}</h4>
           
           <nav className="visible-xs">
-              {currentTab}            
+              {mobileTabs}            
           </nav>
 
           <nav className="hidden-xs">
             <ul className="nav nav-pills nav-justified">
-              {tabs}
+              {desktopTabs}
             </ul>
  
           </nav>
