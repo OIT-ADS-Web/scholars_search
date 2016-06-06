@@ -64,6 +64,7 @@ module.exports = {
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(png|gif)$/, loader: 'file-loader' },
+      { test: /jquery/, loader: 'expose?$!expose?jQuery' },
       // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
@@ -74,7 +75,8 @@ module.exports = {
           presets: ['react','es2015'],
           plugins: ["transform-runtime"]
         }
-      }
+      }/*, */
+      //{ test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' }
     ]
   },
   // make sourcemaps in separate files

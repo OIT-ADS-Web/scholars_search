@@ -3,6 +3,9 @@ import { render, unmountComponentAtNode  } from 'react-dom'
 //import Root from './containers/Root';
 import ScholarsSearch from './containers/ScholarsSearch'
 
+//require ('jquery')
+require ('bootstrap')
+
 //require.context("./images/", true, /^\.\/.*\.png/);
 
 //require ('./style/vivo_admin')
@@ -11,6 +14,8 @@ import ScholarsSearch from './containers/ScholarsSearch'
 //
 //require("bootstrap-webpack!./bootstrap.config.js")
 
+import 'jquery'
+//import 'bootstrap'
 
 module.exports = function(targetNode) {
   unmountComponentAtNode(targetNode)

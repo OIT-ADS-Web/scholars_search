@@ -7,22 +7,35 @@ import solr from '../utils/SolrHelpers'
 
 import SearchTab from './SearchTab'
 
+import { requestSearch, requestFilter } from '../actions/search'
+
+//require ('jquery')
+//require ('bootstrap')
+
 export class SearchTabs extends Component {
 
-  constructor(props) {
-    super(props)
+  // this is necessary to get the router
+  static get contextTypes() {
+    return({
+        router: PropTypes.object
+     })
   }
 
 
-  // FIXME: should there be a -- next tab
-  // e.g.
-  /*
-  handleNextTab(e) {
+  constructor(props) {
+    super(props)
+
+    this.handleTab = this.handleTab.bind(this)
+ 
+  }
+
+
+  handleTab(e, theTab) {
     e.preventDefault()
-    
+
     const { search : { results, searchFields }, dispatch } = this.props
 
-    //let filter = next -> filter
+    let filter = theTab.id
 
     // setting default start to 0 - so paging is reset - luckily
     // filter should always be present
@@ -37,8 +50,9 @@ export class SearchTabs extends Component {
       query: query
     })
 
+    return false
   }
-  */
+  
 
   render() {
      const { search : {searchFields} } = this.props
@@ -85,30 +99,58 @@ export class SearchTabs extends Component {
          return <div></div>
        }
       
-       let tab = _.find(tabList, { id: filter})
+       let index = _.findIndex(tabList, function(o) { return o.id == filter })
+       let currentTab = tabList[index]
 
-       let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
-       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
-       let label = tab.label
+       let matches = currentTab.filter in grouped ? grouped[currentTab.filter].matches : 0
+       let count = currentTab.filter in grouped ? grouped[currentTab.filter].doclist.numFound : 0
+       let label = currentTab.label
+           
+       //  NOTE: tabList looks like this:
+       // export const tabList = [
+       //  { id: "person", filter: "type:(*Person)", label: "People" },
+       // ...
+       // ]
 
-        //     <SearchTab key={tab.id} filter={tab.id} active={true} label={tab.label} count={count} matches={matches}/>
-       // FIXME: need a link to the next tab ?  right ? 
+       var rows = []
+       var _self = this
+       _.forEach(tabList, function(value) {
+         if (value.id != filter) {
+
+            let matches = value.filter in grouped ? grouped[value.filter].matches : 0
+            let count = value.filter in grouped ? grouped[value.filter].doclist.numFound : 0
+            let label = value.label
+ 
+            let row = (
+                <li><a href="#" onClick={(e) => _self.handleTab(e, value)}>{label} ({count})</a></li>
+            )
+            rows.push(row)
+        }   
+      })
+
        return (
-           <li className="active"><a>{tab.label} ({count})</a></li>
+
+            <div className="btn-group">
+              <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {label} ({count}) <span className="caret"></span>
+              </button>
+              <ul className="dropdown-menu">
+                {rows}          
+     
+              </ul>
+            </div>
+
        )
     }
 
     let currentTab = figureCurrentTab()
-
+    
     return (
         <div>
           <h4>Total Found: {ungroupedCount}</h4>
           
           <nav className="visible-xs">
-
-            <ul className="nav nav-pills">
-               {currentTab}
-            </ul>
+              {currentTab}            
           </nav>
 
           <nav className="hidden-xs">
