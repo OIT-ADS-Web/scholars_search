@@ -19,7 +19,6 @@ import Loading from './Loading'
 import SearchTabs from './SearchTabs'
 import PagingPanel from './PagingPanel'
 
-
 require('../styles/scholars_search.less');
 
 import solr from '../utils/SolrHelpers'
@@ -27,6 +26,8 @@ import solr from '../utils/SolrHelpers'
 import {saveAs} from 'file-saver'
 
 import _ from 'lodash'
+
+import { fetchSearchApi } from '../actions/sagas'
 
 export class SearchResults extends Component {
 
@@ -65,24 +66,40 @@ export class SearchResults extends Component {
 
     let today = new Date()
     let todayStr = today.toISOString().substring(0,10) // ISOString Returns 2011-10-05T14:48:00.000Z
-    //
-    // let fileName = `search_results_{filter}_{today}_{filter}.{format}`
-    // let figureType  = function(format) {
-    //   if format == 'xml' return "text/xml"
-    //   else if format == 'csv' return "text/csv"
-    //   else  return "text/plain"
-    // }
-    // let type = `{figureType(format)};charset=utf-8`
-    // let blobResults = fetchResults(searchFields, format, maxRows)
-    // 
+    let format = 'csv'
+    let maxRows = 1000
 
-    // NOTE: each filter will have a different template - maybe  there should be a higher leve
-    // 'switch' for *Display and *DownloadTemplate based on tab (type)
-    //
-    //
-    let blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"})
+    let fileName = `search_results_${filter}_${todayStr}.${format}`
+    let figureType  = function(format) {
+       if (format == 'xml') { return "text/xml" }
+       else if (format == 'csv') { return "text/csv" }
+       else { return "text/plain" }
+    }
+    let type = `${figureType(format)};charset=utf-8`
+
+    fetchSearchApi(searchFields, maxRows).then(function(json) {
+
+      let headers = [`URI\n`]
+      console.log(json.response.docs)
+      let rows = _.map(json.response.docs, function(doc) {
+        return `${doc.URI}\n`
+      })
+
+      let csv = _.concat(headers, rows)
+
+      let blob = new Blob(csv, {type: type})
+      // FIXME: much more to do here - just proving I can download a file now
+      saveAs(blob, fileName)
+ 
+    })
+   
+    //let csv = _.map(jsonResults, function(r) {
+    //  return r.uri
+    // })//.join('\n')
+    
+    //let blob = new Blob(csv, {type: type})
     // FIXME: much more to do here - just proving I can download a file now
-    saveAs(blob, "hello world.txt")
+    //saveAs(blob, fileName)
   }
 
   render() {

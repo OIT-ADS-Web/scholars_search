@@ -46,7 +46,7 @@ function* watchForTabs() {
 
 // ********* search ******
 // 1. actual function
-export function fetchSearchApi(searchFields) {
+export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   const solr_url = process.env.SOLR_URL
   let searcher = new SolrQuery(solr_url)
 
@@ -60,7 +60,7 @@ export function fetchSearchApi(searchFields) {
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
-  searcher.setupDefaultSearch(filter, PAGE_ROWS, start)
+  searcher.setupDefaultSearch(filter, maxRows, start)
   // searcher.addFilter(filter)
   // search.addSort(sort)
   //

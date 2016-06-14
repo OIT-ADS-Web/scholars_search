@@ -63,7 +63,7 @@ module.exports = {
       // style pre-processing
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.(png|gif)$/, loader: 'file-loader' },
+      { test: /\.(png|gif|jpg)$/, loader: 'file-loader' },
       { test: /jquery/, loader: 'expose?$!expose?jQuery' },
       // react/jsx and es6/2015 transpiling
       {

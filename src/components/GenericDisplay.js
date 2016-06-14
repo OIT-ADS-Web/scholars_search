@@ -24,7 +24,7 @@ class GenericDisplay extends HasSolrData(Component) {
               <div className="col-md-2"><strong>Most Specific Type</strong></div> 
               <div className="col-md-9">{this.mostSpecificType}</div>
               <div className="col-md-1">
-                <span className="label label-primary">{this.score}</span>
+                <span className="label label-info">{this.score}</span>
               </div>
             </div>
             <div className="row highlight-text">
