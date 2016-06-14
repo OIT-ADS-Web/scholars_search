@@ -77,6 +77,8 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
+    // FIXME: this is a bit like a template - would be different depending
+    // on 'filter' (tab)
     fetchSearchApi(searchFields, maxRows).then(function(json) {
 
       let headers = [`URI\n`]
