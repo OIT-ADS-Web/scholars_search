@@ -1,3 +1,5 @@
+import React, { Component, PropTypes } from 'react'
+
 import PersonDisplay from './PersonDisplay'
 import PublicationDisplay from './PublicationDisplay'
 import OrganizationDisplay from './OrganizationDisplay'
@@ -9,6 +11,8 @@ import CourseDisplay from './CourseDisplay'
 
 import json2csv from 'json2csv'
 
+// FIXME: don't know if this is that great of an idea, just
+// wanted some centralized splitter of stuff based on filter
 class TabPicker {
 
   constructor(filter) {

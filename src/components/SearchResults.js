@@ -6,15 +6,6 @@ import { Link } from 'react-router'
 /* our stuff */
 import actions from '../actions/search'
 
-import PersonDisplay from './PersonDisplay'
-import PublicationDisplay from './PublicationDisplay'
-import OrganizationDisplay from './OrganizationDisplay'
-import GenericDisplay from './GenericDisplay'
-import ArtisticWorkDisplay from './ArtisticWorkDisplay'
-import SubjectHeadingDisplay from './SubjectHeadingDisplay'
-import GrantDisplay from './GrantDisplay'
-import CourseDisplay from './CourseDisplay'
-
 import Loading from './Loading'
 import SearchTabs from './SearchTabs'
 import PagingPanel from './PagingPanel'
@@ -28,7 +19,6 @@ import {saveAs} from 'file-saver'
 import _ from 'lodash'
 
 import { fetchSearchApi } from '../actions/sagas'
-
 
 import TabPicker from './TabPicker'
 
@@ -79,43 +69,17 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
-      //var compiled = _.template('hello <%= user %>!');
-      //compiled({ 'user': 'fred' });
-
     let tabPicker = new TabPicker(filter)
 
-    // FIXME: this is a bit like a template - would be different depending
-    // on 'filter' (tab)
     fetchSearchApi(searchFields, maxRows).then(function(json) {
 
       let csv = tabPicker.toCSV(json)
-
-      // switch (filter) {
-      //  case person:
-      //    
-      // }
-      // this part would be different, per filter - maybe template?
-      //let headers = [`URI\n`]
-      //console.log(json.response.docs)
-      //let rows = _.map(json.response.docs, function(doc) {
-      //  return `${doc.URI}\n`
-      //})
-
-      //let csv = _.concat(headers, rows)
-
       let blob = new Blob(csv, {type: type})
       // FIXME: much more to do here - just proving I can download a file now
       saveAs(blob, fileName)
  
     })
    
-    //let csv = _.map(jsonResults, function(r) {
-    //  return r.uri
-    // })//.join('\n')
-    
-    //let blob = new Blob(csv, {type: type})
-    // FIXME: much more to do here - just proving I can download a file now
-    //saveAs(blob, fileName)
   }
 
   render() {
@@ -137,13 +101,7 @@ export class SearchResults extends Component {
     // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
     if (docs) {
 
-      // NOTE: the diplay changes depending on type e.g.
-      // <PublicationDisplay ..
-      // <PersonDisplay ..
-      // e.g.
-      // if filter == 'people' <PersonDisplay ..
-      // if filter == 'publication' <PublicationDisplay ..
-      // etc...
+      let tabPicker = new TabPicker(filter)
       
       resultSet = docs.map(doc => { 
           let highlight = highlighting[doc.DocId]
@@ -159,36 +117,8 @@ export class SearchResults extends Component {
             display = ""
           }
 
-          // TabDeterminer.pickDisplay(filter, doc, highlight)
-          // TabPicker.pickTemplates(filter)
-          //
-          // FIXME: factor this out DisplayPicker = or possibly something that also
-          // keeps track of download templates too          
-          switch(filter) {
-            case 'person':
-              return <PersonDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'publications':
-              return <PublicationDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'organizations':  
-              return <OrganizationDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'subjectheadings':  
-              return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'artisticworks':  
-              return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'grants':  
-              return <GrantDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'courses':  
-              return <CourseDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            default:  
-              return <GenericDisplay key={doc.DocId} doc={doc} display={display}/> 
-          }
+          return tabPicker.pickDisplay(doc, display)
+            
       })
     }
     else {
