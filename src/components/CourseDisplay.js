@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import HasSolrData from './HasSolrData'
 
-class OrganizationDisplay extends HasSolrData(Component) {
+class CourseDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
@@ -12,28 +12,25 @@ class OrganizationDisplay extends HasSolrData(Component) {
   }
 
   render() {
+
     return (
-         <div key="{this.docId}" className="organization search-result-row">
-            
-            <div className="row"> 
-              <div className="col-md-11"> 
+         <div className="generic search-result-row" key="{this.docId}">
+            <div className="row">
+              <div className="col-md-11">
                 <strong><a href={this.URI}>{this.name}</a></strong>
               </div>
               <div className="col-md-1">
                 <span className="label label-primary">{this.score}</span>
               </div>
+
             </div>
-            
-            <div className="row">
+            <div className="row highlight-text">
               <div className="col-md-12">
-                <cite>
-                  <span>...</span>
-                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                  <span>...</span>
-                </cite>
+                <span>...</span>
+                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
+                <span>...</span>
               </div>
             </div>
-
         </div>
     );
   }
@@ -41,4 +38,4 @@ class OrganizationDisplay extends HasSolrData(Component) {
 }
 
 
-export default OrganizationDisplay
+export default CourseDisplay

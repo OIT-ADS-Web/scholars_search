@@ -4,18 +4,18 @@ import { connect } from 'react-redux';
 //import { PAGE_ROWS } from '../actions/search'
 import { PAGE_ROWS } from '../actions/constants'
 
-
 import classNames from 'classnames'
 
 import actions from '../actions/search'
 
-class PagingPanel extends Component {
+import { requestSearch } from '../actions/search'
+
+export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
   // level just to get at router and add values to router so they go into state
   static get contextTypes() {
     return({
-      //router: PropTypes.object
       router: PropTypes.object.isRequired
     })
   }
@@ -34,14 +34,10 @@ class PagingPanel extends Component {
        return false
     }  
 
-    const { search : { searchFields, start, filter }, dispatch } = this.props
+    const { search : { searchFields }, dispatch } = this.props
 
-    dispatch(actions.nextPage())
-    
-    // FIXME: seems like actions.nextPage should do the start + PAGE_ROWS stuff
-    // but I had to add it here to make it work
-    //
-    let newStart = start + PAGE_ROWS
+    let start = searchFields ? searchFields['start'] : 0
+    let newStart = Math.floor(start) + PAGE_ROWS
 
     // NOTE: if not a new 'query' obj - this error happens:
     // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
@@ -53,8 +49,8 @@ class PagingPanel extends Component {
 
     })
       
-
-    dispatch(actions.fetchSearch(searchFields, newStart, filter))
+    dispatch(requestSearch(query))
+    
   }
 
   handlePreviousPage(e) {
@@ -64,12 +60,10 @@ class PagingPanel extends Component {
        return false
     }  
     
-    const { search : { searchFields, start, filter }, dispatch } = this.props
+    const { search : { searchFields }, dispatch } = this.props
 
-    dispatch(actions.previousPage())
-
-    let newStart = start - PAGE_ROWS 
-    // FIXME: seems like actions.previousPage() would take care of this    
+    let start = searchFields ? searchFields['start'] : 0
+    let newStart = Math.floor(start) - PAGE_ROWS
     
     const query = { ...searchFields, start: newStart }
 
@@ -79,20 +73,18 @@ class PagingPanel extends Component {
 
     })
  
-    // FIXME: seems like I shouldn't have to do start - PAGE_ROWS,
-    // but otherwise it uses the the start from const { search : { start ...
-    // which is still what it was when the method was called (not updated)
-    //
-    dispatch(actions.fetchSearch(searchFields, newStart, filter))
+    dispatch(requestSearch(query))
   }
 
   render() {
     // so start should be coming from search object (state)
-    const { search : { results, searchFields, start=0, filter, isFetching } } = this.props
+    const { search : { results, searchFields, isFetching } } = this.props
 
     let { highlighting={}, response={} } = results
     let { numFound=0,docs } = response
-    
+
+    let start = searchFields['start'] || 0
+
     if (!docs) {
       return ( <div></div> )
     }
@@ -102,7 +94,8 @@ class PagingPanel extends Component {
     // 105 results
     // start at 50
     // would be page 2 of 3
-    //   
+    // NOTE: all these Math.floor(s) are annoying
+    //
     var totalPages = Math.floor(numFound/PAGE_ROWS)
     const remainder = numFound % PAGE_ROWS
     if (remainder) {
@@ -147,11 +140,12 @@ class PagingPanel extends Component {
     var previous = false
 
     // (50 + 50 < 105)
-    if ((start + PAGE_ROWS) < numFound) {
+
+    if ((Math.floor(start) + Math.floor(PAGE_ROWS)) < numFound) {
       next = true
     }
     // (100 > 50 and some found)
-    if (start >= PAGE_ROWS) {
+    if (Math.floor(start) >= Math.floor(PAGE_ROWS)) {
       previous = true
     }
 
@@ -176,9 +170,6 @@ class PagingPanel extends Component {
 const mapStateToProps = (search, ownProps) => {
   return  search;
 }
-
-// NOTE: doesn't seem to ever call unless I connect ...
-//export default SearchResults
 
 export default connect(mapStateToProps)(PagingPanel);
 

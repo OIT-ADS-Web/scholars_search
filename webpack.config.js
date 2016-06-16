@@ -13,10 +13,21 @@ console.log(environment)
 var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 console.log(config)
 
+//require("bootstrap-webpack!../bootstrap.config.js")
+
+
 // can do this too:
 // node -r dotenv/config your_script.js dotenv_config_path=/custom/path/to/your/env/vars
 // (see) https://www.npmjs.com/package/dotenv#preload
 //
+//
+//'babelPreprocessor': {
+//  options: {
+//    optional: ['runtime'],  // per http://babeljs.io/docs/usage/options/
+//    sourceMap: 'inline'
+//  },
+//
+// http://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined-with-async-await
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
@@ -29,8 +40,9 @@ module.exports = {
   output: {
     path: __dirname + "/dist/",
     filename: "[name].js",
-    library: "Root",
-    libraryTarget: "umd"
+    library: "ScholarsSearch",
+    libraryTarget: "umd"/*,*/
+    /*publicPath: "/src/images/"*/
   },
   // NOTE: this is in here so nock can run tests - but they don't work anyway
   //node: {
@@ -43,24 +55,24 @@ module.exports = {
   //},
   module: {
     loaders: [
-      // FIXME: use bootstrap (less) or not? 
-      { test: /\.(woff|woff2)$/,  loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-      { test: /\.ttf$/,    loader: "file-loader" },
-      { test: /\.eot$/,    loader: "file-loader" },
-      { test: /\.svg$/,    loader: "file-loader" },
+      { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file-loader' },
       // style pre-processing
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.(png|gif)$/, loader: 'file-loader' },
+      { test: /\.(png|gif|jpg)$/, loader: 'file-loader' },
+      { test: /jquery/, loader: 'expose?$!expose?jQuery' },
       // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+        // http://asdfsafds.blogspot.com/2016/02/referenceerror-regeneratorruntime-is.html
         query: {
-          presets: ['react','es2015']
+          presets: ['react','es2015'],
+          plugins: ["transform-runtime"]
         }
-      }
+      }/*, */
+      //{ test: /bootstrap\/js\//, loader: 'imports?jQuery=jquery' }
     ]
   },
   // make sourcemaps in separate files

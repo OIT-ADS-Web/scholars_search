@@ -3,7 +3,7 @@
 import * as types from '../actions/types'
 import { PAGE_ROWS } from '../actions/constants'
 
-
+/*
 function appInitReducer(init = {isLoading: false, departments: []}, action) {
 
   switch(action.type) {
@@ -21,6 +21,7 @@ function appInitReducer(init = {isLoading: false, departments: []}, action) {
       return init
     }
 }
+*/
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -43,6 +44,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
         grouped: action.grouped,
         lastUpdated: action.receivedAt
     }
+
+
     default:
       return tabs;
   }
@@ -51,7 +54,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 
 // could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
-function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
+function searchReducer(search = { isFetching: false, results: {}}, action) {
+//function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
 
   case types.REQUEST_SEARCH:
@@ -66,22 +70,22 @@ function searchReducer(search = { isFetching: false, results: {}, start: 0, filt
       results: action.results,
       lastUpdated: action.receivedAt
     }
-  case types.NEXT_PAGE:
-    return { ...search, 
-      start: search.start + PAGE_ROWS
-    }
-  case types.PREVIOUS_PAGE:
-    return { ...search, 
-      start: search.start - PAGE_ROWS
-  }
-  case types.RESET_PAGE:
-    return { ...search, 
-      start: 0 
-  }
-  case types.SET_FILTER:
-    return { ...search, 
-      filter: action.filter
-  }
+  //case types.NEXT_PAGE:
+  //  return { ...search, 
+  //    start: search.start + PAGE_ROWS
+  //  }
+  //case types.PREVIOUS_PAGE:
+  //  return { ...search, 
+  //    start: search.start - PAGE_ROWS
+  //}
+  //case types.RESET_PAGE:
+  //  return { ...search, 
+  //    start: 0 
+  //}
+  //case types.SET_FILTER:
+  //  return { ...search, 
+  //    filter: action.filter
+  //}
   default:
     return search;
   }
@@ -111,7 +115,7 @@ import { routerReducer  } from 'react-router-redux'
 const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
-  init: appInitReducer,
+  //init: appInitReducer,
   tabs: tabReducer
 })
 

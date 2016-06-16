@@ -6,6 +6,12 @@ import actions from '../actions/search'
 import SearchResults from './SearchResults'
 import SearchField from './SearchField'
 
+import * as types from '../actions/types'
+
+import classNames from 'classnames'
+
+import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
+
 export class SearchForm extends Component {
 
 
@@ -22,8 +28,8 @@ export class SearchForm extends Component {
 
   handleSubmitSearch(e) {
     e.preventDefault();
-    
-    const { search : { start, filter }, dispatch } = this.props;
+    //const { search : { start, filter }, dispatch } = this.props;
+    const { search : { searchFields }, dispatch } = this.props;
  
     const allWords = this.allWords
     const exactMatch = this.exactMatch
@@ -36,21 +42,25 @@ export class SearchForm extends Component {
     }
     // NOTE: allWords search needs a '*' after every word, otherwise it's searching
     // exactly.  Then again, maybe the user wants the ability to differentiate the two.
-    //
-    // NOTE: having problems with getting 'start' - setting it to 0 here
-    //
+    
+    // NOTE: if someone is searching 'organizations' tab - go ahead and persist
+    // that tab - but default to 'person' tab if nothing is there
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
+    // NOTE: if it's a new search - just default to page 0 instead of something weird
+    let start = 0
     const compoundSearch = {
        'allWords': allWords.value,
        'exactMatch': exactMatch.value,
        'atLeastOne': atLeastOne.value,
        'noMatch': noMatch.value,
-       'start': 0,
+       'start': start,
        'filter': filter
      }
 
     /*
      * FIXME: should only add these to route if there is a value
-     *
+     * e.g. it really shouldn't search a 'blank' search
      *
      * FIXME: this pathname should be global, configurable, right?
      */
@@ -59,23 +69,8 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-
-    dispatch(actions.fetchTabCounts(compoundSearch))
-    dispatch(actions.fetchSearch(compoundSearch, 0, filter))
-
-    // NOTE: was having problems with reseting page - so 
-    // defaulted to setting start to 0 in function
-    // calls - but I was getting [page 2 of 0] if I didn't do this
-    //
-    dispatch(actions.resetPage())
-
-    // even though fetchSearch(...filter) takes filter this was needed
-    dispatch(actions.filterSearch(filter))
-    
-    // on the other hand, this does NOT seem necessary.  Why not?
-    //dispatch(actions.resetFilter())
-
-
+    dispatch(requestSearch(compoundSearch))
+    dispatch(requestTabCount(compoundSearch))
   }
 
   render() {
@@ -96,6 +91,14 @@ export class SearchForm extends Component {
          button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
+    var hideAdvanced = false
+    
+    if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
+       hideAdvanced = false
+       console.log("SHOW advanced search fields")
+    }
+    const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     
+    //
     // NOTE: it took a while to figure out how to set the defaultValue of the <inputs> below (SearchField) - the typical React lifecycle of components
     // will just allow setting that value once (which was always initializing to NULL).  I'm pretty sure the code is initializing the form too
     // many times or too soon or something like that.  I was not able to track that down though.  This works for now.
@@ -103,13 +106,15 @@ export class SearchForm extends Component {
        
        <section>
 
-        <form onSubmit={this.handleSubmitSearch}>
+        <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
           
           <SearchField label="With all these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
-          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
-          <SearchField label="With at least one of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
-          <SearchField label="With none these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
- 
+          <div className={advancedClasses}>
+            <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
+            <SearchField label="With at least one of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With none these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
+          </div>
+
           {button}
 
         </form>

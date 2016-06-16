@@ -7,25 +7,30 @@ Install node dependencies:
 
 ## Start the development server:
 
-    ```
-    > npm start
+  ```
+  > npm start
     
-    ```
+  ```
 
-    or (if need to set an environment):
+  or (if need to set an environment):
 
+  ```
+  > NODE_ENV=(development|acceptance_dev) npm start
 
-    ```
-    > NODE_ENV=(development|development_acceptance) npm start
-    
-    ```
+  ```
+
+(see below for other setup necessary to connect to acceptance server during development)
 
 This will watch all files, rebuild and hot-load the running dev server code with your changes. No need to refresh the browser.
 
-Navigate to:
+Navigate to:  
 
-    http://localhost:8333/
+  http://localhost:8333
 
+
+**NOTE**: you are more likely to want to use this (see 'Proxy' section for setup):
+
+  http://localhost/scholars_search
 
 ## Proxy
 
@@ -83,12 +88,12 @@ much destructive about that.
 
 To connect to acceptance server, make a few ssh tunnels:
 
-    ```
-    [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
+  ```
+  [scholars] ssh -L 8082:localhost:8080 [acceptance-server-for-VIVO]
 
-    [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
+  [solr] ssh -L 8081:localhost:8081 [acceptance-server-for-solr]
 
-    ```
+  ```
 
 And add these lines to /etc/apache2/others/scholars.conf
 
@@ -106,13 +111,37 @@ And add these lines to /etc/apache2/others/scholars.conf
 
   ```
 
+then run this on the command line:
+
+  ```
+  > NODE_ENV=acceptance-dev npm start
+  
+  ```
+
+## Building and Deploying
+
+  First run the build command - this puts something in the `./dist` folder.  *NOTE*: you have to do `npm run build` not just `npm build`
+  
+  ```
+  NODE_ENV=(acceptance|production) npm run build
+  
+  ```
+
+  Then there is a simple script that copies files.
+  ```
+  ./deploy.sh (acceptance|production)
+  
+  ```
+
 ## Tests
 Testing is done with the [Karma]() test runner and the [Jasmine]() framework. Tests in this example are written with es6 syntax.
 
 To run tests:
 
-    npm run test
+  ```
+  > npm run test
+
+  ```
 
 This will watch all files involved in the defined tests and automatically rebuild/test on save.
-
 

@@ -22,8 +22,8 @@ class SolrQuery {
     //
   }
 
-  setupDefaultSearch(start, rows, filter) {
-    return helpers.setupDefaultSearch(this, start, rows, filter)
+  setupDefaultSearch(filter, rows, start) {
+    return helpers.setupDefaultSearch(this, filter, rows, start)
   }
 
   setupTabGroups() {
@@ -32,7 +32,7 @@ class SolrQuery {
 
   addGroupQuery(name, query) {
     // FIXME: should add a check to make sure options[:group] = true is set
-    //
+    // otherwise solr error could occur
     var groupQuery = {}
     groupQuery[name]=query
     Object.assign(this._groupQueries,groupQuery)
@@ -57,11 +57,28 @@ class SolrQuery {
     return this._options
   }
 
-  
+  // NOTE: 'compoundSearch' is the data structure used to represent a search
+  // { 'allWords': 'medicine', 'rows': 50, 'filter': 'person' etc ... } and
   set search(compoundSearch) {
+    // FIXME: would this be a better place to check for
+    // filter and start being empty?
+    //
+    // NOTE: 'filter' is sent to SOLR differently
+    // 
+    // let filter = compoundSearch['filter']
+    // if (filter) {
+    //  // could be other kinds of filters (that's why I did 'type')
+    //  searcher.deleteFilter("type") // just in case we had one lingering
+    //  let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
+    //  searcher.addFilter("type", foundFilter.filter)
+    //  compoundSearch = _.omit(compoundSearch, 'filter') 
+    //}
+
     this._search = compoundSearch
     // FIXME: is this a good idea or not, want
     // to hide the implementation
+    //
+    //
     let qry = this.buildQuery(compoundSearch)
     this.query = qry
 
@@ -101,7 +118,7 @@ class SolrQuery {
     // so the hash looks like this now
     // { facet: true, facet.fields: [field1, field2 ...]}
     // 
-    // see here for more complete example of other thigns 'faceting' can do:
+    // see here for more complete example of other things 'faceting' can do:
     //
     // http://yonik.com/json-facet-api/
 

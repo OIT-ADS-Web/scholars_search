@@ -1,12 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+import HasSolrData from './HasSolrData'
 
-// FIXME: some of these methods are common to all  - so make 
-// PersonDisplay extend GenericDisplay instead? extending
-// object is too Java-ish though
-//
-class GenericDisplay extends Component {
+class GenericDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
@@ -14,34 +11,21 @@ class GenericDisplay extends Component {
     this.display = this.props.display;
   }
 
-  get name() {
-    return this.doc.nameRaw[0]
-  }
-
-  get preferredTitle() {
-    return this.doc.PREFERRED_TITLE
-  }
-
-  get docId() {
-    return this.doc.DocId
-  }
-
-  get allText() {
-    return this.doc.ALLTEXT.join(" ")
-  }
-
-  get mostSpecificType() {
-    return this.doc.mostSpecificTypeURIs.join(" ")
-  }
-
   render() {
 
     return (
          <div className="generic search-result-row" key="{this.docId}">
-            <strong>{this.name}</strong>
             <div className="row">
-              <div className="col-md-1">Type</div> 
-              <div className="col-md-11">{this.mostSpecificType}</div>
+              <div className="col-md-12">
+                <strong><a href={this.URI}>{this.name}</a></strong>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-2"><strong>Most Specific Type</strong></div> 
+              <div className="col-md-9">{this.mostSpecificType}</div>
+              <div className="col-md-1">
+                <span className="label label-info">{this.score}</span>
+              </div>
             </div>
             <div className="row highlight-text">
               <div className="col-md-12">
@@ -49,6 +33,15 @@ class GenericDisplay extends Component {
                 <span dangerouslySetInnerHTML={{__html: this.display}}></span>
                 <span>...</span>
               </div>
+            </div>
+            <div className="row">
+              <div className="col-md-1">
+               <strong>Type(s)</strong>
+              </div>
+              <div className="col-md-11">
+                <span dangerouslySetInnerHTML={{__html: this.types}}></span>
+              </div>
+
             </div>
         </div>
     );
