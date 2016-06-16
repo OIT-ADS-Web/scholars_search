@@ -42,6 +42,17 @@ let HasSolrData = (superclass) => class extends superclass {
     return this.doc.URI
   }
 
+  // FIXME: show there maybe be an empty, interface like csv_template? or
+  // even not empty
+  //
+  // 
+// get csvTemplates() {
+  //   // ideally these would be pre-compiled, not compiled
+  //   // on function call - maybe init hook? compileTemplates?
+  //   let header = _.template('hello <%= docId %>!')
+  //   let body = _.template('hello <%= docId %>!')
+  //   return {header: header, body: body}
+  // }
   highlightText(display) {
 
     // FIXME: need to factor this out since it's in every 'Display'

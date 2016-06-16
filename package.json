@@ -24,6 +24,7 @@
     "imports-loader": "^0.6.5",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^2.2.4",
+    "json2csv": "^3.4.2",
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
     "lodash": "^4.1.0",

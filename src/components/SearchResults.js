@@ -29,6 +29,9 @@ import _ from 'lodash'
 
 import { fetchSearchApi } from '../actions/sagas'
 
+
+import TabPicker from './TabPicker'
+
 export class SearchResults extends Component {
 
   static get contextTypes() {
@@ -51,7 +54,6 @@ export class SearchResults extends Component {
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
    
-
     // FIXME: much more to do here - just proving I can download a file now
     const { search : { results, searchFields, isFetching } } = this.props
 
@@ -77,17 +79,29 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
+      //var compiled = _.template('hello <%= user %>!');
+      //compiled({ 'user': 'fred' });
+
+    let tabPicker = new TabPicker(filter)
+
     // FIXME: this is a bit like a template - would be different depending
     // on 'filter' (tab)
     fetchSearchApi(searchFields, maxRows).then(function(json) {
 
-      let headers = [`URI\n`]
-      console.log(json.response.docs)
-      let rows = _.map(json.response.docs, function(doc) {
-        return `${doc.URI}\n`
-      })
+      let csv = tabPicker.toCSV(json)
 
-      let csv = _.concat(headers, rows)
+      // switch (filter) {
+      //  case person:
+      //    
+      // }
+      // this part would be different, per filter - maybe template?
+      //let headers = [`URI\n`]
+      //console.log(json.response.docs)
+      //let rows = _.map(json.response.docs, function(doc) {
+      //  return `${doc.URI}\n`
+      //})
+
+      //let csv = _.concat(headers, rows)
 
       let blob = new Blob(csv, {type: type})
       // FIXME: much more to do here - just proving I can download a file now
@@ -145,8 +159,11 @@ export class SearchResults extends Component {
             display = ""
           }
 
+          // TabDeterminer.pickDisplay(filter, doc, highlight)
+          // TabPicker.pickTemplates(filter)
+          //
           // FIXME: factor this out DisplayPicker = or possibly something that also
-          // keeps track of download templates          
+          // keeps track of download templates too          
           switch(filter) {
             case 'person':
               return <PersonDisplay key={doc.DocId} doc={doc} display={display}/> 
