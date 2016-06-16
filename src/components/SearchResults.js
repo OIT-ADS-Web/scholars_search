@@ -69,7 +69,7 @@ export class SearchResults extends Component {
     let today = new Date()
     let todayStr = today.toISOString().substring(0,10) // ISOString Returns 2011-10-05T14:48:00.000Z
     let format = 'csv'
-    let maxRows = 1000
+    let maxRows = 999 // NOTE: solr-proxy limits this to <= 1000 (at the moment) 
 
     let fileName = `search_results_${filter}_${todayStr}.${format}`
     let figureType  = function(format) {

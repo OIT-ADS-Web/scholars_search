@@ -55,11 +55,7 @@ module.exports = {
   //},
   module: {
     loaders: [
-      // FIXME: use bootstrap (less) or not? 
-      { test: /\.(woff|woff2)$/,  loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-      { test: /\.ttf$/,    loader: "file-loader" },
-      { test: /\.eot$/,    loader: "file-loader" },
-      { test: /\.svg$/,    loader: "file-loader" },
+      { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file-loader' },
       // style pre-processing
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },

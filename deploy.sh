@@ -35,14 +35,18 @@ for SERVER in "${SERVERS[@]}"; do
   echo "rsyncing index.html to $SERVER..."
   rsync -av dist/app.js.map tomcat@$SERVER:$deploy_dir/app.js.map
 
-  echo "rsyncing image files to $SERVER..."
-  rsync -av dist/*.gif tomcat@$SERVER:$deploy_dir/
+  #echo "rsyncing image files to $SERVER..."
+  #rsync -av dist/*.gif tomcat@$SERVER:$deploy_dir/
 
-  echo "rsyncing image files to $SERVER..."
-  rsync -av dist/*.png tomcat@$SERVER:$deploy_dir/
+  #echo "rsyncing image files to $SERVER..."
+  #rsync -av dist/*.png tomcat@$SERVER:$deploy_dir/
 
-  echo "rsyncing image files to $SERVER..."
-  rsync -av dist/*.jpg tomcat@$SERVER:$deploy_dir/
+  #echo "rsyncing image files to $SERVER..."
+  #rsync -av dist/*.jpg tomcat@$SERVER:$deploy_dir/
+
+  echo "rsyncing image and font files to $SERVER..."
+  rsync -av dist/*.{woff,woff2,eot,ttf,jpg,png,gif,svg} tomcat@$SERVER:$deploy_dir/
+
 
 
 done

@@ -91,7 +91,7 @@ export class SearchForm extends Component {
          button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
-    var hideAdvanced = true
+    var hideAdvanced = false
     
     if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
        hideAdvanced = false
