@@ -83,7 +83,7 @@ export class SearchResults extends Component {
   }
 
   render() {
-    const { search : { results, searchFields, isFetching } } = this.props
+    const { search : { results, searchFields, isFetching, message } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
@@ -124,6 +124,7 @@ export class SearchResults extends Component {
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
       // search.  So ... add <Loading> just in case.
+      // FIXME: what to do if search error? e.g. if (message) { }
       return ( 
           <div className="row">
             <Loading isFetching={isFetching}></Loading>

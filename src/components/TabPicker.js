@@ -20,6 +20,10 @@ class TabPicker {
   }
 
 
+  toXml(json) {
+
+  }
+
   toCSV(json) {
 
     let data = json.response.docs
@@ -29,6 +33,7 @@ class TabPicker {
     switch(this.filter) {
 
       case 'person':
+        // fields = ['URI', 'email', 'score']
         break
       case 'publications':
         break

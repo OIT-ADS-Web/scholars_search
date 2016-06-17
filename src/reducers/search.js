@@ -44,8 +44,12 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
         grouped: action.grouped,
         lastUpdated: action.receivedAt
     }
-
-
+    case types.TABCOUNTS_FAILED:
+     
+      return { ...tabs,
+         isFetching: false,
+         message: action.message
+    }
     default:
       return tabs;
   }
@@ -59,33 +63,25 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
   switch (action.type) {
 
   case types.REQUEST_SEARCH:
+    
     return { ...search, 
       isFetching: true,
       results: action.results,
       searchFields: action.searchFields
-    }
+  }
   case types.RECEIVE_SEARCH:
+    
     return { ...search, 
       isFetching: false,
       results: action.results,
       lastUpdated: action.receivedAt
-    }
-  //case types.NEXT_PAGE:
-  //  return { ...search, 
-  //    start: search.start + PAGE_ROWS
-  //  }
-  //case types.PREVIOUS_PAGE:
-  //  return { ...search, 
-  //    start: search.start - PAGE_ROWS
-  //}
-  //case types.RESET_PAGE:
-  //  return { ...search, 
-  //    start: 0 
-  //}
-  //case types.SET_FILTER:
-  //  return { ...search, 
-  //    filter: action.filter
-  //}
+   }
+   case types.SEARCH_FAILED:
+    
+    return { ...search,
+      isFetching: false,
+      message: action.message
+  }
   default:
     return search;
   }

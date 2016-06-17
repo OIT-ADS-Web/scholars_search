@@ -39,7 +39,7 @@ export class SearchTabs extends Component {
     dispatch(requestSearch(query))
     
     // NOTE: took me a while to figure out I couldn't just pass
-    // searchFields as {query: searchFields} had to copy it (see above)
+    // searchFields as {query: searchFields} had to copy it into 'query' (see above)
     this.context.router.push({
       pathname: '/',
       query: query
@@ -49,15 +49,16 @@ export class SearchTabs extends Component {
   }
   
 
+  // FIXME: wow - don't like this at all (even though I wrote it)
+  // the tabs are actually different DOM-wise depending on screen size though
+  // 
+  // The application should be able to decide what javascript/dom/css 
+  // (since they are all javascript anyway)
+  // to apply to a given media size (instead of using css to show/hide)
+  // https://www.npmjs.com/package/react-match-media ??
   desktopTabs(isFetching, grouped, filter) {
      const tabList = solr.tabList
 
-     // note: every group has this - we only need one though
-     //var ungroupedCount = 0
-    
-     // matches - gives total matches ---
-     //
-     // NOTE: made it into an array so order would be preserved
      let tabs = _.map(tabList, (tab) => {
       
       // if we're still fetching - there will be nothing in 'grouped' to pull counts from
@@ -65,15 +66,10 @@ export class SearchTabs extends Component {
         return <div></div>
       }
 
-      // get the count - default to 0 just in case something wrong
-      //let matches = 0
-
       let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
       let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let label = tab.label
       
-      //ungroupedCount = matches
-
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
 
     })
@@ -136,10 +132,11 @@ export class SearchTabs extends Component {
      const { search : {searchFields} } = this.props
  
      // FIXME: seems like I shouldn't default filter in this place - 
-     // e.g. it should be more global
+     // e.g. it should be more global - these types of lines are in multiple
+     // places
      let filter = searchFields ? searchFields['filter'] : 'person'
 
-     const { tabs : {grouped, isFetching } } = this.props
+     const { tabs : {grouped, isFetching, message } } = this.props
 
      const tabList = solr.tabList
      let first = _.head(tabList)
@@ -149,7 +146,9 @@ export class SearchTabs extends Component {
      let desktopTabs = this.desktopTabs(isFetching, grouped, filter)
      let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
 
-    return (
+     // FIXME: what to do if tabs error? e.g. if (message) { }
+ 
+     return (
         <div>
           <h4>Total Found: {ungroupedCount}</h4>
           
