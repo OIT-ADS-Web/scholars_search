@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
 
 import PersonDisplay from './PersonDisplay'
 import PublicationDisplay from './PublicationDisplay'
@@ -20,10 +20,6 @@ class TabPicker {
   }
 
 
-  toXml(json) {
-
-  }
-
   toCSV(json) {
 
     let data = json.response.docs
@@ -32,23 +28,23 @@ class TabPicker {
     // FIXME: could use this to pick fields ... different per tab
     switch(this.filter) {
 
-      case 'person':
-        // fields = ['URI', 'email', 'score']
-        break
-      case 'publications':
-        break
-      case 'organizations':  
-        break
-      case 'subjectheadings':  
-        break
-      case 'artisticworks':  
-        break
-      case 'grants':  
-        break
-      case 'courses':  
-        break
-      default:  
-        //
+    case 'person':
+      // fields = ['URI', 'email', 'score']
+      break
+    case 'publications':
+      break
+    case 'organizations':  
+      break
+    case 'subjectheadings':  
+      break
+    case 'artisticworks':  
+      break
+    case 'grants':  
+      break
+    case 'courses':  
+      break
+    default:  
+      //
     }
 
     var _csv = ""
@@ -73,29 +69,22 @@ class TabPicker {
   pickDisplay(doc, highlight) {
     
     switch(this.filter) {
-      case 'person':
-        return <PersonDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'publications':
-        return <PublicationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'organizations':  
-        return <OrganizationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'subjectheadings':  
-        return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'artisticworks':  
-        return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'grants':  
-        return <GrantDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      case 'courses':  
-        return <CourseDisplay key={doc.DocId} doc={doc} display={highlight}/> 
-        break
-      default:  
-       return <GenericDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'person':
+      return <PersonDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'publications':
+      return <PublicationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'organizations':  
+      return <OrganizationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'subjectheadings':  
+      return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'artisticworks':  
+      return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'grants':  
+      return <GrantDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    case 'courses':  
+      return <CourseDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+    default:  
+      return <GenericDisplay key={doc.DocId} doc={doc} display={highlight}/> 
     }
   }
 

@@ -1,7 +1,6 @@
 // the html plugin will dynamically add the bundle script tags to the main index.html file
 // it also allows us to use template to build the rest of that file
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var path = require('path');
 var webpack = require('webpack')
 
 // FIXME: how to vary this per build ... 
@@ -31,7 +30,7 @@ console.log(config)
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
-    app: "./src/main.js",
+    app: "./src/main.js"
   },
   // put all built files in dist
   // use 'name' variable to make 
@@ -93,8 +92,8 @@ module.exports = {
       template: 'src/index.ejs/'
     }),
     new webpack.DefinePlugin({
-        'process.env.SOLR_URL': JSON.stringify(process.env.SOLR_URL),
-        'process.env.ORG_URL':  JSON.stringify(process.env.ORG_URL)
+      'process.env.SOLR_URL': JSON.stringify(process.env.SOLR_URL),
+      'process.env.ORG_URL':  JSON.stringify(process.env.ORG_URL)
     })
   ]
 }

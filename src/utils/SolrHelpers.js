@@ -37,11 +37,10 @@ function buildComplexQuery(compoundSearch = {}) {
     var exp = words.join(delimiter)
     if (exp) {
       if (words.length > 1) {
-          // group if more than 1 - just to be unambigous
-          exp = "(" + exp + ")"
-        }
+        // group if more than 1 - just to be unambigous
+        exp = "(" + exp + ")"
       }
-
+    }
     return exp 
   }
 
@@ -58,8 +57,8 @@ function buildComplexQuery(compoundSearch = {}) {
   const noMatch = "noMatch" in compoundSearch ? compoundSearch.noMatch.split(/[ ,]+/) : []
 
   if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
-     //NOTE:  (can't NOT without something to match to begin with)
-     return ''
+    //NOTE:  (can't NOT without something to match to begin with)
+    return ''
   }
 
   var queryArray = []
@@ -73,8 +72,8 @@ function buildComplexQuery(compoundSearch = {}) {
   if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
 
   if (noMatch != false) {
-   var noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
-   if (noMatchExp) { queryArray.push(noMatchExp) }
+    var noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
+    if (noMatchExp) { queryArray.push(noMatchExp) }
   }
 
   // take out empty "" entries, just in case made it this far
@@ -102,9 +101,9 @@ class SolrResultsParser {
    }
   */
 
-   parseResponse(results) {
+  parseResponse(results) {
     /* 
-       NOTE: a basic solr query will return stuff looking like this:
+     NOTE: a basic solr query will return stuff looking like this:
 
      results {
        response": {
@@ -120,16 +119,15 @@ class SolrResultsParser {
       }
     */
  
-     let { highlighting={}, response={} } = results;
-     let { numFound=0,docs } = response;
+    let { highlighting={}, response={} } = results;
+    let { numFound=0,docs } = response;
      
-     return { numFound: numFound, docs: docs, highlighting: highlighting }
-    
-   }
+    return { numFound: numFound, docs: docs, highlighting: highlighting }
+  }
 
-   parseGroups(grouped) {
+  parseGroups(grouped) {
 
-   // NOTE: this is what is received
+    // NOTE: this is what is received
     /*
      grouped": {
         "type:(*Concept)": {
@@ -141,25 +139,25 @@ class SolrResultsParser {
             "docs": [{ .... }]
 
     */
-     // and this is what we want (in some cases):
+    // and this is what we want (in some cases):
      
-     /* {
+    /* {
       *  "type:(*Concept)":  1980,
       *  "type:(*Publication)":  0 
       * }
       *
       *  with "type:(*Concept)" leading easily to label: "Subject Headings"
       *  etc... (see filterConfig)
-      */
+    */
 
-      //let { doclist={} } = grouped;
-      var summary = {}
-      _.forEach(grouped, function(value, key) {
-        summary[key] = value.doclist.numFound
-      });
+    //let { doclist={} } = grouped;
+    var summary = {}
+    _.forEach(grouped, function(value, key) {
+      summary[key] = value.doclist.numFound
+    });
 
-     return summary 
-   }
+    return summary 
+  }
 
 
 }
@@ -238,7 +236,7 @@ function setupTabGroups(searcher) {
   // searcher.addGroupQuery("type-publication", "type:(*Publication)")
   // etc...
   _.forEach(tabList, function(tab) {
-     searcher.addGroupQuery("type-"+tab.id, tab.filter)
+    searcher.addGroupQuery("type-"+tab.id, tab.filter)
   })
   
   return searcher

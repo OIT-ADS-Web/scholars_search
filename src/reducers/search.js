@@ -1,27 +1,6 @@
 //http://spapas.github.io/2016/03/02/react-redux-tutorial/#components-notification-js
 
 import * as types from '../actions/types'
-import { PAGE_ROWS } from '../actions/constants'
-
-/*
-function appInitReducer(init = {isLoading: false, departments: []}, action) {
-
-  switch(action.type) {
-    case types.APP_INIT_BEGIN:
-      return { ...init,
-        isLoading: true,
-        departments: action.departments
-    }
-    case types.APP_INIT_END:
-      return { ...init,
-        isLoading: false,
-        departments: action.departments
-    }
-    default:
-      return init
-    }
-}
-*/
 
 // an action [action.grouped, action.searchFields] is the result of 
 // a dispatch() call - the reducers (such as below) change the
@@ -30,28 +9,28 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 
   switch (action.type) {
  
-    case types.REQUEST_TABCOUNTS:
+  case types.REQUEST_TABCOUNTS:
 
-      return { ...tabs, 
-        isFetching: true,
-        grouped: action.grouped,
-        searchFields: action.searchFields
-    }
-    case types.RECEIVE_TABCOUNTS:
+    return { ...tabs, 
+      isFetching: true,
+      grouped: action.grouped,
+      searchFields: action.searchFields
+  }
+  case types.RECEIVE_TABCOUNTS:
 
-      return { ...tabs, 
-        isFetching: false,
-        grouped: action.grouped,
-        lastUpdated: action.receivedAt
-    }
-    case types.TABCOUNTS_FAILED:
-     
-      return { ...tabs,
-         isFetching: false,
-         message: action.message
-    }
-    default:
-      return tabs;
+    return { ...tabs, 
+      isFetching: false,
+      grouped: action.grouped,
+      lastUpdated: action.receivedAt
+  }
+  case types.TABCOUNTS_FAILED:
+    
+    return { ...tabs,
+       isFetching: false,
+       message: action.message
+  }
+  default:
+    return tabs;
   }
 }
 
@@ -75,8 +54,8 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
       isFetching: false,
       results: action.results,
       lastUpdated: action.receivedAt
-   }
-   case types.SEARCH_FAILED:
+  }
+  case types.SEARCH_FAILED:
     
     return { ...search,
       isFetching: false,

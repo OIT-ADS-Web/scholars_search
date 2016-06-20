@@ -4,11 +4,8 @@
 
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import configureStore from '../configureStore'
 
 import { sagaMiddleware, configureStoreSaga } from '../configureStore'
-
-import ScholarsSearchApp from './ScholarsSearchApp'
 
 const store = configureStoreSaga()
 import rootSaga from '../actions/sagas'
@@ -20,7 +17,7 @@ store.runSaga(rootSaga)
 //store.close = () => store.dispatch(END)
 
 // http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
-import { Router, Route, IndexRoute } from 'react-router'
+import { Router } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 
 // NOTE: the following - it took a while to figure this out and it'll probably change without warning

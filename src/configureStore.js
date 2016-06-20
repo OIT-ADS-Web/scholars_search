@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
-import createSagaMiddleware, { END } from 'redux-saga'
+import createSagaMiddleware from 'redux-saga'
 
 const sagaMiddleware = createSagaMiddleware()
 const loggerMiddleware = createLogger()
