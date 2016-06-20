@@ -26,9 +26,7 @@ class CourseDisplay extends HasSolrData(Component) {
             </div>
             <div className="row highlight-text">
               <div className="col-md-12">
-                <span>...</span>
-                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                <span>...</span>
+                {this.highlightText(this.display)}
               </div>
             </div>
         </div>

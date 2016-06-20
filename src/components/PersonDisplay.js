@@ -43,37 +43,26 @@ class PersonDisplay extends HasSolrData(Component) {
       picture = <img className="profile-thumbnail"></img>
     }
 
-    // even this crashes
-    //let highlight = this.highlightText(this.display)
-    //console.log(highlight)
-
     return (
          <div className="person search-result-row" key="{this.docId}">
             <div className="row">
               
-              <div className="col-md-1 col-xs-12">
+              <div className="col-lg-1 col-md-12 col-xs-12 col-sm-12">
                 {picture}
               </div>
             
-              <div className="col-md-10 col-xs-12">
+              <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
                 <strong><a href={this.URI}>{this.name}</a></strong>
                 <span> - {this.preferredTitle}</span>
               </div>
 
-              <div className="col-md-1 col-xs-12">
+              <div className="col-lg-1 hidden-md hidden-sm hidden-xs">
                 <span className="label label-primary">{this.score}</span>
               </div>
 
-              <div className="col-md-12 col-xs-12">
+              <div className="col-lg-11 col-md-12 col-xs-12">
                 <div className="highlight-text">
-                  
-
-                  <cite>
-                    <span>...</span>
-                    <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                    <span>...</span>
-                  </cite>
-
+                  {this.highlightText(this.display)}
                 </div>
               </div>
         

@@ -1,3 +1,5 @@
+import React from 'react'
+
 // NOTE: one way to do this, not the only way
 // http://exploringjs.com/es6/ch_classes.html
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
@@ -42,30 +44,31 @@ let HasSolrData = (superclass) => class extends superclass {
     return this.doc.URI
   }
 
-  // FIXME: show there maybe be an empty, interface like csv_template? or
-  // even not empty
-  //
-  // 
-// get csvTemplates() {
-  //   // ideally these would be pre-compiled, not compiled
-  //   // on function call - maybe init hook? compileTemplates?
-  //   let header = _.template('hello <%= docId %>!')
-  //   let body = _.template('hello <%= docId %>!')
-  //   return {header: header, body: body}
-  // }
   highlightText(display) {
-
     // FIXME: need to factor this out since it's in every 'Display'
-    // but putting {this.highlightText} - or even just calling highlightText() in
-    // render() is crashing the entire application now
     
-    let fragment = <cite><span>...</span>
+    let fragment = ( 
+        <cite>
+          <span>...</span>
           <span dangerouslySetInnerHTML={{__html: display}}></span>
           <span>...</span>
         </cite>
-    
+    )
+
     return fragment
 
+  }
+
+  get allTextDisplay() {
+    let fragment = ( 
+      <div className="row">
+        <div className="col-md-12">
+          <div className="alert alert-success"><strong>ALLTEXT</strong> {this.allText}</div>
+        </div>
+      </div>
+    )
+      
+    return fragment
   }
 
 }

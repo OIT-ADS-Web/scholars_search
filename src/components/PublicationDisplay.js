@@ -36,11 +36,7 @@ class PublicationDisplay extends HasSolrData(Component) {
             
             <div className="row highlight-text">
               <div className="col-md-12">
-                <cite>
-                  <span>...</span>
-                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                  <span>...</span>
-                </cite>
+                 {this.highlightText(this.display)}
               </div>
             </div>
 

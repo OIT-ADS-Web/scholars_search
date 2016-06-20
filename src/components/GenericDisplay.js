@@ -29,9 +29,7 @@ class GenericDisplay extends HasSolrData(Component) {
             </div>
             <div className="row highlight-text">
               <div className="col-md-12">
-                <span>...</span>
-                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                <span>...</span>
+               {this.highlightText(this.display)}
               </div>
             </div>
             <div className="row">
@@ -41,8 +39,8 @@ class GenericDisplay extends HasSolrData(Component) {
               <div className="col-md-11">
                 <span dangerouslySetInnerHTML={{__html: this.types}}></span>
               </div>
-
             </div>
+           {this.allTextDisplay} 
         </div>
     );
   }

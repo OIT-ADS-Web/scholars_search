@@ -15,13 +15,14 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
-              <div className="col-md-11"> 
+              <div className="col-md-11 col-xs-12 col-sm-12"> 
                 <strong><a href={this.URI}>{this.name}</a></strong>
               </div>
-              <div className="col-md-1">
+              <div className="col-md-1 hidden-xs hidden-sm">
                 <span className="label label-primary">{this.score}</span>
               </div>
             </div>
+
             <div className="row">
               <div className="col-md-12">
                 <span> {this.URI}</span>
@@ -30,15 +31,12 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
             <div className="row highlight-text">
               <div className="col-md-12">
-                <cite>
-                  <span>...</span>
-                  <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                  <span>...</span>
-                </cite>
+                 {this.highlightText(this.display)}
               </div>
             </div>
+
         </div>
-    );
+    )
   }
 
 }
