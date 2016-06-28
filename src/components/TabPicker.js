@@ -11,6 +11,8 @@ import CourseDisplay from './CourseDisplay'
 
 import json2csv from 'json2csv'
 
+import _ from 'lodash'
+
 // FIXME: don't know if this is that great of an idea, just
 // wanted some centralized splitter of stuff based on filter
 class TabPicker {
@@ -23,30 +25,39 @@ class TabPicker {
   toCSV(json) {
 
     let data = json.response.docs
-    var fields = ['URI']
+    let defaultFields = ['URI']
+    var extraFields = []
 
     // FIXME: could use this to pick fields ... different per tab
     switch(this.filter) {
     
     case 'person':
-      // NOTE: function(row) { return row.ALLTEXT.2} is an error but value: 'ALLTEXT.2' is not
-      fields = ['URI', {label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, { label: 'email', value: 'ALLTEXT.2',  default: ''}]
+      // NOTE: function(row) { return row.ALLTEXT.2 (and row.ALLTEXT[2])} is an error but value: 'ALLTEXT.2' is not, why?
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, { label: 'email', value: 'ALLTEXT.2',  default: ''}]
       break
     case 'publications':
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
       break
     case 'organizations':  
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
       break
     case 'subjectheadings':  
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}]
       break
     case 'artisticworks':  
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
       break
     case 'grants':  
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
       break
     case 'courses':  
+      extraFields = [{label: 'Name', value: 'nameRaw.0'}]
       break
     default:  
       //
     }
+
+    let fields = _.concat(defaultFields, extraFields)
 
     var _csv = ""
     if (data) {
