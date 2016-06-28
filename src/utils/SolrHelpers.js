@@ -50,7 +50,7 @@ function buildComplexQuery(compoundSearch = {}) {
   // exactMatch != array
   // atLeastOne => array
   // noMatch => array
-  // listing in same order as form
+  // listing WAS in same order as form
   const allWords = "allWords" in compoundSearch ? compoundSearch.allWords.split(/[ ,]+/) : [] 
   const exactMatch = "exactMatch" in compoundSearch ? compoundSearch.exactMatch : ''
   const atLeastOne = "atLeastOne" in compoundSearch ? compoundSearch.atLeastOne.split(/[ ,]+/) : []
@@ -124,6 +124,9 @@ class SolrResultsParser {
      
     return { numFound: numFound, docs: docs, highlighting: highlighting }
   }
+
+  //parseDocs(docs) {
+  //}
 
   parseGroups(grouped) {
 

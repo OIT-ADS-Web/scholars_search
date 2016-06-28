@@ -59,6 +59,33 @@ let HasSolrData = (superclass) => class extends superclass {
 
   }
 
+  toggleSolrDetails(e) {
+   e.preventDefault()
+   let showSolr = this.state ? this.state.showSolr : false
+   let toggle = !showSolr
+   this.setState({'showSolr': toggle})
+  }
+  get solrDocDisplay() {
+    //const env = process.env
+    // if env == 'acceptance' 
+    // else
+    // fragment = (<div></div>)
+ 
+    let showSolr = this.state ? this.state.showSolr : false
+    
+    let fragment = (
+       <div className="row solr-doc-details">
+        <div className="col-md-12"><a href="#" onClick={(e) => this.toggleSolrDetails(e)}><span className="glyphicon glyphicon-option-horizontal"></span></a>
+          <pre className={showSolr ? '' : 'hidden'}>
+            {JSON.stringify(this.doc, null, 2)}          
+          </pre>
+        </div>
+      </div>
+    )
+    
+   return fragment      
+  }
+
   get allTextDisplay() {
     let fragment = ( 
       <div className="row">

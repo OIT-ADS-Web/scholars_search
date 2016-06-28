@@ -4,6 +4,17 @@ import querystring from 'querystring'
 
 import helpers from './SolrHelpers'
 
+/*
+ * example of someone's answer to the question
+ * "how do I search specific fields in SOLR"
+ * (in PHP)
+ * <?php
+        $params['fl'] = $field_name;
+        $params['qf'][] = "{$field_name}^1.0";
+        $params['hl.fl'] = "$field_name";
+?>
+*/
+
 class SolrQuery {
  
   // NOTE: 'rows' is in the options {} property

@@ -5,6 +5,7 @@ import _ from 'lodash'
 import solr from '../utils/SolrHelpers'
 
 import SearchTab from './SearchTab'
+import Loading from './Loading'
 
 import { requestSearch } from '../actions/search'
 
@@ -102,7 +103,7 @@ export class SearchTabs extends Component {
         let label = value.label
  
         let row = (
-          <li><a href="#" onClick={(e) => _self.handleTab(e, value)}>{label} ({count})</a></li>
+          <li key={value.id}><a href="#" onClick={(e) => _self.handleTab(e, value)}>{label} ({count})</a></li>
         )
         rows.push(row)
       }   
@@ -134,6 +135,18 @@ export class SearchTabs extends Component {
     // FIXME: getting message here (which would mean error) but doing
     // nothing at the moment
     const { tabs : {grouped, isFetching, message } } = this.props
+
+    if (isFetching) { 
+      return ( 
+          <div className="row">
+            <Loading isFetching={isFetching}></Loading>
+          </div>
+      )
+    }
+ 
+    //if (isFetching) {
+    //  return (<div></div>)
+    //}
 
     const tabList = solr.tabList
     let first = _.head(tabList)

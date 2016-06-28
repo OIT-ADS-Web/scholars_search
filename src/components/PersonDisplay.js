@@ -56,17 +56,19 @@ class PersonDisplay extends HasSolrData(Component) {
                 <span> - {this.preferredTitle}</span>
               </div>
 
-              <div className="col-lg-1 hidden-md hidden-sm hidden-xs">
-                <span className="label label-primary">{this.score}</span>
-              </div>
+            </div>
 
-              <div className="col-lg-11 col-md-12 col-xs-12">
+            <div className="row">
+              <div className="col-lg-12 col-md-12 col-xs-12">
                 <div className="highlight-text">
                   {this.highlightText(this.display)}
                 </div>
               </div>
         
           </div>
+
+           {this.solrDocDisplay}
+ 
       </div>
 
     )

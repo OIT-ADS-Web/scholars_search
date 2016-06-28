@@ -16,20 +16,13 @@ class OrganizationDisplay extends HasSolrData(Component) {
          <div key="{this.docId}" className="organization search-result-row">
             
             <div className="row"> 
-              <div className="col-md-11"> 
+              <div className="col-md-12 col-sml-12"> 
                 <strong><a href={this.URI}>{this.name}</a></strong>
-              </div>
-              <div className="col-md-1">
-                <span className="label label-primary">{this.score}</span>
               </div>
             </div>
             
-            <div className="row">
-              <div className="col-md-12">
-                 {this.highlightText(this.display)}
-              </div>
-            </div>
-
+            {this.solrDocDisplay}
+ 
         </div>
     );
   }
