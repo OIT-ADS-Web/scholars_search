@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
 
+import _ from 'lodash'
+
 import HasSolrData from './HasSolrData'
 
 class PersonDisplay extends HasSolrData(Component) {
@@ -28,6 +30,26 @@ class PersonDisplay extends HasSolrData(Component) {
     return flag
   }
 
+  
+  get department() {
+    // NOTE: department_search_text field can look like this:
+    //
+    //"department_search_text": [
+    //  "\"Medicine, Cardiology\"",
+    //  "Medicine",
+    //  "Clinical Science Departments",
+    //  "School of Medicine",
+    //  "Duke Clinical Research Institute",
+    //  "Institutes and Centers"
+    //]
+    // 
+    let department_text = ''
+    if (this.doc.department_search_text) {
+       department_text = this.doc.department_search_text[0]
+     }
+    return department_text.replace(/"/g, "")
+  }
+  
   get thumbnailUrl() {
     return this.doc.THUMBNAIL_URL
   }
@@ -54,6 +76,7 @@ class PersonDisplay extends HasSolrData(Component) {
               <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
                 <strong><a href={this.URI}>{this.name}</a></strong>
                 <span> - {this.preferredTitle}</span>
+                <div>{this.department}</div>
               </div>
 
             </div>

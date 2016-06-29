@@ -6,11 +6,11 @@ import fetch from 'isomorphic-fetch'
 //
 // $ curl http://localhost/ROOTsolr/collection1/select -d '{query:"med*"}'
 
-//var queryString = process.env.SOLR_URL // + JSON.stringify({ query:"hero" })
+//let queryString = process.env.SOLR_URL // + JSON.stringify({ query:"hero" })
 
-//var uri = "http://localhost/ROOTsolr/collection1/select"
-//var uri = "http://localhost/ROOTsolr/collection1/select?wt=json&json="+JSON.stringify({query: 'med*'})
-var uri = "http://localhost/ROOTsolr/collection1/select?wt=json"
+//let uri = "http://localhost/ROOTsolr/collection1/select"
+//let uri = "http://localhost/ROOTsolr/collection1/select?wt=json&json="+JSON.stringify({query: 'med*'})
+let uri = "http://localhost/ROOTsolr/collection1/select?wt=json"
 
 // NOTE: this should work in theory (see https://github.com/github/fetch)
 // even though CURL works, fetch raises this:

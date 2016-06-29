@@ -17,7 +17,6 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
   }
 
   render() {
-    // D008515
     let meshMatch = /^https:\/\/scholars.duke.edu\/individual\/mesh*/
     let locMatch = /^http:\/\/id.loc.gov\/authorities\/subjects\/*/
  
@@ -41,7 +40,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
               <div className="col-md-12 col-xs-12 col-sm-12"> 
                 <strong><a href={this.URI}>{this.name}</a></strong>
                 <div className="pull-right">
-                   <img width="25px" src={logo}/>
+                   <img width="18px" src={logo}/>
                 </div>
               </div>
             </div>
