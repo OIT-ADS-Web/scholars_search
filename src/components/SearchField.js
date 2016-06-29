@@ -23,7 +23,7 @@ export default class SearchField extends Component {
     if (this.shouldSetInputTextToDefaultValue(nextProps))  {
       // set the default text input value if either the defaultText or the changeIndicator change 
       // set the default value
-      var theInput = this.refs.myInput
+      let theInput = this.refs.myInput
       theInput.value = defaultText
 
       // save the default value and change indicator for later comparison

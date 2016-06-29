@@ -24,7 +24,7 @@ function buildComplexQuery(compoundSearch = {}) {
   // query sent to SOLR
 
   //
-  var query = ""
+  let query = ""
   if (_.isEmpty(compoundSearch)) {
     return query
   }
@@ -34,7 +34,7 @@ function buildComplexQuery(compoundSearch = {}) {
   let gatherStatements = function(words, delimiter) {
     // given an array and a delimiter, join with that delimiter
     // but also group by parenthesis if necessary
-    var exp = words.join(delimiter)
+    let exp = words.join(delimiter)
     if (exp) {
       if (words.length > 1) {
         // group if more than 1 - just to be unambigous
@@ -61,18 +61,18 @@ function buildComplexQuery(compoundSearch = {}) {
     return ''
   }
 
-  var queryArray = []
+  let queryArray = []
     
-  var allWordsExp = gatherStatements(allWords, " AND ")
+  let allWordsExp = gatherStatements(allWords, " AND ")
   if (allWordsExp) { queryArray.push(allWordsExp) }
     
   if (exactMatch) { queryArray.push("\""+exactMatch+"\"") }
 
-  var atLeastOneExp = gatherStatements(atLeastOne,  " OR ")
+  let atLeastOneExp = gatherStatements(atLeastOne,  " OR ")
   if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
 
   if (noMatch != false) {
-    var noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
+    let noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
     if (noMatchExp) { queryArray.push(noMatchExp) }
   }
 
@@ -154,7 +154,7 @@ class SolrResultsParser {
     */
 
     //let { doclist={} } = grouped;
-    var summary = {}
+    let summary = {}
     _.forEach(grouped, function(value, key) {
       summary[key] = value.doclist.numFound
     });

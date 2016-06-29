@@ -44,7 +44,7 @@ class SolrQuery {
   addGroupQuery(name, query) {
     // FIXME: should add a check to make sure options[:group] = true is set
     // otherwise solr error could occur
-    var groupQuery = {}
+    let groupQuery = {}
     groupQuery[name]=query
     Object.assign(this._groupQueries,groupQuery)
     return this
@@ -118,8 +118,8 @@ class SolrQuery {
     // https://wiki.apache.org/solr/SimpleFacetParameters
     // 
     // am not actually using quite yet
-    var facetOptions = {}
-    var facets = Object.keys(this._facetFields)
+    let facetOptions = {}
+    let facets = Object.keys(this._facetFields)
     if (facets.length > 0) {
       facetOptions = {
         facet: true,
@@ -134,7 +134,7 @@ class SolrQuery {
     // http://yonik.com/json-facet-api/
 
     facets.forEach(facetField => {
-      var facetProperties = this._facetFields[facetField]
+      let facetProperties = this._facetFields[facetField]
       Object.keys(facetProperties).forEach(facetProp => {
         facetOptions["f." + facetField + ".facet." + facetProp] = facetProperties[facetProp]
       })
@@ -154,10 +154,9 @@ class SolrQuery {
   //  ...&group=true&group.query=type:(*Concept)&group.query=type:(*Publication)
   getGroupQueryOptions() {
 
-    var groupOptions = {}
+    let groupOptions = {}
     const groups = Object.keys(this._groupQueries).map(key => this._groupQueries[key]);
 
-    //var groups = Object.values(this._groupQueries)
     if (groups.length > 0) {
       groupOptions = { group: true, "group.query": groups }
     }
@@ -167,7 +166,7 @@ class SolrQuery {
 
 
   addFilter(name,query) {
-    var filter = {}
+    let filter = {}
     filter[name]=query
     Object.assign(this._filters,filter)
     return this
@@ -179,7 +178,7 @@ class SolrQuery {
   }
 
   getFilterOptions() {
-    var filterQueries = Object.keys(this._filters).map(filterName => this._filters[filterName])
+    let filterQueries = Object.keys(this._filters).map(filterName => this._filters[filterName])
     return {
       fq:filterQueries
     }
@@ -193,7 +192,7 @@ class SolrQuery {
 
     // e.g. making a big hash {} - the keys being
     // [q, rows, start etc..., fq,   
-    var queryOptions = Object.assign({q: this.query},
+    let queryOptions = Object.assign({q: this.query},
         this.options,
         this.getFilterOptions(),
         this.getFacetFieldOptions(),

@@ -54,7 +54,7 @@ const solrJson = {
 describe("SOLR Query", () => {
 
   const compoundSearch = { 'allWords': 'medicine' }
-  var json
+  let json
   
   // NOTE: needed to do this (calling done())
   // found idea here: https://volaresystems.com/blog/post/2014/12/09/Testing-async-calls-with-Jasmine

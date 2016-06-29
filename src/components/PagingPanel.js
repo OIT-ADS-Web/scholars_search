@@ -96,7 +96,7 @@ export class PagingPanel extends Component {
     // would be page 2 of 3
     // NOTE: all these Math.floor(s) are annoying
     //
-    var totalPages = Math.floor(numFound/PAGE_ROWS)
+    let totalPages = Math.floor(numFound/PAGE_ROWS)
     const remainder = numFound % PAGE_ROWS
     if (remainder) {
       totalPages +=1
@@ -136,8 +136,8 @@ export class PagingPanel extends Component {
       )
     }
 
-    var next = false
-    var previous = false
+    let next = false
+    let previous = false
 
     // (50 + 50 < 105)
 

@@ -25,8 +25,8 @@ class TabPicker {
   toCSV(json) {
 
     let data = json.response.docs
-    let defaultFields = ['URI']
-    var extraFields = []
+    let defaultFields = ['URI', {label: 'Type', value: 'mostSpecificTypeURIs.0'}]
+    let extraFields = []
 
     // FIXME: could use this to pick fields ... different per tab
     switch(this.filter) {
@@ -59,7 +59,7 @@ class TabPicker {
 
     let fields = _.concat(defaultFields, extraFields)
 
-    var _csv = ""
+    let _csv = ""
     if (data) {
       json2csv({data: data, fields: fields, flatten: true}, function(err, csv) {
         if (err) {
@@ -72,7 +72,7 @@ class TabPicker {
     }
 
     // NOTE: needs to be an array for Blob function do that here?
-    var ary = []
+    let ary = []
     ary.push(_csv)
     return ary
 

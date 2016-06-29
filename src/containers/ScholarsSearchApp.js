@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-//var _ = require('lodash');
-// FIXME: should just import function used
 import _ from 'lodash'
 
 import Page from '../layouts/page'

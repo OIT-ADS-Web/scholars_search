@@ -36,7 +36,7 @@ export class SearchForm extends Component {
     const atLeastOne = this.atLeastOne
     const noMatch = this.noMatch
 
-    var add = "";
+    let add = "";
     if (allWords.value.lastIndexOf('*', 0) != 0) {
      add = "*"
     }
@@ -91,7 +91,7 @@ export class SearchForm extends Component {
          button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
-    var hideAdvanced = false
+    let hideAdvanced = false
     
     if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
        hideAdvanced = false

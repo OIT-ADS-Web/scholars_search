@@ -94,8 +94,8 @@ export class SearchTabs extends Component {
     // ...
     // ]
 
-    var rows = []
-    var _self = this
+    let rows = []
+    let _self = this
     _.forEach(tabList, function(value) {
       if (value.id != filter) {
 

@@ -19,7 +19,7 @@ class PersonDisplay extends HasSolrData(Component) {
   }
 
   hasThumbnail() {
-    var flag = false
+    let flag = false
 
     if (this.doc.THUMBNAIL != "0") {
       flag = true
@@ -35,7 +35,7 @@ class PersonDisplay extends HasSolrData(Component) {
 
   render() {
 
-    var picture
+    let picture
     
     if (this.hasThumbnail()) {
       picture = <div className="crop"><img src={this.thumbnailUrl} className="profile-thumbnail"></img></div>

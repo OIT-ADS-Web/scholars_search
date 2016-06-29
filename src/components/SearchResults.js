@@ -107,7 +107,7 @@ export class SearchResults extends Component {
           let highlight = highlighting[doc.DocId]
           
           // seems like this needs to be pulled out as a callback-ish thing
-          var display = ""
+          let display = ""
           if (highlight) {
              // NOTE: sometimes doc.type is undefined ... ??
              let docType = doc.type ? doc.type[0] : "?"
