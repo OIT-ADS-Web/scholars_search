@@ -38,7 +38,6 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
 // could call it #search, just called it #searchReducer to be explicit about the key name
 // in the combineReducers method
 function searchReducer(search = { isFetching: false, results: {}}, action) {
-//function searchReducer(search = { isFetching: false, results: {}, start: 0, filter: 'person'}, action) {
   switch (action.type) {
 
   case types.REQUEST_SEARCH:

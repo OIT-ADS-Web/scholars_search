@@ -84,7 +84,7 @@
     "build": "webpack --output-library ScholarsSearch",
     "clean": "rm -fr dist/*",
     "test": "karma start",
-    "test:lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore || true"
+    "lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore || true"
   },
   "author": "",
   "license": "ISC"

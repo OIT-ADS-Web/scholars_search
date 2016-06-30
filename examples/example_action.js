@@ -11,15 +11,18 @@ const Store = configureStoreWithoutLogger()
 
 import actions from '../src/actions/search'
 
+// FIXME: this was removed - so this function does not work now
+// but need to replace
+//
+//
 // NOTE: this action returns a promise - so we need
 // 'then()' to see what happens
 Store.dispatch(actions.appInit()).then(() => {
-    const departments = Store.getState().init.departments
-    departments.forEach(function(value) {
-      console.log(value)
-    })
-  }
-)
+  const departments = Store.getState().init.departments
+  departments.forEach(function(value) {
+    console.log(value)
+  })
+})
 
 
 

@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 
 import HasSolrData from './HasSolrData'
 
-import classNames from 'classnames'
-
-import MeshLogo from '../images/meshhead.gif'
-import LocLogo from '../images/loc-logo.png'
-import DukeLogo from '../images/duke-text-logo.png'
+import meshLogo from '../images/meshhead.gif'
+import locLogo from '../images/loc-logo.png'
+import dukeLogo from '../images/duke-text-logo.png'
 
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
@@ -26,11 +24,11 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     
     let logo = function() {
       if (isMesh) {
-         return MeshLogo
+        return meshLogo
       } else if (isLoc) {
-         return LocLogo 
+        return locLogo 
       } else {
-        return DukeLogo
+        return dukeLogo
       }
     }()
 

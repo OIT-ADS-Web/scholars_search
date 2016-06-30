@@ -7,7 +7,7 @@ export function requestSearch(searchFields) {
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
     searchFields: searchFields
-   }
+  }
 }
 
 export function receiveSearch(json) {
@@ -39,7 +39,7 @@ export function requestTabCount(searchFields) {
     grouped: {},
     isFetching: true,
     searchFields: searchFields
-   }
+  }
 
 }
 

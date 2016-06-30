@@ -59,6 +59,9 @@ class SolrQuery {
     return this._query
   }
 
+  // should there be a 'setOption' e.g. particular
+  // such as sorting 
+  // default = score desc
   set options(options) {
     Object.assign(this._options,options)
     return this
@@ -139,12 +142,6 @@ class SolrQuery {
         facetOptions["f." + facetField + ".facet." + facetProp] = facetProperties[facetProp]
       })
     })
-
-    // example from Jim's original person search
-    //}).setFilter("type","classgroup:*people").setFacetField("department_facet_string",{
-    //  prefix: "1|",
-    //  mincount: "1"
-    //})
 
     return facetOptions
   }

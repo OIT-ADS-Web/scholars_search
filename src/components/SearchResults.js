@@ -1,10 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import classNames from 'classnames'
-import { Link } from 'react-router'
-
-/* our stuff */
-import actions from '../actions/search'
 
 import Loading from './Loading'
 import SearchTabs from './SearchTabs'
@@ -26,7 +21,7 @@ export class SearchResults extends Component {
 
   static get contextTypes() {
     return({
-        router: PropTypes.object
+      router: PropTypes.object
     })
   }
 
@@ -39,13 +34,13 @@ export class SearchResults extends Component {
   }
 
 
-  handleDownload(e) {
-    // NOTE: I get this warning when I used e.preventDefault()
+  handleDownload() {
+    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
    
     // FIXME: much more to do here - just proving I can download a file now
-    const { search : { results, searchFields, isFetching } } = this.props
+    const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
@@ -63,9 +58,9 @@ export class SearchResults extends Component {
 
     let fileName = `search_results_${filter}_${todayStr}.${format}`
     let figureType  = function(format) {
-       if (format == 'xml') { return "text/xml" }
-       else if (format == 'csv') { return "text/csv" }
-       else { return "text/plain" }
+      if (format == 'xml') { return "text/xml" }
+      else if (format == 'csv') { return "text/csv" }
+      else { return "text/plain" }
     }
     let type = `${figureType(format)};charset=utf-8`
 
@@ -100,24 +95,23 @@ export class SearchResults extends Component {
     // FIXME: need to re-work this slightly to get rid of warnings 
     // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
     if (docs) {
-
       let tabPicker = new TabPicker(filter)
       
       resultSet = docs.map(doc => { 
-          let highlight = highlighting[doc.DocId]
+        let highlight = highlighting[doc.DocId]
           
-          // seems like this needs to be pulled out as a callback-ish thing
-          let display = ""
-          if (highlight) {
-             // NOTE: sometimes doc.type is undefined ... ??
-             let docType = doc.type ? doc.type[0] : "?"
-             display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
-          } else {
-            // no highlight -- not sure what to show
-            display = ""
-          }
+        // seems like this needs to be pulled out as a callback-ish thing
+        let display = ""
+        if (highlight) {
+          // NOTE: sometimes doc.type is undefined ... ??
+          let docType = doc.type ? doc.type[0] : "?"
+          display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
+        } else {
+          // no highlight -- not sure what to show
+          display = ""
+        }
 
-          return tabPicker.pickDisplay(doc, display)
+        return tabPicker.pickDisplay(doc, display)
             
       })
     }
@@ -125,12 +119,12 @@ export class SearchResults extends Component {
       // e.g. if there are no docs - could be fetching, or could just be no
       // search.  So ... add <Loading> just in case.
       // FIXME: what to do if search error? e.g. if (message) { }
-      return ( 
-          <div className="row">
-            <Loading isFetching={isFetching}></Loading>
-          </div>
-      )
       console.log("SearchResults.render() - NO DOCS")
+      return ( 
+        <div className="row">
+          <Loading isFetching={isFetching}></Loading>
+        </div>
+      )
     }
 
     // NOTE: a textual representation of the complex search

@@ -1,10 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
-
-import _ from 'lodash'
 
 import HasSolrData from './HasSolrData'
 
@@ -43,11 +40,11 @@ class PersonDisplay extends HasSolrData(Component) {
     //  "Institutes and Centers"
     //]
     // 
-    let department_text = ''
+    let departmentText = ''
     if (this.doc.department_search_text) {
-       department_text = this.doc.department_search_text[0]
-     }
-    return department_text.replace(/"/g, "")
+      departmentText = this.doc.department_search_text[0]
+    }
+    return departmentText.replace(/"/g, "")
   }
   
   get thumbnailUrl() {

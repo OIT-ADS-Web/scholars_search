@@ -2,7 +2,6 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
-import { takeEvery, takeLatest } from 'redux-saga'
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
 // NOTE: not import 'requestSearch', 'requestTabCount' because
@@ -12,9 +11,9 @@ import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './
 // ***** tabs *****
 // 1. actual function
 function fetchTabsApi(searchFields) {
-  const solr_url = process.env.SOLR_URL
+  const solrUrl = process.env.SOLR_URL
   
-  let searcher = new SolrQuery(solr_url)
+  let searcher = new SolrQuery(solrUrl)
 
   searcher.setupTabGroups()
   searcher.search = searchFields
@@ -31,7 +30,7 @@ export function* fetchTabs(action) {
     yield put(receiveTabCount(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
-    yield put(tabcountsFailed(e.message))
+    yield put(tabCountFailed(e.message))
   }
 
 }
@@ -47,8 +46,8 @@ function* watchForTabs() {
 // ********* search ******
 // 1. actual function
 export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
-  const solr_url = process.env.SOLR_URL
-  let searcher = new SolrQuery(solr_url)
+  const solrUrl = process.env.SOLR_URL
+  let searcher = new SolrQuery(solrUrl)
 
   // FIXME: need a good way to default these - there is similar logic
   // in at least 3 different places - should not have in to do with in
@@ -103,8 +102,6 @@ function* watchForSearch() {
     // if spins forever
     const searchTask = yield fork(fetchSearch, action)
     //yield fork(fetchSearch, action)
-
-
     //yield take(types.SEARCH_CANCELLED)
     //yield cancel(searchTask)
   }

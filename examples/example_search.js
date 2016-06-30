@@ -34,14 +34,14 @@ function printResults(json) {
 }
 
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
 
 // NOTE: it's random which one returns first
 const compoundSearch2 = {
-    'allWords': 'alejandro'
+  'allWords': 'alejandro'
 }
 
 
@@ -60,9 +60,9 @@ if (filterStr) {
 
 // then run again
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
   
 // NOTE: can remove a filter too via

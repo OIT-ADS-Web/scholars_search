@@ -8,9 +8,9 @@ import SolrQuery from '../src/utils/SolrQuery'
 
 import solr from '../src/utils/SolrHelpers'
 
-const solr_url = process.env.SOLR_URL
+const solrUrl = process.env.SOLR_URL
 
-let searcher = new SolrQuery(solr_url)
+let searcher = new SolrQuery(solrUrl)
  
 searcher.options = {
   wt: "json",
@@ -21,7 +21,7 @@ searcher.options = {
 }
 
 const compoundSearch = {
-    'allWords': 'medicine',
+  'allWords': 'medicine'
 }
 
 searcher.addGroupQuery("type-person", "type:(*Person)")
@@ -48,11 +48,11 @@ function printResults(json) {
 searcher.execute().then(function(response) {
     return response.json()
 }).then(function(json) {
-    //printResults(json)
-    // NOTE: added parser as a possible way to clarify results
-    const parser = new solr.SolrResultsParser()
-    const groupSummary = parser.parseGroups(json.grouped)
-    console.log(groupSummary)
+  printResults(json)
+  // NOTE: added parser as a possible way to clarify results
+  const parser = new solr.SolrResultsParser()
+  const groupSummary = parser.parseGroups(json.grouped)
+  console.log(groupSummary)
 
 })
  

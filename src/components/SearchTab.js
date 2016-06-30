@@ -2,20 +2,15 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 
-import actions from '../actions/search'
-
-//import * from '../actions/types' as types
-import * as types from '../actions/types'
-
-import { requestSearch, requestFilter } from '../actions/search'
+import { requestSearch } from '../actions/search'
 
 export class SearchTab extends Component {
 
   // this is necessary to get the router
   static get contextTypes() {
     return({
-        router: PropTypes.object
-     })
+      router: PropTypes.object
+    })
   }
 
   constructor(props, context) {
@@ -35,7 +30,7 @@ export class SearchTab extends Component {
   handleTab(e) {
     e.preventDefault()
     
-    const { search : { results, searchFields }, dispatch } = this.props
+    const { search : { searchFields }, dispatch } = this.props
 
     let filter = this.filter
 

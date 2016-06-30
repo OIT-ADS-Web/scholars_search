@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 import { fetchSearch, fetchTabs } from '../src/actions/sagas'
-import { runSaga } from 'redux-saga'
+//import { runSaga } from 'redux-saga'
 
 const compoundSearch = { 'allWords': 'medicine'}
 // see http://yelouafi.github.io/redux-saga/docs/api/index.html#runsagaiterator-subscribe-dispatch-getstate-monitor
@@ -9,9 +9,10 @@ const compoundSearch = { 'allWords': 'medicine'}
 // NOTE: this is a way to run the functions ... a little weird
 const myRedux = {
   //subscribe: function(input) { console.log(input) },
-  dispatch: function(output) { console.log(output) },
+  dispatch: function(output) { console.log(output) }
 }
 
+/*
 const taskSearch = runSaga(
   fetchSearch(compoundSearch),
   myRedux
@@ -21,9 +22,9 @@ const taskTabs = runSaga(
   fetchTabs(compoundSearch),
   myRedux
 )
+*/
 
-import { requestSearch, requestTabCount } from '../src/actions/search'
-import { call, put, take } from 'redux-saga/effects'  
+import { call, put } from 'redux-saga/effects'  
 import { fetchSearchApi } from '../src/actions/sagas'
 import * as types from '../src/actions/types'
 

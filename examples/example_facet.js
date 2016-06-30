@@ -18,9 +18,9 @@ import SolrQuery from '../src/utils/SolrQuery'
 
 import solr from '../src/utils/SolrHelpers'
 
-const solr_url = process.env.SOLR_URL
+const solrUrl = process.env.SOLR_URL
 
-let searcher = new SolrQuery(solr_url)
+let searcher = new SolrQuery(solrUrl)
 
 // facet: true
 // facet.field = department_facet_string  
@@ -32,7 +32,7 @@ searcher.options = {
 }
 
 const compoundSearch = {
-    'allWords': 'medicine'
+  'allWords': 'medicine'
 }
 
     // example from Jim's original person search
@@ -65,8 +65,8 @@ function printResults(json) {
 }
 
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
 

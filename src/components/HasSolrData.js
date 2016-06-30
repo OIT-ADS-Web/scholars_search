@@ -60,11 +60,12 @@ let HasSolrData = (superclass) => class extends superclass {
   }
 
   toggleSolrDetails(e) {
-   e.preventDefault()
-   let showSolr = this.state ? this.state.showSolr : false
-   let toggle = !showSolr
-   this.setState({'showSolr': toggle})
+    e.preventDefault()
+    let showSolr = this.state ? this.state.showSolr : false
+    let toggle = !showSolr
+    this.setState({'showSolr': toggle})
   }
+  
   get solrDocDisplay() {
     //const env = process.env
     // if env == 'acceptance' 
@@ -83,7 +84,7 @@ let HasSolrData = (superclass) => class extends superclass {
       </div>
     )
     
-   return fragment      
+    return fragment      
   }
 
   get allTextDisplay() {

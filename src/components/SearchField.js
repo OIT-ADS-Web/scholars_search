@@ -1,6 +1,4 @@
-import React, { Component, PropTypes } from 'react'
-
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react'
 
 export default class SearchField extends Component {
 
@@ -51,16 +49,9 @@ export default class SearchField extends Component {
     
     if(this) {
       this.setState({value: e.target.value})
-     }
+    }
   }
 
-  /*
-   *   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-    <div class="col-sm-10">
-      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-    </div>
-    */
   render() {
     const { label, placeholder, defaultValue} = this.props
 
