@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
 
 class OrganizationDisplay extends HasSolrData(Component) {
 
@@ -17,7 +18,9 @@ class OrganizationDisplay extends HasSolrData(Component) {
             
             <div className="row"> 
               <div className="col-md-12 col-sml-12"> 
-                <strong><a href={this.URI} target="_blank">{this.name}</a></strong>
+                 <strong>
+                  <ScholarsLink uri={this.URI} text={this.name} />
+                </strong>
               </div>
             </div>
             

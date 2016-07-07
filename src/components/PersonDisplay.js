@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 require('../styles/scholars_search.less');
 
 import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
 
 class PersonDisplay extends HasSolrData(Component) {
 
@@ -71,7 +72,9 @@ class PersonDisplay extends HasSolrData(Component) {
               </div>
             
               <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
-                <strong><a href={this.URI} target="_blank">{this.name}</a></strong>
+                <strong>
+                  <ScholarsLink uri={this.URI} text={this.name} />
+                </strong>
                 <span> - {this.preferredTitle}</span>
                 <div>{this.department}</div>
               </div>

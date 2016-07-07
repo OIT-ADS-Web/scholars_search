@@ -6,7 +6,7 @@ require('../styles/scholars_search.less');
 class Loading extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   render() {
