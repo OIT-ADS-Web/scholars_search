@@ -71,7 +71,7 @@ class PersonDisplay extends HasSolrData(Component) {
               </div>
             
               <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
-                <strong><a href={this.URI}>{this.name}</a></strong>
+                <strong><a href={this.URI} target="_blank">{this.name}</a></strong>
                 <span> - {this.preferredTitle}</span>
                 <div>{this.department}</div>
               </div>

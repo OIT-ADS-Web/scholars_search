@@ -19,6 +19,8 @@ searcher.options = {
   start: 0
 }
 
+searcher.setOption("qf", "nameText")
+
 const compoundSearch = {
     'allWords': 'medicine'
 }
@@ -56,6 +58,7 @@ const filterStr = tabs[0].filter
 console.log("adding filter..."+ filterStr)
 if (filterStr) {
   searcher.addFilter("type", filterStr)
+  //searcher.addFilter("name", "nameText:"+qry2)
 }
 
 // then run again

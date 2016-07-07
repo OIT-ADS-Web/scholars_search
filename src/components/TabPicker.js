@@ -101,6 +101,14 @@ class TabPicker {
   }
 
 
+  sortOptions() {
+  // switch(this.filter) {
+  // case 'person': 
+  // ...
+  //
+  //
+    return ['sort desc', 'sort asc']
+  }
 }
 
 

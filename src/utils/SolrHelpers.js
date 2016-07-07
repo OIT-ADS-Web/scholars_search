@@ -195,6 +195,8 @@ function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc
   // FIXME: should we check for no filter? filter seems application specific
   // but they are listed in the tabList above anyway
 
+  // set 'qf' option? 
+  //
   // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",

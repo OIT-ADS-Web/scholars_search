@@ -16,7 +16,7 @@ class GenericDisplay extends HasSolrData(Component) {
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
               <div className="col-md-12 col-sm-12">
-                <strong><a href={this.URI}>{this.name}</a></strong>
+                <strong><a href={this.URI} target="_blank">{this.name}</a></strong>
               </div>
             </div>
             <div className="row highlight-text">

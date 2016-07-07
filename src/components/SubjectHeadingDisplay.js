@@ -36,7 +36,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
               <div className="col-md-12 col-xs-12 col-sm-12"> 
-                <strong><a href={this.URI}>{this.name}</a></strong>
+                <strong><a href={this.URI} target="_blank">{this.name}</a></strong>
                 <div className="pull-right">
                    <img width="18px" src={logo}/>
                 </div>

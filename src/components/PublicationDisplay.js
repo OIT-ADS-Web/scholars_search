@@ -23,7 +23,7 @@ class PublicationDisplay extends HasSolrData(Component) {
             <div className="row">
              <div className="col-md-12 col-sm-12"> 
               <strong>
-                 <a href={this.URI}>
+                 <a href={this.URI} target="_blank">
                    <span dangerouslySetInnerHTML={{__html: this.name}}></span>
                  </a>
               </strong>

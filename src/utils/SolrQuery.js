@@ -5,14 +5,29 @@ import querystring from 'querystring'
 import helpers from './SolrHelpers'
 
 /*
- * example of someone's answer to the question
- * "how do I search specific fields in SOLR"
- * (in PHP)
- * <?php
-        $params['fl'] = $field_name;
-        $params['qf'][] = "{$field_name}^1.0";
-        $params['hl.fl'] = "$field_name";
-?>
+
+VIVO solrconfig.xml:
+
+      <lst name="defaults">
+       <str name="defType">edismax</str>
+       <!-- nameText added for NIHVIVO-3701 -->
+       <str name="qf">ALLTEXT ALLTEXTUNSTEMMED nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase</str>
+       <str name="echoParams">explicit</str>
+       <str name="qs">2</str>
+       <int name="rows">10</int>
+       <str name="q.alt">*:*</str>
+       <str name="fl">*,score</str>
+       <str name="hl">true</str>
+       <str name="hl.fl">ALLTEXT</str>
+       <str name="hl.fragsize">160</str>
+      <!--  Default value of mm is 100% which should result in AND behavior, still setting it here
+      https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser -->
+      <str name="mm">100%</str>
+     </lst>
+ 
+also see /srv/web/apps/vivo/solr/conf/schema.xml
+
+
 */
 
 class SolrQuery {
@@ -44,6 +59,8 @@ class SolrQuery {
   addGroupQuery(name, query) {
     // FIXME: should add a check to make sure options[:group] = true is set
     // otherwise solr error could occur
+    //
+    // FIXME: to make type:(*Concept) AND nameText:%s 
     let groupQuery = {}
     groupQuery[name]=query
     Object.assign(this._groupQueries,groupQuery)
@@ -65,6 +82,10 @@ class SolrQuery {
   set options(options) {
     Object.assign(this._options,options)
     return this
+  }
+
+  setOption(key, value) {
+   this._options[key] = value
   }
 
   get options() {

@@ -65,6 +65,38 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
   }
 }
 
+/*
+function facetReducer(facet = { isFetching: false, data: {}}, action) {
+  switch (action.type) {
+
+  case types.REQUEST_DEPARTMENTS:
+    
+    return { ...facet, 
+      isFetching: true,
+      data: action.data,
+      searchFields: action.searchFields
+  }
+  case types.RECEIVE_DEPARTMENTS:
+    
+    return { ...facet, 
+      isFetching: false,
+      data: action.results,
+      lastUpdated: action.receivedAt
+  }
+  case types.DEPARTMENTS_FAILED:
+    
+    return { ...facet,
+      isFetching: false,
+      message: action.message
+  }
+  default:
+    return facet;
+  }
+}
+*/
+
+
+
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'
 

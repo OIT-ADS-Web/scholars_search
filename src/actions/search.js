@@ -62,6 +62,35 @@ export function tabCountFailed(message) {
   }
 }
 
+/******** departments ********/
+export function requestDepartments() {
+  return {
+    type: types.REQUEST_DEPARTMENTS,
+    departments: {},
+    isFetching: true,
+  }
+
+}
+
+export function receiveDepartments(json) {
+  let departments = json
+
+  return {
+    type: types.RECEIVE_DEPARTMENTS,
+    departments: departments,
+    isFetching: false,
+    receivedAt: Date.now()
+  }
+
+}
+
+export function departmentsFailed(message) {
+  return {
+    type: types.DEPARTMENTS_FAILED,
+    message: message
+  }
+}
+
 
 // allow all to be exported at once into an 'actions' object
 export default {

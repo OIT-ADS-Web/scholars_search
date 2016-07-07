@@ -31,6 +31,8 @@ export class SearchResults extends Component {
     this.handleDownload = this.handleDownload.bind(this)
     //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
     this.handleDownload= _.debounce(this.handleDownload,1000);
+    this.handleSort = this.handleSort.bind(this)
+
   }
 
 
@@ -39,7 +41,6 @@ export class SearchResults extends Component {
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
    
-    // FIXME: much more to do here - just proving I can download a file now
     const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
@@ -76,6 +77,31 @@ export class SearchResults extends Component {
     })
    
   }
+
+  handleSort() {
+    const { search : { searchFields } } = this.props
+    
+    let sort = this.sort
+
+    // 1. add sort to parmams - search etc...
+    // setting default start to 0 - so paging is reset
+    const query  = {...searchFields, start: 0, sort: sort }
+
+    // 2. run search again 
+    dispatch(requestSearch(query))
+    
+    // NOTE: took me a while to figure out I couldn't just pass
+    // searchFields as {query: searchFields} had to copy it (see above)
+    this.context.router.push({
+      pathname: '/',
+      query: query
+    })
+
+    // 3. let display take care of itself - but { sort } needs to be set
+    // in some way (for the <select><option value >)
+  
+  }
+  
 
   render() {
     const { search : { results, searchFields, isFetching, message } } = this.props
@@ -140,6 +166,15 @@ export class SearchResults extends Component {
     //
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
+
+    // let sortOptions = tabPicker.sortOptions()
+    //
+    // let sortOptions = (   
+    //   <select onSelect={() => this.onSort()} className="form-control" defaultValue="score desc">
+    //        <option value="score desc">Relevance</option>
+    //    </select>
+    //  )
+   
     return (
       <section className="search-results">
         <h3>Query: {query}</h3>
@@ -151,19 +186,19 @@ export class SearchResults extends Component {
           <hr />
           
           <div className="row hidden-xs">
-            <div className="col-md-8 col-xs-6">
+            <div className="col-md-8 col-xs-6 col-sm-6">
               
               <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                 <span className="glyphicon glyphicon-download"> Download </span>
               </button>
 
             </div>
-            <div className="col-md-4 col-xs-6">
+            <div className="col-md-4 col-xs-6 col-sm-6">
             {/*
               <div className="pull-right form-inline">
                 <div className="form-group">
                   <label>Sort By:</label>
-                  <select className="form-control" defaultValue="score"><option value="score">Relevance</option></select>
+                   {sortOptions}
                 </div>
               </div>
               */

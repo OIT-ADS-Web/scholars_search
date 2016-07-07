@@ -107,6 +107,36 @@ function* watchForSearch() {
   }
 }
 
+import fetch from 'isomorphic-fetch'
+
+// ***** departments *****
+// 1. actual function
+export function fetchDepartmentsApi() {
+  const orgUrl = process.env.ORG_URL
+  let attempt = fetch(orgUrl)
+  return attempt.then(res => res.json())
+}
+
+export function* fetchDepartments() {
+  const results = yield call(fetchDepartmentsApi)
+
+  try {
+    yield put(receiveDepartments(results))
+  } catch(e) {
+    // FIXME: not actually prepared for error in application
+    yield put(departmentsFailed(e.message))
+  } 
+}
+
+
+// 3. watcher
+function* watchForDepartments() {
+  while(true) {
+    const action = yield take(types.REQUEST_DEPARTMENTS)
+    yield fork(fetchDepartments, action)
+  }
+}
+
 
 // FIXME: add a fork(watchForDownload)
 //
@@ -115,7 +145,8 @@ function* watchForSearch() {
 export default function* root() {
   yield [
     fork(watchForSearch),
-    fork(watchForTabs)
+    fork(watchForTabs),
+    fork(watchForDepartments)
   ]
 }
 
