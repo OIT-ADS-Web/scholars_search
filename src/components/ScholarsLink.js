@@ -8,9 +8,6 @@ class ScholarsLink extends Component {
 
   render() {
     let {uri, text} = this.props
-    console.log("Scholars Link")
-    console.log("uri="+uri)
-    console.log("text="+text)
 
     return (
       <a href={uri} target="_blank">
