@@ -14,6 +14,7 @@ a {
     display: none;
 }
 
+/********* > 768px ***********/
 @media only screen and (min-width: 769px) {
   
   #logo-image { 
@@ -51,7 +52,9 @@ a {
   }
 
 }
+/***************************/
 
+/********* < 768px ***********/
 @media only screen and (max-width: 768px) {
   
  #logo-image {
@@ -87,6 +90,9 @@ a {
   }
 
 }
+/**************************/
+
+/****** ALL ***************/
 
 body {
   background: rgba(0, 0, 0, 0) url("../images/header-background.png") no-repeat scroll center 0;
@@ -138,12 +144,13 @@ footer {
     border-top: 1px solid #d5d2d2;
     clear: both;
     color: #4e5051;
-    font-size: 1.25em;
+    font-size: .85em;
     height: 88px;
     margin: 0 auto;
     padding-top: 1.5em;
     width: 98%;
-}
+    border-top: 1px solid #D5D2D2;
+} 
 
 ul#footer-nav {
     list-style: outside none none;

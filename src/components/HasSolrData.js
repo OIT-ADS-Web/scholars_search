@@ -67,10 +67,11 @@ let HasSolrData = (superclass) => class extends superclass {
   }
   
   get solrDocDisplay() {
-    //const env = process.env
-    // if env == 'acceptance' 
-    // else
-    // fragment = (<div></div>)
+    let env = process.env.NODE_ENV
+    
+    if (env == 'production') {
+      return (<span></span>)
+    }
  
     let showSolr = this.state ? this.state.showSolr : false
     
