@@ -8,7 +8,7 @@ class GenericDisplay extends HasSolrData(Component) {
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
-    this.display = this.props.display;
+    this.highlight = this.props.highlight
   }
 
   render() {
@@ -24,7 +24,7 @@ class GenericDisplay extends HasSolrData(Component) {
             </div>
             <div className="row highlight-text">
               <div className="col-md-12">
-               {this.highlightText(this.display)}
+               {this.highlightDisplay}
               </div>
             </div>
 

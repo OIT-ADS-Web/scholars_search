@@ -12,7 +12,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
-    this.display = this.props.display;
+    this.highlight = this.props.highlight
   }
 
   render() {

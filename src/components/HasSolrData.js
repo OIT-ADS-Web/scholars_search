@@ -3,6 +3,8 @@ import React from 'react'
 // NOTE: one way to do this, not the only way
 // http://exploringjs.com/es6/ch_classes.html
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
+
+// NOTE: have to assume we are getting 'doc' and 'highlight' props
 let HasSolrData = (superclass) => class extends superclass {
 
   get name() {
@@ -44,13 +46,33 @@ let HasSolrData = (superclass) => class extends superclass {
     return this.doc.URI
   }
 
-  highlightText(display) {
-    // FIXME: need to factor this out since it's in every 'Display'
-    
+  get highlightText() {
+
+    let display = ""
+      if (this.highlight) {
+        // NOTE: sometimes doc.type is undefined ... ??
+        let docType = this.doc.type ? this.doc.type[0] : "?"
+
+        // FIXME: might have to look at highlight.nameText too 
+        // then again, it might not -- not sure
+        //
+        display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
+      } else {
+        // no highlight -- not sure what to show
+        display = ""
+      }
+
+    return display
+  }
+
+  get highlightDisplay() {
+   
+    let text = this.highlightText
+
     let fragment = ( 
         <cite>
           <span>...</span>
-          <span dangerouslySetInnerHTML={{__html: display}}></span>
+          <span dangerouslySetInnerHTML={{__html: text}}></span>
           <span>...</span>
         </cite>
     )

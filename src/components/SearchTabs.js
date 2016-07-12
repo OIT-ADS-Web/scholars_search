@@ -56,6 +56,7 @@ export class SearchTabs extends Component {
   // to apply to a given media size (instead of using css to show/hide)
   // https://www.npmjs.com/package/react-match-media ??
   desktopTabs(isFetching, grouped, filter) {
+    // FIXME: take out of 'solr' namespace?
     const tabList = solr.tabList
 
     let tabs = _.map(tabList, (tab) => {

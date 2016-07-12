@@ -125,20 +125,7 @@ export class SearchResults extends Component {
       
       resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
-          
-        // seems like this needs to be pulled out as a callback-ish thing
-        let display = ""
-        if (highlight) {
-          // NOTE: sometimes doc.type is undefined ... ??
-          let docType = doc.type ? doc.type[0] : "?"
-          display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
-        } else {
-          // no highlight -- not sure what to show
-          display = ""
-        }
-
-        return tabPicker.pickDisplay(doc, display)
-            
+        return tabPicker.pickDisplay(doc, highlight)
       })
     }
     else {

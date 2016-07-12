@@ -13,6 +13,28 @@ import json2csv from 'json2csv'
 
 import _ from 'lodash'
 
+/*
+ *
+each tab run a different query - and each tab a separate component?
+
+
+tabcounts - would be 8 separate queries?
+
+export const tabList = [
+  { id: "person", filter: "type:(*Person)", label: "People" },
+  { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
+  { id: "organizations",  filter: "type:(*Organization)", label: "Organizations" }, 
+  { id: "grants",  filter: "type:(*Grant)", label: "Grants" }, 
+  { id: "courses",  filter: "type:(*Course)", label: "Courses" },
+  { id: "artisticworks",  filter: "type:(*ArtisticWork)", label: "Artistic Works" },
+  { id: "subjectheadings", filter: "type:(*Concept)", label: "Subject Headings" },
+  { id: "misc",  filter: "type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
+   label: "Other"
+  }
+]
+*/
+
+
 // FIXME: don't know if this is that great of an idea, just
 // wanted some centralized splitter of stuff based on filter
 class TabPicker {
@@ -82,21 +104,21 @@ class TabPicker {
     
     switch(this.filter) {
     case 'person':
-      return <PersonDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'publications':
-      return <PublicationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'organizations':  
-      return <OrganizationDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <OrganizationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'subjectheadings':  
-      return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'artisticworks':  
-      return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'grants':  
-      return <GrantDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     case 'courses':  
-      return <CourseDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <CourseDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     default:  
-      return <GenericDisplay key={doc.DocId} doc={doc} display={highlight}/> 
+      return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
     }
   }
 

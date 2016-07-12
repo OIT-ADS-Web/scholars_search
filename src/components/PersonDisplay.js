@@ -11,7 +11,7 @@ class PersonDisplay extends HasSolrData(Component) {
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
-    this.display = this.props.display;
+    this.highlight = this.props.highlight
   }
 
   f(str) {
@@ -84,7 +84,7 @@ class PersonDisplay extends HasSolrData(Component) {
             <div className="row">
               <div className="col-lg-12 col-md-12 col-xs-12">
                 <div className="highlight-text">
-                  {this.highlightText(this.display)}
+                  {this.highlightDisplay}
                 </div>
               </div>
         
