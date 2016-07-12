@@ -2,10 +2,9 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
-import { tabList } from '../tabs'
+import { tabList, findTab } from '../tabs'
 
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
-
 
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components
@@ -62,12 +61,10 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
-  //
-
   searcher.setupDefaultSearch(maxRows, start)
-  // find which filter
-  let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
-  searcher.addFilter("type", foundFilter.filter)
+  
+  let tab = findTab(filter) // the tabs are named, and each has 'filter' attribute
+  searcher.addFilter("type", tab.filter)
   
   // search.addSort(sort)
   searcher.search =  searchFields

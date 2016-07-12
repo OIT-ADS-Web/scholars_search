@@ -4,6 +4,10 @@
 //
 // FIXME: this has solr specific stuff "type:(*Person)" - but is a UI element
 // (tabs) so a bit of crossed concerns
+//
+// thought about making this a *.json file 
+// http://stackoverflow.com/questions/33650399/es6-modules-implementation-how-to-load-a-json-file
+// then again, json doesn't have a way to add comments
 export const tabList = [
   { id: "person", filter: "type:(*Person)", label: "People" },
   { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
@@ -17,4 +21,10 @@ export const tabList = [
   }
 ]
 
+import _ from 'lodash'
 
+export function findTab(name) {
+  let tab = _.find(tabList, function(tab) { return tab.id == name })
+  return tab
+}
+ 
