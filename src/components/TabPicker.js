@@ -13,28 +13,6 @@ import json2csv from 'json2csv'
 
 import _ from 'lodash'
 
-/*
- *
-each tab run a different query - and each tab a separate component?
-
-
-tabcounts - would be 8 separate queries?
-
-export const tabList = [
-  { id: "person", filter: "type:(*Person)", label: "People" },
-  { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
-  { id: "organizations",  filter: "type:(*Organization)", label: "Organizations" }, 
-  { id: "grants",  filter: "type:(*Grant)", label: "Grants" }, 
-  { id: "courses",  filter: "type:(*Course)", label: "Courses" },
-  { id: "artisticworks",  filter: "type:(*ArtisticWork)", label: "Artistic Works" },
-  { id: "subjectheadings", filter: "type:(*Concept)", label: "Subject Headings" },
-  { id: "misc",  filter: "type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
-   label: "Other"
-  }
-]
-*/
-
-
 // FIXME: don't know if this is that great of an idea, just
 // wanted some centralized splitter of stuff based on filter
 class TabPicker {

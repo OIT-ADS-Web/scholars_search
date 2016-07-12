@@ -48,12 +48,12 @@ class SolrQuery {
     //
   }
 
-  setupDefaultSearch(filter, rows, start) {
-    return helpers.setupDefaultSearch(this, filter, rows, start)
+  setupDefaultSearch(rows, start) {
+    return helpers.setupDefaultSearch(this, rows, start)
   }
 
-  setupTabGroups() {
-    return helpers.setupTabGroups(this)
+  setupTabGroups(tabList) {
+    return helpers.setupTabGroups(this, tabList)
   }
 
   addGroupQuery(name, query) {

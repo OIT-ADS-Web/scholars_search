@@ -2,7 +2,10 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
+import { tabList } from '../tabs'
+
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
+
 
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components
@@ -15,7 +18,7 @@ function fetchTabsApi(searchFields) {
   
   let searcher = new SolrQuery(solrUrl)
 
-  searcher.setupTabGroups()
+  searcher.setupTabGroups(tabList)
   searcher.search = searchFields
 
   return searcher.execute().then(res => res.json())
@@ -59,10 +62,14 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
-  searcher.setupDefaultSearch(filter, maxRows, start)
-  // searcher.addFilter(filter)
-  // search.addSort(sort)
   //
+
+  searcher.setupDefaultSearch(maxRows, start)
+  // find which filter
+  let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
+  searcher.addFilter("type", foundFilter.filter)
+  
+  // search.addSort(sort)
   searcher.search =  searchFields
  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)

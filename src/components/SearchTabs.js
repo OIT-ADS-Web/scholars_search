@@ -9,6 +9,8 @@ import Loading from './Loading'
 
 import { requestSearch } from '../actions/search'
 
+import { tabList } from '../tabs'
+
 export class SearchTabs extends Component {
 
   // this is necessary to get the router
@@ -56,9 +58,6 @@ export class SearchTabs extends Component {
   // to apply to a given media size (instead of using css to show/hide)
   // https://www.npmjs.com/package/react-match-media ??
   desktopTabs(isFetching, grouped, filter) {
-    // FIXME: take out of 'solr' namespace?
-    const tabList = solr.tabList
-
     let tabs = _.map(tabList, (tab) => {
       
       // if we're still fetching - there will be nothing in 'grouped' to pull counts from
@@ -77,8 +76,6 @@ export class SearchTabs extends Component {
   }
 
   mobileTabs(isFetching, grouped, filter) {
-    const tabList = solr.tabList
-
     if (isFetching) {
       return <div></div>
     }
@@ -145,11 +142,6 @@ export class SearchTabs extends Component {
       )
     }
  
-    //if (isFetching) {
-    //  return (<div></div>)
-    //}
-
-    const tabList = solr.tabList
     let first = _.head(tabList)
     // NOTE: every group has matches value, doesn't matter which one we take
     let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0

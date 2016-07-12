@@ -175,6 +175,7 @@ class SolrResultsParser {
 //
 // FIXME: this has solr specific stuff "type:(*Person)" - but is a UI element
 // (tabs) so a bit of crossed concerns
+/*
 export const tabList = [
   { id: "person", filter: "type:(*Person)", label: "People" },
   { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
@@ -187,10 +188,11 @@ export const tabList = [
    label: "Other"
   }
 ]
+*/
 
 
 // just a helper function to avoid the boilerplate stuff
-function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc") {
+function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
 
   // FIXME: should we check for no filter? filter seems application specific
   // but they are listed in the tabList above anyway
@@ -206,25 +208,14 @@ function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc
     sort: sort
   }
 
-  // FIXME: should probably delete filter just in case
-  // e.g. searcher.deleteFilter("type")
-  // even though in the action/sagas.js
-  // we re-create searcher object every time
-  // 
-  if (filter) {
-    // could be other kinds of filters (that's why I did 'type')
-
-    let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
-    searcher.addFilter("type", foundFilter.filter)
-  }
-
-  // sort: default = score desc
-  //
   return searcher
 }
 
+// FIXME: could allow 'tablist' as parameter to get app specific
+// stuff out of file
+//
 // another helper to avoid boilerplate
-function setupTabGroups(searcher) {
+function setupTabGroups(searcher, tabList) {
   // take a SolrQuery object and set up for tabs
    
   // have to set group = true
@@ -248,6 +239,6 @@ function setupTabGroups(searcher) {
 
 }
 
-export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser, tabList }
+export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser }
 
 
