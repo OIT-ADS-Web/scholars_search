@@ -1,14 +1,14 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
 import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
 
 class CourseDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
-    this.display = this.props.display;
+    this.highlight = this.props.highlight
   }
 
   render() {
@@ -16,21 +16,21 @@ class CourseDisplay extends HasSolrData(Component) {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
-              <div className="col-md-11">
-                <strong><a href={this.URI}>{this.name}</a></strong>
+              <div className="col-md-12 col-sm-12">
+                <strong>
+                  <ScholarsLink uri={this.URI} text={this.name} />
+                </strong>
               </div>
-              <div className="col-md-1">
-                <span className="label label-primary">{this.score}</span>
-              </div>
-
             </div>
+
             <div className="row highlight-text">
               <div className="col-md-12">
-                <span>...</span>
-                <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                <span>...</span>
+                {this.highlightDisplay}
               </div>
             </div>
+
+            {this.solrDocDisplay}
+ 
         </div>
     );
   }

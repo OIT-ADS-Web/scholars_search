@@ -24,7 +24,7 @@ function buildComplexQuery(compoundSearch = {}) {
   // query sent to SOLR
 
   //
-  var query = ""
+  let query = ""
   if (_.isEmpty(compoundSearch)) {
     return query
   }
@@ -34,14 +34,13 @@ function buildComplexQuery(compoundSearch = {}) {
   let gatherStatements = function(words, delimiter) {
     // given an array and a delimiter, join with that delimiter
     // but also group by parenthesis if necessary
-    var exp = words.join(delimiter)
+    let exp = words.join(delimiter)
     if (exp) {
       if (words.length > 1) {
-          // group if more than 1 - just to be unambigous
-          exp = "(" + exp + ")"
-        }
+        // group if more than 1 - just to be unambigous
+        exp = "(" + exp + ")"
       }
-
+    }
     return exp 
   }
 
@@ -51,30 +50,30 @@ function buildComplexQuery(compoundSearch = {}) {
   // exactMatch != array
   // atLeastOne => array
   // noMatch => array
-  // listing in same order as form
+  // listing WAS in same order as form
   const allWords = "allWords" in compoundSearch ? compoundSearch.allWords.split(/[ ,]+/) : [] 
   const exactMatch = "exactMatch" in compoundSearch ? compoundSearch.exactMatch : ''
   const atLeastOne = "atLeastOne" in compoundSearch ? compoundSearch.atLeastOne.split(/[ ,]+/) : []
   const noMatch = "noMatch" in compoundSearch ? compoundSearch.noMatch.split(/[ ,]+/) : []
 
   if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
-     //NOTE:  (can't NOT without something to match to begin with)
-     return ''
+    //NOTE:  (can't NOT without something to match to begin with)
+    return ''
   }
 
-  var queryArray = []
+  let queryArray = []
     
-  var allWordsExp = gatherStatements(allWords, " AND ")
+  let allWordsExp = gatherStatements(allWords, " AND ")
   if (allWordsExp) { queryArray.push(allWordsExp) }
     
   if (exactMatch) { queryArray.push("\""+exactMatch+"\"") }
 
-  var atLeastOneExp = gatherStatements(atLeastOne,  " OR ")
+  let atLeastOneExp = gatherStatements(atLeastOne,  " OR ")
   if (atLeastOneExp) { queryArray.push(atLeastOneExp) }
 
   if (noMatch != false) {
-   var noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
-   if (noMatchExp) { queryArray.push(noMatchExp) }
+    let noMatchExp = "NOT " + gatherStatements(noMatch, " OR ")
+    if (noMatchExp) { queryArray.push(noMatchExp) }
   }
 
   // take out empty "" entries, just in case made it this far
@@ -102,9 +101,9 @@ class SolrResultsParser {
    }
   */
 
-   parseResponse(results) {
+  parseResponse(results) {
     /* 
-       NOTE: a basic solr query will return stuff looking like this:
+     NOTE: a basic solr query will return stuff looking like this:
 
      results {
        response": {
@@ -120,16 +119,18 @@ class SolrResultsParser {
       }
     */
  
-     let { highlighting={}, response={} } = results;
-     let { numFound=0,docs } = response;
+    let { highlighting={}, response={} } = results;
+    let { numFound=0,docs } = response;
      
-     return { numFound: numFound, docs: docs, highlighting: highlighting }
-    
-   }
+    return { numFound: numFound, docs: docs, highlighting: highlighting }
+  }
 
-   parseGroups(grouped) {
+  //parseDocs(docs) {
+  //}
 
-   // NOTE: this is what is received
+  parseGroups(grouped) {
+
+    // NOTE: this is what is received
     /*
      grouped": {
         "type:(*Concept)": {
@@ -141,25 +142,25 @@ class SolrResultsParser {
             "docs": [{ .... }]
 
     */
-     // and this is what we want (in some cases):
+    // and this is what we want (in some cases):
      
-     /* {
+    /* {
       *  "type:(*Concept)":  1980,
       *  "type:(*Publication)":  0 
       * }
       *
       *  with "type:(*Concept)" leading easily to label: "Subject Headings"
       *  etc... (see filterConfig)
-      */
+    */
 
-      //let { doclist={} } = grouped;
-      var summary = {}
-      _.forEach(grouped, function(value, key) {
-        summary[key] = value.doclist.numFound
-      });
+    //let { doclist={} } = grouped;
+    let summary = {}
+    _.forEach(grouped, function(value, key) {
+      summary[key] = value.doclist.numFound
+    });
 
-     return summary 
-   }
+    return summary 
+  }
 
 
 }
@@ -174,6 +175,7 @@ class SolrResultsParser {
 //
 // FIXME: this has solr specific stuff "type:(*Person)" - but is a UI element
 // (tabs) so a bit of crossed concerns
+/*
 export const tabList = [
   { id: "person", filter: "type:(*Person)", label: "People" },
   { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
@@ -186,14 +188,17 @@ export const tabList = [
    label: "Other"
   }
 ]
+*/
 
 
 // just a helper function to avoid the boilerplate stuff
-function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc") {
+function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
 
   // FIXME: should we check for no filter? filter seems application specific
   // but they are listed in the tabList above anyway
 
+  // set 'qf' option? 
+  //
   // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",
@@ -203,25 +208,14 @@ function setupDefaultSearch(searcher, filter, rows=50, start=0, sort="score desc
     sort: sort
   }
 
-  // FIXME: should probably delete filter just in case
-  // e.g. searcher.deleteFilter("type")
-  // even though in the action/sagas.js
-  // we re-create searcher object every time
-  // 
-  if (filter) {
-    // could be other kinds of filters (that's why I did 'type')
-
-    let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
-    searcher.addFilter("type", foundFilter.filter)
-  }
-
-  // sort: default = score desc
-  //
   return searcher
 }
 
+// FIXME: could allow 'tablist' as parameter to get app specific
+// stuff out of file
+//
 // another helper to avoid boilerplate
-function setupTabGroups(searcher) {
+function setupTabGroups(searcher, tabList) {
   // take a SolrQuery object and set up for tabs
    
   // have to set group = true
@@ -238,13 +232,13 @@ function setupTabGroups(searcher) {
   // searcher.addGroupQuery("type-publication", "type:(*Publication)")
   // etc...
   _.forEach(tabList, function(tab) {
-     searcher.addGroupQuery("type-"+tab.id, tab.filter)
+    searcher.addGroupQuery("type-"+tab.id, tab.filter)
   })
   
   return searcher
 
 }
 
-export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser, tabList }
+export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser }
 
 

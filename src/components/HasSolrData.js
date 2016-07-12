@@ -1,6 +1,10 @@
+import React from 'react'
+
 // NOTE: one way to do this, not the only way
 // http://exploringjs.com/es6/ch_classes.html
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
+
+// NOTE: have to assume we are getting 'doc' and 'highlight' props
 let HasSolrData = (superclass) => class extends superclass {
 
   get name() {
@@ -42,30 +46,80 @@ let HasSolrData = (superclass) => class extends superclass {
     return this.doc.URI
   }
 
-  // FIXME: show there maybe be an empty, interface like csv_template? or
-  // even not empty
-  //
-  // 
-// get csvTemplates() {
-  //   // ideally these would be pre-compiled, not compiled
-  //   // on function call - maybe init hook? compileTemplates?
-  //   let header = _.template('hello <%= docId %>!')
-  //   let body = _.template('hello <%= docId %>!')
-  //   return {header: header, body: body}
-  // }
-  highlightText(display) {
+  get highlightText() {
 
-    // FIXME: need to factor this out since it's in every 'Display'
-    // but putting {this.highlightText} - or even just calling highlightText() in
-    // render() is crashing the entire application now
-    
-    let fragment = <cite><span>...</span>
-          <span dangerouslySetInnerHTML={{__html: display}}></span>
+    let display = ""
+      if (this.highlight) {
+        // NOTE: sometimes doc.type is undefined ... ??
+        let docType = this.doc.type ? this.doc.type[0] : "?"
+
+        // FIXME: might have to look at highlight.nameText too 
+        // then again, it might not -- not sure
+        //
+        display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
+      } else {
+        // no highlight -- not sure what to show
+        display = ""
+      }
+
+    return display
+  }
+
+  get highlightDisplay() {
+   
+    let text = this.highlightText
+
+    let fragment = ( 
+        <cite>
+          <span>...</span>
+          <span dangerouslySetInnerHTML={{__html: text}}></span>
           <span>...</span>
         </cite>
-    
+    )
+
     return fragment
 
+  }
+
+  toggleSolrDetails(e) {
+    e.preventDefault()
+    let showSolr = this.state ? this.state.showSolr : false
+    let toggle = !showSolr
+    this.setState({'showSolr': toggle})
+  }
+  
+  get solrDocDisplay() {
+    let env = process.env.NODE_ENV
+    
+    if (env == 'production') {
+      return (<span></span>)
+    }
+ 
+    let showSolr = this.state ? this.state.showSolr : false
+    
+    let fragment = (
+       <div className="row solr-doc-details">
+        <div className="col-md-12"><a href="#" onClick={(e) => this.toggleSolrDetails(e)}><span className="glyphicon glyphicon-option-horizontal"></span></a>
+          <pre className={showSolr ? '' : 'hidden'}>
+            {JSON.stringify(this.doc, null, 2)}          
+          </pre>
+        </div>
+      </div>
+    )
+    
+    return fragment      
+  }
+
+  get allTextDisplay() {
+    let fragment = ( 
+      <div className="row">
+        <div className="col-md-12">
+          <div className="alert alert-success"><strong>ALLTEXT</strong> {this.allText}</div>
+        </div>
+      </div>
+    )
+      
+    return fragment
   }
 
 }

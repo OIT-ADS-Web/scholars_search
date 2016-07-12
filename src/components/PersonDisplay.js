@@ -1,17 +1,17 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
 
 import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
 
 class PersonDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
     this.doc = this.props.doc;
-    this.display = this.props.display;
+    this.highlight = this.props.highlight
   }
 
   f(str) {
@@ -19,7 +19,7 @@ class PersonDisplay extends HasSolrData(Component) {
   }
 
   hasThumbnail() {
-    var flag = false
+    let flag = false
 
     if (this.doc.THUMBNAIL != "0") {
       flag = true
@@ -28,6 +28,26 @@ class PersonDisplay extends HasSolrData(Component) {
     return flag
   }
 
+  
+  get department() {
+    // NOTE: department_search_text field can look like this:
+    //
+    //"department_search_text": [
+    //  "\"Medicine, Cardiology\"",
+    //  "Medicine",
+    //  "Clinical Science Departments",
+    //  "School of Medicine",
+    //  "Duke Clinical Research Institute",
+    //  "Institutes and Centers"
+    //]
+    // 
+    let departmentText = ''
+    if (this.doc.department_search_text) {
+      departmentText = this.doc.department_search_text[0]
+    }
+    return departmentText.replace(/"/g, "")
+  }
+  
   get thumbnailUrl() {
     return this.doc.THUMBNAIL_URL
   }
@@ -35,7 +55,7 @@ class PersonDisplay extends HasSolrData(Component) {
 
   render() {
 
-    var picture
+    let picture
     
     if (this.hasThumbnail()) {
       picture = <div className="crop"><img src={this.thumbnailUrl} className="profile-thumbnail"></img></div>
@@ -43,41 +63,35 @@ class PersonDisplay extends HasSolrData(Component) {
       picture = <img className="profile-thumbnail"></img>
     }
 
-    // even this crashes
-    //let highlight = this.highlightText(this.display)
-    //console.log(highlight)
-
     return (
          <div className="person search-result-row" key="{this.docId}">
             <div className="row">
               
-              <div className="col-md-1 col-xs-12">
+              <div className="col-lg-1 col-md-12 col-xs-12 col-sm-12">
                 {picture}
               </div>
             
-              <div className="col-md-10 col-xs-12">
-                <strong><a href={this.URI}>{this.name}</a></strong>
+              <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
+                <strong>
+                  <ScholarsLink uri={this.URI} text={this.name} />
+                </strong>
                 <span> - {this.preferredTitle}</span>
+                <div>{this.department}</div>
               </div>
 
-              <div className="col-md-1 col-xs-12">
-                <span className="label label-primary">{this.score}</span>
-              </div>
+            </div>
 
-              <div className="col-md-12 col-xs-12">
+            <div className="row">
+              <div className="col-lg-12 col-md-12 col-xs-12">
                 <div className="highlight-text">
-                  
-
-                  <cite>
-                    <span>...</span>
-                    <span dangerouslySetInnerHTML={{__html: this.display}}></span>
-                    <span>...</span>
-                  </cite>
-
+                  {this.highlightDisplay}
                 </div>
               </div>
         
           </div>
+
+           {this.solrDocDisplay}
+ 
       </div>
 
     )

@@ -1,19 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import classNames from 'classnames'
-import { Link } from 'react-router'
-
-/* our stuff */
-import actions from '../actions/search'
-
-import PersonDisplay from './PersonDisplay'
-import PublicationDisplay from './PublicationDisplay'
-import OrganizationDisplay from './OrganizationDisplay'
-import GenericDisplay from './GenericDisplay'
-import ArtisticWorkDisplay from './ArtisticWorkDisplay'
-import SubjectHeadingDisplay from './SubjectHeadingDisplay'
-import GrantDisplay from './GrantDisplay'
-import CourseDisplay from './CourseDisplay'
 
 import Loading from './Loading'
 import SearchTabs from './SearchTabs'
@@ -29,14 +15,13 @@ import _ from 'lodash'
 
 import { fetchSearchApi } from '../actions/sagas'
 
-
 import TabPicker from './TabPicker'
 
 export class SearchResults extends Component {
 
   static get contextTypes() {
     return({
-        router: PropTypes.object
+      router: PropTypes.object
     })
   }
 
@@ -46,16 +31,17 @@ export class SearchResults extends Component {
     this.handleDownload = this.handleDownload.bind(this)
     //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
     this.handleDownload= _.debounce(this.handleDownload,1000);
+    this.handleSort = this.handleSort.bind(this)
+
   }
 
 
-  handleDownload(e) {
-    // NOTE: I get this warning when I used e.preventDefault()
+  handleDownload() {
+    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
    
-    // FIXME: much more to do here - just proving I can download a file now
-    const { search : { results, searchFields, isFetching } } = this.props
+    const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
@@ -73,53 +59,52 @@ export class SearchResults extends Component {
 
     let fileName = `search_results_${filter}_${todayStr}.${format}`
     let figureType  = function(format) {
-       if (format == 'xml') { return "text/xml" }
-       else if (format == 'csv') { return "text/csv" }
-       else { return "text/plain" }
+      if (format == 'xml') { return "text/xml" }
+      else if (format == 'csv') { return "text/csv" }
+      else { return "text/plain" }
     }
     let type = `${figureType(format)};charset=utf-8`
 
-      //var compiled = _.template('hello <%= user %>!');
-      //compiled({ 'user': 'fred' });
-
     let tabPicker = new TabPicker(filter)
 
-    // FIXME: this is a bit like a template - would be different depending
-    // on 'filter' (tab)
     fetchSearchApi(searchFields, maxRows).then(function(json) {
 
       let csv = tabPicker.toCSV(json)
-
-      // switch (filter) {
-      //  case person:
-      //    
-      // }
-      // this part would be different, per filter - maybe template?
-      //let headers = [`URI\n`]
-      //console.log(json.response.docs)
-      //let rows = _.map(json.response.docs, function(doc) {
-      //  return `${doc.URI}\n`
-      //})
-
-      //let csv = _.concat(headers, rows)
-
       let blob = new Blob(csv, {type: type})
       // FIXME: much more to do here - just proving I can download a file now
       saveAs(blob, fileName)
  
     })
    
-    //let csv = _.map(jsonResults, function(r) {
-    //  return r.uri
-    // })//.join('\n')
-    
-    //let blob = new Blob(csv, {type: type})
-    // FIXME: much more to do here - just proving I can download a file now
-    //saveAs(blob, fileName)
   }
 
+  handleSort() {
+    const { search : { searchFields } } = this.props
+    
+    let sort = this.sort
+
+    // 1. add sort to parmams - search etc...
+    // setting default start to 0 - so paging is reset
+    const query  = {...searchFields, start: 0, sort: sort }
+
+    // 2. run search again 
+    dispatch(requestSearch(query))
+    
+    // NOTE: took me a while to figure out I couldn't just pass
+    // searchFields as {query: searchFields} had to copy it (see above)
+    this.context.router.push({
+      pathname: '/',
+      query: query
+    })
+
+    // 3. let display take care of itself - but { sort } needs to be set
+    // in some way (for the <select><option value >)
+  
+  }
+  
+
   render() {
-    const { search : { results, searchFields, isFetching } } = this.props
+    const { search : { results, searchFields, isFetching, message } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
@@ -136,70 +121,23 @@ export class SearchResults extends Component {
     // FIXME: need to re-work this slightly to get rid of warnings 
     // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
     if (docs) {
-
-      // NOTE: the diplay changes depending on type e.g.
-      // <PublicationDisplay ..
-      // <PersonDisplay ..
-      // e.g.
-      // if filter == 'people' <PersonDisplay ..
-      // if filter == 'publication' <PublicationDisplay ..
-      // etc...
+      let tabPicker = new TabPicker(filter)
       
       resultSet = docs.map(doc => { 
-          let highlight = highlighting[doc.DocId]
-          
-          // seems like this needs to be pulled out as a callback-ish thing
-          var display = ""
-          if (highlight) {
-             // NOTE: sometimes doc.type is undefined ... ??
-             let docType = doc.type ? doc.type[0] : "?"
-             display = highlight.ALLTEXT ? highlight.ALLTEXT[0] : docType
-          } else {
-            // no highlight -- not sure what to show
-            display = ""
-          }
-
-          // TabDeterminer.pickDisplay(filter, doc, highlight)
-          // TabPicker.pickTemplates(filter)
-          //
-          // FIXME: factor this out DisplayPicker = or possibly something that also
-          // keeps track of download templates too          
-          switch(filter) {
-            case 'person':
-              return <PersonDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'publications':
-              return <PublicationDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'organizations':  
-              return <OrganizationDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'subjectheadings':  
-              return <SubjectHeadingDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'artisticworks':  
-              return <ArtisticWorkDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'grants':  
-              return <GrantDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            case 'courses':  
-              return <CourseDisplay key={doc.DocId} doc={doc} display={display}/> 
-              break
-            default:  
-              return <GenericDisplay key={doc.DocId} doc={doc} display={display}/> 
-          }
+        let highlight = highlighting[doc.DocId]
+        return tabPicker.pickDisplay(doc, highlight)
       })
     }
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
       // search.  So ... add <Loading> just in case.
-      return ( 
-          <div className="row">
-            <Loading isFetching={isFetching}></Loading>
-          </div>
-      )
+      // FIXME: what to do if search error? e.g. if (message) { }
       console.log("SearchResults.render() - NO DOCS")
+      return ( 
+        <div className="row">
+          <Loading isFetching={isFetching}></Loading>
+        </div>
+      )
     }
 
     // NOTE: a textual representation of the complex search
@@ -215,6 +153,15 @@ export class SearchResults extends Component {
     //
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
+
+    // let sortOptions = tabPicker.sortOptions()
+    //
+    // let sortOptions = (   
+    //   <select onSelect={() => this.onSort()} className="form-control" defaultValue="score desc">
+    //        <option value="score desc">Relevance</option>
+    //    </select>
+    //  )
+   
     return (
       <section className="search-results">
         <h3>Query: {query}</h3>
@@ -226,19 +173,19 @@ export class SearchResults extends Component {
           <hr />
           
           <div className="row hidden-xs">
-            <div className="col-md-8 col-xs-6">
+            <div className="col-md-8 col-xs-6 col-sm-6">
               
               <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                 <span className="glyphicon glyphicon-download"> Download </span>
               </button>
 
             </div>
-            <div className="col-md-4 col-xs-6">
+            <div className="col-md-4 col-xs-6 col-sm-6">
             {/*
               <div className="pull-right form-inline">
                 <div className="form-group">
                   <label>Sort By:</label>
-                  <select className="form-control" defaultValue="score"><option value="score">Relevance</option></select>
+                   {sortOptions}
                 </div>
               </div>
               */

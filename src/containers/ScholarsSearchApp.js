@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-//var _ = require('lodash');
-// FIXME: should just import function used
 import _ from 'lodash'
 
 import Page from '../layouts/page'
@@ -8,10 +6,7 @@ import Page from '../layouts/page'
 import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
-import actions from '../actions/search'
-import * as types from '../actions/types'
-
-import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
+import { requestSearch, requestTabCount } from '../actions/search'
 
 export class ScholarsSearchApp extends Component {
 
@@ -31,7 +26,7 @@ export class ScholarsSearchApp extends Component {
 
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
-    const { search : { searchFields }, routing: { locationBeforeTransitions }, location, dispatch } = this.props;
+    const { location, dispatch } = this.props;
 
     let query = location.query
 
@@ -58,11 +53,11 @@ export class ScholarsSearchApp extends Component {
 
   constructor(props,context) {
     super(props,context)
- }
+  }
 
   render() {
     // FIXME: none of these props are used, why get them?
-    const { search : { searchFields }, dispatch } = this.props;
+    //const { search : { searchFields }, dispatch } = this.props;
 
     return (
 

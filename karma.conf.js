@@ -19,10 +19,10 @@ module.exports = function(config) {
     //browsers: ['Chrome'],
     browsers: ['chrome_without_security'],
     customLaunchers: {
-        chrome_without_security: {
-           base: 'Chrome',
-           flags: ['--disable-web-security']
-        }
+      chrome_without_security: {
+        base: 'Chrome',
+        flags: ['--disable-web-security']
+      }
     },    
     frameworks: ['jasmine'],
     reporters: ['dots'],
@@ -30,11 +30,11 @@ module.exports = function(config) {
       'test.bundle.js'
     ],
     preprocessors: {
-        'test.bundle.js': ['webpack','sourcemap']
+      'test.bundle.js': ['webpack','sourcemap']
     },
     webpack: webpackConfig,
     webpackMiddleware: {
-        noInfo: true
+      noInfo: true
     }
 
   });

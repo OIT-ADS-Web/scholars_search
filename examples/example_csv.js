@@ -10,9 +10,9 @@ import solr from '../src/utils/SolrHelpers'
 
 import json2csv from 'json2csv'
 
-const solr_url = process.env.SOLR_URL
+const solrUrl = process.env.SOLR_URL
 
-let searcher = new SolrQuery(solr_url)
+let searcher = new SolrQuery(solrUrl)
  
 searcher.options = {
   wt: "json",
@@ -22,7 +22,7 @@ searcher.options = {
 }
 
 const compoundSearch = {
-    'allWords': 'medicine'
+  'allWords': 'medicine'
 }
 
 const qry = searcher.buildQuery(compoundSearch)
@@ -52,9 +52,9 @@ function printResults(json) {
 }
 
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
 
 

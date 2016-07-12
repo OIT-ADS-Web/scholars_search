@@ -6,8 +6,6 @@ import { PAGE_ROWS } from '../actions/constants'
 
 import classNames from 'classnames'
 
-import actions from '../actions/search'
-
 import { requestSearch } from '../actions/search'
 
 export class PagingPanel extends Component {
@@ -31,7 +29,7 @@ export class PagingPanel extends Component {
     e.preventDefault()
 
     if (e.currentTarget.className == 'disabled') {
-       return false
+      return false
     }  
 
     const { search : { searchFields }, dispatch } = this.props
@@ -57,7 +55,7 @@ export class PagingPanel extends Component {
     e.preventDefault()
 
     if (e.currentTarget.className == 'disabled') {
-       return false
+      return false
     }  
     
     const { search : { searchFields }, dispatch } = this.props
@@ -78,9 +76,9 @@ export class PagingPanel extends Component {
 
   render() {
     // so start should be coming from search object (state)
-    const { search : { results, searchFields, isFetching } } = this.props
+    const { search : { results, searchFields } } = this.props
 
-    let { highlighting={}, response={} } = results
+    let { response={} } = results
     let { numFound=0,docs } = response
 
     let start = searchFields['start'] || 0
@@ -96,7 +94,7 @@ export class PagingPanel extends Component {
     // would be page 2 of 3
     // NOTE: all these Math.floor(s) are annoying
     //
-    var totalPages = Math.floor(numFound/PAGE_ROWS)
+    let totalPages = Math.floor(numFound/PAGE_ROWS)
     const remainder = numFound % PAGE_ROWS
     if (remainder) {
       totalPages +=1
@@ -136,8 +134,8 @@ export class PagingPanel extends Component {
       )
     }
 
-    var next = false
-    var previous = false
+    let next = false
+    let previous = false
 
     // (50 + 50 < 105)
 
@@ -157,7 +155,7 @@ export class PagingPanel extends Component {
     const page = paging(next, previous)
 
     return (
-        page
+      page
     )
 
   }

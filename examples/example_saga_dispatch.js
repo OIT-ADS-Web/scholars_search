@@ -1,20 +1,12 @@
 require('dotenv').config();
 
-//import { fetchSearch, fetchTabs } from '../src/actions/sagas'
-import { runSaga } from 'redux-saga'
-
 const compoundSearch = { 'allWords': 'medicine'}
 
 import { requestSearch, requestTabCount } from '../src/actions/search'
-//import { call, put, take } from 'redux-saga/effects'  
-//import { fetchSearchApi } from '../src/actions/sagas'
-//import * as types from '../src/actions/types'
-
 import { sagaMiddleware } from  '../src/configureStore'
 import { configureStoreWithOnlySaga, configureStoreSaga } from '../src/configureStore'
 
 // NOTE: made this method so I can add 'saga' middleware, but NOT have the logger
-//const Store = configureStoreSaga()
 const Store = configureStoreWithOnlySaga()
 
 import rootSaga from '../src/actions/sagas'
@@ -34,7 +26,6 @@ function printState() {
   let state = Store.getState()
   //console.log(state)
   console.log(state.search.results)
-
 }
 
 // FIXME: would like a more deterministic way to see this

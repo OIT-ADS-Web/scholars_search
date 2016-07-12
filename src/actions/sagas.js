@@ -2,8 +2,10 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
-import { takeEvery, takeLatest } from 'redux-saga'
+import { tabList } from '../tabs'
+
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
+
 
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components
@@ -12,11 +14,11 @@ import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './
 // ***** tabs *****
 // 1. actual function
 function fetchTabsApi(searchFields) {
-  const solr_url = process.env.SOLR_URL
+  const solrUrl = process.env.SOLR_URL
   
-  let searcher = new SolrQuery(solr_url)
+  let searcher = new SolrQuery(solrUrl)
 
-  searcher.setupTabGroups()
+  searcher.setupTabGroups(tabList)
   searcher.search = searchFields
 
   return searcher.execute().then(res => res.json())
@@ -31,7 +33,7 @@ export function* fetchTabs(action) {
     yield put(receiveTabCount(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
-    yield put(tabcountsFailed(e.message))
+    yield put(tabCountFailed(e.message))
   }
 
 }
@@ -47,8 +49,8 @@ function* watchForTabs() {
 // ********* search ******
 // 1. actual function
 export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
-  const solr_url = process.env.SOLR_URL
-  let searcher = new SolrQuery(solr_url)
+  const solrUrl = process.env.SOLR_URL
+  let searcher = new SolrQuery(solrUrl)
 
   // FIXME: need a good way to default these - there is similar logic
   // in at least 3 different places - should not have in to do with in
@@ -60,10 +62,14 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
-  searcher.setupDefaultSearch(filter, maxRows, start)
-  // searcher.addFilter(filter)
-  // search.addSort(sort)
   //
+
+  searcher.setupDefaultSearch(maxRows, start)
+  // find which filter
+  let foundFilter = _.find(tabList, function(tab) { return tab.id == filter })
+  searcher.addFilter("type", foundFilter.filter)
+  
+  // search.addSort(sort)
   searcher.search =  searchFields
  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
@@ -103,10 +109,38 @@ function* watchForSearch() {
     // if spins forever
     const searchTask = yield fork(fetchSearch, action)
     //yield fork(fetchSearch, action)
-
-
     //yield take(types.SEARCH_CANCELLED)
     //yield cancel(searchTask)
+  }
+}
+
+import fetch from 'isomorphic-fetch'
+
+// ***** departments *****
+// 1. actual function
+export function fetchDepartmentsApi() {
+  const orgUrl = process.env.ORG_URL
+  let attempt = fetch(orgUrl)
+  return attempt.then(res => res.json())
+}
+
+export function* fetchDepartments() {
+  const results = yield call(fetchDepartmentsApi)
+
+  try {
+    yield put(receiveDepartments(results))
+  } catch(e) {
+    // FIXME: not actually prepared for error in application
+    yield put(departmentsFailed(e.message))
+  } 
+}
+
+
+// 3. watcher
+function* watchForDepartments() {
+  while(true) {
+    const action = yield take(types.REQUEST_DEPARTMENTS)
+    yield fork(fetchDepartments, action)
   }
 }
 
@@ -118,7 +152,8 @@ function* watchForSearch() {
 export default function* root() {
   yield [
     fork(watchForSearch),
-    fork(watchForTabs)
+    fork(watchForTabs),
+    fork(watchForDepartments)
   ]
 }
 

@@ -14,7 +14,8 @@ a {
     display: none;
 }
 
-@media only screen and (min-width: 481px) {
+/********* > 768px ***********/
+@media only screen and (min-width: 769px) {
   
   #logo-image { 
     background: url("../images/duke-logo.gif") no-repeat scroll 0 0 transparent;  
@@ -35,10 +36,26 @@ a {
     color: #002b44;
     padding-left: 13px;
   }
+  
+  #footcontent {
+      float: right;
+      margin: 0;
+      padding: 0;
+      width: 50%;
+  }
+
+  footer p.copyright {
+    float: left;
+    margin: 10px 0 0 15px;
+    width: 40%;
+    clear: both;
+  }
 
 }
+/***************************/
 
-@media only screen and (max-width: 480px) {
+/********* < 768px ***********/
+@media only screen and (max-width: 768px) {
   
  #logo-image {
     background: url(../images/title_mobile.png) no-repeat scroll 0 0 transparent;
@@ -49,17 +66,33 @@ a {
   }
 
   #mobile-header-nav {
-      float: right;
+      float: left;
       display: block;
-      position: absolute;
-      top: 20px;
-      right: 1%;
+      padding: 8px;
   }
 
   #nonmobile-header-nav {
     display: none;
   }
+
+  .navbar.navbar-default {
+    min-height: 0px;
+  }
+  
+  #footcontent {
+      margin: 0;
+      padding: 0;
+  }
+
+  footer p.copyright {
+    margin: 10px 0 0 15px;
+    clear: both;
+  }
+
 }
+/**************************/
+
+/****** ALL ***************/
 
 body {
   background: rgba(0, 0, 0, 0) url("../images/header-background.png") no-repeat scroll center 0;
@@ -111,19 +144,13 @@ footer {
     border-top: 1px solid #d5d2d2;
     clear: both;
     color: #4e5051;
-    font-size: 1.25em;
+    font-size: .85em;
     height: 88px;
     margin: 0 auto;
     padding-top: 1.5em;
     width: 98%;
-}
-
-#footcontent {
-    float: right;
-    margin: 0;
-    padding: 0;
-    width: 50%;
-}
+    border-top: 1px solid #D5D2D2;
+} 
 
 ul#footer-nav {
     list-style: outside none none;
@@ -145,9 +172,3 @@ ul#footer-nav li:last-child {
 }
 
 
-footer p.copyright {
-    float: left;
-    margin: 10px 0 0 15px;
-    width: 40%;
-    clear: both;
-}

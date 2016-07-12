@@ -1,23 +1,17 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
 
-import actions from '../actions/search'
-
-import SearchResults from './SearchResults'
 import SearchField from './SearchField'
-
-import * as types from '../actions/types'
 
 import classNames from 'classnames'
 
-import { requestSearch, requestTabCount, requestFilter } from '../actions/search'
+import { requestSearch, requestTabCount } from '../actions/search'
 
 export class SearchForm extends Component {
 
 
   static get contextTypes() {
     return({
-        router: PropTypes.object
+      router: PropTypes.object
     })
   }
 
@@ -36,10 +30,11 @@ export class SearchForm extends Component {
     const atLeastOne = this.atLeastOne
     const noMatch = this.noMatch
 
-    var add = "";
-    if (allWords.value.lastIndexOf('*', 0) != 0) {
-     add = "*"
-    }
+    // FIXME: should '*' wildcard be added to allWords word(s) or not?
+    //let add = "";
+    //if (allWords.value.lastIndexOf('*', 0) != 0) {
+    //  add = "*"
+    //}
     // NOTE: allWords search needs a '*' after every word, otherwise it's searching
     // exactly.  Then again, maybe the user wants the ability to differentiate the two.
     
@@ -50,13 +45,13 @@ export class SearchForm extends Component {
     // NOTE: if it's a new search - just default to page 0 instead of something weird
     let start = 0
     const compoundSearch = {
-       'allWords': allWords.value,
-       'exactMatch': exactMatch.value,
-       'atLeastOne': atLeastOne.value,
-       'noMatch': noMatch.value,
-       'start': start,
-       'filter': filter
-     }
+      'allWords': allWords.value,
+      'exactMatch': exactMatch.value,
+      'atLeastOne': atLeastOne.value,
+      'noMatch': noMatch.value,
+      'start': start,
+      'filter': filter
+    }
 
     /*
      * FIXME: should only add these to route if there is a value
@@ -86,16 +81,16 @@ export class SearchForm extends Component {
     // FIXME: probably better way to do this
     let button
     if (isFetching) {
-         button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
+      button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
     } else {
-         button = <button type="submit" className="btn btn-primary">Submit</button>
+      button = <button type="submit" className="btn btn-primary">Submit</button>
     }
 
-    var hideAdvanced = false
+    let hideAdvanced = false
     
     if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
-       hideAdvanced = false
-       console.log("SHOW advanced search fields")
+      hideAdvanced = false
+      console.log("SHOW advanced search fields")
     }
     const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     
     //
@@ -108,11 +103,11 @@ export class SearchForm extends Component {
 
         <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
           
-          <SearchField label="With all these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
+          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
           <div className={advancedClasses}>
-            <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
-            <SearchField label="With at least one of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
-            <SearchField label="With none these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With any of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
           </div>
 
           {button}

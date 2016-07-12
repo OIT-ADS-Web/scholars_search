@@ -7,7 +7,7 @@ export function requestSearch(searchFields) {
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
     searchFields: searchFields
-   }
+  }
 }
 
 export function receiveSearch(json) {
@@ -39,7 +39,7 @@ export function requestTabCount(searchFields) {
     grouped: {},
     isFetching: true,
     searchFields: searchFields
-   }
+  }
 
 }
 
@@ -58,6 +58,35 @@ export function receiveTabCount(json) {
 export function tabCountFailed(message) {
   return {
     type: types.TABCOUNTS_FAILED,
+    message: message
+  }
+}
+
+/******** departments ********/
+export function requestDepartments() {
+  return {
+    type: types.REQUEST_DEPARTMENTS,
+    departments: {},
+    isFetching: true,
+  }
+
+}
+
+export function receiveDepartments(json) {
+  let departments = json
+
+  return {
+    type: types.RECEIVE_DEPARTMENTS,
+    departments: departments,
+    isFetching: false,
+    receivedAt: Date.now()
+  }
+
+}
+
+export function departmentsFailed(message) {
+  return {
+    type: types.DEPARTMENTS_FAILED,
     message: message
   }
 }

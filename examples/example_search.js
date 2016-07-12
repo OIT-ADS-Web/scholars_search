@@ -19,6 +19,8 @@ searcher.options = {
   start: 0
 }
 
+searcher.setOption("qf", "nameText")
+
 const compoundSearch = {
     'allWords': 'medicine'
 }
@@ -34,14 +36,14 @@ function printResults(json) {
 }
 
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
 
 // NOTE: it's random which one returns first
 const compoundSearch2 = {
-    'allWords': 'alejandro'
+  'allWords': 'alejandro'
 }
 
 
@@ -56,13 +58,14 @@ const filterStr = tabs[0].filter
 console.log("adding filter..."+ filterStr)
 if (filterStr) {
   searcher.addFilter("type", filterStr)
+  //searcher.addFilter("name", "nameText:"+qry2)
 }
 
 // then run again
 searcher.execute().then(function(response) {
-    return response.json()
+  return response.json()
 }).then(function(json) {
-    printResults(json)
+  printResults(json)
 })
   
 // NOTE: can remove a filter too via

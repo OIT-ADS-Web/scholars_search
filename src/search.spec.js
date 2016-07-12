@@ -2,35 +2,22 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 
-import TestUtils from 'react-addons-test-utils'
-
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
-
-import actions from './actions/search'
 
 import { requestSearch, receiveSearch } from './actions/search'
 
 import * as types from './actions/types'
 
-import configureStoreWithoutLogger from './configureStore'
-
 import assert from 'assert'
-
-// NOTE: nock throws no module 'fs' found errors
-// tried adding this to webpack-config - no errors at least
-// node: {
-//   fs: "empty"
-// }
-import nock from 'nock'
 
 import { fetchSearch, fetchSearchApi } from './actions/sagas'
 
 // a typical response (abbreviated) ...
 const solrJson = {
-    response: {
-      numFound: 1, 
-      docs: [  
+  response: {
+    numFound: 1, 
+    docs: [  
       { 
         mostSpecificTypeURIs: ["http://vivoweb.org/ontology/core#AcademicDepartment"],            
         DocId: "vitroIndividual:https://scholars.duke.edu/individual/org50000844",
@@ -51,16 +38,23 @@ const solrJson = {
 // NOTE: here's an example supposely using isomporphic-search
 // and nock -- 
 // https://github.com/node-nock/nock/issues/399
-  
-const stub = nock("http://localhost")
-  .get("/ROOTsolr/collection1/select")
-  .query({q: 'medicine', wt: 'json', rows: '50', hl: 'true', start: '0'})
-  .reply(200, { body: solrJson })
+
+// NOTE: nock throws no module 'fs' found errors
+// tried adding this to webpack-config - no errors at least
+// node: {
+//   fs: "empty"
+// }
+//import nock from 'nock'
+
+//const stub = nock("http://localhost")
+//  .get("/ROOTsolr/collection1/select")
+//  .query({q: 'medicine', wt: 'json', rows: '50', hl: 'true', start: '0'})
+//  .reply(200, { body: solrJson })
  
 describe("SOLR Query", () => {
 
   const compoundSearch = { 'allWords': 'medicine' }
-  var json
+  let json
   
   // NOTE: needed to do this (calling done())
   // found idea here: https://volaresystems.com/blog/post/2014/12/09/Testing-async-calls-with-Jasmine
@@ -68,9 +62,9 @@ describe("SOLR Query", () => {
     let results = fetchSearchApi(compoundSearch)
 
     results.then((res) => {
-        json = res
-        done()
-     })
+      json = res
+      done()
+    })
 
   })
 
@@ -84,7 +78,6 @@ describe("SOLR Query", () => {
 })
 
 describe("Running a Search", () => {
-  var results = {}
   const store = mockStore({ search: []})
   const compoundSearch = { 'allWords': 'medicine' }
 
@@ -116,21 +109,19 @@ describe('search reducer', () => {
 
   it('should handle REQUEST_SEARCH', () => {
    
-      // FIXME: why is the [] necessary ??
-      let action = reducers.searchReducer([], {
-        type: types.REQUEST_SEARCH,
-        searchFields: searchFields,
-        results: null
-      })
+    // FIXME: why is the [] necessary ??
+    let action = reducers.searchReducer([], {
+      type: types.REQUEST_SEARCH,
+      searchFields: searchFields,
+      results: null
+    })
 
-      let results = {
-          isFetching: true,
-          results: null,
-          searchFields: searchFields
-      }
-    
+    let results = {
+      isFetching: true,
+      results: null,
+      searchFields: searchFields
+    }
     assert.deepEqual(action, results)
-
   })
   
 
@@ -139,7 +130,7 @@ describe('search reducer', () => {
 // tried following patterns in this (but largely did not succeed):
 // http://engineering.pivotal.io/post/tdding-react-and-redux/
 
-import { call, put } from 'redux-saga/effects'  
+import { call } from 'redux-saga/effects'  
 
 describe("sagas for search", () => {
 
@@ -148,11 +139,11 @@ describe("sagas for search", () => {
  
   it ("should dispatch to fetchSearchApi if fetchSearch called", () => {
 
-   let first = mySaga.next().value
+    let first = mySaga.next().value
 
-   let fetchFunction = call(fetchSearchApi, compoundSearch)
-   assert.equal(first.fn, fetchFunction.fn)
-   assert.equal(first.args, fetchFunction.args)
+    let fetchFunction = call(fetchSearchApi, compoundSearch)
+    assert.equal(first.fn, fetchFunction.fn)
+    assert.equal(first.args, fetchFunction.args)
   })
 
 })
