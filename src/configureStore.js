@@ -1,6 +1,5 @@
 import { createStore, applyMiddleware } from 'redux'
 
-import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 import createSagaMiddleware from 'redux-saga'
 
@@ -8,19 +7,9 @@ const sagaMiddleware = createSagaMiddleware()
 const loggerMiddleware = createLogger()
 
 // FIXME: don't like all these versions of basically the same thing
-const createStoreWithMiddlewareThunkVersion = applyMiddleware(
-  thunkMiddleware,
-  loggerMiddleware
-)(createStore)
-
 const createStoreWithMiddlewareSagaVersion = applyMiddleware(
   sagaMiddleware,
   loggerMiddleware
-)(createStore)
-
-
-const createStoreWithOnlyThunkMiddleware = applyMiddleware(
-  thunkMiddleware
 )(createStore)
 
 const createStoreWithOnlySagaMiddleware = applyMiddleware(
@@ -34,16 +23,8 @@ const initialState = {}
 //
 import reducers from './reducers/search'
 
-export default function configureStoreThunk(initialState = initialState) {
-  return createStoreWithMiddlewareThunkVersion(reducers.mainReducer, initialState)
-}
-
 export function configureStoreSaga(initialState = initialState) {
   return createStoreWithMiddlewareSagaVersion(reducers.mainReducer, initialState)
-}
-
-export function configureStoreWithoutOnlyThunk(initialState = initialState) {
-  return createStoreWithOnlyThunkMiddleware(reducers.mainReducer, initialState)
 }
 
 export function configureStoreWithOnlySaga(initialState = initialState) {
