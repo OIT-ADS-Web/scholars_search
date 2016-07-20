@@ -59,9 +59,7 @@ export class ScholarsSearchApp extends Component {
       dispatch(requestTabCount(builtSearch))
  
     } else if (onlyAdvanced || blankSearch) {
-      // FIXME: need a way to show search fields, but not search blanks
        dispatch(emptySearch())
-    
     }
 
 
@@ -72,9 +70,7 @@ export class ScholarsSearchApp extends Component {
   }
 
   render() {
-    // FIXME: none of these props are used, why get them?
-    //const { search : { searchFields }, dispatch } = this.props;
-
+    
     return (
 
       <Page>

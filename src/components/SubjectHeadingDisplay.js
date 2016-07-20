@@ -33,12 +33,16 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
       }
     }()
 
+    if (isLoc) {
+      uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
+    }
+
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
               <div className="col-md-12 col-xs-12 col-sm-12"> 
                  <strong>
-                  <ScholarsLink uri={this.URI} text={this.name} />
+                  <ScholarsLink uri={uri} text={this.name} />
                 </strong>
                 <div className="pull-right">
                    <img width="18px" src={logo}/>

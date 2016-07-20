@@ -121,12 +121,13 @@ export class SearchForm extends Component {
 
     // NOTE: since we're not getting searchFields from parameters, but we
     // still need to catch ?advanced=true (to open up advanced form) this is necessary
+    // don't like depending on locationBeforeTransitions though, since it's undocumented 
+    // and internal to the router and could change without notice
     const { routing: { locationBeforeTransitions } } = this.props
     
     const advanced = query.advanced ? query.advanced : (locationBeforeTransitions.query.advanced || false)
 
     // FIXME: seems too double-negative-y 
-    //const advanced = query.advanced
     let hideAdvanced = !(advanced === 'true')
  
     const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     
@@ -171,10 +172,6 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = (search, ownProps) => {
   return search
-  //return { ...search,
-  //  searchFields: ownProps.location.query,
-  //}
-    
 }
 
 export default connect(mapStateToProps)(SearchForm);
