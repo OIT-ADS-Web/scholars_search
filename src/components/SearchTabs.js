@@ -153,7 +153,7 @@ export class SearchTabs extends Component {
  
     return (
       <div>
-        <div className="pull-right"><strong>Total Found: {ungroupedCount}</strong></div>
+        <div className="bg-info pull-right"><strong>Total Results Found: <span className="badge">{ungroupedCount}</span></strong></div>
         <div className="clearfix"></div>
         <nav className="visible-xs">
             {mobileTabs}            

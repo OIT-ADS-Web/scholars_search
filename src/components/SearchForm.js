@@ -139,7 +139,7 @@ export class SearchForm extends Component {
     // many times or too soon or something like that.  I was not able to track that down though.  This works for now.
     return (
        
-       <section>
+       <section className="well">
 
         <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
           
@@ -159,7 +159,6 @@ export class SearchForm extends Component {
         </form>
        
            
-        <hr/>
  
       </section>
 
