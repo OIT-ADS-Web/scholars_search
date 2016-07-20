@@ -19,6 +19,15 @@ export function receiveSearch(json) {
   }
 }
 
+export function emptySearch() {
+  return {
+    type: types.EMPTY_SEARCH,
+    results: {},
+    isFetching: false
+  }
+}
+
+
 export function cancelSearch() {
   return {
     type: types.SEARCH_CANCELLED
@@ -96,6 +105,7 @@ export function departmentsFailed(message) {
 export default {
   requestSearch,
   receiveSearch,
+  emptySearch,
   cancelSearch,
   searchFailed,
   requestTabCount,

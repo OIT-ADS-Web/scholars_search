@@ -47,52 +47,59 @@ class PersonDisplay extends HasSolrData(Component) {
     }
     return departmentText.replace(/"/g, "")
   }
-  
+
+  get thumbnailUrlAdjusted() {
+    let orig = this.doc.THUMBNAIL_URL
+
+    // FIXME: this seems like a fragile solution
+    let newLoc = orig.replace("https://scholars.duke.edu/individual/i", "https://scholars.duke.edu/individual/t")
+
+    return newLoc
+
+  } 
+
   get thumbnailUrl() {
+    // NOTE: looks like this:
+    // https://scholars.duke.edu/individual/i4284062
+    //
     return this.doc.THUMBNAIL_URL
   }
-
 
   render() {
 
     let picture
     
     if (this.hasThumbnail()) {
-      picture = <div className="crop"><img src={this.thumbnailUrl} className="profile-thumbnail"></img></div>
+      picture = <div className="crop"><img src={this.thumbnailUrlAdjusted} className="profile-thumbnail"></img></div>
     } else {
-      picture = <img className="profile-thumbnail"></img>
+      // just empty instead of a picture size block, to save space
+      picture = <span></span>
+      //picture = <img className="profile-thumbnail"></img>
     }
 
     return (
-         <div className="person search-result-row" key="{this.docId}">
-            <div className="row">
+        <div className="person search-result-row" key="{this.docId}">
+           <div className="row">
               
-              <div className="col-lg-1 col-md-12 col-xs-12 col-sm-12">
-                {picture}
-              </div>
+             <div className="col-lg-1 col-md-12 col-xs-12 col-sm-12">
+               {picture}
+             </div>
             
-              <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
-                <strong>
-                  <ScholarsLink uri={this.URI} text={this.name} />
-                </strong>
-                <span> - {this.preferredTitle}</span>
-                <div>{this.department}</div>
-              </div>
+             <div className="col-lg-11 col-md-12 col-xs-12 col-sm-12">
+               <strong>
+                 <ScholarsLink uri={this.URI} text={this.name} />
+               </strong>
+               <span> - {this.preferredTitle}</span>
+               <div>{this.department}</div>
+               <div>{this.highlightDisplay}</div>
 
-            </div>
+             </div>
 
-            <div className="row">
-              <div className="col-lg-12 col-md-12 col-xs-12">
-                <div className="highlight-text">
-                  {this.highlightDisplay}
-                </div>
-              </div>
-        
-          </div>
-
-           {this.solrDocDisplay}
+           </div>
+           
+         {this.solrDocDisplay}
  
-      </div>
+       </div>
 
     )
   }

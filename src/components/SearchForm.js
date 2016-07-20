@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 
 import SearchField from './SearchField'
+import SearchFieldHidden from './SearchFieldHidden'
 
 import classNames from 'classnames'
 
-import { requestSearch, requestTabCount } from '../actions/search'
+import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
+
+import solr from '../utils/SolrHelpers'
 
 export class SearchForm extends Component {
 
@@ -18,17 +21,45 @@ export class SearchForm extends Component {
   constructor(props, context) {
     super(props, context)
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
+    this.handleAdvancedSearch = this.handleAdvancedSearch.bind(this)
   }
 
+  handleAdvancedSearch(e) {
+    e.preventDefault()
+
+    // NOTE: seems wrong to do this, maybe it's fine
+    this.advanced.value = "true"
+    
+    // FIXME: still have problem of searching *:* (everything)
+     
+    this.handleSubmitSearch(e)
+    /// need to add to query parameters ---
+    //
+  }
+
+  /*
+  isEmptySearch(cs) {
+    let flag = false
+    
+    if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' 
+         && cs['noMatch'] == '') {
+       flag = true
+     }
+
+     return flag
+  } 
+  */
+
   handleSubmitSearch(e) {
-    e.preventDefault();
-    //const { search : { start, filter }, dispatch } = this.props;
-    const { search : { searchFields }, dispatch } = this.props;
+    e.preventDefault()
+    
+    const { search : { searchFields }, dispatch } = this.props
  
     const allWords = this.allWords
     const exactMatch = this.exactMatch
     const atLeastOne = this.atLeastOne
     const noMatch = this.noMatch
+    const advanced = this.advanced
 
     // FIXME: should '*' wildcard be added to allWords word(s) or not?
     //let add = "";
@@ -44,13 +75,16 @@ export class SearchForm extends Component {
 
     // NOTE: if it's a new search - just default to page 0 instead of something weird
     let start = 0
+    
+    // FIXME: need to NOT add &params if undefined
     const compoundSearch = {
-      'allWords': allWords.value,
       'exactMatch': exactMatch.value,
+      'allWords': allWords.value,
       'atLeastOne': atLeastOne.value,
       'noMatch': noMatch.value,
       'start': start,
-      'filter': filter
+      'filter': filter,
+      'advanced': advanced.value
     }
 
     /*
@@ -64,35 +98,48 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-    dispatch(requestSearch(compoundSearch))
-    dispatch(requestTabCount(compoundSearch))
+
+    if (solr.isEmptySearch(compoundSearch)) {
+      dispatch(emptySearch())
+    } 
+    else {
+      dispatch(requestSearch(compoundSearch))
+      dispatch(requestTabCount(compoundSearch))
+    }
   }
 
   render() {
     const { search : { isFetching, searchFields } } = this.props;
 
     let query = { ...searchFields }
-
-    const allWords = query.allWords
+    
+    const allWords = query.allWords   
     const exactMatch = query.exactMatch
-    const atLeastOne = query.atLeastOne
+    const atLeastOne = query.atLeastOne 
     const noMatch = query.noMatch
 
     // FIXME: probably better way to do this
     let button
     if (isFetching) {
-      button = <button type="submit" className="btn btn-primary" disabled>Submit</button>
+      button = <button type="submit" className="btn btn-primary" disabled>Search</button>
     } else {
-      button = <button type="submit" className="btn btn-primary">Submit</button>
+      button = <button type="submit" className="btn btn-primary">Search</button>
     }
 
-    let hideAdvanced = false
+    // NOTE: since we're not getting searchFields from parameters, but we
+    // still need to catch ?advanced=true (to open up advanced form) this is necessary
+    const { routing: { locationBeforeTransitions } } = this.props
     
-    if (exactMatch != "" || atLeastOne != "" || noMatch == "") {
-      hideAdvanced = false
-      console.log("SHOW advanced search fields")
-    }
+    const advanced = query.advanced ? query.advanced : (locationBeforeTransitions.query.advanced || false)
+
+    // FIXME: seems too double-negative-y 
+    //const advanced = query.advanced
+    let hideAdvanced = !(advanced === 'true')
+ 
     const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     
+    // NOTE: just the oppposite
+    const showHideClasses = classNames({hidden: !hideAdvanced})
+
     //
     // NOTE: it took a while to figure out how to set the defaultValue of the <inputs> below (SearchField) - the typical React lifecycle of components
     // will just allow setting that value once (which was always initializing to NULL).  I'm pretty sure the code is initializing the form too
@@ -110,6 +157,10 @@ export class SearchForm extends Component {
             <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
           </div>
 
+          <div className={showHideClasses}><button className="btn btn-success pull-right" onClick={this.handleAdvancedSearch}>Advanced Search...</button></div>
+
+          <SearchFieldHidden ref={(ref) => this.advanced = ref} defaultValue={advanced} />
+          
           {button}
 
         </form>
@@ -128,6 +179,10 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = (search, ownProps) => {
   return search
+  //return { ...search,
+  //  searchFields: ownProps.location.query,
+  //}
+    
 }
 
 export default connect(mapStateToProps)(SearchForm);

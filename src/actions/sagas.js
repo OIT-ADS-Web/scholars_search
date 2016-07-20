@@ -68,7 +68,7 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   
   // search.addSort(sort)
   searcher.search =  searchFields
- 
+
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())
@@ -82,6 +82,7 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
 // 2. what watcher will do
 export function* fetchSearch(action) {
   const { searchFields } = action
+
   const results = yield call(fetchSearchApi, searchFields)
 
   try {

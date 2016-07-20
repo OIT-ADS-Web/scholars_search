@@ -1,5 +1,17 @@
 import _ from 'lodash'
 
+function isEmptySearch(cs) {
+  let flag = false
+    
+  if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' 
+       && cs['noMatch'] == '') {
+     flag = true
+   }
+
+  return flag
+}
+
+
 function buildComplexQuery(compoundSearch = {}) {
   // NOTE: this method will get an object that looks like this:
   //
@@ -239,6 +251,6 @@ function setupTabGroups(searcher, tabList) {
 
 }
 
-export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser }
+export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser, isEmptySearch }
 
 

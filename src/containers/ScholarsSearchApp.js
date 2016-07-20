@@ -6,7 +6,9 @@ import Page from '../layouts/page'
 import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
-import { requestSearch, requestTabCount } from '../actions/search'
+import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
+
+import solr from '../utils/SolrHelpers'
 
 export class ScholarsSearchApp extends Component {
 
@@ -24,14 +26,22 @@ export class ScholarsSearchApp extends Component {
     return {router: this.props.routing}
   }
 
+  onlyAdvanced(query) {
+   let flag = (query['advanced'] != '' && _.size(query) == 1)
+   return flag
+  }
+
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
     const { location, dispatch } = this.props;
 
     let query = location.query
 
+    let onlyAdvanced = this.onlyAdvanced(query)
+    let emptySearch = solr.isEmptySearch(query)
+
     // NOTE: was searching if no query parameters in route path, just searching everything
-    if (!_.isEmpty(query)) {
+    if (!_.isEmpty(query) && !(onlyAdvanced || emptySearch)) {
 
       // FIXME: I have these kinds of checks all over, would like to have it centralized
       // so don't have to remember to check everywhere
@@ -48,7 +58,13 @@ export class ScholarsSearchApp extends Component {
       dispatch(requestSearch(builtSearch))
       dispatch(requestTabCount(builtSearch))
  
+    } else if (onlyAdvanced || emptySearch) {
+      // FIXME: need a way to show search fields, but not search blanks
+       dispatch(emptySearch())
+    
     }
+
+
   }
 
   constructor(props,context) {

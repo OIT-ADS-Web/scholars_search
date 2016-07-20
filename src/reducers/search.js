@@ -54,6 +54,11 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
       results: action.results,
       lastUpdated: action.receivedAt
   }
+  case types.EMPTY_SEARCH:
+    return { ...search,
+      isFetching: false,
+      results: action.results
+  }
   case types.SEARCH_FAILED:
     
     return { ...search,

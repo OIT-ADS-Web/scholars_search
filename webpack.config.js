@@ -44,7 +44,8 @@ module.exports = {
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(png|gif|jpg)$/, loader: 'file-loader' },
       { test: /jquery/, loader: 'expose?$!expose?jQuery' },
-      // react/jsx and es6/2015 transpiling
+      { test: /\.json$/, loader: 'json' },
+       // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
         loader: 'babel-loader',

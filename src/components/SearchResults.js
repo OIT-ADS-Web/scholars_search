@@ -28,14 +28,14 @@ export class SearchResults extends Component {
   constructor(props, context) {
     super(props, context);
     
-    this.handleDownload = this.handleDownload.bind(this)
+    //this.handleDownload = this.handleDownload.bind(this)
     //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
-    this.handleDownload= _.debounce(this.handleDownload,1000);
+    //this.handleDownload= _.debounce(this.handleDownload,1000);
     this.handleSort = this.handleSort.bind(this)
 
   }
 
-
+  /*
   handleDownload() {
     // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
@@ -77,6 +77,7 @@ export class SearchResults extends Component {
     })
    
   }
+  */
 
   handleSort() {
     const { search : { searchFields } } = this.props
@@ -164,15 +165,17 @@ export class SearchResults extends Component {
    
     return (
       <section className="search-results">
-        <h3>Query: {query}</h3>
-        
-        <SearchTabs></SearchTabs>
-        
+        <div className="search-results-header">
+          <div className="pull-left lead"><strong>Query: {query}</strong></div>
+          <SearchTabs></SearchTabs>
+        </div>
+
         <div className="search-results-table">
          
-          <hr />
           
           <div className="row hidden-xs">
+            
+            {/*
             <div className="col-md-8 col-xs-6 col-sm-6">
               
               <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
@@ -180,6 +183,8 @@ export class SearchResults extends Component {
               </button>
 
             </div>
+            */}
+
             <div className="col-md-4 col-xs-6 col-sm-6">
             {/*
               <div className="pull-right form-inline">
@@ -194,7 +199,6 @@ export class SearchResults extends Component {
 
           </div>
           
-          <hr/>
           {resultSet}
         </div>
 

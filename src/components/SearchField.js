@@ -38,6 +38,11 @@ export default class SearchField extends Component {
   // NOTE: ends up being a wrapper for typical input.value access
   // for a text input field - but in this case it's a <SearchField> component
   //
+  set value(val) {
+    const input = this.refs.myInput
+    input.value = val
+  }
+
   get value() {
     const input = this.refs.myInput
     const inputValue = input.value

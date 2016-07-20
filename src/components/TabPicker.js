@@ -21,7 +21,26 @@ class TabPicker {
     this.filter = filter
   }
 
-
+  // <Tabs>
+  //  <PersonTab>
+  //  <PublicationTab>...
+  // </Tabs>
+  //
+  // class Tab
+  // 
+  // class PersonTab extends(Tab) --- ???
+  //
+  // [Tab] - class ?
+  //
+  // e.g.
+  // display=PersonDisplay
+  // filter=(type:Person)
+  // downloadFields (see below)
+  // sortOptions
+  // facets ---
+  //
+  // ---
+  //
   toCSV(json) {
 
     let data = json.response.docs
