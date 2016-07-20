@@ -35,12 +35,9 @@ export class SearchTab extends Component {
 
     this.handleTab = this.handleTab.bind(this)
  
-    this.handleDownload = this.handleDownload.bind(this)
-    //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
-    this.handleDownload= _.debounce(this.handleDownload,1000);
-  
   }
 
+  /*
   handleDownload() {
     // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
@@ -82,7 +79,7 @@ export class SearchTab extends Component {
     })
    
   }
-
+  */
 
   handleTab(e) {
     e.preventDefault()
@@ -107,27 +104,16 @@ export class SearchTab extends Component {
   }
 
   render() {
-    let classList = classNames({active: this.active})
+    let classList = classNames({active: this.active, 'search-tab': true})
 
     // FIXME: the fact that I can't put an if statement in jsx is annoying    
-    if (this.active) {
-      return (
+    return (
          <li className={classList}>
-           <a href="#" onClick={this.handleTab}>{this.label} ({this.count}) 
-             <span onClick={this.handleDownload} title="Download Search Results" className="glyphicon glyphicon-download pull-right"></span>
-            </a>
+           <a href="#" onClick={this.handleTab}>{this.label} ({this.count}) </a>
          </li>
       )
-    } else {
-      return (
-         <li className={classList}>
-           <a href="#" onClick={this.handleTab}>{this.label} ({this.count})</a>
-         </li>
-      )
-
-    }
-
   }
+
 
 }
 

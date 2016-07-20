@@ -66,19 +66,19 @@ export default class SearchField extends Component {
     const { label, placeholder, defaultValue, autofocus } = this.props
 
     let input = (
-      <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+      <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control input-sm"  placeholder={placeholder}/>
     )
     
     if (autofocus) {
       input = (
-        <input autoFocus={true} onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+        <input autoFocus={true} onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control input-sm"  placeholder={placeholder}/>
       )
     }
 
     return (
          <div className="form-group">
-            <label className="col-sm-2 control-label">{label}</label>
-            <div className="col-sm-10">
+            <label className="col-sm-4 control-label">{label}</label>
+            <div className="col-sm-8">
               {input}
             </div>
          </div>

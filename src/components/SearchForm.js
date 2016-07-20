@@ -114,9 +114,9 @@ export class SearchForm extends Component {
     // FIXME: probably better way to do this
     let button
     if (isFetching) {
-      button = <button type="submit" className="btn btn-primary" disabled>Search</button>
+      button = <button type="submit" className="btn btn-primary btn-sm" disabled>Search</button>
     } else {
-      button = <button type="submit" className="btn btn-primary">Search</button>
+      button = <button type="submit" className="btn btn-primary btn-sm">Search</button>
     }
 
     // NOTE: since we're not getting searchFields from parameters, but we
@@ -140,22 +140,29 @@ export class SearchForm extends Component {
     // many times or too soon or something like that.  I was not able to track that down though.  This works for now.
     return (
        
-       <section className="well">
+       <section className="search-form well">
 
         <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
+
+        <div className="row">        
           
-          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" autofocus={true} />
-          <div className={advancedClasses}>
-            <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
-            <SearchField label="With any of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
-            <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
+          <div className="col-md-8">
+            <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" autofocus={true} />
+        
+            <div className={advancedClasses}>
+              <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
+              <SearchField label="With any of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
+              <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
+            </div>
+
+            <SearchFieldHidden ref={(ref) => this.advanced = ref} defaultValue={advanced} />
           </div>
 
-          <div className={showHideClasses}><a href="#" className="btn btn-success pull-right" onClick={this.handleAdvancedSearch}>Advanced Search...</a></div>
-
-          <SearchFieldHidden ref={(ref) => this.advanced = ref} defaultValue={advanced} />
-          
-          {button}
+          <div className="col-md-4">
+            <div className={showHideClasses}><a href="#" className="btn btn-success pull-right btn-sm" onClick={this.handleAdvancedSearch}>Advanced Search...</a></div>
+            {button}
+          </div>
+        </div>
 
         </form>
        

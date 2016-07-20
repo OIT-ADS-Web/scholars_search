@@ -28,19 +28,22 @@ export class SearchResults extends Component {
   constructor(props, context) {
     super(props, context);
     
-    //this.handleDownload = this.handleDownload.bind(this)
+    this.handleDownload = this.handleDownload.bind(this)
     //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
-    //this.handleDownload= _.debounce(this.handleDownload,1000);
+    this.handleDownload= _.debounce(this.handleDownload,1000);
+    
     this.handleSort = this.handleSort.bind(this)
 
   }
 
-  /*
+  
   handleDownload() {
     // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
     // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
-   
+    
+    console.log("DOWNLOAD")
+
     const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
@@ -77,7 +80,7 @@ export class SearchResults extends Component {
     })
    
   }
-  */
+  
 
   handleSort() {
     const { search : { searchFields } } = this.props
@@ -145,13 +148,7 @@ export class SearchResults extends Component {
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
-    // <h3>Results for group: {numFound} </h3> 
     
-    // FIXME: maybe search results should be a product of the tab
-    // (since it's always in a tab) - that would get rid of the giant 'switch'
-    // statement above
-    //
-    //
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
 
@@ -172,34 +169,19 @@ export class SearchResults extends Component {
 
         <div className="search-results-table">
          
-          
-          <div className="row hidden-xs">
-            
-            {/*
-            <div className="col-md-8 col-xs-6 col-sm-6">
-              
-              <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
-                <span className="glyphicon glyphicon-download"> Download </span>
-              </button>
-
-            </div>
-            */}
-
-            <div className="col-md-4 col-xs-6 col-sm-6">
-            {/*
-              <div className="pull-right form-inline">
-                <div className="form-group">
-                  <label>Sort By:</label>
-                   {sortOptions}
-                </div>
+          <div className="row panel">
+            <div className="col-md-10">          
+             {resultSet}
+           </div>
+            <div className="col-md-2 panel panel-info">
+              <div className="panel-body">
+                <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
+                  <span className="glyphicon glyphicon-download"> Download </span>
+                </button>
               </div>
-              */
-            }
-            </div>
-
+           </div>
           </div>
-          
-          {resultSet}
+
         </div>
 
         <PagingPanel></PagingPanel>
