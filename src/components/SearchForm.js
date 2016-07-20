@@ -9,6 +9,9 @@ import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
+//var ReactDOM = require('react-dom');
+import ReactDOM from 'react-dom'
+
 export class SearchForm extends Component {
 
 
@@ -34,21 +37,9 @@ export class SearchForm extends Component {
      
     this.handleSubmitSearch(e)
     /// need to add to query parameters ---
+    // FIXME: need to autofocus on 'exactmatch' field, not sure how
     //
   }
-
-  /*
-  isEmptySearch(cs) {
-    let flag = false
-    
-    if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' 
-         && cs['noMatch'] == '') {
-       flag = true
-     }
-
-     return flag
-  } 
-  */
 
   handleSubmitSearch(e) {
     e.preventDefault()
@@ -106,6 +97,8 @@ export class SearchForm extends Component {
       dispatch(requestSearch(compoundSearch))
       dispatch(requestTabCount(compoundSearch))
     }
+
+    exactMatch.focus()
   }
 
   render() {
@@ -150,14 +143,14 @@ export class SearchForm extends Component {
 
         <form onSubmit={this.handleSubmitSearch} className="form-horizontal">
           
-          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" />
+          <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" autofocus={true} />
           <div className={advancedClasses}>
             <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
             <SearchField label="With any of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
             <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
           </div>
 
-          <div className={showHideClasses}><button className="btn btn-success pull-right" onClick={this.handleAdvancedSearch}>Advanced Search...</button></div>
+          <div className={showHideClasses}><a href="#" className="btn btn-success pull-right" onClick={this.handleAdvancedSearch}>Advanced Search...</a></div>
 
           <SearchFieldHidden ref={(ref) => this.advanced = ref} defaultValue={advanced} />
           

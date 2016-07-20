@@ -35,6 +35,11 @@ export default class SearchField extends Component {
   }
 
 
+  focus() {
+    this.refs.myInput.focus()
+  }
+
+  //
   // NOTE: ends up being a wrapper for typical input.value access
   // for a text input field - but in this case it's a <SearchField> component
   //
@@ -58,13 +63,23 @@ export default class SearchField extends Component {
   }
 
   render() {
-    const { label, placeholder, defaultValue} = this.props
+    const { label, placeholder, defaultValue, autofocus } = this.props
+
+    let input = (
+      <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+    )
+    
+    if (autofocus) {
+      input = (
+        <input autoFocus={true} onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+      )
+    }
 
     return (
          <div className="form-group">
             <label className="col-sm-2 control-label">{label}</label>
             <div className="col-sm-10">
-              <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control"  placeholder={placeholder}/>
+              {input}
             </div>
          </div>
     )
