@@ -3,8 +3,7 @@ import _ from 'lodash'
 function isEmptySearch(cs) {
   let flag = false
     
-  if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' 
-       && cs['noMatch'] == '') {
+  if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' && cs['noMatch'] == '') {
      flag = true
    }
 

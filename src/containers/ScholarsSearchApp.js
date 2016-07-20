@@ -27,7 +27,7 @@ export class ScholarsSearchApp extends Component {
   }
 
   onlyAdvanced(query) {
-   let flag = (query['advanced'] != '' && _.size(query) == 1)
+   let flag = (typeof(query['advanced']) != 'undefined'  && _.size(query) == 1)
    return flag
   }
 
@@ -38,10 +38,10 @@ export class ScholarsSearchApp extends Component {
     let query = location.query
 
     let onlyAdvanced = this.onlyAdvanced(query)
-    let emptySearch = solr.isEmptySearch(query)
+    let blankSearch = solr.isEmptySearch(query)
 
     // NOTE: was searching if no query parameters in route path, just searching everything
-    if (!_.isEmpty(query) && !(onlyAdvanced || emptySearch)) {
+    if (!_.isEmpty(query) && !(onlyAdvanced || blankSearch)) {
 
       // FIXME: I have these kinds of checks all over, would like to have it centralized
       // so don't have to remember to check everywhere
@@ -58,7 +58,7 @@ export class ScholarsSearchApp extends Component {
       dispatch(requestSearch(builtSearch))
       dispatch(requestTabCount(builtSearch))
  
-    } else if (onlyAdvanced || emptySearch) {
+    } else if (onlyAdvanced || blankSearch) {
       // FIXME: need a way to show search fields, but not search blanks
        dispatch(emptySearch())
     
