@@ -43,10 +43,11 @@ const compoundSearch = {
 
 searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
 
-const tabs = solr.tabList 
+import { tabList } from '../src/tabs'
+
 
 // should be 'people' tab filter
-const filterStr = tabs[0].filter
+const filterStr = tabList[0].filter
 //console.log("adding filter..."+ filterStr)
 if (filterStr) {
   searcher.addFilter("type", filterStr)

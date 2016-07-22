@@ -66,9 +66,17 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   let tab = findTab(filter) // the tabs are named, and each has 'filter' attribute
   searcher.addFilter("type", tab.filter)
   
-  // search.addSort(sort)
+  // searcher.addSort(sort)
   searcher.search =  searchFields
+ 
+  let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
 
+  console.log("fetchSearchApi#adding facet query")
+
+  _.forEach(fq_list, function(x) {
+    searcher.setFacetQuery(x)
+  })
+  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())

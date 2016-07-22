@@ -37,49 +37,6 @@ export class SearchTab extends Component {
  
   }
 
-  /*
-  handleDownload() {
-    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
-    // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
-    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
-   
-    const { search : { searchFields } } = this.props
-
-    // FIXME: this same logic appears in many places - it should be centralized
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-    // FIXME: I think this needs to:
-    // a) run search (but not dispatch?)
-    // b) or have a new DOWNLOAD_SEARCH action ??
-    // c) get results into csv or xml format
-    // d) the new Blob(--results --, {type: xml or text })
-    // e) make a good name -- with the date at least e.g. search_results_people_2016_05_31.(xml|csv)
-
-    let today = new Date()
-    let todayStr = today.toISOString().substring(0,10) // ISOString Returns 2011-10-05T14:48:00.000Z
-    let format = 'csv'
-    let maxRows = 999 // NOTE: solr-proxy limits this to <= 1000 (at the moment) 
-
-    let fileName = `search_results_${filter}_${todayStr}.${format}`
-    let figureType  = function(format) {
-      if (format == 'xml') { return "text/xml" }
-      else if (format == 'csv') { return "text/csv" }
-      else { return "text/plain" }
-    }
-    let type = `${figureType(format)};charset=utf-8`
-
-    let tabPicker = new TabPicker(filter)
-
-    fetchSearchApi(searchFields, maxRows).then(function(json) {
-
-      let csv = tabPicker.toCSV(json)
-      let blob = new Blob(csv, {type: type})
-      // FIXME: much more to do here - just proving I can download a file now
-      saveAs(blob, fileName)
- 
-    })
-   
-  }
-  */
 
   handleTab(e) {
     e.preventDefault()
@@ -92,7 +49,18 @@ export class SearchTab extends Component {
     // filter should always be present
     const query  = {...searchFields, start: 0, filter: filter }
 
-    dispatch(requestSearch(query))
+    // FIXME: needs to do this on default search (from URL) too
+    // FIXME: is this a good place for adding facet - counts etc...
+    let tabPicker = new TabPicker(filter)
+    let facetQueries = tabPicker.facetQueries()
+    
+    const full_query = { ...query }
+
+    if (facetQueries) {
+       full_query['facet_queries'] = facetQueries
+     }
+
+    dispatch(requestSearch(full_query))
     
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)

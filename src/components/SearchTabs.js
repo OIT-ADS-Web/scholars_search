@@ -11,6 +11,9 @@ import { requestSearch } from '../actions/search'
 
 import { tabList } from '../tabs'
 
+import TabPicker from './TabPicker'
+
+
 export class SearchTabs extends Component {
 
   // this is necessary to get the router
@@ -26,6 +29,10 @@ export class SearchTabs extends Component {
   }
 
 
+  // NOTE: this is for mobile version - since it is not strictly 'tabs' anymore
+  // that's why the duplicate code in SearchTab - should probably factor out
+  // since facets will start making everything complicated
+  //
   handleTab(e, theTab) {
     e.preventDefault()
 
@@ -37,6 +44,14 @@ export class SearchTabs extends Component {
     // filter should always be present
     const query  = {...searchFields, start: 0, filter: filter }
 
+    // FIXME: is this a good place for facets?
+    //let tabPicker = new TabPicker(filter)
+
+    //searcher.setFacetQuery(`nameText:${qry}`, {missing: "true"})
+    //searcher.setFacetQuery(`ALLTEXT:${qry}`, {missing: "true"})
+    //
+    //
+    // query['facets'] = [`nameText:${qry}`, `ALLTEXT:${qry}`]]
     dispatch(requestSearch(query))
     
     // NOTE: took me a while to figure out I couldn't just pass

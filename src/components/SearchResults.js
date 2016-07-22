@@ -113,11 +113,13 @@ export class SearchResults extends Component {
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
-    let { highlighting={}, response={} } = results
+    let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
+    let { facet_queries } = facet_counts
 
     let resultSet = ""
 
+    let tabPicker = new TabPicker(filter)
     // FIXME: make it so results don't require inside knowledge of SOLR
     // e.g. highlighting [doc.DocId], ALLTEXT etc...
     // these should be wrapped up in SolrQuery class somehow
@@ -125,12 +127,12 @@ export class SearchResults extends Component {
     // FIXME: need to re-work this slightly to get rid of warnings 
     // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
     if (docs) {
-      let tabPicker = new TabPicker(filter)
-      
       resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
         return tabPicker.pickDisplay(doc, highlight)
       })
+
+
     }
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
@@ -144,11 +146,36 @@ export class SearchResults extends Component {
       )
     }
 
+    let facets = ""
+
+    // FIXME: not ordered correctly - also ugly display of actual query
+    if (facet_queries) {
+      let facet_list = Object.keys(facet_queries).map(function (key) {
+        var item = facet_queries[key]
+        return (<li className="list-group-item"><span className="badge">{item}</span>{key}</li>)
+      })
+      facets = (<ul className="list-group">{facet_list}</ul>)
+    }
+
     // NOTE: a textual representation of the complex search
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
-    
+
+    // tab picker -- apply facets too?
+    //tabPicker.addFacets()
+
+    // data will look like this (for subject heading):
+    /*
+      facet_counts:
+      { 
+         facet_queries: { 'nameText:"medicine"': 8, 'ALLTEXT:"medicine"': 0 },
+         facet_fields: {},
+         facet_dates: {},
+         facet_ranges: {} 
+      },
+    */
+
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
 
@@ -179,6 +206,8 @@ export class SearchResults extends Component {
                   <span className="glyphicon glyphicon-download"> Download </span>
                 </button>
               </div>
+              {facets}
+              {/* facet counts here */}
            </div>
           </div>
 

@@ -35,12 +35,17 @@ class SolrQuery {
   // NOTE: 'rows' is in the options {} property
   constructor(selectUrl){
     this.selectUrl = selectUrl
+    // FIXME: maybe default to somethign else, that returns nothing?
     this._query = "*.*"
-    this._facetFields = {}
+    
     this._options = {}
     this._filters = {}
 
     this._search = {}
+    
+    this._facetFields = {}
+    this._facetQueries = {}
+
 
     // NOTE: to add group queries the options[group:true] needs to be set
     this._groupQueries = {}
@@ -125,8 +130,15 @@ class SolrQuery {
     return this
   }
 
+  // NOTE: this effectively *adds* could be called
+  // set-A-facet-field
   setFacetField(name,options={}) {
     this._facetFields[name] = options
+    return this
+  }
+
+  setFacetQuery(name, options={}) {
+    this._facetQueries[name] = options
     return this
   }
 
@@ -150,13 +162,23 @@ class SolrQuery {
         "facet.field": facets
       }
     }
-    // so the hash looks like this now
-    // { facet: true, facet.fields: [field1, field2 ...]}
-    // 
-    // see here for more complete example of other things 'faceting' can do:
-    //
-    // http://yonik.com/json-facet-api/
 
+    // NOTE: shouldn't have query and field at same time???
+    //
+    let queries = Object.keys(this._facetQueries)
+    if (queries.length > 0) {
+      facetOptions = {
+        facet: true,
+        "facet.query": queries
+      }
+    }
+
+    // facet.query=nameRaw:medicine
+    // facet.query=medicine
+    //
+    // facet.query ===???
+    // 
+    // can override by field
     facets.forEach(facetField => {
       let facetProperties = this._facetFields[facetField]
       Object.keys(facetProperties).forEach(facetProp => {

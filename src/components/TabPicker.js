@@ -128,6 +128,19 @@ class TabPicker {
   //
     return ['sort desc', 'sort asc']
   }
+
+
+  facetQueries() {
+
+    switch(this.filter) {
+    case 'subjectheadings':
+      return ["{!field f=nameText v=$q}", "{!field f=ALLTEXT v=$q}"]
+    default:
+      return []
+
+    }
+  }
+
 }
 
 
