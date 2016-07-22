@@ -52,8 +52,12 @@ export class SearchTab extends Component {
     // FIXME: needs to do this on default search (from URL) too
     // FIXME: is this a good place for adding facet - counts etc...
     let tabPicker = new TabPicker(filter)
-    let facetQueries = tabPicker.facetQueries()
-    
+
+    let base_query = solr.buildComplexQuery(searchFields)
+
+    let facetQueries = tabPicker.facetQueries(base_query)
+
+    // just doing this to keep them out of url (for now)    
     const full_query = { ...query }
 
     if (facetQueries) {

@@ -130,11 +130,12 @@ class TabPicker {
   }
 
 
-  facetQueries() {
+  facetQueries(base_qry) {
 
     switch(this.filter) {
     case 'subjectheadings':
-      return ["{!field f=nameText v=$q}", "{!field f=ALLTEXT v=$q}"]
+      return [`nameText:${base_qry}`, `ALLTEXT:${base_qry}`]
+      //return ["{!field f=nameText v=$q}", "{!field f=ALLTEXT v=$q}"]
     default:
       return []
 

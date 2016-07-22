@@ -20,8 +20,8 @@ searcher.options = {
 }
 
 const compoundSearch = {
-  'exactMatch': 'medicine'
-  //'allWords': 'med*'
+  //'exactMatch': 'medicine'
+  'allWords': 'med*'
 }
 
 import { tabList } from '../src/tabs'
@@ -36,11 +36,12 @@ console.log(`query: ${qry}`)
 // facet.query=`label:${qry}`
 //searcher.setFacetQuery(`nameText:${qry}`, {missing: "true"})
 //searcher.setFacetQuery(`ALLTEXT:${qry}`, {missing: "true"})
-//searcher.setFacetQuery(`nameText:${qry}`)
-//searcher.setFacetQuery(`ALLTEXT:${qry}`)
 
-searcher.setFacetQuery("{!field f=nameText v=$q}")
-searcher.setFacetQuery("{!field f=ALLTEXT v=$q}")
+searcher.setFacetQuery(`nameText:${qry}`)
+searcher.setFacetQuery(`ALLTEXT:${qry}`)
+
+//searcher.setFacetQuery("{!field f=nameText v=$q}")
+//searcher.setFacetQuery("{!field f=ALLTEXT v=$q}")
 
 
 //localparams ???
