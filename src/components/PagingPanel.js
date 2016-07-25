@@ -41,14 +41,20 @@ export class PagingPanel extends Component {
     // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     const query = { ...searchFields, start: newStart }
 
+    let full_query = { ...query }
+
+    dispatch(requestSearch(full_query))
+ 
+    // FIXME: take out facet_queries, or not???
+    delete query['facet_queries']
+    delete query['filter_queries']
+
     this.context.router.push({
       pathname: '/',
       query: query
 
     })
       
-    dispatch(requestSearch(query))
-    
   }
 
   handlePreviousPage(e) {
@@ -65,13 +71,20 @@ export class PagingPanel extends Component {
     
     const query = { ...searchFields, start: newStart }
 
+    let full_query = { ...query }
+
+    dispatch(requestSearch(full_query))
+
+    // FIXME: take out facet_queries, or not???
+    delete query['facet_queries']
+    delete query['filter_queries']
+
     this.context.router.push({
       pathname: '/',
       query: query
 
     })
  
-    dispatch(requestSearch(query))
   }
 
   render() {
