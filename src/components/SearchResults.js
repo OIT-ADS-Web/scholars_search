@@ -116,6 +116,16 @@ export class SearchResults extends Component {
     let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
     let { facet_queries } = facet_counts
+    // data will look like this (for subject heading for instance):
+    /*
+      facet_counts:
+      { 
+         facet_queries: { 'nameText:"medicine"': 8, 'ALLTEXT:"medicine"': 0 },
+         facet_fields: {},
+         facet_dates: {},
+         facet_ranges: {} 
+      },
+    */
 
     let resultSet = ""
 
@@ -146,35 +156,28 @@ export class SearchResults extends Component {
       )
     }
 
-    let facets = ""
-
-    // FIXME: not ordered correctly - also ugly display of actual query
-    if (facet_queries) {
-      let facet_list = Object.keys(facet_queries).map(function (key) {
-        var item = facet_queries[key]
-        return (<li className="list-group-item"><span className="badge">{item}</span>{key}</li>)
-      })
-      facets = (<ul className="list-group">{facet_list}</ul>)
-    }
-
     // NOTE: a textual representation of the complex search
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
+    let facets = ""
 
-    // tab picker -- apply facets too?
-    //tabPicker.addFacets()
-
-    // data will look like this (for subject heading):
-    /*
-      facet_counts:
-      { 
-         facet_queries: { 'nameText:"medicine"': 8, 'ALLTEXT:"medicine"': 0 },
-         facet_fields: {},
-         facet_dates: {},
-         facet_ranges: {} 
-      },
-    */
+    // FIXME: not ordered correctly - also ugly display of actual query, need an alias of some sort
+    // for display purposes
+    //
+    if (facet_queries) {
+      let facet_list = Object.keys(facet_queries).map(function (key) {
+        let item = facet_queries[key]
+        // FIXME: how to get label ?? tabPicker.getFacetQueryLabel(key)
+        // I don't like having to build the query here to find the label (because it's matching keys to keys 
+        // constructed in separate places which can potentially create suprising errors)
+        //
+        let label = tabPicker.getFacetQueryLabel(query, key)
+        // need Id for checkbox, and event handlers etc...
+        return (<li className="list-group-item"><input type="checkbox" /><span className="badge">{item}</span> {label}</li>)
+      })
+      facets = (<ul className="list-group">{facet_list}</ul>)
+    }
 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...

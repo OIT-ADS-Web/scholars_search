@@ -33,20 +33,30 @@ searcher.query = qry
 
 console.log(`query: ${qry}`)
 
-// facet.query=`label:${qry}`
 //searcher.setFacetQuery(`nameText:${qry}`, {missing: "true"})
 //searcher.setFacetQuery(`ALLTEXT:${qry}`, {missing: "true"})
 
-searcher.setFacetQuery(`nameText:${qry}`)
-searcher.setFacetQuery(`ALLTEXT:${qry}`)
+searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
+searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
 
 //searcher.setFacetQuery("{!field f=nameText v=$q}")
 //searcher.setFacetQuery("{!field f=ALLTEXT v=$q}")
 
+//searcher.setFacetField(`{!ex=dt}nameText`)
 
-//localparams ???
-//{!term f=author v=$author}
+//Filter exclusion is supported for all types of facets. Both the tag and ex local params may specify multiple values by separating them with commas. 
 
+// NOTE: have to give name ... 'match'
+
+// ideally we'd NOT add {!ex=match} to facet queries unless there is this filter
+// but it seems to ignore anyway
+//
+searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
+
+//q=mainquery&fq=status:public&fq={!tag=dt}doctype:pdf&facet=on&facet.field={!ex=dt}doctype
+
+//&fq=price:[400 to 500]
+//https://lucidworks.com/blog/2009/09/02/faceted-search-with-solr/
 
 function printResults(json) {
   console.log("***GETTING RESULTS****")

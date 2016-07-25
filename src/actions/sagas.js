@@ -71,11 +71,20 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
  
   let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
 
-  console.log("fetchSearchApi#adding facet query")
-
   _.forEach(fq_list, function(x) {
-    searcher.setFacetQuery(x)
+    // facet queries look like this:
+    //{id: 'sh_name_fcq', label: 'Name', query: `{!ex=match}nameText:${base_qry}`}, 
+    searcher.setFacetQuery(x.query)
   })
+
+  let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
+  
+  _.forEach(filter_queries, function(x) {
+    // filter queries look like this:
+    // {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
+    searcher.addFilter(x.tag, x.query)
+  })
+
   
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 

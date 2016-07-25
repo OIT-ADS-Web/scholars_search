@@ -130,16 +130,50 @@ class TabPicker {
   }
 
 
-  facetQueries(base_qry) {
+  /*
+   *
+   searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
+   searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
+
+   searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
+  */
+
+  filterQueries(base_qry) {
 
     switch(this.filter) {
     case 'subjectheadings':
-      return [`nameText:${base_qry}`, `ALLTEXT:${base_qry}`]
+      return [
+        {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
+      ]
+    default:
+      return []
+
+    }
+ 
+  }
+
+  facetQueries(base_qry) {
+    // NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
+    // the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
+    switch(this.filter) {
+    case 'subjectheadings':
+      return [
+         {id: 'sh_name_fcq', label: 'Name', query: `{!ex=match}nameText:${base_qry}`}, 
+         {id: 'sh_text_fcq', label: 'Text', query: `{!ex=match}ALLTEXT:${base_qry}`}
+      ]
+      //return [`{!ex=match}nameText:${base_qry}`, `{!ex=match}ALLTEXT:${base_qry}`]
       //return ["{!field f=nameText v=$q}", "{!field f=ALLTEXT v=$q}"]
     default:
       return []
 
     }
+  }
+
+  getFacetQueryLabel(base_query, key) {
+    let facetQueries = this.facetQueries(base_query) // just send in blank base_query?
+    let found = _.find(facetQueries, function(o) { return o.query === key })
+    return found.label
+
   }
 
 }

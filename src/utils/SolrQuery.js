@@ -156,23 +156,23 @@ class SolrQuery {
     // am not actually using quite yet
     let facetOptions = {}
     let facets = Object.keys(this._facetFields)
-    if (facets.length > 0) {
-      facetOptions = {
-        facet: true,
-        "facet.field": facets
-      }
-    }
-
-    // NOTE: shouldn't have query and field at same time???
-    //
     let queries = Object.keys(this._facetQueries)
-    if (queries.length > 0) {
-      facetOptions = {
-        facet: true,
-        "facet.query": queries
-      }
+    
+    if (facets.length > 0 || queries.length > 0) {
+      facetOptions['facet'] = true
+    } else {
+      return facetOptions
     }
 
+    if (facets.length > 0) {
+      facetOptions["facet.field"] = facets
+    }
+
+    if (queries.length > 0) {
+      facetOptions["facet.query"] = queries
+    }
+
+    console.log(facetOptions)
     // facet.query=nameRaw:medicine
     // facet.query=medicine
     //

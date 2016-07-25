@@ -56,6 +56,7 @@ export class SearchTab extends Component {
     let base_query = solr.buildComplexQuery(searchFields)
 
     let facetQueries = tabPicker.facetQueries(base_query)
+    let filterQueries = tabPicker.filterQueries(base_query)
 
     // just doing this to keep them out of url (for now)    
     const full_query = { ...query }
@@ -64,6 +65,10 @@ export class SearchTab extends Component {
        full_query['facet_queries'] = facetQueries
      }
 
+    if (filterQueries) {
+      full_query['filter_queries'] = filterQueries
+    }
+ 
     dispatch(requestSearch(full_query))
     
     // NOTE: took me a while to figure out I couldn't just pass
