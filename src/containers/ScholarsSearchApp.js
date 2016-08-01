@@ -56,6 +56,7 @@ export class ScholarsSearchApp extends Component {
       let builtSearch = { ...query } 
       
       dispatch(requestSearch(builtSearch))
+      // NOTE: might need to change 
       dispatch(requestTabCount(builtSearch))
  
     } else if (onlyAdvanced || blankSearch) {
@@ -75,6 +76,12 @@ export class ScholarsSearchApp extends Component {
 
       <Page>
         <SearchForm />
+        { /* 
+            <SearchTabs />
+            <SelectedTab />
+
+          */ 
+        }
         <SearchResults />
       </Page>
     )
@@ -96,5 +103,5 @@ const mapStateToProps = (search, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(ScholarsSearchApp);
+export default connect(mapStateToProps)(ScholarsSearchApp)
 

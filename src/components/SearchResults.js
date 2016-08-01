@@ -38,12 +38,10 @@ export class SearchResults extends Component {
 
   
   handleDownload() {
-    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
-    // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
-    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
-    
-    console.log("DOWNLOAD")
-
+    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault():
+    //
+    // "This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` 
+    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information."
     const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
@@ -128,21 +126,10 @@ export class SearchResults extends Component {
     */
 
     let resultSet = ""
-
     let tabPicker = new TabPicker(filter)
-    // FIXME: make it so results don't require inside knowledge of SOLR
-    // e.g. highlighting [doc.DocId], ALLTEXT etc...
-    // these should be wrapped up in SolrQuery class somehow
-    //
-    // FIXME: need to re-work this slightly to get rid of warnings 
-    // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
+    
     if (docs) {
-      resultSet = docs.map(doc => { 
-        let highlight = highlighting[doc.DocId]
-        return tabPicker.pickDisplay(doc, highlight)
-      })
-
-
+      resultSet = tabPicker.getResultSet(docs, highlighting)
     }
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
@@ -166,17 +153,7 @@ export class SearchResults extends Component {
     // for display purposes
     //
     if (facet_queries) {
-      let facet_list = Object.keys(facet_queries).map(function (key) {
-        let item = facet_queries[key]
-        // FIXME: how to get label ?? tabPicker.getFacetQueryLabel(key)
-        // I don't like having to build the query here to find the label (because it's matching keys to keys 
-        // constructed in separate places which can potentially create suprising errors)
-        //
-        let label = tabPicker.getFacetQueryLabel(query, key)
-        // need Id for checkbox, and event handlers etc...
-        return (<li className="list-group-item"><input type="checkbox" /><span className="badge">{item}</span> {label}</li>)
-      })
-      facets = (<ul className="list-group">{facet_list}</ul>)
+      facets = tabPicker.getFacets(query, facet_queries)
     }
 
     // FIXME: the sorter - select should be it's own component at least
@@ -194,23 +171,35 @@ export class SearchResults extends Component {
       <section className="search-results">
         <div className="search-results-header">
           <div className="pull-left lead"><strong>Query: {query}</strong></div>
-          <SearchTabs></SearchTabs>
         </div>
+        
+        <SearchTabs />
 
+        
+        { /* 
+             
+          NOTE: this is the 'tab' content itself 
+        
+          so this could be <SearchTab... ???
+           or <TabPicker tab=filter ????
+
+
+         */ 
+        
+        } 
         <div className="search-results-table">
          
           <div className="row panel">
             <div className="col-md-10">          
-             {resultSet}
+             {resultSet} {/* resultSet ... could be called tabContent ... */ }
            </div>
-            <div className="col-md-2 panel panel-info">
+           <div className="col-md-2 panel panel-info">
               <div className="panel-body">
                 <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                   <span className="glyphicon glyphicon-download"> Download </span>
                 </button>
               </div>
               {facets}
-              {/* facet counts here */}
            </div>
           </div>
 

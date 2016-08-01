@@ -6,6 +6,8 @@ import { tabList, findTab } from '../tabs'
 
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
+import querystring from 'querystring'
+
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components
 import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './search'
@@ -65,24 +67,47 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   
   let tab = findTab(filter) // the tabs are named, and each has 'filter' attribute
   searcher.addFilter("type", tab.filter)
-  
+
+  // FIXME: would we add another filter here --- 
+  //  if (tab should add filter) ... {
+  //    let theQuery = helper.buildQuery(searchFields)
+  //    searcher.addFilter("concept-name", `nameText:${theQuery}`)
+  //  }  
+  //
+
   // searcher.addSort(sort)
   searcher.search =  searchFields
- 
-  let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
+
+  // FIXME: needs to be in some format that's url composable - but still array
+  //
+  //let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
+  let fq_list = searchFields ? (querystring.parse(searchFields['facet_queries']) : null) : null
+  
+  console.log(fq_list)
+  // NOTE: looks like this
+  // Object {0: "{!ex=match}nameText:califf", 1: "{!ex=match}ALLTEXT:califf"}
 
   _.forEach(fq_list, function(x) {
     // facet queries look like this:
     //{id: 'sh_name_fcq', label: 'Name', query: `{!ex=match}nameText:${base_qry}`}, 
-    searcher.setFacetQuery(x.query)
+    //searcher.setFacetQuery(x.query)
+    searcher.setFacetQuery(x)
   })
 
-  let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
+  //let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
+  let filter_queries = searchFields ? (querystring.parse(searchFields['filter_queries']) : null) : null
   
-  _.forEach(filter_queries, function(x) {
+  console.log(filter_queries)
+  // NOTE: looks like this...
+  //Object {0: "{!tag=match}nameText:califf"}
+
+  _.forEach(filter_queries, function(value, key) {
     // filter queries look like this:
     // {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
-    searcher.addFilter(x.tag, x.query)
+    //searcher.addFilter(x.tag, x.query)
+    // FIXME: not a good key here
+    //
+    searcher.addFilter(key, value)
   })
 
   

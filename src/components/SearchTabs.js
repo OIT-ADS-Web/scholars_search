@@ -9,10 +9,10 @@ import Loading from './Loading'
 
 import { requestSearch } from '../actions/search'
 
+// maybe TabPicker and ./tabs should merge?
 import { tabList } from '../tabs'
 
 import TabPicker from './TabPicker'
-
 
 export class SearchTabs extends Component {
 
@@ -29,42 +29,6 @@ export class SearchTabs extends Component {
   }
 
 
-  // NOTE: this is for mobile version - since it is not strictly 'tabs' anymore
-  // that's why the duplicate code in SearchTab - should probably factor out
-  // since facets will start making everything complicated
-  //
-  handleTab(e, theTab) {
-    e.preventDefault()
-
-    const { search : { searchFields }, dispatch } = this.props
-
-    let filter = theTab.id
-
-    // setting default start to 0 - so paging is reset - luckily
-    // filter should always be present
-    const query  = {...searchFields, start: 0, filter: filter }
-
-    // FIXME: is this a good place for facets?
-    //let tabPicker = new TabPicker(filter)
-
-    //searcher.setFacetQuery(`nameText:${qry}`, {missing: "true"})
-    //searcher.setFacetQuery(`ALLTEXT:${qry}`, {missing: "true"})
-    //
-    //
-    // query['facets'] = [`nameText:${qry}`, `ALLTEXT:${qry}`]]
-    dispatch(requestSearch(query))
-    
-    // NOTE: took me a while to figure out I couldn't just pass
-    // searchFields as {query: searchFields} had to copy it into 'query' (see above)
-    this.context.router.push({
-      pathname: '/',
-      query: query
-    })
-
-    return false
-  }
-  
-
   // FIXME: wow - don't like this at all (even though I wrote it)
   // the tabs are actually different DOM-wise depending on screen size though
   // 
@@ -75,15 +39,40 @@ export class SearchTabs extends Component {
   desktopTabs(isFetching, grouped, filter) {
     let tabs = _.map(tabList, (tab) => {
       
+      // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
+      //var myString = "something format_abc";
+      //var myRegexp = /(?:^|\s)format_(.*?)(?:\s|$)/g;
+      //var match = myRegexp.exec(myString);
+      //alert(match[1]);  // abc
+
       // if we're still fetching - there will be nothing in 'grouped' to pull counts from
       if (isFetching) {
         return <div></div>
       }
 
-      let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
-      let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      // NOTE: had to do this so I can add arbitary text to group.query, but not have to use that
+      // exact same text to find the 'tab' - could be a waste of time though
+      let tagMatch = /^{!tag=(.*?)}/
       
-      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
+      // grouped by the tag, not the group.query
+      let regrouped = {}
+      _.forEach(grouped, function(value, key) {
+          let match = tagMatch.exec(key)
+          regrouped[match[1]] = value
+      })
+      
+      // NOTE: here is where there would be a different query per tab (right?)
+      //let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
+
+
+      // NOTE: since it's a component, the 'handler' is with the component
+      // but that's not true with mobile
+      // FIXME: would this be return (
+      //   <PeopleTab>
+      //   <GrantTab> etc...
+      //
+      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
 
     })
 
@@ -108,15 +97,18 @@ export class SearchTabs extends Component {
     // ]
 
     let rows = []
-    let _self = this
+    //let _self = this
+
+    // where would tablist come from then ???? if we have <PersonTab>, <GrantTab> etc...
+    //
     _.forEach(tabList, function(value) {
       if (value.id != filter) {
 
         let count = value.filter in grouped ? grouped[value.filter].doclist.numFound : 0
         let label = value.label
- 
+
         let row = (
-          <li key={value.id}><a href="#" onClick={(e) => _self.handleTab(e, value)}>{label} ({count})</a></li>
+          <SearchTab key={value.id} filter={value.id} active={filter == value.id} label={label} count={count} mobile={true} />
         )
         rows.push(row)
       }   

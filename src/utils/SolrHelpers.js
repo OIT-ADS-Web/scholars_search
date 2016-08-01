@@ -245,8 +245,8 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^20.0 nameUnstemmed^20.0 nameStemmed^20.0 nameLowercase',
-    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^20.0 nameUnstemmed^20.0 nameStemmed^20.0 nameLowercase',
+    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     'hl.fragsize': '350'
   }
 
@@ -266,8 +266,8 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^20.0 nameUnstemmed^20.0 nameStemmed^20.0 nameLowercase',
-    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^20.0 nameUnstemmed^20.0 nameStemmed^20.0 nameLowercase'
+    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }
 
   // e.g.

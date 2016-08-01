@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 
+import querystring from 'querystring'
+
 import { requestSearch } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
@@ -31,10 +33,9 @@ export class SearchTab extends Component {
     this.label = this.props.label
     this.count = this.props.count
 
-    this.matches = this.props.matches
+    this.mobile = this.props.mobile || false
 
     this.handleTab = this.handleTab.bind(this)
- 
   }
 
 
@@ -58,17 +59,36 @@ export class SearchTab extends Component {
     let facetQueries = tabPicker.facetQueries(base_query)
     let filterQueries = tabPicker.filterQueries(base_query)
 
+    // FIXME: these need to be url composable ...
+    //
     // just doing this to keep them out of url (for now)    
     const full_query = { ...query }
 
     if (facetQueries) {
-       full_query['facet_queries'] = facetQueries
+      let gathered = _.map(facetQueries, 'query')
+      let facetQueryStr = querystring.stringify(gathered)
+
+      //full_query['facet_queries'] = facetQueries
+      full_query['facet_queries'] = facetQueryStr
      }
 
     if (filterQueries) {
-      full_query['filter_queries'] = filterQueries
+      let gathered = _.map(filterQueries, 'query')
+      let filterQueryStr = querystring.stringify(gathered)
+
+      //full_query['filter_queries'] = filterQueries
+      full_query['filter_queries'] = filterQueryStr
     }
- 
+
+
+    // FIXME: I believe this puts them in the searchFields anyway - 
+    // so the full_query trick only works for one click
+    // also it adds like this: facetQueries=[Object]
+    // and it should be facetQuery.1=?, facetQuery.2=? maybe?
+    // or facetQuery=?&facetQuery=? etc...
+    //
+    // these are the first multi-value things the code has to deal
+    // with
     dispatch(requestSearch(full_query))
     
     // NOTE: took me a while to figure out I couldn't just pass
@@ -81,7 +101,8 @@ export class SearchTab extends Component {
   }
 
   render() {
-    let classList = classNames({active: this.active, 'search-tab': true})
+    
+    let classList = classNames({active: this.active, 'search-tab': !this.mobile})
 
     // FIXME: the fact that I can't put an if statement in jsx is annoying    
     return (
