@@ -22,11 +22,6 @@ class SubjectHeadingsTab extends IsAbstractTab(Component)  {
   }
 
 
-  sortOptions() {
-    return ['sort desc', 'sort asc']
-  }
-
-
   /*
     NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
     the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
@@ -39,7 +34,6 @@ class SubjectHeadingsTab extends IsAbstractTab(Component)  {
    searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
  
   */
-
  
   filterQueries(base_qry) {
     return [
@@ -49,10 +43,15 @@ class SubjectHeadingsTab extends IsAbstractTab(Component)  {
 
   facetQueries(base_qry) {
     return [
-       {id: 'sh_name_fcq', label: 'Name', query: `{!ex=match}nameText:${base_qry}`}, 
-       {id: 'sh_text_fcq', label: 'Text', query: `{!ex=match}ALLTEXT:${base_qry}`}
+       {id: 'sh_name_fcq', label: 'Match Name', query: `{!ex=match}nameText:${base_qry}`}, 
+       {id: 'sh_text_fcq', label: 'Match Text', query: `{!ex=match}ALLTEXT:${base_qry}`}
     ]
   }
+
+  sortOptions() {
+    return ['sort desc', 'sort asc']
+  }
+
 
 
 }
