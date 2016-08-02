@@ -59,9 +59,9 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 }
 
 
-import IsAbstractTab from './IsAbstractTab'
+import AbstractTab from './AbstractTab'
 
-class SubjectHeadingsTab extends IsAbstractTab(Component)  {
+class SubjectHeadingsTab extends AbstractTab(Component)  {
 
   constructor(props) {
     super(props)

@@ -14,9 +14,8 @@ import { fetchSearchApi } from '../actions/sagas'
 
 import json2csv from 'json2csv'
 
-// FIXME: should be called 'IsTab' intead of 'IsAbstractTab'
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
-let IsAbstractTab = (superclass) => class extends superclass {
+let AbstractTab = (superclass) => class extends superclass {
 
   toCSV(json) {
     let data = json.response.docs
@@ -50,7 +49,7 @@ let IsAbstractTab = (superclass) => class extends superclass {
     return ary
   }
 
-  facetQueries() {
+  facetQueries(base_query) {
     return []
   }
 
@@ -64,7 +63,6 @@ let IsAbstractTab = (superclass) => class extends superclass {
 
   // NOTE: needs this.pickDisplay() defined
   results(docs, highlighting) {
-  //getResultSet(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
         return this.pickDisplay(doc, highlight)
@@ -107,5 +105,5 @@ let IsAbstractTab = (superclass) => class extends superclass {
 }
 
 
-export default IsAbstractTab 
+export default AbstractTab 
 

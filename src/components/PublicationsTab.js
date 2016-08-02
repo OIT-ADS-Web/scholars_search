@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-//import PublicationDisplay from './PublicationDisplay'
-
-import IsAbstractTab from './IsAbstractTab'
+import AbstractTab from './AbstractTab'
 
 import HasSolrData from './HasSolrData'
 import ScholarsLink from './ScholarsLink'
@@ -48,7 +46,7 @@ class PublicationDisplay extends HasSolrData(Component) {
 }
 
 
-class PublicationsTab extends IsAbstractTab(Component)  {
+class PublicationsTab extends AbstractTab(Component)  {
 
   constructor(props) {
     super(props)

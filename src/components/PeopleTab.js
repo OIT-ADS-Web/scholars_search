@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-//import PersonDisplay from './PersonDisplay'
-
-import IsAbstractTab from './IsAbstractTab'
+import AbstractTab from './AbstractTab'
 
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
@@ -111,7 +109,7 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
-class PeopleTab extends IsAbstractTab(Component)  {
+class PeopleTab extends AbstractTab(Component)  {
 
   constructor(props) {
     super(props)
