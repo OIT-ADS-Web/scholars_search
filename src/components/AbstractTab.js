@@ -1,16 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import classNames from 'classnames'
-
-import querystring from 'querystring'
-
-import { requestSearch } from '../actions/search'
-
-import solr from '../utils/SolrHelpers'
 
 import _ from 'lodash'
-
-import { fetchSearchApi } from '../actions/sagas'
 
 import json2csv from 'json2csv'
 
