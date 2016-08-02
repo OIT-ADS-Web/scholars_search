@@ -1,8 +1,45 @@
 import React, { Component } from 'react';
 
-import GenericDisplay from './GenericDisplay'
+//import GenericDisplay from './GenericDisplay'
 
 import IsAbstractTab from './IsAbstractTab'
+
+import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
+
+class GenericDisplay extends HasSolrData(Component) {
+
+  constructor(props) {
+    super(props);
+    this.doc = this.props.doc;
+    this.highlight = this.props.highlight
+  }
+
+  render() {
+
+    return (
+         <div className="generic search-result-row" key="{this.docId}">
+            <div className="row">
+              <div className="col-md-12 col-sm-12">
+                <strong>
+                  <ScholarsLink uri={this.URI} text={this.name} />
+                </strong>
+              </div>
+            </div>
+            <div className="row highlight-text">
+              <div className="col-md-12">
+               {this.highlightDisplay}
+              </div>
+            </div>
+
+            {this.solrDocDisplay}
+            
+        </div>
+    );
+  }
+
+}
+
 
 class GenericTab extends IsAbstractTab(Component)  {
 
