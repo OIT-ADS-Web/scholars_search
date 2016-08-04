@@ -109,8 +109,8 @@ export class SearchForm extends Component {
       // FIXME: these need to be url composable ...
       //
       // just doing this to keep them out of url (for now)    
-      let full_query = { ...searchFields }
-      //let full_query = { ...compoundSearch }
+      //let full_query = { ...searchFields }
+      let full_query = { ...compoundSearch }
 
 
       // let gathered = _.map(facetQueries, 'query')
