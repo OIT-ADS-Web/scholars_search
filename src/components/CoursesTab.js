@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-//import CourseDisplay from './CourseDisplay'
-
 import AbstractTab from './AbstractTab'
 
 import HasSolrData from './HasSolrData'

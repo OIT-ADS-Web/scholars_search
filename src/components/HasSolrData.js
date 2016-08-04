@@ -68,11 +68,15 @@ let HasSolrData = (superclass) => class extends superclass {
   get highlightDisplay() {
    
     let text = this.highlightText
+    
+    // replace function ??? for grants (for instance)
+    //Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant
+    let replacedText = this.filterHighlightText ? this.filterHighlightText(text) : text
 
     let fragment = ( 
         <cite>
           <span>...</span>
-          <span dangerouslySetInnerHTML={{__html: text}}></span>
+          <span dangerouslySetInnerHTML={{__html: replacedText}}></span>
           <span>...</span>
         </cite>
     )

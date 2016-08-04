@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-//import ArtisticWorkDisplay from './ArtisticWorkDisplay'
-
 import AbstractTab from './AbstractTab'
 
 import HasSolrData from './HasSolrData'

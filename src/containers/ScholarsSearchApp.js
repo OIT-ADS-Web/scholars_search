@@ -10,6 +10,10 @@ import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
+import TabPicker from '../components/TabPicker'
+
+import querystring from 'querystring'
+
 export class ScholarsSearchApp extends Component {
 
   // NOTE: had to switch to this so all child components (SearchForm etc...)
@@ -54,7 +58,44 @@ export class ScholarsSearchApp extends Component {
       }
 
       let builtSearch = { ...query } 
-      
+
+      // FIXME: a lot of this code is duplicated every time a search is done
+      // should centralize a bit more
+      //
+      //
+      // FIXME: get the facetQueries here ???
+      let tabPicker = new TabPicker(query['filter'])
+
+      /*
+            
+      const searchFields = {
+        'exactMatch': exactMatch.value,
+        'allWords': allWords.value,
+        'atLeastOne': atLeastOne.value,
+        'noMatch': noMatch.value,
+        'start': start,
+        'filter': filter,
+        'advanced': advanced.value
+      }
+      */
+
+
+      let base_query = solr.buildComplexQuery(builtSearch)
+
+      let facetQueries = tabPicker.facetQueries(base_query)
+      // FIXME: if a tab should have a 'default' filter query
+      // would need to add that here ???
+      // and also handleTab
+      //
+      //let filterQueries = tabPicker.defaultFilterQueries(base_query)
+
+      if (facetQueries && facetQueries.length > 0) {
+        let gathered = _.map(facetQueries, 'query')
+        let facetQueryStr = querystring.stringify(gathered)
+        builtSearch['facet_queries'] = facetQueryStr
+      }
+
+            
       dispatch(requestSearch(builtSearch))
       // NOTE: might need to change 
       dispatch(requestTabCount(builtSearch))
@@ -76,12 +117,6 @@ export class ScholarsSearchApp extends Component {
 
       <Page>
         <SearchForm />
-        { /* 
-            <SearchTabs />
-            <SelectedTab />
-
-          */ 
-        }
         <SearchResults />
       </Page>
     )

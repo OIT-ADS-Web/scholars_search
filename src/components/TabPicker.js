@@ -5,10 +5,9 @@ import PublicationsTab from './PublicationsTab'
 import OrganizationsTab from './OrganizationsTab'
 import GenericTab from './GenericTab'
 import ArtisticWorksTab from './ArtisticWorksTab'
-import SubjectHeadingsTab from './SubjectHeadingsTab'
+import { SubjectHeadingsTab } from './SubjectHeadingsTab'
 import GrantsTab from './GrantsTab'
 import CoursesTab from './CoursesTab'
-
 
 class TabPicker {
 
@@ -47,13 +46,13 @@ class TabPicker {
     return this.tab.toCSV(json)
   }
 
-  getResultSet(docs, highlighting) {
+  results(docs, highlighting) {
     return this.tab.results(docs, highlighting)
   }
 
 
-  getFacets(query, facet_queries) {
-    return this.tab.facets(query, facet_queries)
+  facets(query, facet_queries, chosen_ids=[], cb=null) {
+    return this.tab.facets(query, facet_queries, chosen_ids, cb)
   }
 
   sortOptions() {
@@ -69,6 +68,11 @@ class TabPicker {
   facetQueries(base_qry) {
     return this.tab.facetQueries(base_qry)
   }
+
+  findFilterMatches(base_query, filter_queries) {
+    return this.tab.findFilterMatches(base_query, filter_queries)
+  }
+
 
 }
 

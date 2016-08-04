@@ -56,14 +56,20 @@ export class SearchTab extends Component {
 
     let base_query = solr.buildComplexQuery(searchFields)
 
+    // getting from tab
     let facetQueries = tabPicker.facetQueries(base_query)
     let filterQueries = tabPicker.filterQueries(base_query)
 
     // FIXME: these need to be url composable ...
     //
     // just doing this to keep them out of url (for now)    
-    const full_query = { ...query }
-
+    let full_query = { ...query }
+    
+    let copy_query = { ...query }
+    
+    // FIXME: remove facetQueries
+    // and filterQueries from full_query first ??
+    //
     if (facetQueries) {
       let gathered = _.map(facetQueries, 'query')
       let facetQueryStr = querystring.stringify(gathered)
@@ -72,15 +78,13 @@ export class SearchTab extends Component {
       full_query['facet_queries'] = facetQueryStr
      }
 
-    if (filterQueries) {
-      let gathered = _.map(filterQueries, 'query')
-      let filterQueryStr = querystring.stringify(gathered)
-
-      //full_query['filter_queries'] = filterQueries
-      full_query['filter_queries'] = filterQueryStr
-    }
-
-
+     // FIXME: should I do this here - or is this right?
+     // probably a better way though, just trying to remove whenever
+     // we go to a new tab
+     //
+     //
+     delete full_query['filter_queries'] //= null
+ 
     // FIXME: I believe this puts them in the searchFields anyway - 
     // so the full_query trick only works for one click
     // also it adds like this: facetQueries=[Object]
@@ -90,12 +94,16 @@ export class SearchTab extends Component {
     // these are the first multi-value things the code has to deal
     // with
     dispatch(requestSearch(full_query))
-    
+ 
+    // doing this to KEEP OUT of query_url (for now)   
+    delete copy_query['filter_queries']
+    delete copy_query['facet_queries']
+
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
       pathname: '/',
-      query: query
+      query: copy_query
     })
 
   }

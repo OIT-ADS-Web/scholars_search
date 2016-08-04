@@ -61,11 +61,42 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 import AbstractTab from './AbstractTab'
 
-class SubjectHeadingsTab extends AbstractTab(Component)  {
+//class SubjectHeadingsTab extends Component  {
+// export default AbstractTab(SubjectHeadingsTab)
+// export default connect()(AbstractTab(SubjectHeadingsTab))
+//
+//
+//
+export class SubjectHeadingsTab extends AbstractTab(Component)  {
+//export class SubjectHeadingsTab extends AbstractTab(Component)  {
 
+
+ /* 
+  static get contextTypes() {
+    return({
+      router: PropTypes.object
+    })
+  }
+ 
+ 
   constructor(props) {
     super(props)
   }
+  */
+
+
+  //doTheSearch(query) {
+  //  console.log(this.props)
+  //  console.log(query)
+
+
+   //    const { search : { searchFields }, dispatch } = this.props
+ 
+   //  console.log("SubjectHeadingsTab")
+   //  console.log(props)
+
+   //  console.log(searchFields)
+  //}
 
   csvFields() {
     return [{label: 'Name', value: 'nameRaw.0'}
@@ -93,15 +124,17 @@ class SubjectHeadingsTab extends AbstractTab(Component)  {
   */
  
   filterQueries(base_qry) {
+    // FIXME: has to match one of the facetQueries ???
     return [
-      {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
+      {id: 'sh_name_fcq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`},
+      {id: 'sh_text_fcq', tag: 'match', query: `{!tag=match}ALLTEXT:${base_qry}`}
     ]
   }
 
   facetQueries(base_qry) {
     return [
-       {id: 'sh_name_fcq', label: 'Match Name', query: `{!ex=match}nameText:${base_qry}`}, 
-       {id: 'sh_text_fcq', label: 'Match Text', query: `{!ex=match}ALLTEXT:${base_qry}`}
+       {id: 'sh_name_fcq', label: 'Name Only', query: `{!ex=match}nameText:${base_qry}`}, 
+       {id: 'sh_text_fcq', label: 'Any Text', query: `{!ex=match}ALLTEXT:${base_qry}`}
     ]
   }
 
@@ -110,9 +143,27 @@ class SubjectHeadingsTab extends AbstractTab(Component)  {
   }
 
 
+  // render()  method 
+  // since it extends Component???
+  //
+  //
 
 }
 
 
-export default SubjectHeadingsTab 
+export default SubjectHeadingsTab
+
+
+//import { connect } from 'react-redux'
+
+//const mapStateToProps = (search, ownProps) => {
+//  return { ...search }
+//}
+
+
+//export { connect(mapStateToProps)(SubjectHeadingsTab) as AbstractSubjectHeadingTab }
+
+//export default connect(mapStateToProps)(SubjectHeadingsTab) 
+
+
 

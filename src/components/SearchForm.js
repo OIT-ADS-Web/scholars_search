@@ -12,6 +12,10 @@ import solr from '../utils/SolrHelpers'
 //var ReactDOM = require('react-dom');
 import ReactDOM from 'react-dom'
 
+import TabPicker from './TabPicker'
+
+import querystring from 'querystring'
+
 export class SearchForm extends Component {
 
 
@@ -90,15 +94,49 @@ export class SearchForm extends Component {
     })
 
 
+    let tabPicker = new TabPicker(filter)
+
     if (solr.isEmptySearch(compoundSearch)) {
       dispatch(emptySearch())
     } 
     else {
-      dispatch(requestSearch(compoundSearch))
+
+      let base_query = solr.buildComplexQuery(compoundSearch)
+      let facetQueries = tabPicker.facetQueries(base_query)
+      
+      console.log(facetQueries)
+
+      // FIXME: these need to be url composable ...
+      //
+      // just doing this to keep them out of url (for now)    
+      let full_query = { ...searchFields }
+      //let full_query = { ...compoundSearch }
+
+
+      // let gathered = _.map(facetQueries, 'query')
+      //let facetQueryStr = querystring.stringify(gathered)
+
+      //full_query['facet_queries'] = facetQueries
+      //full_query['facet_queries'] = facetQueryStr
+ 
+
+      if (facetQueries && facetQueries.length > 0) {
+        // underscore map - getting all the 'query' properties
+        let gathered = _.map(facetQueries, 'query')
+        let facetQueryStr = querystring.stringify(gathered)
+        full_query['facet_queries'] = facetQueryStr
+
+        console.log(facetQueryStr)
+
+      }
+          
+  
+      dispatch(requestSearch(full_query))
+      //dispatch(requestSearch(compoundSearch))
       dispatch(requestTabCount(compoundSearch))
     }
 
-    exactMatch.focus()
+    allWords.focus()
   }
 
   render() {

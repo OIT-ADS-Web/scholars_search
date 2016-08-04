@@ -81,8 +81,13 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   // FIXME: needs to be in some format that's url composable - but still array
   //
   //let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
-  let fq_list = searchFields ? (querystring.parse(searchFields['facet_queries']) : null) : null
-  
+  let fq_list = searchFields ? (searchFields['facet_queries'] ? querystring.parse(searchFields['facet_queries']) : null) : null
+
+  // should these be keyed in the querystring e.g.
+  // facet_queries=['sh_name_fcq', 'sh_text_fcq']
+  // or 
+  // facet_query=sh_name_fcp&facet_query=sh_text_fcq
+  //
   console.log(fq_list)
   // NOTE: looks like this
   // Object {0: "{!ex=match}nameText:califf", 1: "{!ex=match}ALLTEXT:califf"}
@@ -94,23 +99,28 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
     searcher.setFacetQuery(x)
   })
 
-  //let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
-  let filter_queries = searchFields ? (querystring.parse(searchFields['filter_queries']) : null) : null
+//let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
+  let filter_queries = searchFields ? (searchFields['filter_queries'] ? querystring.parse(searchFields['filter_queries']) : null) : null
   
   console.log(filter_queries)
   // NOTE: looks like this...
   //Object {0: "{!tag=match}nameText:califf"}
 
+  let filter_query_list = []
   _.forEach(filter_queries, function(value, key) {
-    // filter queries look like this:
-    // {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
-    //searcher.addFilter(x.tag, x.query)
-    // FIXME: not a good key here
-    //
-    searcher.addFilter(key, value)
+    filter_query_list.push(value)
   })
-
   
+  // NOTE: these  need to be 'OR'd
+  if (filter_query_list.length > 0) {
+    // FIXME: better way to get key?  match {!tag=<?>}
+    //
+    let filterKey = "facets"
+    let or_collection = filter_query_list.join(' OR ')
+    searcher.addFilter(filterKey, or_collection)
+  }
+
+  // searcher.addFilter(
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())
