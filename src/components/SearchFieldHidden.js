@@ -4,6 +4,7 @@ import SearchField from './SearchField'
 
 export default class SearchFieldHidden extends SearchField {
 
+  // NOTE: this is here merely to handle the advanced=true param
   render() {
     const { defaultValue} = this.props
 

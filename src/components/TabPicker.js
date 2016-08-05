@@ -14,7 +14,8 @@ class TabPicker {
   constructor(filter) {
     this.filter = filter
 
-    // makes this be a router, or thin wrapper of sorts 
+    // makes this be a router, or thin wrapper of sorts - there's probably a 
+    // design pattern name for this
     switch(this.filter) {
     case 'person':
       this.tab = new PeopleTab()

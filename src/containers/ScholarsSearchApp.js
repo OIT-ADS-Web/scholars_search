@@ -53,6 +53,7 @@ export class ScholarsSearchApp extends Component {
       if (!query['start']) {
         query['start'] = 0
       }
+
       if (!query['filter']) {
         query['filter'] = 'person'
       }
@@ -61,31 +62,16 @@ export class ScholarsSearchApp extends Component {
 
       // FIXME: a lot of this code is duplicated every time a search is done
       // should centralize a bit more
-      //
-      //
+      
       // FIXME: get the facetQueries here ???
       let tabPicker = new TabPicker(query['filter'])
-
-      /*
-            
-      const searchFields = {
-        'exactMatch': exactMatch.value,
-        'allWords': allWords.value,
-        'atLeastOne': atLeastOne.value,
-        'noMatch': noMatch.value,
-        'start': start,
-        'filter': filter,
-        'advanced': advanced.value
-      }
-      */
-
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
       let facetQueries = tabPicker.facetQueries(base_query)
+      
       // FIXME: if a tab should have a 'default' filter query
-      // would need to add that here ???
-      // and also handleTab
+      // would need to add that here ??? and/or  SearchTab#handleTab
       //
       //let filterQueries = tabPicker.defaultFilterQueries(base_query)
 
@@ -95,9 +81,9 @@ export class ScholarsSearchApp extends Component {
         builtSearch['facet_queries'] = facetQueryStr
       }
 
-            
       dispatch(requestSearch(builtSearch))
-      // NOTE: might need to change 
+      // NOTE: might need to change - tabs don't need facet_queries
+      // but should ignore anyway 
       dispatch(requestTabCount(builtSearch))
  
     } else if (onlyAdvanced || blankSearch) {
@@ -126,9 +112,9 @@ export class ScholarsSearchApp extends Component {
 
 
 import { connect } from 'react-redux'
-//https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
+// https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
 //
-//The dynamic segments of the URL.
+// The dynamic segments of the URL.
 // NOTE: ownProps.location does NOT give an error here (and here only)
 //
 const mapStateToProps = (search, ownProps) => {

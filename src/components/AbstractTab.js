@@ -7,23 +7,8 @@ import json2csv from 'json2csv'
 // http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
 let AbstractTab = (superclass) => class extends superclass {
 
-// TabComposer
-// TabRouter
-//
-//
-  /*
-  static get contextTypes() {
-    return({
-      router: PropTypes.object
-    })
-  }
-  */
-
   constructor(props) {
     super(props)
-
-    //this.handleClickFacet = this.handleClickFacet.bind(this)
-    
   }
 
 
@@ -137,8 +122,7 @@ let AbstractTab = (superclass) => class extends superclass {
   }
 
 
-  // FIXME: send in event handler callaback?  so SearchResults component
-  // can process ?
+  // NOTE: cb is a callback sent in by SearchResults
   facets(query, facet_queries, chosen_ids=[], cb) {
     let _self = this
 
@@ -173,11 +157,6 @@ let AbstractTab = (superclass) => class extends superclass {
         )
       }
 
-      // ??? 
-      // if matches a filter query -- (send as parameter) then isChecked = true
-      //
-      // need Id for checkbox, and event handlers etc...
-      //return (<li className="list-group-item"><input type="checkbox" /><span className="badge">{item}</span> {label}</li>)
     })
     let facets = (<ul className="list-group">{facet_list}</ul>)
     return facets
@@ -187,18 +166,5 @@ let AbstractTab = (superclass) => class extends superclass {
 }
 
 
-// ....
-// connect()
-//
 export default AbstractTab 
-
-
-//import { connect } from 'react-redux'
-
-//const mapStateToProps = (search, ownProps) => {
-//  return { ...search }
-//}
-
-
-//export default connect(mapStateToProps)(AbstractTab) 
 

@@ -60,42 +60,30 @@ export class SearchTab extends Component {
     let facetQueries = tabPicker.facetQueries(base_query)
     let filterQueries = tabPicker.filterQueries(base_query)
 
-    // FIXME: these need to be url composable ...
+    // FIXME: a little confusing having two copies here, the first one
+    // is to dispatch() the second one is to add to params
     //
-    // just doing this to keep them out of url (for now)    
     let full_query = { ...query }
-    
     let copy_query = { ...query }
+ 
+    // remove/reset filters whenever we go to a new tab
+    delete full_query['filter_queries'] 
     
-    // FIXME: remove facetQueries
-    // and filterQueries from full_query first ??
-    //
+    // if tab has facet queries, add them to the query
     if (facetQueries) {
       let gathered = _.map(facetQueries, 'query')
       let facetQueryStr = querystring.stringify(gathered)
 
-      //full_query['facet_queries'] = facetQueries
       full_query['facet_queries'] = facetQueryStr
-     }
+    }
 
-     // FIXME: should I do this here - or is this right?
-     // probably a better way though, just trying to remove whenever
-     // we go to a new tab
-     //
-     //
-     delete full_query['filter_queries'] //= null
- 
-    // FIXME: I believe this puts them in the searchFields anyway - 
-    // so the full_query trick only works for one click
-    // also it adds like this: facetQueries=[Object]
-    // and it should be facetQuery.1=?, facetQuery.2=? maybe?
-    // or facetQuery=?&facetQuery=? etc...
-    //
-    // these are the first multi-value things the code has to deal
-    // with
     dispatch(requestSearch(full_query))
  
-    // doing this to KEEP OUT of query_url (for now)   
+    // doing this to KEEP OUT of query_url (for now)  
+    // just made a second copy to be clear they have different purposes
+    // could probably do
+    // delete full_query['facet_queries']
+    //
     delete copy_query['filter_queries']
     delete copy_query['facet_queries']
 

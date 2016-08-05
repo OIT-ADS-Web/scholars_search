@@ -9,9 +9,6 @@ import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
-//var ReactDOM = require('react-dom');
-import ReactDOM from 'react-dom'
-
 import TabPicker from './TabPicker'
 
 import querystring from 'querystring'
@@ -36,13 +33,8 @@ export class SearchForm extends Component {
 
     // NOTE: seems wrong to do this, maybe it's fine
     this.advanced.value = "true"
-    
-    // FIXME: still have problem of searching *:* (everything)
      
     this.handleSubmitSearch(e)
-    /// need to add to query parameters ---
-    // FIXME: need to autofocus on 'exactmatch' field, not sure how
-    //
   }
 
   handleSubmitSearch(e) {
@@ -62,16 +54,15 @@ export class SearchForm extends Component {
     //  add = "*"
     //}
     // NOTE: allWords search needs a '*' after every word, otherwise it's searching
-    // exactly.  Then again, maybe the user wants the ability to differentiate the two.
+    // exactly (sort of).  Then again, maybe the user wants the ability to differentiate the two.
     
-    // NOTE: if someone is searching 'organizations' tab - go ahead and persist
-    // that tab - but default to 'person' tab if nothing is there
+    // NOTE: persist tab for search - but default to 'person' tab if nothing is there
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
-    // NOTE: if it's a new search - just default to page 0 instead of something weird
+    // NOTE: if it's a new search - default to page 0 so we're not trying 
+    // to get a non-existent page of data
     let start = 0
-    
-    // FIXME: need to NOT add &params if undefined
+   
     const compoundSearch = {
       'exactMatch': exactMatch.value,
       'allWords': allWords.value,
@@ -104,9 +95,7 @@ export class SearchForm extends Component {
       let base_query = solr.buildComplexQuery(compoundSearch)
       let facetQueries = tabPicker.facetQueries(base_query)
       
-      console.log(facetQueries)
-
-      // FIXME: these need to be url composable ...
+      // FIXME: these need to be url composable ... right?
       //
       // just doing this to keep them out of url (for now)    
       //let full_query = { ...searchFields }
@@ -132,7 +121,6 @@ export class SearchForm extends Component {
           
   
       dispatch(requestSearch(full_query))
-      //dispatch(requestSearch(compoundSearch))
       dispatch(requestTabCount(compoundSearch))
     }
 
@@ -165,7 +153,12 @@ export class SearchForm extends Component {
     
     const advanced = query.advanced ? query.advanced : (locationBeforeTransitions.query.advanced || false)
 
-    // FIXME: seems too double-negative-y 
+    // FIXME: this seems too double-negative-y to me, maybe there's a clearer way to name
+    //
+    // hide advanced = not (advanced)
+    // hidden = not (advanced)
+    // show = not (not (advanced))
+    //
     let hideAdvanced = !(advanced === 'true')
  
     const advancedClasses = classNames({advanced: true, hidden: hideAdvanced})     

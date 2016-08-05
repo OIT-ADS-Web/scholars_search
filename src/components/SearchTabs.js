@@ -29,27 +29,22 @@ export class SearchTabs extends Component {
   }
 
 
-  // FIXME: wow - don't like this at all (even though I wrote it)
+  // FIXME: wow - don't like this at all (even though I wrote it!)
   // the tabs are actually different DOM-wise depending on screen size though
   // 
-  // The application should be able to decide what javascript/dom/css 
-  // (since they are all javascript anyway)
+  // The application should be able to decide what javascript/dom/css (since they are all javascript anyway)
   // to apply to a given media size (instead of using css to show/hide)
-  // https://www.npmjs.com/package/react-match-media ??
+  // maybe use this:  https://www.npmjs.com/package/react-match-media ??
   desktopTabs(isFetching, grouped, filter) {
     let tabs = _.map(tabList, (tab) => {
       
-      // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
-      //var myString = "something format_abc";
-      //var myRegexp = /(?:^|\s)format_(.*?)(?:\s|$)/g;
-      //var match = myRegexp.exec(myString);
-      //alert(match[1]);  // abc
-
       // if we're still fetching - there will be nothing in 'grouped' to pull counts from
       if (isFetching) {
         return <div></div>
       }
 
+      // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
+       
       // NOTE: had to do this so I can add arbitary text to group.query, but not have to use that
       // exact same text to find the 'tab' - could be a waste of time though
       let tagMatch = /^{!tag=(.*?)}/
@@ -65,13 +60,6 @@ export class SearchTabs extends Component {
       //let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
 
-
-      // NOTE: since it's a component, the 'handler' is with the component
-      // but that's not true with mobile
-      // FIXME: would this be return (
-      //   <PeopleTab>
-      //   <GrantTab> etc...
-      //
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
 
     })
@@ -79,6 +67,7 @@ export class SearchTabs extends Component {
     return tabs
   }
 
+  // FIXME: see above - this ends up rendering tabs twice - and show/hide depending on screen-size
   mobileTabs(isFetching, grouped, filter) {
     if (isFetching) {
       return <div></div>
@@ -97,10 +86,7 @@ export class SearchTabs extends Component {
     // ]
 
     let rows = []
-    //let _self = this
-
-    // where would tablist come from then ???? if we have <PersonTab>, <GrantTab> etc...
-    //
+    
     _.forEach(tabList, function(value) {
       if (value.id != filter) {
 
@@ -157,7 +143,7 @@ export class SearchTabs extends Component {
     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
 
     // FIXME: what to do if tabs error? e.g. if (message) { }
- 
+    
     return (
       <div>
         <div className="bg-info pull-right"><strong>Total Results Found: <span className="badge">{ungroupedCount}</span></strong></div>

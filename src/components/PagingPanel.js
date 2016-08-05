@@ -37,7 +37,7 @@ export class PagingPanel extends Component {
     let start = searchFields ? searchFields['start'] : 0
     let newStart = Math.floor(start) + PAGE_ROWS
 
-    // NOTE: if not a new 'query' obj - this error happens:
+    // NOTE: if not a new 'query' obj (like below) - this error happens:
     // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     const query = { ...searchFields, start: newStart }
 
@@ -45,7 +45,7 @@ export class PagingPanel extends Component {
 
     dispatch(requestSearch(full_query))
  
-    // FIXME: take out facet_queries, or not???
+    // FIXME: take out facet_queries from URL params, or not??? 
     delete query['facet_queries']
     delete query['filter_queries']
 
@@ -75,7 +75,7 @@ export class PagingPanel extends Component {
 
     dispatch(requestSearch(full_query))
 
-    // FIXME: take out facet_queries, or not???
+    // FIXME: take out facet_queries from URL params, or not??? 
     delete query['facet_queries']
     delete query['filter_queries']
 

@@ -61,42 +61,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 import AbstractTab from './AbstractTab'
 
-//class SubjectHeadingsTab extends Component  {
-// export default AbstractTab(SubjectHeadingsTab)
-// export default connect()(AbstractTab(SubjectHeadingsTab))
-//
-//
-//
 export class SubjectHeadingsTab extends AbstractTab(Component)  {
-//export class SubjectHeadingsTab extends AbstractTab(Component)  {
-
-
- /* 
-  static get contextTypes() {
-    return({
-      router: PropTypes.object
-    })
-  }
- 
- 
-  constructor(props) {
-    super(props)
-  }
-  */
-
-
-  //doTheSearch(query) {
-  //  console.log(this.props)
-  //  console.log(query)
-
-
-   //    const { search : { searchFields }, dispatch } = this.props
- 
-   //  console.log("SubjectHeadingsTab")
-   //  console.log(props)
-
-   //  console.log(searchFields)
-  //}
 
   csvFields() {
     return [{label: 'Name', value: 'nameRaw.0'}
@@ -104,11 +69,8 @@ export class SubjectHeadingsTab extends AbstractTab(Component)  {
   }
 
   pickDisplay(doc, highlight) {
-    // FIXME: could just embed this object in there, instead of calling it
-    // as a component/seperate file like this
     return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
-
 
   /*
     NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
@@ -143,27 +105,10 @@ export class SubjectHeadingsTab extends AbstractTab(Component)  {
   }
 
 
-  // render()  method 
-  // since it extends Component???
-  //
-  //
-
 }
 
 
 export default SubjectHeadingsTab
-
-
-//import { connect } from 'react-redux'
-
-//const mapStateToProps = (search, ownProps) => {
-//  return { ...search }
-//}
-
-
-//export { connect(mapStateToProps)(SubjectHeadingsTab) as AbstractSubjectHeadingTab }
-
-//export default connect(mapStateToProps)(SubjectHeadingsTab) 
 
 
 
