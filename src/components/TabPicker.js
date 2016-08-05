@@ -52,6 +52,12 @@ class TabPicker {
   }
 
 
+  facetFieldDisplay(facet_fields) {
+    //if (this.facetFields) {
+    return this.tab.facetFieldDisplay(facet_fields)
+    //}
+  }
+
   facets(query, facet_queries, chosen_ids=[], cb=null) {
     return this.tab.facets(query, facet_queries, chosen_ids, cb)
   }
@@ -65,6 +71,11 @@ class TabPicker {
     return this.tab.filterQueries(base_qry)
   }
 
+  facetFields() {
+    if (this.tab.facetFields) {
+      return this.tab.facetFields()
+    }
+  }
 
   facetQueries(base_qry) {
     return this.tab.facetQueries(base_qry)

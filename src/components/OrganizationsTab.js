@@ -13,6 +13,12 @@ class OrganizationDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
+  // Agent Continuant Department Entity Independent Continuant Organization
+  filterHighlightText(text) {
+    let replaced = text.replace("Agent Continuant Department Entity Independent Continuant Organization", "")
+    return replaced
+  }
+
   render() {
     return (
          <div key="{this.docId}" className="organization search-result-row">

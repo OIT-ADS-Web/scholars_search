@@ -30,7 +30,23 @@ class PersonDisplay extends HasSolrData(Component) {
     return flag
   }
 
-  
+  // We discussed potentially trimming the ALLTEXT to remove the ending string of text. This text often shows up 
+  // in the highlighting and it is irrelevant (screenshot attached). If we can't easily remove the citation 
+  // style text (which will vary), can we at least remove everything from 'Agent' to the end?
+
+  // For example:
+  // "Chicago-Style Citation Agent Continuant Entity Faculty Member Independent Continuant Person" 
+
+  // Agent Continuant Entity Faculty Member Independent Continuant Person
+  //  Agent Continuant Entity Independent Continuant Person Student
+  filterHighlightText(text) {
+    let replaced = text.replace("Agent Continuant Entity Faculty Member Independent Continuant Person", "")
+    replaced = replaced.replace("Agent Continuant Entity Independent Continuant Person Student", "")
+    replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
+
+    return replaced
+  }
+
   get department() {
     // NOTE: department_search_text field can look like this:
     //
@@ -118,6 +134,34 @@ class PeopleTab extends AbstractTab(Component)  {
   pickDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+  //searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
+  /* results can look like this:
+
+  facet_counts:
+   { facet_queries: {},
+     facet_fields: { department_facet_string: [Object] },
+
+  [ '1|https://scholars.duke.edu/individual/org50000761',
+  6,
+  '1|https://scholars.duke.edu/individual/org50000299',
+  3,
+  '1|https://scholars.duke.edu/individual/org50000491',
+  3,
+  '1|https://scholars.duke.edu/individual/org50496347',
+  1,
+  '1|https://scholars.duke.edu/individual/org50000471',
+  0,
+  null,
+  4 ]
+  */
+
+  facetFields() {
+    return [
+      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
+    ]
+  }
+
 
   csvFields() {
     let firstEntryBeforeSpace = function(row) {

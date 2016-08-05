@@ -13,11 +13,11 @@ class GrantDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
-  // replace function ??? for grants (for instance)
-  //Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant
-  //let replacedText = this.filterHighlightText ? this.filterHighlightText(text) : text
   filterHighlightText(text) {
+    // Continuant Entity Grant Relationship Research Grant Specifically Dependent Continuant
     let replaced = text.replace("Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant", "")
+    // another variation
+    replaced = replaced.replace("Continuant Entity Grant Relationship Research Grant Specifically Dependent Continuant", "")
     return replaced
   }
 

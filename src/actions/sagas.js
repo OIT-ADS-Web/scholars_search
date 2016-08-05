@@ -47,6 +47,11 @@ function* watchForTabs() {
 }
 
 
+// function parseFacetQueries
+// function parseFilterQueries
+// function parseFacetFields
+//
+//
 // ********* search ******
 // 1. actual function
 export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
@@ -68,15 +73,11 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   let tab = findTab(filter) // the tabs are named, and each has 'filter' attribute
   searcher.addFilter("type", tab.filter)
 
-  // FIXME: would we add another filter here --- 
-  //  if (tab should add filter) ... {
-  //    let theQuery = helper.buildQuery(searchFields)
-  //    searcher.addFilter("concept-name", `nameText:${theQuery}`)
-  //  }  
-  //
-
   // searcher.addSort(sort)
   searcher.search =  searchFields
+
+  // FIXME: I guess these have to be broken out into functions - cause it's getting too long
+  //
 
   // FIXME: needs to be in some format that's url composable - but still array
   //
@@ -120,7 +121,20 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
     searcher.addFilter(filterKey, or_collection)
   }
 
-  // searcher.addFilter(
+
+  let facet_fields = searchFields ? (searchFields['facet_fields'] ? searchFields['facet_fields'] : null) : null
+
+  /* look like this:
+   *     return [
+      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
+    ]
+    searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
+  */
+
+  _.forEach(facet_fields, function(x) {
+    searcher.setFacetField(x.field, x.options)
+  })
+
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())

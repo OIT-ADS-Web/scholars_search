@@ -121,7 +121,103 @@ let AbstractTab = (superclass) => class extends superclass {
     return matches
   }
 
+  /*
+   *
+   *
+   */
+  /*
+  [ '1|https://scholars.duke.edu/individual/org50000761',
+  6,
+  '1|https://scholars.duke.edu/individual/org50000299',
+  3,
+  '1|https://scholars.duke.edu/individual/org50000491',
+  3,
+  '1|https://scholars.duke.edu/individual/org50496347',
+  1,
+  '1|https://scholars.duke.edu/individual/org50000471',
+  0,
+  null,
+  4 ]
+  */
 
+  facetFieldDisplay(facet_fields) {
+    let size = facet_fields.length
+
+    if (!(facet_fields || size > 0)) {
+      return ""
+    }
+
+     //let facetField = _self.getFacetField(key)
+
+
+    /*
+     * { department_facet_string:
+   [ { dept: '1|https://scholars.duke.edu/individual/org50000761',
+       count: 6 },
+     { dept: '1|https://scholars.duke.edu/individual/org50000299',
+       count: 3 },
+     { dept: '1|https://scholars.duke.edu/individual/org50000491',
+       count: 3 },
+     { dept: '1|https://scholars.duke.edu/individual/org50496347',
+       count: 1 },
+     { dept: '1|https://scholars.duke.edu/individual/org50000471',
+       count: 0 },
+     { dept: null, count: 4 } ] }
+     */
+
+     //      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
+ 
+
+    let results = {}
+    _.forEach(facet_fields, function(value, key) {
+      results[key] = []
+
+      let array = value
+      let size = array.length
+      let i = 0
+      // strangely results are array, of [<count><field>, <count><field> ... ]
+      while (i < size) {
+        let dept = array[i]
+        let count = array[i+1]
+        let summary = {dept: dept, count:count}
+        results[key].push(summary)
+        i = i + 2
+      }
+    })
+
+    //  just in case facetFields remain in query, but the tab doesn't have any defined
+    if (!this.facetFields) {
+      return ""
+    }
+
+    let facetFields = this.facetFields()
+
+    // FIXME: don't like map( map() ) - hard to reason about
+    let facet_list = facetFields.map(function (field) {
+      let items = results[field.field]
+      
+      let counts = items.map(function(item) {
+        let label = item.dept ? item.dept.replace("1|https://scholars.duke.edu/individual/", "") : "?"
+        return (
+            <li className="list-group-item">
+              <input type="checkbox" />
+              <span className="badge">{item.count}</span> {label}
+            </li>
+          )
+      })
+      return counts
+      
+    })
+
+
+    let facets = (<ul className="list-group">{facet_list}</ul>)
+    return facets
+ 
+  }
+
+  // NOTE: facets() could return 
+  // facetFieldDisplay() + facetQueryDisplay()
+  //
   // NOTE: cb is a callback sent in by SearchResults
   facets(query, facet_queries, chosen_ids=[], cb) {
     let _self = this

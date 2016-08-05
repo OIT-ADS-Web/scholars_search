@@ -133,20 +133,6 @@ export class SearchResults extends Component {
     let currentFilterQueries = querystring.parse(searchFields['filter_queries'])
 
     if (e.target.checked) {
-      // if e.target.checked -- apply filter
-      //let filterQueries = tabPicker.filterQueries(query)
-
-      //let found = _.find(filterQueries, function(o) { return o.id === id })
- 
-      // FIXME: this only work if there is 1 (and only 1) query sent
-      //let filterQuery = found ? found.query : null
-      
-      //let full_query = { ...searchFields }
-
-      //let currentFilterQueries = querystring.parse(searchFields['filter_queries'])
-
-      //let newFilterQueries = currentFilterQueries.push(filterQuery)
-
       let keys = _.keys(currentFilterQueries).sort()
 
       if (keys.length > 0) {
@@ -164,35 +150,13 @@ export class SearchResults extends Component {
  
       }
 
-      //let newFilterQueries = filterQuery ? currentFilterQueries.push(filterQuery) : currentFilterQueries
-
-      //full_query['filter_queries'] = querystring.stringify(currentFilterQueries)
-       
-      //full_query['filter_queries'] = querystring.stringify([filterQuery])
-      // FIXME: need a way to keep filter_queries we've already added
-      //
-      //full_query['filter_queries'] = querystring.stringify(newFilterQueries)
-      
-      //full_query['start'] = 0
-
-      // this will put the filter_queries in the state
-      // not sure about facet_queries
-      //
-      // they should be cleared when switching tabs though
-      //
       dispatch(requestSearch(full_query))
 
-      // also needs to repainate
-      // searchFields as {query: searchFields} had to copy it (see above)
-      
       //this.context.router.push({
       //  pathname: '/',
       //  query: full_query
       //})
 
-      // if filterQuery --
-      //
-      //
     } else {
       let toDelete = _.findKey(currentFilterQueries, function(o) { return o === filterQuery })
  
@@ -204,24 +168,10 @@ export class SearchResults extends Component {
       full_query['filter_queries'] = querystring.stringify(newFilterQueries)
       
       dispatch(requestSearch(full_query))
-  
-    
     }
     
 
   }
-
-
-  // FIXME: set this as callback  of some sort?
-  //
-  // addFacets(cb) ->
-  //   tabPicker.addFacets(cb)
-  //   etc...
-  //   
-  //   need dispatch -- and {search: {searchFields }
-  // handleFacetClick() {
-  //
-  // }  
 
   render() {
     const { search : { results, searchFields, isFetching, message } } = this.props
@@ -231,7 +181,7 @@ export class SearchResults extends Component {
 
     let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
-    let { facet_queries } = facet_counts
+    let { facet_queries, facet_fields } = facet_counts
     // data will look like this (for subject heading for instance):
     /*
       facet_counts:
@@ -287,12 +237,27 @@ export class SearchResults extends Component {
        chosen_ids = chosen_ids.concat(possible_matches)
     }
 
-    
+    // NOTE: this gets complicated with facet.field vs facet.query
+    //
+    //
     // FIXME: how to get this here on tab initialize (not just tab click)
     if (facet_queries) {
       let cb = this.handleFacetClick.bind(this)
       tabFacets = tabPicker.facets(query, facet_queries, chosen_ids, cb)
     }
+
+    // FIXME: new variable, or append to ?
+    let facetFieldDisplay = ""   
+    if (facet_fields) {
+      //      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
+ 
+      // don't need 'query' but it doesn't hurt anything to send
+      // still ... facets() will react different depending on 
+      // facet.query or facet.field
+      facetFieldDisplay = tabPicker.facetFieldDisplay(facet_fields)
+      //console.log(tabPicker.facetFieldDisplay(facet_fields))
+    }
+    
 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
@@ -326,6 +291,8 @@ export class SearchResults extends Component {
                 </button>
               </div>
               {tabFacets}
+
+              {facetFieldDisplay}
            </div>
           </div>
 

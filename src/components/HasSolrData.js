@@ -62,6 +62,11 @@ let HasSolrData = (superclass) => class extends superclass {
         display = ""
       }
 
+    if (this.filterHighlightText) {
+      //console.log("filtering highlight text")
+      return this.filterHighlightText(display)
+    }
+ 
     return display
   }
 
