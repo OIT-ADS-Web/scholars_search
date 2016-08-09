@@ -1,12 +1,16 @@
 import * as types from './types'
 
 // ******* search *******
-export function requestSearch(searchFields) {
+// export function requestSearch(searchFields, filters) {
+//
+//
+export function requestSearch(searchFields, filterer) {
   return {
     type: types.REQUEST_SEARCH,
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
-    searchFields: searchFields
+    searchFields: searchFields,
+    filterer: filterer
   }
 }
 
@@ -75,7 +79,7 @@ export function tabCountFailed(message) {
 export function requestDepartments() {
   return {
     type: types.REQUEST_DEPARTMENTS,
-    departments: {},
+    data: {},
     isFetching: true,
   }
 
@@ -86,9 +90,8 @@ export function receiveDepartments(json) {
 
   return {
     type: types.RECEIVE_DEPARTMENTS,
-    departments: departments,
-    isFetching: false,
-    receivedAt: Date.now()
+    data: departments,
+    isFetching: false
   }
 
 }
@@ -110,6 +113,9 @@ export default {
   searchFailed,
   requestTabCount,
   receiveTabCount,
-  tabCountFailed
+  tabCountFailed,
+  requestDepartments,
+  receiveDepartments,
+  departmentsFailed
 } 
 

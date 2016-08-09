@@ -6,7 +6,7 @@ import Page from '../layouts/page'
 import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
-import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
+import { requestSearch, requestTabCount, emptySearch, requestDepartments } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
@@ -44,6 +44,8 @@ export class ScholarsSearchApp extends Component {
     let onlyAdvanced = this.onlyAdvanced(query)
     let blankSearch = solr.isEmptySearch(query)
 
+    dispatch(requestDepartments())
+
     // NOTE: was searching if no query parameters in route path, just searching everything
     if (!_.isEmpty(query) && !(onlyAdvanced || blankSearch)) {
 
@@ -68,20 +70,21 @@ export class ScholarsSearchApp extends Component {
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      let facetQueries = tabPicker.facetQueries(base_query)
+      //let facetQueries = tabPicker.facetQueries(base_query)
       
       // FIXME: if a tab should have a 'default' filter query
       // would need to add that here ??? and/or  SearchTab#handleTab
       //
       //let filterQueries = tabPicker.defaultFilterQueries(base_query)
 
-      if (facetQueries && facetQueries.length > 0) {
-        let gathered = _.map(facetQueries, 'query')
-        let facetQueryStr = querystring.stringify(gathered)
-        builtSearch['facet_queries'] = facetQueryStr
-      }
 
-      dispatch(requestSearch(builtSearch))
+      //if (facetQueries && facetQueries.length > 0) {
+      //  let gathered = _.map(facetQueries, 'query')
+      //  let facetQueryStr = querystring.stringify(gathered)
+      //  builtSearch['facet_queries'] = facetQueryStr
+      //}
+
+      dispatch(requestSearch(builtSearch, tabPicker.tab))
       // NOTE: might need to change - tabs don't need facet_queries
       // but should ignore anyway 
       dispatch(requestTabCount(builtSearch))

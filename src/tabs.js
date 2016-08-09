@@ -11,6 +11,8 @@
 
 // NOTE: the id:<?> and the {!tag=?} have to match exactly - that's a bit annoying
 // should probably not be so fragile
+//  NOTE: if added className -- could have dynamic, relexive text-based instantiation 
+//
 //
 export const tabList = [
   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },

@@ -45,7 +45,8 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
     return { ...search, 
       isFetching: true,
       results: action.results,
-      searchFields: action.searchFields
+      searchFields: action.searchFields,
+      filterer: action.filterer
   }
   case types.RECEIVE_SEARCH:
     
@@ -70,35 +71,33 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
   }
 }
 
-/*
-function facetReducer(facet = { isFetching: false, data: {}}, action) {
+
+function departmentsReducer(departments = { isFetching: false, data: {}}, action) {
   switch (action.type) {
 
   case types.REQUEST_DEPARTMENTS:
     
-    return { ...facet, 
+    return { ...departments, 
       isFetching: true,
-      data: action.data,
-      searchFields: action.searchFields
+      data: action.data
   }
   case types.RECEIVE_DEPARTMENTS:
     
-    return { ...facet, 
+    return { ...departments, 
       isFetching: false,
-      data: action.results,
-      lastUpdated: action.receivedAt
+      data: action.data
   }
   case types.DEPARTMENTS_FAILED:
     
-    return { ...facet,
+    return { ...departments,
       isFetching: false,
       message: action.message
   }
   default:
-    return facet;
+    return departments;
   }
 }
-*/
+
 
 
 
@@ -127,7 +126,8 @@ const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
   //init: appInitReducer,
-  tabs: tabReducer
+  tabs: tabReducer,
+  departments: departmentsReducer
 })
 
 // FIXME: did this for now to be able to test searchReducer in isolation

@@ -12,7 +12,10 @@ import querystring from 'querystring'
 // those are called by containers/components
 import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './search'
 
-// ***** tabs *****
+// same as above
+import { receiveDepartments, departmentsFailed } from './search'
+
+// ***** tabs *****0
 // 1. actual function
 function fetchTabsApi(searchFields) {
   const solrUrl = process.env.SOLR_URL
@@ -54,7 +57,7 @@ function* watchForTabs() {
 //
 // ********* search ******
 // 1. actual function
-export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
+export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   const solrUrl = process.env.SOLR_URL
   let searcher = new SolrQuery(solrUrl)
 
@@ -63,78 +66,19 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
   // components, AND libraries, AND sagas ....
   //
   let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
+  
   let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
   searcher.setupDefaultSearch(maxRows, start)
-  
-  let tab = findTab(filter) // the tabs are named, and each has 'filter' attribute
-  searcher.addFilter("type", tab.filter)
-
-  // searcher.addSort(sort)
+ 
   searcher.search =  searchFields
 
-  // FIXME: I guess these have to be broken out into functions - cause it's getting too long
-  //
-
-  // FIXME: needs to be in some format that's url composable - but still array
-  //
-  //let fq_list = searchFields ? (searchFields['facet_queries'] : null) : null
-  let fq_list = searchFields ? (searchFields['facet_queries'] ? querystring.parse(searchFields['facet_queries']) : null) : null
-
-  // should these be keyed in the querystring e.g.
-  // facet_queries=['sh_name_fcq', 'sh_text_fcq']
-  // or 
-  // facet_query=sh_name_fcp&facet_query=sh_text_fcq
-  //
-  console.log(fq_list)
-  // NOTE: looks like this
-  // Object {0: "{!ex=match}nameText:califf", 1: "{!ex=match}ALLTEXT:califf"}
-
-  _.forEach(fq_list, function(x) {
-    // facet queries look like this:
-    //{id: 'sh_name_fcq', label: 'Name', query: `{!ex=match}nameText:${base_qry}`}, 
-    //searcher.setFacetQuery(x.query)
-    searcher.setFacetQuery(x)
-  })
-
-//let filter_queries = searchFields ? (searchFields['filter_queries'] : null) : null
-  let filter_queries = searchFields ? (searchFields['filter_queries'] ? querystring.parse(searchFields['filter_queries']) : null) : null
-  
-  console.log(filter_queries)
-  // NOTE: looks like this...
-  //Object {0: "{!tag=match}nameText:califf"}
-
-  let filter_query_list = []
-  _.forEach(filter_queries, function(value, key) {
-    filter_query_list.push(value)
-  })
-  
-  // NOTE: these  need to be 'OR'd
-  if (filter_query_list.length > 0) {
-    // FIXME: better way to get key?  match {!tag=<?>}
-    //
-    let filterKey = "facets"
-    let or_collection = filter_query_list.join(' OR ')
-    searcher.addFilter(filterKey, or_collection)
-  }
-
-
-  let facet_fields = searchFields ? (searchFields['facet_fields'] ? searchFields['facet_fields'] : null) : null
-
-  /* look like this:
-   *     return [
-      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
-    ]
-    searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
-  */
-
-  _.forEach(facet_fields, function(x) {
-    searcher.setFacetField(x.field, x.options)
-  })
-
+  // NOTE: apply filters last, after search has been defined
+    filterer.applyFilters(searcher)
+ 
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())
@@ -147,9 +91,13 @@ export function fetchSearchApi(searchFields, maxRows=PAGE_ROWS) {
 
 // 2. what watcher will do
 export function* fetchSearch(action) {
-  const { searchFields } = action
+  //const { searchFields } = action
 
-  const results = yield call(fetchSearchApi, searchFields)
+  const { searchFields, filterer } = action
+  
+  const results = yield call(fetchSearchApi, searchFields, filterer)
+  //
+  //const results = yield call(fetchSearchApi, searchFields)
 
   try {
     yield put(receiveSearch(results))

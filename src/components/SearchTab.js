@@ -57,32 +57,38 @@ export class SearchTab extends Component {
     let base_query = solr.buildComplexQuery(searchFields)
 
     // getting from tab
-    let facetQueries = tabPicker.facetQueries(base_query)
-    let filterQueries = tabPicker.filterQueries(base_query)
-    let facetFields = tabPicker.facetFields()
+    //let facetQueries = tabPicker.facetQueries(base_query)
+    //let filterQueries = tabPicker.filterQueries(base_query)
+    //let facetFields = tabPicker.facetFields()
  
     // FIXME: a little confusing having two copies here, the first one
     // is to dispatch() the second one is to add to params
     //
     let full_query = { ...query }
+    
     const freeze_query = { ...query }
  
     // remove/reset filters whenever we go to a new tab
-    delete full_query['filter_queries'] 
+    //delete full_query['filter_queries'] 
   
     // if tab has facet queries, add them to the query
-    if (facetQueries) {
-      let gathered = _.map(facetQueries, 'query')
-      let facetQueryStr = querystring.stringify(gathered)
-
-      full_query['facet_queries'] = facetQueryStr
-    }
+    //if (facetQueries) {
+    //  let gathered = _.map(facetQueries, 'query')
+    //  let facetQueryStr = querystring.stringify(gathered)
+    //
+    //  full_query['facet_queries'] = facetQueryStr
+    //}
     
-    if(facetFields) {
-      full_query['facet_fields'] = facetFields
-    }
+    //if(facetFields) {
+    //  full_query['facet_fields'] = facetFields
+    //}
 
-    dispatch(requestSearch(full_query))
+    // add anythign with applyFilters ...
+    // let tab = tabpicker.tab
+    //
+    // dispatch(requestSearch(query, filterer=tab))
+    //
+    dispatch(requestSearch(full_query, tabPicker.tab))
  
     // doing this to KEEP OUT of query_url (for now)  
     // just made a second copy to be clear they have different purposes
@@ -91,15 +97,15 @@ export class SearchTab extends Component {
     
     // NOTE: I thought making 'const' would mean this is not necessary
     //
-    delete freeze_query['filter_queries']
-    delete freeze_query['facet_queries']
-    delete freeze_query['facet_fields']
+    //delete freeze_query['filter_queries']
+    //delete freeze_query['facet_queries']
+    //delete freeze_query['facet_fields']
 
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
       pathname: '/',
-      query: freeze_query
+      query: full_query
     })
 
   }

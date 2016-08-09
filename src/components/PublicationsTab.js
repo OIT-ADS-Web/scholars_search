@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import AbstractTab from './AbstractTab'
-
 import HasSolrData from './HasSolrData'
 import ScholarsLink from './ScholarsLink'
 
@@ -50,13 +48,12 @@ class PublicationDisplay extends HasSolrData(Component) {
 
 }
 
+import Tab from './Tab'
 
-class PublicationsTab extends AbstractTab(Component)  {
+class PublicationsTab extends Tab  {
 
-  constructor(props) {
-    super(props)
-  }
-
+  // render() ???
+  //
   pickDisplay(doc, highlight) {
     return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }

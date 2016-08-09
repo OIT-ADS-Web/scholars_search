@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import AbstractTab from './AbstractTab'
+import Tab from './Tab'
 
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
@@ -125,45 +125,58 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
-class PeopleTab extends AbstractTab(Component)  {
+class PeopleTab extends Tab {
 
-  constructor(props) {
-    super(props)
+  constructor(config) {
+    super(config)
+
+    this.filters = []
   }
+
+  //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
+  applyFilters(searcher) {
+    super.applyFilters(searcher)
+    searcher.setFacetField("{!ex=dept}department_facet_string", {prefix: "1|",  missing: "true", mincount: "1"})
+    //searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true", mincount: "1"})
+
+    this.applyOptionalFilters(searcher)
+  }
+
+  // NOTE: this would need to be called BEFORE applyFilters()
+  //
+  setActiveFacets(chosen_ids) {
+    this.filters = chosen_ids
+  }
+ 
+  applyOptionalFilters(searcher) {
+
+    let list = _.map(this.filters, function(id) {
+      //let uri_to_search = `(1|https:/\/scholars.duke.edu/individual/${id})`  // FIXME: this must be wrong
+      let uri_to_search = `(1|*individual/${id})`  // FIXME: this must be wrong
+ 
+      if (id == "dept_null") { 
+        return `(-department_facet_string:[* TO *] AND *:*)`
+      } else {
+        return `department_facet_string:${uri_to_search}`
+      }
+    })
+
+    if(list.length > 0) {
+      let or_collection = list.join(' OR ')
+      let qry = `{!tag=dept}${or_collection}`
+      //let qry = `${or_collection}`
+      searcher.addFilter("facets", qry)
+     }
+
+  }
+
+  
 
   pickDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
-  //searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
-  /* results can look like this:
-
-  facet_counts:
-   { facet_queries: {},
-     facet_fields: { department_facet_string: [Object] },
-
-  [ '1|https://scholars.duke.edu/individual/org50000761',
-  6,
-  '1|https://scholars.duke.edu/individual/org50000299',
-  3,
-  '1|https://scholars.duke.edu/individual/org50000491',
-  3,
-  '1|https://scholars.duke.edu/individual/org50496347',
-  1,
-  '1|https://scholars.duke.edu/individual/org50000471',
-  0,
-  null,
-  4 ]
-  */
-
-  facetFields() {
-    return [
-      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
-    ]
-  }
-
-
-  csvFields() {
+  get csvFields() {
     let firstEntryBeforeSpace = function(row) {
       let str = row['ALLTEXT.0']
       let result = str.substr(0, str.indexOf(' '))
@@ -175,6 +188,103 @@ class PeopleTab extends AbstractTab(Component)  {
         { label: 'profileUrl', value: function(row) { return firstEntryBeforeSpace(row)}, default: ''}
     ]
   }
+
+
+  // need departments in here, somehow
+  facetFieldDisplay(facet_fields, chosen_ids, cb) {
+    let size = facet_fields.length
+
+    if (!(facet_fields || size > 0)) {
+      return ""
+    }
+
+    let departmentNameMap = {}
+    _.forEach(this.data.departments, function(obj) {
+       departmentNameMap[obj.URI] = obj.name
+    })
+    
+    let results = {}
+    _.forEach(facet_fields, function(value, key) {
+      results[key] = []
+
+      let array = value
+      let size = array.length
+      let i = 0
+      // strangely results are array, of [<count><field>, <count><field> ... ]
+      while (i < size) {
+        let dept = array[i]
+        let count = array[i+1]
+        let summary = {dept: dept, count:count}
+        results[key].push(summary)
+        i = i + 2
+      }
+    })
+
+    /*
+     *  
+    "department_facet_string": [
+      "3|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000832",
+      "2|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829",
+      "1|https://scholars.duke.edu/individual/org50000761",
+      "4|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000844|https://scholars.duke.edu/individual/org50000847",
+      "3|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000844",
+      "2|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829",
+      "1|https://scholars.duke.edu/individual/org50000761"
+    ],
+    */
+
+    let items = results['department_facet_string']
+    
+    let facet_list  = items.map(function(item) {
+  
+      let department_uri = item.dept ? item.dept.replace("1|", "") : "None" 
+      let label = item.dept ? departmentNameMap[department_uri] : "None"
+      
+      let org_id = item.dept ? item.dept.replace(/[0-9]\|https:\/\/scholars.duke.edu\/individual\//g, "") : "dept_null"
+
+      if (org_id.length > 11) {
+        return ""
+      }
+
+      if (chosen_ids.indexOf(org_id) > -1) {
+        
+        return (
+            <li className="list-group-item">
+              <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
+              <span className="badge">{item.count}</span> {label}
+            </li>
+          )
+        
+      } else {
+         
+        return (
+          <li className="list-group-item">
+            <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
+            <span className="badge">{item.count}</span> {label}
+          </li>
+        )
+       
+      }
+
+    })
+
+    let facets = (<ul className="list-group">{facet_list}</ul>)
+    return facets
+  }
+
+
+  facets(facet_counts, chosen_ids, cb) {
+    let facet_fields = facet_counts.facet_fields
+    
+    let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_ids, cb)
+    
+    return (
+      <div>
+        {facetFieldDisplay}
+      </div>
+     )
+  }
+
 
 }
 

@@ -5,86 +5,61 @@ import PublicationsTab from './PublicationsTab'
 import OrganizationsTab from './OrganizationsTab'
 import GenericTab from './GenericTab'
 import ArtisticWorksTab from './ArtisticWorksTab'
-import { SubjectHeadingsTab } from './SubjectHeadingsTab'
+import SubjectHeadingsTab from './SubjectHeadingsTab'
 import GrantsTab from './GrantsTab'
 import CoursesTab from './CoursesTab'
+import OtherTab from './OtherTab'
 
+import { tabList, findTab } from '../tabs'
+
+// FIXME: name TabRouter instead ????
+//
+// FIXME: define findTab in this file - just have 'tabs.js' be a 
+// list of defined tabs, period??
+//
 class TabPicker {
+
 
   constructor(filter) {
     this.filter = filter
+
+    let config = findTab(filter)
 
     // makes this be a router, or thin wrapper of sorts - there's probably a 
     // design pattern name for this
     switch(this.filter) {
     case 'person':
-      this.tab = new PeopleTab()
+      this._tab = new PeopleTab(config)
       break
     case 'publications':
-      this.tab = new PublicationsTab()
+      this._tab = new PublicationsTab(config)
       break
     case 'organizations':  
-      this.tab = new OrganizationsTab()
+      this._tab = new OrganizationsTab(config)
       break
     case 'subjectheadings':  
-      this.tab = new SubjectHeadingsTab()
+      this._tab = new SubjectHeadingsTab(config)
       break
     case 'artisticworks':  
-      this.tab = new ArtisticWorksTab()
+      this._tab = new ArtisticWorksTab(config)
       break
     case 'grants':  
-      this.tab = new GrantsTab()
+      this._tab = new GrantsTab(config)
       break
     case 'courses':  
-      this.tab = new CoursesTab()
+      this._tab = new CoursesTab(config)
+      break
+    case 'other':
+      this._tab = new OtherTab(config)
       break
     default:  
-      this.tab = new GenericTab()
+      this._tab = new GenericTab({})
     }
   }
 
-  toCSV(json) {
-    return this.tab.toCSV(json)
+  get tab() {
+    return this._tab
   }
-
-  results(docs, highlighting) {
-    return this.tab.results(docs, highlighting)
-  }
-
-
-  facetFieldDisplay(facet_fields) {
-    //if (this.facetFields) {
-    return this.tab.facetFieldDisplay(facet_fields)
-    //}
-  }
-
-  facets(query, facet_queries, chosen_ids=[], cb=null) {
-    return this.tab.facets(query, facet_queries, chosen_ids, cb)
-  }
-
-  sortOptions() {
-    return this.tab.sortOptions()
-  }
-
-
-  filterQueries(base_qry) {
-    return this.tab.filterQueries(base_qry)
-  }
-
-  facetFields() {
-    if (this.tab.facetFields) {
-      return this.tab.facetFields()
-    }
-  }
-
-  facetQueries(base_qry) {
-    return this.tab.facetQueries(base_qry)
-  }
-
-  findFilterMatches(base_query, filter_queries) {
-    return this.tab.findFilterMatches(base_query, filter_queries)
-  }
-
 
 }
 

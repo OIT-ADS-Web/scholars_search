@@ -172,7 +172,7 @@ class SolrQuery {
       facetOptions["facet.query"] = queries
     }
 
-    console.log(facetOptions)
+    //console.debug(facetOptions)
     // facet.query=nameRaw:medicine
     // facet.query=medicine
     //

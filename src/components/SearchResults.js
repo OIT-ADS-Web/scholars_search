@@ -40,6 +40,11 @@ export class SearchResults extends Component {
     //http://stackoverflow.com/questions/23123138/perform-debounce-in-react-js
     this.handleDownload= _.debounce(this.handleDownload,1000);
     this.handleSort = this.handleSort.bind(this)
+
+    this.state = {
+      chosen_facets: []
+    }
+    //this.chosen_ids = []
   }
 
   
@@ -88,15 +93,22 @@ export class SearchResults extends Component {
 
   handleSort() {
     const { search : { searchFields } } = this.props
-    
+ 
+    // FIXME: this same logic appears in many places - it should be centralized
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
     let sort = this.sort
 
     // 1. add sort to parmams - search etc...
     // setting default start to 0 - so paging is reset
     const query  = {...searchFields, start: 0, sort: sort }
 
+    let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
+
+
     // 2. run search again 
-    dispatch(requestSearch(query))
+    dispatch(requestSearch(query, tab))
     
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
@@ -110,8 +122,9 @@ export class SearchResults extends Component {
 
 
   handleFacetClick(e) {
-    const { search : { searchFields }, dispatch } = this.props
-    
+   //const { search : { searchFields }, dispatch } = this.props
+    const { search : { searchFields }, departments: { data }, dispatch } = this.props
+
     let query = solr.buildComplexQuery(searchFields)
      
     // FIXME: this same logic appears in many, many places - it should be centralized
@@ -119,62 +132,39 @@ export class SearchResults extends Component {
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
     
     let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
 
     let id = e.target.id
- 
-    let filterQueries = tabPicker.filterQueries(query)
 
-    let found = _.find(filterQueries, function(o) { return o.id === id })
-    let filterQuery = found ? found.query : null
+    //let filterQueries = tabPicker.filterQueries(query)
+
+    //let found = _.find(filterQueries, function(o) { return o.id === id })
+    //let filterQuery = found ? found.query : null
  
     let full_query = { ...searchFields }
     full_query['start'] = 0
 
-    let currentFilterQueries = querystring.parse(searchFields['filter_queries'])
 
+    let chosen_ids = this.state.chosen_facets
+  
     if (e.target.checked) {
-      let keys = _.keys(currentFilterQueries).sort()
-
-      if (keys.length > 0) {
-        let highest = _.parseInt(_.last(keys))
-      
-        console.log(highest)
-        let next = highest + 1
-      
-        console.log(next)
-
-        currentFilterQueries[next] = filterQuery
-         full_query['filter_queries'] = querystring.stringify(currentFilterQueries)
-      } else {
-         full_query['filter_queries'] = querystring.stringify([filterQuery])
- 
-      }
-
-      dispatch(requestSearch(full_query))
-
-      //this.context.router.push({
-      //  pathname: '/',
-      //  query: full_query
-      //})
-
+      chosen_ids.push(id)
     } else {
-      let toDelete = _.findKey(currentFilterQueries, function(o) { return o === filterQuery })
- 
-      delete currentFilterQueries[toDelete]
-
-      let newFilterQueries = currentFilterQueries
-
-      // FIXME: need a way to keep filter_queries we've already added
-      full_query['filter_queries'] = querystring.stringify(newFilterQueries)
-      
-      dispatch(requestSearch(full_query))
+      chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
     }
-    
+
+    this.setState({chosen_facets: chosen_ids}, function() {
+      // FIXME: needs to be added BEFORE
+      tab.addContext({'departments': data })
+      tab.setActiveFacets(this.state.chosen_facets)
+      dispatch(requestSearch(full_query, tab))
+    })
+ 
 
   }
 
   render() {
-    const { search : { results, searchFields, isFetching, message } } = this.props
+    const { search : { results, searchFields, isFetching, message }, departments: { data } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
@@ -182,6 +172,7 @@ export class SearchResults extends Component {
     let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
     let { facet_queries, facet_fields } = facet_counts
+    
     // data will look like this (for subject heading for instance):
     /*
       facet_counts:
@@ -193,11 +184,14 @@ export class SearchResults extends Component {
       },
     */
 
-    let tabResults = ""
+    //let tabResults = ""
     let tabPicker = new TabPicker(filter)
-    
+    let tab = tabPicker.tab
+
+    let tabResults = ""
+
     if (docs) {
-      tabResults = tabPicker.results(docs, highlighting)
+      tabResults = tab.results(docs, highlighting)
     }
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
@@ -211,53 +205,24 @@ export class SearchResults extends Component {
       )
     }
 
+    
     // NOTE: a textual representation of the complex search
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
-    let tabFacets = ""
 
-    // FIXME: not ordered correctly - also ugly display of actual query, need an alias of some sort
-    // for display purposes
-    //
-    //
-    // filterQueries(base_qry) {
-    //  return [
-    //   {id: 'sh_name_fq', tag: 'match', query: `{!tag=match}nameText:${base_qry}`}
-    //  ]
-    // }
-
-
-    let filter_queries = searchFields ? (querystring.parse(searchFields['filter_queries']) : null) : null
-
-    let chosen_ids = []
-    let possible_matches = tabPicker.findFilterMatches(query, filter_queries)
-
-    if (possible_matches.length > 0) {
-       chosen_ids = chosen_ids.concat(possible_matches)
-    }
-
-    // NOTE: this gets complicated with facet.field vs facet.query
-    //
-    //
-    // FIXME: how to get this here on tab initialize (not just tab click)
-    if (facet_queries) {
-      let cb = this.handleFacetClick.bind(this)
-      tabFacets = tabPicker.facets(query, facet_queries, chosen_ids, cb)
-    }
-
-    // FIXME: new variable, or append to ?
-    let facetFieldDisplay = ""   
-    if (facet_fields) {
-      //      {field: 'department_facet_string', options: {prefix: "1|", missing: "true"}} 
- 
-      // don't need 'query' but it doesn't hurt anything to send
-      // still ... facets() will react different depending on 
-      // facet.query or facet.field
-      facetFieldDisplay = tabPicker.facetFieldDisplay(facet_fields)
-      //console.log(tabPicker.facetFieldDisplay(facet_fields))
-    }
+    let cb = this.handleFacetClick.bind(this)
     
+    // FIXME: needs to be called BEFORE
+    tab.addContext({'departments': data })
+    
+    //let departmentNameMap = {}
+    //_.forEach(context, function(obj) {
+    //   departmentNameMap[obj.URI] = obj.name
+    //})
+ 
+    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
+
 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
@@ -291,8 +256,6 @@ export class SearchResults extends Component {
                 </button>
               </div>
               {tabFacets}
-
-              {facetFieldDisplay}
            </div>
           </div>
 

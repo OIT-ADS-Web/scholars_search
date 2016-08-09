@@ -87,13 +87,17 @@ export class SearchForm extends Component {
 
     let tabPicker = new TabPicker(filter)
 
+    let tab = tabPicker.tab
+
     if (solr.isEmptySearch(compoundSearch)) {
       dispatch(emptySearch())
     } 
     else {
 
       let base_query = solr.buildComplexQuery(compoundSearch)
-      let facetQueries = tabPicker.facetQueries(base_query)
+      
+
+      //let facetQueries = tabPicker.facetQueries(base_query)
       
       // FIXME: these need to be url composable ... right?
       //
@@ -109,18 +113,20 @@ export class SearchForm extends Component {
       //full_query['facet_queries'] = facetQueryStr
  
 
-      if (facetQueries && facetQueries.length > 0) {
+      //if (facetQueries && facetQueries.length > 0) {
         // underscore map - getting all the 'query' properties
-        let gathered = _.map(facetQueries, 'query')
-        let facetQueryStr = querystring.stringify(gathered)
-        full_query['facet_queries'] = facetQueryStr
-
-        console.log(facetQueryStr)
-
-      }
+     //   let gathered = _.map(facetQueries, 'query')
+     //   let facetQueryStr = querystring.stringify(gathered)
+     //   full_query['facet_queries'] = facetQueryStr
+     //
+     //   console.log(facetQueryStr)
+     //
+     // }
           
-  
-      dispatch(requestSearch(full_query))
+
+      // requestSearch(compoundSearch, filters)
+      //
+      dispatch(requestSearch(full_query, tab))
       dispatch(requestTabCount(compoundSearch))
     }
 
