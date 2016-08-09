@@ -8,6 +8,8 @@ import classNames from 'classnames'
 
 import { requestSearch } from '../actions/search'
 
+import TabPicker from './TabPicker'
+
 export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
@@ -43,12 +45,15 @@ export class PagingPanel extends Component {
 
     let full_query = { ...query }
 
-    dispatch(requestSearch(full_query))
- 
-    // FIXME: take out facet_queries from URL params, or not??? 
-    delete query['facet_queries']
-    delete query['filter_queries']
+    // FIXME: I assume filter would be in the searchFields by now
+    // could add this to be safe:
+    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
+    let filter = searchFields['filter']
+    let tabPicker =  new TabPicker(filter)
+
+    dispatch(requestSearch(full_query, tabPicker.tab))
+ 
     this.context.router.push({
       pathname: '/',
       query: query
@@ -73,11 +78,14 @@ export class PagingPanel extends Component {
 
     let full_query = { ...query }
 
-    dispatch(requestSearch(full_query))
+    // FIXME: I assume filter would be in the searchFields by now
+    // could add this to be safe:
+    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
-    // FIXME: take out facet_queries from URL params, or not??? 
-    delete query['facet_queries']
-    delete query['filter_queries']
+    let filter = searchFields['filter']
+    let tabPicker =  new TabPicker(filter)
+
+    dispatch(requestSearch(full_query, tabPicker.tab))
 
     this.context.router.push({
       pathname: '/',
