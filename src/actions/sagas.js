@@ -80,7 +80,7 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   searcher.search =  searchFields
 
   // NOTE: apply filters last, after search has been defined
-    filterer.applyFilters(searcher)
+  filterer.applyFilters(searcher)
  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 

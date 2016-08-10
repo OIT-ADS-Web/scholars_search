@@ -25,6 +25,9 @@ export class PagingPanel extends Component {
     
     this.handleNextPage = this.handleNextPage.bind(this)
     this.handlePreviousPage = this.handlePreviousPage.bind(this)
+ 
+    this.facets = this.props.facets
+  
   }
 
   handleNextPage(e) {
@@ -49,10 +52,17 @@ export class PagingPanel extends Component {
     // could add this to be safe:
     //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
+    // FIXME: how to persist facet filters ???
+    //
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
-    dispatch(requestSearch(full_query, tabPicker.tab))
+    let chosen_ids = this.facets
+ 
+    let tab = tabPicker.tab
+    tab.setActiveFacets(chosen_ids)
+   
+    dispatch(requestSearch(full_query, tab))
  
     this.context.router.push({
       pathname: '/',
@@ -85,7 +95,12 @@ export class PagingPanel extends Component {
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
-    dispatch(requestSearch(full_query, tabPicker.tab))
+    let chosen_ids = this.facets
+ 
+    let tab = tabPicker.tab
+    tab.setActiveFacets(chosen_ids)
+ 
+    dispatch(requestSearch(full_query, tab))
 
     this.context.router.push({
       pathname: '/',

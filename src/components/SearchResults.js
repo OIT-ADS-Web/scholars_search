@@ -259,7 +259,7 @@ export class SearchResults extends Component {
 
         </div>
 
-        <PagingPanel></PagingPanel>
+        <PagingPanel facets={this.state.chosen_facets}></PagingPanel>
 
     </section>
 
