@@ -43,7 +43,7 @@ const compoundSearch = {
 
 searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
 
-import { tabList } from '../src/tabs'
+import { tabList } from '../src/components/TabList'
 
 
 // should be 'people' tab filter

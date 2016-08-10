@@ -23,7 +23,7 @@ const compoundSearch = {
   'allWords': 'med*'
 }
 
-import { tabList } from '../src/tabs'
+import { tabList } from '../src/components/TabList'
 
 searcher.addFilter("type", "type:(*Person)")
 

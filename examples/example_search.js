@@ -51,7 +51,9 @@ const compoundSearch2 = {
 const qry2 = searcher.buildQuery(compoundSearch2)
 searcher.query = qry2
 
-const tabs = solr.tabList 
+import { tabList } from '../src/components/TabList'
+
+const tabs = tabList 
 console.log(tabs)
 
 const filterStr = tabs[0].filter

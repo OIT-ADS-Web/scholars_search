@@ -1,15 +1,6 @@
 import React from 'react'
 
-import PeopleTab from './PeopleTab'
-import PublicationsTab from './PublicationsTab'
-import OrganizationsTab from './OrganizationsTab'
-import GenericTab from './GenericTab'
-import ArtisticWorksTab from './ArtisticWorksTab'
-import SubjectHeadingsTab from './SubjectHeadingsTab'
-import GrantsTab from './GrantsTab'
-import CoursesTab from './CoursesTab'
-import OtherTab from './OtherTab'
-
+/*
 export const tabList = [
   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   { id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" },
@@ -22,6 +13,13 @@ export const tabList = [
    label: "Other"
   }
 ]
+*/
+
+// NOTE: just a dumb trick so I can keep separate (for babel-node to run examples/example_*_.js files)
+// but still only import one thing
+import { tabList as tabs } from './TabList'
+
+export const tabList = tabs
 
 import _ from 'lodash'
 
@@ -30,6 +28,17 @@ export function findTab(name) {
   return tab
 }
  
+import PeopleTab from './PeopleTab'
+import PublicationsTab from './PublicationsTab'
+import OrganizationsTab from './OrganizationsTab'
+import GenericTab from './GenericTab'
+import ArtisticWorksTab from './ArtisticWorksTab'
+import SubjectHeadingsTab from './SubjectHeadingsTab'
+import GrantsTab from './GrantsTab'
+import CoursesTab from './CoursesTab'
+import OtherTab from './OtherTab'
+
+
 // FIXME: name TabRouter instead ????
 //
 // FIXME: define findTab in this file - just have 'tabs.js' be a 
