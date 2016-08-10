@@ -251,7 +251,7 @@ class PeopleTab extends Tab {
         return (
             <li className="list-group-item">
               <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
-              <span className="badge">{item.count}</span> {label}
+              <span title={department_uri} className="badge">{item.count}</span> {label}
             </li>
           )
         
@@ -260,7 +260,7 @@ class PeopleTab extends Tab {
         return (
           <li className="list-group-item">
             <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
-            <span className="badge">{item.count}</span> {label}
+            <span title={department_uri} className="badge">{item.count}</span> {label}
           </li>
         )
        

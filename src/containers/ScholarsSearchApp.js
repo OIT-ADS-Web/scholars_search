@@ -56,6 +56,7 @@ export class ScholarsSearchApp extends Component {
         query['start'] = 0
       }
 
+      // FIXME: would need to get this from /path - right?
       if (!query['filter']) {
         query['filter'] = 'person'
       }
@@ -70,28 +71,24 @@ export class ScholarsSearchApp extends Component {
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      //let facetQueries = tabPicker.facetQueries(base_query)
-      
-      // FIXME: if a tab should have a 'default' filter query
-      // would need to add that here ??? and/or  SearchTab#handleTab
-      //
-      //let filterQueries = tabPicker.defaultFilterQueries(base_query)
-
-
-      //if (facetQueries && facetQueries.length > 0) {
-      //  let gathered = _.map(facetQueries, 'query')
-      //  let facetQueryStr = querystring.stringify(gathered)
-      //  builtSearch['facet_queries'] = facetQueryStr
-      //}
-
       dispatch(requestSearch(builtSearch, tabPicker.tab))
       // NOTE: might need to change - tabs don't need facet_queries
       // but should ignore anyway 
       dispatch(requestTabCount(builtSearch))
- 
+
+
+      // getting this.context.router is null here
+      /*
+      this.context.router.push({
+        pathname: "/",
+        query: query
+      })
+      */
+
     } else if (onlyAdvanced || blankSearch) {
        dispatch(emptySearch())
     }
+
 
 
   }
@@ -100,8 +97,10 @@ export class ScholarsSearchApp extends Component {
     super(props,context)
   }
 
+
   render() {
-    
+ 
+    // {this.props.children}   
     return (
 
       <Page>

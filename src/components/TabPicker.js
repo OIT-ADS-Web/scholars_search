@@ -10,8 +10,26 @@ import GrantsTab from './GrantsTab'
 import CoursesTab from './CoursesTab'
 import OtherTab from './OtherTab'
 
-import { tabList, findTab } from '../tabs'
+export const tabList = [
+  { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
+  { id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" },
+  { id: "organizations",  filter: "{!tag=organizations}type:(*Organization)", label: "Organizations" }, 
+  { id: "grants",  filter: "{!tag=grants}type:(*Grant)", label: "Grants" }, 
+  { id: "courses",  filter: "{!tag=courses}type:(*Course)", label: "Courses" },
+  { id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
+  { id: "subjectheadings", filter: "{!tag=subjectheadings}type:(*Concept)", label: "Subject Headings" },
+  { id: "misc",  filter: "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
+   label: "Other"
+  }
+]
 
+import _ from 'lodash'
+
+export function findTab(name) {
+  let tab = _.find(tabList, function(tab) { return tab.id == name })
+  return tab
+}
+ 
 // FIXME: name TabRouter instead ????
 //
 // FIXME: define findTab in this file - just have 'tabs.js' be a 
@@ -19,10 +37,11 @@ import { tabList, findTab } from '../tabs'
 //
 class TabPicker {
 
-
   constructor(filter) {
     this.filter = filter
 
+    /// FIXME: this makes a new object every time - should probably not do that
+    //
     let config = findTab(filter)
 
     // makes this be a router, or thin wrapper of sorts - there's probably a 
@@ -65,3 +84,30 @@ class TabPicker {
 
 
 export default TabPicker
+
+
+/*
+FIXME: tried to do something like this, but ran into problems:
+
+import PeopleTab from './components/PeopleTab'
+import PublicationsTab from './components/PublicationsTab'
+import OrganizationsTab from './components/OrganizationsTab'
+import ArtisticWorksTab from './components/ArtisticWorksTab'
+import SubjectHeadingsTab from './components/SubjectHeadingsTab'
+import GrantsTab from './components/GrantsTab'
+import CoursesTab from './components/CoursesTab'
+import OtherTab from './components/OtherTab'
+
+let tabs = {}
+tabs["person"] = new PeopleTab({id: "person", filter: "{!tag=person}type:(*Person)", label: "People" })
+tabs["publications"] = new PublicationsTab({ id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" })
+tabs["organizations"] = new OrganizationsTab({ id: "organizations",  filter: "{!tag=organizations}type:(*Organization)", label: "Organizations" }) 
+tabs["grants"] = new GrantsTab({ id: "grants",  filter: "{!tag=grants}type:(*Grant)", label: "Grants" })
+tabs["courses"] = new CoursesTab({ id: "courses",  filter: "{!tag=courses}type:(*Course)", label: "Courses" })
+tabs["artisticworks"] = new ArtisticWorksTab({ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" })
+tabs["subjectheadings"] = new SubjectHeadingsTab({ id: "subjectheadings", filter: "{!tag=subjectheadings}type:(*Concept)", label: "Subject Headings" })
+tabs["others"] = new OtherTab({ id: "misc",  filter: "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))", label: "Other"})
+
+export const TABS = tabs
+*/
+

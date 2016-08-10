@@ -9,10 +9,7 @@ import Loading from './Loading'
 
 import { requestSearch } from '../actions/search'
 
-// maybe TabPicker and ./tabs should merge?
-import { tabList } from '../tabs'
-
-import TabPicker from './TabPicker'
+import { tabList } from './TabPicker'
 
 export class SearchTabs extends Component {
 

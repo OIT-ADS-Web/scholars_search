@@ -21,10 +21,22 @@ import ScholarsSearchApp from './containers/ScholarsSearchApp'
 // <Route path="people" components ={{main: PeopleTab, sidebar: PeopleSidebar}}>
 //   ??
 //
+//
+
+// FIXME: just can't get something like this to work
+//import PeopleSearch from './components/PeopleSearch'
+
 const routes =
 <Route path="/" component={ScholarsSearchApp}>
     <IndexRoute component={ScholarsSearchApp}/>
-    { /* <Route path="people" component={ScholarsSearchApp} />*/ }  
+   { /*  <Route path="/people" component={PeopleSearch} /> */ }
+   { /* <Route path="publications" component={PublicationsSearch} /> */ }
+   { /* <Route path="organizations" component={OrganizationsSearch} /> */ }
+   { /* <Route path="grants" component={GrantsSearch} /> */ }
+   { /* <Route path="courses" component={CoursesSearch} /> */ }
+   { /* <Route path="artisticworks" component={ArtisticWorksSearch} /> */ }
+   { /* <Route path="subjectheadings" component={SubjectHeadingsSearch} /> */ }
+   { /* <Route path="other" component={OtherSearch} /> */ }
 </Route>
 
 export default routes

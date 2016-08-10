@@ -2,7 +2,9 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
-import { tabList, findTab } from '../tabs'
+
+// FIXME: not crazy about this import
+import { tabList } from '../components/TabPicker'
 
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
@@ -22,6 +24,7 @@ function fetchTabsApi(searchFields) {
   
   let searcher = new SolrQuery(solrUrl)
 
+  // FIXME: dependent on tabList
   searcher.setupTabGroups(tabList)
   searcher.search = searchFields
 

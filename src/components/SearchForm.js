@@ -78,15 +78,21 @@ export class SearchForm extends Component {
      * e.g. it really shouldn't search a 'blank' search
      *
      * FIXME: this pathname should be global, configurable, right?
+     * also - how would we add to /people or /organizations etc...
+     *
      */
+    //let path = `/${filter}`
+    let path = "/"
+
     this.context.router.push({
-      pathname: '/',
+      pathname: path,
       query: compoundSearch 
     })
 
 
+    // NOTE: this creates a new PersonTab() (for instance)
+    //
     let tabPicker = new TabPicker(filter)
-
     let tab = tabPicker.tab
 
     if (solr.isEmptySearch(compoundSearch)) {
@@ -96,36 +102,8 @@ export class SearchForm extends Component {
 
       let base_query = solr.buildComplexQuery(compoundSearch)
       
-
-      //let facetQueries = tabPicker.facetQueries(base_query)
-      
-      // FIXME: these need to be url composable ... right?
-      //
-      // just doing this to keep them out of url (for now)    
-      //let full_query = { ...searchFields }
       let full_query = { ...compoundSearch }
 
-
-      // let gathered = _.map(facetQueries, 'query')
-      //let facetQueryStr = querystring.stringify(gathered)
-
-      //full_query['facet_queries'] = facetQueries
-      //full_query['facet_queries'] = facetQueryStr
- 
-
-      //if (facetQueries && facetQueries.length > 0) {
-        // underscore map - getting all the 'query' properties
-     //   let gathered = _.map(facetQueries, 'query')
-     //   let facetQueryStr = querystring.stringify(gathered)
-     //   full_query['facet_queries'] = facetQueryStr
-     //
-     //   console.log(facetQueryStr)
-     //
-     // }
-          
-
-      // requestSearch(compoundSearch, filters)
-      //
       dispatch(requestSearch(full_query, tab))
       dispatch(requestTabCount(compoundSearch))
     }
@@ -184,10 +162,10 @@ export class SearchForm extends Component {
         <div className="row">        
           
           <div className="col-md-8">
-            <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" />
+            <SearchField label="With all of these words" ref={(ref) => this.allWords = ref} defaultValue={allWords} placeholder="Multiple, Terms, Use, Comma" autofocus={true}/>
         
             <div className={advancedClasses}>
-              <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match" autofocus={true} />
+              <SearchField label="With the exact phrase" ref={(ref) => this.exactMatch = ref} defaultValue={exactMatch} placeholder="Exact Match"  />
               <SearchField label="With any of these words" ref={(ref) => this.atLeastOne = ref} defaultValue={atLeastOne} placeholder="Multiple, Terms, Use, Comma" />
               <SearchField label="With none of these words" ref={(ref) => this.noMatch = ref} defaultValue={noMatch} placeholder="Multiple, Terms, Use, Comma" />
             </div>

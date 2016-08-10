@@ -44,6 +44,8 @@ export class SearchResults extends Component {
     this.state = {
       chosen_facets: []
     }
+
+    this.path = "/"
     //this.chosen_ids = []
   }
 
@@ -77,11 +79,13 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
+    // FIXME: this gets rid of facets
     let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
 
-    fetchSearchApi(searchFields, maxRows).then(function(json) {
+    fetchSearchApi(searchFields, tab, maxRows).then(function(json) {
 
-      let csv = tabPicker.toCSV(json)
+      let csv = tab.toCSV(json)
       let blob = new Blob(csv, {type: type})
       // FIXME: much more to do here - just proving I can download a file now
       saveAs(blob, fileName)
@@ -106,14 +110,13 @@ export class SearchResults extends Component {
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
-
     // 2. run search again 
     dispatch(requestSearch(query, tab))
     
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
-      pathname: '/',
+      pathname: this.path,
       query: query
     })
     // 3. let display take care of itself - but { sort } needs to be set
@@ -136,14 +139,8 @@ export class SearchResults extends Component {
 
     let id = e.target.id
 
-    //let filterQueries = tabPicker.filterQueries(query)
-
-    //let found = _.find(filterQueries, function(o) { return o.id === id })
-    //let filterQuery = found ? found.query : null
- 
     let full_query = { ...searchFields }
     full_query['start'] = 0
-
 
     let chosen_ids = this.state.chosen_facets
   
@@ -213,7 +210,8 @@ export class SearchResults extends Component {
 
     let cb = this.handleFacetClick.bind(this)
     
-    // FIXME: needs to be called BEFORE
+    // FIXME: needs to be called BEFORE tab.facets is called (so it has
+    // meta-data)
     tab.addContext({'departments': data })
     
     //let departmentNameMap = {}

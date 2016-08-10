@@ -270,6 +270,8 @@ function setupTabGroups(searcher, tabList) {
     pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }
 
+  // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter
+  //
   // e.g.
   // it's doing something like this...
   //
