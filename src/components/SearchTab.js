@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import querystring from 'querystring'
 
-import { requestSearch } from '../actions/search'
+import { requestSearch, requestTabCount } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
@@ -15,6 +15,7 @@ import _ from 'lodash'
 import { fetchSearchApi } from '../actions/sagas'
 
 import TabPicker from './TabPicker'
+import { tabList } from './TabPicker'
 
 export class SearchTab extends Component {
 
@@ -59,7 +60,11 @@ export class SearchTab extends Component {
     let full_query = { ...query }
     
     dispatch(requestSearch(full_query, tabPicker.tab))
- 
+
+    // NOTE: wasn't doing this before I cancel update of SearchResults
+    // (with componentShouldUpdate)
+    dispatch(requestTabCount(full_query, tabList))
+  
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
@@ -70,7 +75,7 @@ export class SearchTab extends Component {
   }
 
   render() {
-    
+
     let classList = classNames({active: this.active, 'search-tab': !this.mobile})
 
     // FIXME: the fact that I can't put an if statement in jsx is annoying    

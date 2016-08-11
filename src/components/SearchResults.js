@@ -49,6 +49,18 @@ export class SearchResults extends Component {
     //this.chosen_ids = []
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { search : { isFetching }} = nextProps
+    //return true
+    
+    if (isFetching) {
+      return false
+    } else {
+      return true
+    }
+  
+
+  }
   
   handleDownload() {
     // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault():
