@@ -190,20 +190,27 @@ export class SubjectHeadingsTab extends Tab {
 
       let label = facetQuery.label 
 
+ 
       // chosen_ids not set at this point - ordering matter!!
       //
       if (chosen_ids.indexOf(facetQuery.id) > -1) {
         return (
-            <li className="list-group-item">
-              <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" defaultChecked={true} />
-              <span className="badge">{item}</span> {label}
+            <li className="list-group-item facet-item">
+              <span className="badge">{item}</span>
+              <label for={facetQuery.id}>
+                <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" defaultChecked={true} />
+                <span className="facet-label">{label}</span>
+              </label>
             </li>
           )
       } else {
         return (
-          <li className="list-group-item">
-            <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" />
-            <span className="badge">{item}</span> {label}
+          <li className="list-group-item facet-item">
+            <span className="badge">{item}</span> 
+            <label for={facetQuery.id}>
+              <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" />
+              <span className="facet-label">{label}</span>
+            </label>
           </li>
         )
       }

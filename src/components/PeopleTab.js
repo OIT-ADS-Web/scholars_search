@@ -249,18 +249,24 @@ class PeopleTab extends Tab {
       if (chosen_ids.indexOf(org_id) > -1) {
         
         return (
-            <li className="list-group-item">
-              <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
-              <span title={department_uri} className="badge">{item.count}</span> {label}
+            <li className="list-group-item facet-item">
+              <span title={department_uri} className="badge">{item.count}</span>
+              <label for={org_id} >
+                <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
+                <span className="facet-label">{label}</span>
+              </label>
             </li>
           )
         
       } else {
          
         return (
-          <li className="list-group-item">
-            <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
-            <span title={department_uri} className="badge">{item.count}</span> {label}
+          <li className="list-group-item facet-item">
+            <span title={department_uri} className="badge">{item.count}</span> 
+            <label for={org_id}>
+              <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
+              <span className="facet-label">{label}</span>
+            </label>
           </li>
         )
        

@@ -150,6 +150,7 @@ export class SearchResults extends Component {
       chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
     }
 
+    // FIXME: this seems wrong.  I can't depend on the state updating
     this.setState({chosen_facets: chosen_ids}, function() {
       // FIXME: needs to be added BEFORE
       tab.addContext({'departments': data })
@@ -170,7 +171,7 @@ export class SearchResults extends Component {
     let { numFound=0,docs } = response
     let { facet_queries, facet_fields } = facet_counts
     
-    // data will look like this (for subject heading for instance):
+    // response data will look like this (for subject heading for instance):
     /*
       facet_counts:
       { 
@@ -181,7 +182,6 @@ export class SearchResults extends Component {
       },
     */
 
-    //let tabResults = ""
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
@@ -202,7 +202,6 @@ export class SearchResults extends Component {
       )
     }
 
-    
     // NOTE: a textual representation of the complex search
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
@@ -214,13 +213,7 @@ export class SearchResults extends Component {
     // meta-data)
     tab.addContext({'departments': data })
     
-    //let departmentNameMap = {}
-    //_.forEach(context, function(obj) {
-    //   departmentNameMap[obj.URI] = obj.name
-    //})
- 
     let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
-
 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
@@ -244,10 +237,10 @@ export class SearchResults extends Component {
         <div className="search-results-table">
          
           <div className="row panel">
-            <div className="col-md-10">          
+            <div className="col-md-9">          
              {tabResults} 
            </div>
-           <div className="col-md-2 panel panel-info">
+           <div className="col-md-3 panel panel-info">
               <div className="panel-body">
                 <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
                   <span className="glyphicon glyphicon-download"> Download </span>
