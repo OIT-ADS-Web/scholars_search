@@ -3,7 +3,8 @@ import _ from 'lodash'
 import json2csv from 'json2csv'
 
 export default class Tab {
- 
+
+
   constructor(config) {
     this.config = config
   }
@@ -18,8 +19,13 @@ export default class Tab {
     }
   }
 
-  facets(facet_counts) {
-    return ""
+  // NOTE: should override
+  facets(facet_counts) { return ""}
+
+  //
+  defaultQueryOptions() { 
+   //   qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+   //   pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
   }
 
   setActiveFacets(chosen_ids) { }

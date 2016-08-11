@@ -10,11 +10,11 @@ import { requestSearch, requestTabCount, emptySearch } from '../actions/search'
 import solr from '../utils/SolrHelpers'
 
 import TabPicker from './TabPicker'
+import { tabList } from './TabPicker'
 
 import querystring from 'querystring'
 
 export class SearchForm extends Component {
-
 
   static get contextTypes() {
     return({
@@ -105,7 +105,8 @@ export class SearchForm extends Component {
       let full_query = { ...compoundSearch }
 
       dispatch(requestSearch(full_query, tab))
-      dispatch(requestTabCount(compoundSearch))
+      
+      dispatch(requestTabCount(compoundSearch, tabList))
     }
 
     allWords.focus()

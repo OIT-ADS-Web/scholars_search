@@ -46,12 +46,13 @@ export function searchFailed(message) {
 }
 
 // ****** tabs *******
-export function requestTabCount(searchFields) {
+export function requestTabCount(searchFields, tabList) {
   return {
     type: types.REQUEST_TABCOUNTS,
     grouped: {},
     isFetching: true,
-    searchFields: searchFields
+    searchFields: searchFields,
+    tabList: tabList
   }
 
 }

@@ -12,6 +12,8 @@ import solr from '../utils/SolrHelpers'
 
 import TabPicker from '../components/TabPicker'
 
+import { tabList } from '../components/TabPicker'
+
 import querystring from 'querystring'
 
 export class ScholarsSearchApp extends Component {
@@ -74,7 +76,7 @@ export class ScholarsSearchApp extends Component {
       dispatch(requestSearch(builtSearch, tabPicker.tab))
       // NOTE: might need to change - tabs don't need facet_queries
       // but should ignore anyway 
-      dispatch(requestTabCount(builtSearch))
+      dispatch(requestTabCount(builtSearch, tabList))
 
 
       // getting this.context.router is null here

@@ -14,7 +14,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
     return { ...tabs, 
       isFetching: true,
       grouped: action.grouped,
-      searchFields: action.searchFields
+      searchFields: action.searchFields,
+      tabList: action.tabList
   }
   case types.RECEIVE_TABCOUNTS:
 

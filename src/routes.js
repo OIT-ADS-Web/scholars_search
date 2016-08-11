@@ -24,7 +24,7 @@ import ScholarsSearchApp from './containers/ScholarsSearchApp'
 //
 
 // FIXME: just can't get something like this to work
-//import PeopleSearch from './components/PeopleSearch'
+//import PeopleSearch from './experiment/PeopleSearch'
 
 const routes =
 <Route path="/" component={ScholarsSearchApp}>

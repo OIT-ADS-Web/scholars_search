@@ -2,10 +2,6 @@ import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'
 
-
-// FIXME: not crazy about this import
-import { tabList } from '../components/TabPicker'
-
 import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
 import querystring from 'querystring'
@@ -19,12 +15,11 @@ import { receiveDepartments, departmentsFailed } from './search'
 
 // ***** tabs *****0
 // 1. actual function
-function fetchTabsApi(searchFields) {
+function fetchTabsApi(searchFields, tabList) {
   const solrUrl = process.env.SOLR_URL
   
   let searcher = new SolrQuery(solrUrl)
 
-  // FIXME: dependent on tabList
   searcher.setupTabGroups(tabList)
   searcher.search = searchFields
 
@@ -33,8 +28,8 @@ function fetchTabsApi(searchFields) {
 
 // 2. what to do 
 export function* fetchTabs(action) {
-  const { searchFields } = action
-  const results = yield call(fetchTabsApi,searchFields) 
+  const { searchFields, tabList } = action
+  const results = yield call(fetchTabsApi,searchFields, tabList) 
 
   try {
     yield put(receiveTabCount(results))
@@ -53,25 +48,14 @@ function* watchForTabs() {
 }
 
 
-// function parseFacetQueries
-// function parseFilterQueries
-// function parseFacetFields
-//
-//
 // ********* search ******
 // 1. actual function
 export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   const solrUrl = process.env.SOLR_URL
   let searcher = new SolrQuery(solrUrl)
 
-  // FIXME: need a good way to default these - there is similar logic
-  // in at least 3 different places - should not have in to do with in
-  // components, AND libraries, AND sagas ....
-  //
   let start = searchFields ? Math.floor(searchFields['start'] || 0) : 0
   
-  let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-
   // FIXME: rows should probably be a parameter too 
   // (but within reason e.g. maybe a list of options [50, 100, 200] ...)
   //
@@ -94,13 +78,9 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
 
 // 2. what watcher will do
 export function* fetchSearch(action) {
-  //const { searchFields } = action
-
   const { searchFields, filterer } = action
   
   const results = yield call(fetchSearchApi, searchFields, filterer)
-  //
-  //const results = yield call(fetchSearchApi, searchFields)
 
   try {
     yield put(receiveSearch(results))
@@ -123,7 +103,6 @@ function* watchForSearch() {
     // NOTE: if I change it to this (per cancel example)
     // if spins forever
     const searchTask = yield fork(fetchSearch, action)
-    //yield fork(fetchSearch, action)
     //yield take(types.SEARCH_CANCELLED)
     //yield cancel(searchTask)
   }
@@ -160,9 +139,6 @@ function* watchForDepartments() {
 }
 
 
-// FIXME: add a fork(watchForDownload)
-//
-//
 // all of them, wrapped up for middleware
 export default function* root() {
   yield [
