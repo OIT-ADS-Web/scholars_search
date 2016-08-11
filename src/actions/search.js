@@ -1,12 +1,16 @@
 import * as types from './types'
 
 // ******* search *******
-export function requestSearch(searchFields) {
+// export function requestSearch(searchFields, filters) {
+//
+//
+export function requestSearch(searchFields, filterer) {
   return {
     type: types.REQUEST_SEARCH,
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
-    searchFields: searchFields
+    searchFields: searchFields,
+    filterer: filterer
   }
 }
 
@@ -18,6 +22,15 @@ export function receiveSearch(json) {
     receivedAt: Date.now()
   }
 }
+
+export function emptySearch() {
+  return {
+    type: types.EMPTY_SEARCH,
+    results: {},
+    isFetching: false
+  }
+}
+
 
 export function cancelSearch() {
   return {
@@ -33,12 +46,13 @@ export function searchFailed(message) {
 }
 
 // ****** tabs *******
-export function requestTabCount(searchFields) {
+export function requestTabCount(searchFields, tabList) {
   return {
     type: types.REQUEST_TABCOUNTS,
     grouped: {},
     isFetching: true,
-    searchFields: searchFields
+    searchFields: searchFields,
+    tabList: tabList
   }
 
 }
@@ -66,7 +80,7 @@ export function tabCountFailed(message) {
 export function requestDepartments() {
   return {
     type: types.REQUEST_DEPARTMENTS,
-    departments: {},
+    data: {},
     isFetching: true,
   }
 
@@ -77,9 +91,8 @@ export function receiveDepartments(json) {
 
   return {
     type: types.RECEIVE_DEPARTMENTS,
-    departments: departments,
-    isFetching: false,
-    receivedAt: Date.now()
+    data: departments,
+    isFetching: false
   }
 
 }
@@ -96,10 +109,14 @@ export function departmentsFailed(message) {
 export default {
   requestSearch,
   receiveSearch,
+  emptySearch,
   cancelSearch,
   searchFailed,
   requestTabCount,
   receiveTabCount,
-  tabCountFailed
+  tabCountFailed,
+  requestDepartments,
+  receiveDepartments,
+  departmentsFailed
 } 
 

@@ -11,6 +11,14 @@ class GrantDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
+  filterHighlightText(text) {
+    // Continuant Entity Grant Relationship Research Grant Specifically Dependent Continuant
+    let replaced = text.replace("Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant", "")
+    // another variation
+    replaced = replaced.replace("Continuant Entity Grant Relationship Research Grant Specifically Dependent Continuant", "")
+    return replaced
+  }
+
   render() {
 
     return (
@@ -38,4 +46,15 @@ class GrantDisplay extends HasSolrData(Component) {
 }
 
 
-export default GrantDisplay
+import Tab from './Tab'
+
+class GrantsTab extends Tab {
+
+  pickDisplay(doc, highlight) {
+    return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+export default GrantsTab 
+

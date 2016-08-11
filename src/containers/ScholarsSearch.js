@@ -17,7 +17,7 @@ store.runSaga(rootSaga)
 //store.close = () => store.dispatch(END)
 
 // http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
-import { Router } from 'react-router'
+import { Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 
 // NOTE: the following - it took a while to figure this out and it'll probably change without warning
@@ -41,6 +41,10 @@ import routes from '../routes'
 // https://github.com/newtriks/generator-react-webpack/issues/141
 // https://github.com/emmenko/redux-react-router-async-example/blob/master/package.json
 
+
+//import ScholarsSearchApp from './ScholarsSearchApp'
+//import PeopleSearch from '../components/PeopleSearch'
+
 export default class ScholarsSearch extends Component {
   
   constructor(props) {
@@ -51,7 +55,11 @@ export default class ScholarsSearch extends Component {
     return (
       <Provider store={store}>
         <Router history={history}>
-        {routes}
+          {routes}
+          {/*
+          <Route path="/" component={ScholarsSearchApp} />
+          <Route path="/people" component={PeopleSearch} />
+          */}
         </Router>
       </Provider>
     )        

@@ -17,6 +17,14 @@ import { fetchSearchApi } from '../actions/sagas'
 
 import TabPicker from './TabPicker'
 
+import querystring from 'querystring'
+
+// PersonTab extends SearchResults ??
+// etc...
+//
+
+import { requestSearch } from '../actions/search'
+
 export class SearchResults extends Component {
 
   static get contextTypes() {
@@ -33,14 +41,20 @@ export class SearchResults extends Component {
     this.handleDownload= _.debounce(this.handleDownload,1000);
     this.handleSort = this.handleSort.bind(this)
 
+    this.state = {
+      chosen_facets: []
+    }
+
+    this.path = "/"
+    //this.chosen_ids = []
   }
 
-
+  
   handleDownload() {
-    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault()
-    // This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` i
-    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information.
-   
+    // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault():
+    //
+    // "This synthetic event is reused for performance reasons. If you're seeing this, you're calling `preventDefault` 
+    // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information."
     const { search : { searchFields } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
@@ -65,11 +79,13 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
+    // FIXME: this gets rid of facets
     let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
 
-    fetchSearchApi(searchFields, maxRows).then(function(json) {
+    fetchSearchApi(searchFields, tab, maxRows).then(function(json) {
 
-      let csv = tabPicker.toCSV(json)
+      let csv = tab.toCSV(json)
       let blob = new Blob(csv, {type: type})
       // FIXME: much more to do here - just proving I can download a file now
       saveAs(blob, fileName)
@@ -77,56 +93,102 @@ export class SearchResults extends Component {
     })
    
   }
+  
 
   handleSort() {
     const { search : { searchFields } } = this.props
-    
+ 
+    // FIXME: this same logic appears in many places - it should be centralized
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
     let sort = this.sort
 
     // 1. add sort to parmams - search etc...
     // setting default start to 0 - so paging is reset
     const query  = {...searchFields, start: 0, sort: sort }
 
+    let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
+
     // 2. run search again 
-    dispatch(requestSearch(query))
+    dispatch(requestSearch(query, tab))
     
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
-      pathname: '/',
+      pathname: this.path,
       query: query
     })
-
     // 3. let display take care of itself - but { sort } needs to be set
     // in some way (for the <select><option value >)
-  
   }
+
+
+  handleFacetClick(e) {
+   //const { search : { searchFields }, dispatch } = this.props
+    const { search : { searchFields }, departments: { data }, dispatch } = this.props
+
+    let query = solr.buildComplexQuery(searchFields)
+     
+    // FIXME: this same logic appears in many, many places - it should be centralized
+    // or defaulted at a higher level, or something
+    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    
+    let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
+
+    let id = e.target.id
+
+    let full_query = { ...searchFields }
+    full_query['start'] = 0
+
+    let chosen_ids = this.state.chosen_facets
   
+    if (e.target.checked) {
+      chosen_ids.push(id)
+    } else {
+      chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
+    }
+
+    this.setState({chosen_facets: chosen_ids}, function() {
+      // FIXME: needs to be added BEFORE
+      tab.addContext({'departments': data })
+      tab.setActiveFacets(this.state.chosen_facets)
+      dispatch(requestSearch(full_query, tab))
+    })
+ 
+
+  }
 
   render() {
-    const { search : { results, searchFields, isFetching, message } } = this.props
+    const { search : { results, searchFields, isFetching, message }, departments: { data } } = this.props
 
     // FIXME: this same logic appears in many places - it should be centralized
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
 
-    let { highlighting={}, response={} } = results
+    let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
+    let { facet_queries, facet_fields } = facet_counts
+    
+    // data will look like this (for subject heading for instance):
+    /*
+      facet_counts:
+      { 
+         facet_queries: { 'nameText:"medicine"': 8, 'ALLTEXT:"medicine"': 0 },
+         facet_fields: {},
+         facet_dates: {},
+         facet_ranges: {} 
+      },
+    */
 
-    let resultSet = ""
+    //let tabResults = ""
+    let tabPicker = new TabPicker(filter)
+    let tab = tabPicker.tab
 
-    // FIXME: make it so results don't require inside knowledge of SOLR
-    // e.g. highlighting [doc.DocId], ALLTEXT etc...
-    // these should be wrapped up in SolrQuery class somehow
-    //
-    // FIXME: need to re-work this slightly to get rid of warnings 
-    // (see http://facebook.github.io/react/docs/multiple-components.html#dynamic-children)
+    let tabResults = ""
+
     if (docs) {
-      let tabPicker = new TabPicker(filter)
-      
-      resultSet = docs.map(doc => { 
-        let highlight = highlighting[doc.DocId]
-        return tabPicker.pickDisplay(doc, highlight)
-      })
+      tabResults = tab.results(docs, highlighting)
     }
     else {
       // e.g. if there are no docs - could be fetching, or could just be no
@@ -140,17 +202,26 @@ export class SearchResults extends Component {
       )
     }
 
+    
     // NOTE: a textual representation of the complex search
     // right now it is exactly the same as what's actually sent
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
-    // <h3>Results for group: {numFound} </h3> 
+
+    let cb = this.handleFacetClick.bind(this)
     
-    // FIXME: maybe search results should be a product of the tab
-    // (since it's always in a tab) - that would get rid of the giant 'switch'
-    // statement above
-    //
-    //
+    // FIXME: needs to be called BEFORE tab.facets is called (so it has
+    // meta-data)
+    tab.addContext({'departments': data })
+    
+    //let departmentNameMap = {}
+    //_.forEach(context, function(obj) {
+    //   departmentNameMap[obj.URI] = obj.name
+    //})
+ 
+    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
+
+
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
 
@@ -164,41 +235,31 @@ export class SearchResults extends Component {
    
     return (
       <section className="search-results">
-        <h3>Query: {query}</h3>
+        <div className="search-results-header">
+          <div className="pull-left lead"><strong>Query: {query}</strong></div>
+        </div>
         
-        <SearchTabs></SearchTabs>
+        <SearchTabs />
         
         <div className="search-results-table">
          
-          <hr />
-          
-          <div className="row hidden-xs">
-            <div className="col-md-8 col-xs-6 col-sm-6">
-              
-              <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
-                <span className="glyphicon glyphicon-download"> Download </span>
-              </button>
-
-            </div>
-            <div className="col-md-4 col-xs-6 col-sm-6">
-            {/*
-              <div className="pull-right form-inline">
-                <div className="form-group">
-                  <label>Sort By:</label>
-                   {sortOptions}
-                </div>
+          <div className="row panel">
+            <div className="col-md-10">          
+             {tabResults} 
+           </div>
+           <div className="col-md-2 panel panel-info">
+              <div className="panel-body">
+                <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
+                  <span className="glyphicon glyphicon-download"> Download </span>
+                </button>
               </div>
-              */
-            }
-            </div>
-
+              {tabFacets}
+           </div>
           </div>
-          
-          <hr/>
-          {resultSet}
+
         </div>
 
-        <PagingPanel></PagingPanel>
+        <PagingPanel facets={this.state.chosen_facets}></PagingPanel>
 
     </section>
 
@@ -214,5 +275,5 @@ const mapStateToProps = (search, ownProps) => {
 }
 
 
-export default connect(mapStateToProps)(SearchResults);
+export default connect(mapStateToProps)(SearchResults)
 

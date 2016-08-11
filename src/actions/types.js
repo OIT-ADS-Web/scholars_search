@@ -6,6 +6,7 @@ export const REQUEST_SEARCH = 'REQUEST_SEARCH'
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH'
 export const SEARCH_FAILED = 'SEARCH_FAILED'
 export const SEARCH_CANCELLED = 'SEARCH_CANCELLED'
+export const EMPTY_SEARCH = 'EMPTY_SEARCH'
 
 // ***** tabs ******
 export const REQUEST_TABCOUNTS = 'REQUEST_TABCOUNTS'

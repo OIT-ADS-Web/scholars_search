@@ -38,4 +38,15 @@ class CourseDisplay extends HasSolrData(Component) {
 }
 
 
-export default CourseDisplay
+import Tab from './Tab'
+
+class CoursesTab extends Tab {
+
+  pickDisplay(doc, highlight) {
+    return <CourseDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+
+export default CoursesTab 

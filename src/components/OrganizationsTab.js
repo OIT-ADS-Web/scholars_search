@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import HasSolrData from './HasSolrData'
 import ScholarsLink from './ScholarsLink'
@@ -10,6 +9,12 @@ class OrganizationDisplay extends HasSolrData(Component) {
     super(props);
     this.doc = this.props.doc;
     this.highlight = this.props.highlight
+  }
+
+  // Agent Continuant Department Entity Independent Continuant Organization
+  filterHighlightText(text) {
+    let replaced = text.replace("Agent Continuant Department Entity Independent Continuant Organization", "")
+    return replaced
   }
 
   render() {
@@ -33,4 +38,17 @@ class OrganizationDisplay extends HasSolrData(Component) {
 }
 
 
-export default OrganizationDisplay
+
+import Tab from './Tab'
+
+class OrganizationsTab extends Tab  {
+
+  pickDisplay(doc, highlight) {
+    return <OrganizationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+
+export default OrganizationsTab 
+

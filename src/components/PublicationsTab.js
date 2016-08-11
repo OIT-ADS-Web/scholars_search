@@ -1,5 +1,4 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
 import HasSolrData from './HasSolrData'
 import ScholarsLink from './ScholarsLink'
@@ -16,7 +15,12 @@ class PublicationDisplay extends HasSolrData(Component) {
     return (str || "").replace(/&#039;/g,"'");
   }
 
-
+  // Continuant Document Entity Generically Dependent Continuant Information Content Entity
+  filterHighlightText(text) {
+    let replaced = text.replace("Continuant Document Entity Generically Dependent Continuant Information Content Entity", "")
+    return replaced
+  }
+  
   render() {
     
     return (
@@ -44,5 +48,17 @@ class PublicationDisplay extends HasSolrData(Component) {
 
 }
 
+import Tab from './Tab'
 
-export default PublicationDisplay
+class PublicationsTab extends Tab  {
+
+  // render() ???
+  //
+  pickDisplay(doc, highlight) {
+    return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+export default PublicationsTab 
+

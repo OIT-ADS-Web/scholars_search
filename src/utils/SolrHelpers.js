@@ -1,5 +1,16 @@
 import _ from 'lodash'
 
+function isEmptySearch(cs) {
+  let flag = false
+    
+  if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' && cs['noMatch'] == '') {
+     flag = true
+   }
+
+  return flag
+}
+
+
 function buildComplexQuery(compoundSearch = {}) {
   // NOTE: this method will get an object that looks like this:
   //
@@ -191,6 +202,33 @@ export const tabList = [
 */
 
 
+/*
+
+VIVO solrconfig.xml:
+
+      <lst name="defaults">
+       <str name="defType">edismax</str>
+       <!-- nameText added for NIHVIVO-3701 -->
+       <str name="qf">ALLTEXT ALLTEXTUNSTEMMED nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase</str>
+       <str name="echoParams">explicit</str>
+       <str name="qs">2</str>
+       <int name="rows">10</int>
+       <str name="q.alt">*:*</str>
+       <str name="fl">*,score</str>
+       <str name="hl">true</str>
+       <str name="hl.fl">ALLTEXT</str>
+       <str name="hl.fragsize">160</str>
+      <!--  Default value of mm is 100% which should result in AND behavior, still setting it here
+      https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser -->
+      <str name="mm">100%</str>
+     </lst>
+ 
+also see /srv/web/apps/vivo/solr/conf/schema.xml
+
+
+*/
+
+
 // just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
 
@@ -205,7 +243,11 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     hl: true,
     rows: Math.floor(rows),
     start: Math.floor(start),
-    sort: sort
+    sort: sort,
+    mm: 2,
+    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    'hl.fragsize': '350'
   }
 
   return searcher
@@ -222,9 +264,14 @@ function setupTabGroups(searcher, tabList) {
   searcher.options = {
     wt: "json",
     rows: 0,
-    group: true
+    group: true,
+    mm: 2,
+    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }
 
+  // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter
+  //
   // e.g.
   // it's doing something like this...
   //
@@ -239,6 +286,6 @@ function setupTabGroups(searcher, tabList) {
 
 }
 
-export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser }
+export default { setupTabGroups, setupDefaultSearch, buildComplexQuery, SolrResultsParser, isEmptySearch }
 
 

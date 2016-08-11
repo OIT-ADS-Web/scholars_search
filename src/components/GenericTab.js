@@ -37,4 +37,15 @@ class GenericDisplay extends HasSolrData(Component) {
 }
 
 
-export default GenericDisplay
+import Tab from './Tab'
+
+class GenericTab extends Tab {
+
+  pickDisplay(doc, highlight) {
+    return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+
+export default GenericTab 

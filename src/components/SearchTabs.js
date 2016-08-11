@@ -9,7 +9,7 @@ import Loading from './Loading'
 
 import { requestSearch } from '../actions/search'
 
-import { tabList } from '../tabs'
+import { tabList } from './TabPicker'
 
 export class SearchTabs extends Component {
 
@@ -26,37 +26,12 @@ export class SearchTabs extends Component {
   }
 
 
-  handleTab(e, theTab) {
-    e.preventDefault()
-
-    const { search : { searchFields }, dispatch } = this.props
-
-    let filter = theTab.id
-
-    // setting default start to 0 - so paging is reset - luckily
-    // filter should always be present
-    const query  = {...searchFields, start: 0, filter: filter }
-
-    dispatch(requestSearch(query))
-    
-    // NOTE: took me a while to figure out I couldn't just pass
-    // searchFields as {query: searchFields} had to copy it into 'query' (see above)
-    this.context.router.push({
-      pathname: '/',
-      query: query
-    })
-
-    return false
-  }
-  
-
-  // FIXME: wow - don't like this at all (even though I wrote it)
+  // FIXME: wow - don't like this at all (even though I wrote it!)
   // the tabs are actually different DOM-wise depending on screen size though
   // 
-  // The application should be able to decide what javascript/dom/css 
-  // (since they are all javascript anyway)
+  // The application should be able to decide what javascript/dom/css (since they are all javascript anyway)
   // to apply to a given media size (instead of using css to show/hide)
-  // https://www.npmjs.com/package/react-match-media ??
+  // maybe use this:  https://www.npmjs.com/package/react-match-media ??
   desktopTabs(isFetching, grouped, filter) {
     let tabs = _.map(tabList, (tab) => {
       
@@ -65,16 +40,31 @@ export class SearchTabs extends Component {
         return <div></div>
       }
 
-      let matches = tab.filter in grouped ? grouped[tab.filter].matches : 0
-      let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
+       
+      // NOTE: had to do this so I can add arbitary text to group.query, but not have to use that
+      // exact same text to find the 'tab' - could be a waste of time though
+      let tagMatch = /^{!tag=(.*?)}/
       
-      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} matches={matches}/>
+      // grouped by the tag, not the group.query
+      let regrouped = {}
+      _.forEach(grouped, function(value, key) {
+          let match = tagMatch.exec(key)
+          regrouped[match[1]] = value
+      })
+      
+      // NOTE: here is where there would be a different query per tab (right?)
+      //let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
+
+      return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
 
     })
 
     return tabs
   }
 
+  // FIXME: see above - this ends up rendering tabs twice - and show/hide depending on screen-size
   mobileTabs(isFetching, grouped, filter) {
     if (isFetching) {
       return <div></div>
@@ -93,15 +83,15 @@ export class SearchTabs extends Component {
     // ]
 
     let rows = []
-    let _self = this
+    
     _.forEach(tabList, function(value) {
       if (value.id != filter) {
 
         let count = value.filter in grouped ? grouped[value.filter].doclist.numFound : 0
         let label = value.label
- 
+
         let row = (
-          <li key={value.id}><a href="#" onClick={(e) => _self.handleTab(e, value)}>{label} ({count})</a></li>
+          <SearchTab key={value.id} filter={value.id} active={filter == value.id} label={label} count={count} mobile={true} />
         )
         rows.push(row)
       }   
@@ -150,11 +140,11 @@ export class SearchTabs extends Component {
     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
 
     // FIXME: what to do if tabs error? e.g. if (message) { }
- 
+    
     return (
       <div>
-        <h4>Total Found: {ungroupedCount}</h4>
-          
+        <div className="bg-info pull-right"><strong>Total Results Found: <span className="badge">{ungroupedCount}</span></strong></div>
+        <div className="clearfix"></div>
         <nav className="visible-xs">
             {mobileTabs}            
         </nav>

@@ -1,115 +1,122 @@
 import React from 'react'
 
-import PersonDisplay from './PersonDisplay'
-import PublicationDisplay from './PublicationDisplay'
-import OrganizationDisplay from './OrganizationDisplay'
-import GenericDisplay from './GenericDisplay'
-import ArtisticWorkDisplay from './ArtisticWorkDisplay'
-import SubjectHeadingDisplay from './SubjectHeadingDisplay'
-import GrantDisplay from './GrantDisplay'
-import CourseDisplay from './CourseDisplay'
+/*
+export const tabList = [
+  { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
+  { id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" },
+  { id: "organizations",  filter: "{!tag=organizations}type:(*Organization)", label: "Organizations" }, 
+  { id: "grants",  filter: "{!tag=grants}type:(*Grant)", label: "Grants" }, 
+  { id: "courses",  filter: "{!tag=courses}type:(*Course)", label: "Courses" },
+  { id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
+  { id: "subjectheadings", filter: "{!tag=subjectheadings}type:(*Concept)", label: "Subject Headings" },
+  { id: "misc",  filter: "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
+   label: "Other"
+  }
+]
+*/
 
-import json2csv from 'json2csv'
+// NOTE: just a dumb trick so I can keep separate (for babel-node to run examples/example_*_.js files)
+// but still only import one thing
+import { tabList as tabs } from './TabList'
+
+export const tabList = tabs
 
 import _ from 'lodash'
 
-// FIXME: don't know if this is that great of an idea, just
-// wanted some centralized splitter of stuff based on filter
+export function findTab(name) {
+  let tab = _.find(tabList, function(tab) { return tab.id == name })
+  return tab
+}
+ 
+import PeopleTab from './PeopleTab'
+import PublicationsTab from './PublicationsTab'
+import OrganizationsTab from './OrganizationsTab'
+import GenericTab from './GenericTab'
+import ArtisticWorksTab from './ArtisticWorksTab'
+import SubjectHeadingsTab from './SubjectHeadingsTab'
+import GrantsTab from './GrantsTab'
+import CoursesTab from './CoursesTab'
+import OtherTab from './OtherTab'
+
+
+// FIXME: name TabRouter instead ????
+//
+// FIXME: define findTab in this file - just have 'tabs.js' be a 
+// list of defined tabs, period??
+//
 class TabPicker {
 
   constructor(filter) {
     this.filter = filter
-  }
 
+    /// FIXME: this makes a new object every time - should probably not do that
+    //
+    let config = findTab(filter)
 
-  toCSV(json) {
-
-    let data = json.response.docs
-    let defaultFields = ['URI', {label: 'Type', value: 'mostSpecificTypeURIs.0'}]
-    let extraFields = []
-
-    // FIXME: could use this to pick fields ... different per tab
-    switch(this.filter) {
-    
-    case 'person':
-      // NOTE: function(row) { return row.ALLTEXT.2 (and row.ALLTEXT[2])} is an error but value: 'ALLTEXT.2' is not, why?
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, { label: 'email', value: 'ALLTEXT.2',  default: ''}]
-      break
-    case 'publications':
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
-      break
-    case 'organizations':  
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
-      break
-    case 'subjectheadings':  
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}]
-      break
-    case 'artisticworks':  
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
-      break
-    case 'grants':  
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}, {value: 'ALLTEXT.0'}]
-      break
-    case 'courses':  
-      extraFields = [{label: 'Name', value: 'nameRaw.0'}]
-      break
-    default:  
-      //
-    }
-
-    let fields = _.concat(defaultFields, extraFields)
-
-    let _csv = ""
-    if (data) {
-      json2csv({data: data, fields: fields, flatten: true}, function(err, csv) {
-        if (err) {
-          console.log(err)
-        }
-        else {
-          _csv = csv
-        }
-      })
-    }
-
-    // NOTE: needs to be an array for Blob function do that here?
-    let ary = []
-    ary.push(_csv)
-    return ary
-
-  }
-
-  pickDisplay(doc, highlight) {
-    
+    // makes this be a router, or thin wrapper of sorts - there's probably a 
+    // design pattern name for this
     switch(this.filter) {
     case 'person':
-      return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new PeopleTab(config)
+      break
     case 'publications':
-      return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new PublicationsTab(config)
+      break
     case 'organizations':  
-      return <OrganizationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new OrganizationsTab(config)
+      break
     case 'subjectheadings':  
-      return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new SubjectHeadingsTab(config)
+      break
     case 'artisticworks':  
-      return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new ArtisticWorksTab(config)
+      break
     case 'grants':  
-      return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new GrantsTab(config)
+      break
     case 'courses':  
-      return <CourseDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new CoursesTab(config)
+      break
+    case 'other':
+      this._tab = new OtherTab(config)
+      break
     default:  
-      return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+      this._tab = new GenericTab({})
     }
   }
 
-
-  sortOptions() {
-  // switch(this.filter) {
-  // case 'person': 
-  // ...
-  //
-  //
-    return ['sort desc', 'sort asc']
+  get tab() {
+    return this._tab
   }
+
 }
 
 
 export default TabPicker
+
+
+/*
+FIXME: tried to do something like this, but ran into problems:
+
+import PeopleTab from './components/PeopleTab'
+import PublicationsTab from './components/PublicationsTab'
+import OrganizationsTab from './components/OrganizationsTab'
+import ArtisticWorksTab from './components/ArtisticWorksTab'
+import SubjectHeadingsTab from './components/SubjectHeadingsTab'
+import GrantsTab from './components/GrantsTab'
+import CoursesTab from './components/CoursesTab'
+import OtherTab from './components/OtherTab'
+
+let tabs = {}
+tabs["person"] = new PeopleTab({id: "person", filter: "{!tag=person}type:(*Person)", label: "People" })
+tabs["publications"] = new PublicationsTab({ id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" })
+tabs["organizations"] = new OrganizationsTab({ id: "organizations",  filter: "{!tag=organizations}type:(*Organization)", label: "Organizations" }) 
+tabs["grants"] = new GrantsTab({ id: "grants",  filter: "{!tag=grants}type:(*Grant)", label: "Grants" })
+tabs["courses"] = new CoursesTab({ id: "courses",  filter: "{!tag=courses}type:(*Course)", label: "Courses" })
+tabs["artisticworks"] = new ArtisticWorksTab({ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" })
+tabs["subjectheadings"] = new SubjectHeadingsTab({ id: "subjectheadings", filter: "{!tag=subjectheadings}type:(*Concept)", label: "Subject Headings" })
+tabs["others"] = new OtherTab({ id: "misc",  filter: "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))", label: "Other"})
+
+export const TABS = tabs
+*/
+

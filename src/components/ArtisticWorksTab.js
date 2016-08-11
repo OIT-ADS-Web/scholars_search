@@ -38,4 +38,15 @@ class ArtisticWorkDisplay extends HasSolrData(Component) {
 }
 
 
-export default ArtisticWorkDisplay
+import Tab from './Tab'
+
+class ArtisticWorksTab extends Tab {
+
+  pickDisplay(doc, highlight) {
+    return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+export default ArtisticWorksTab 
+

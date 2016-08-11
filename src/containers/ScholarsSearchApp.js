@@ -6,7 +6,15 @@ import Page from '../layouts/page'
 import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
-import { requestSearch, requestTabCount } from '../actions/search'
+import { requestSearch, requestTabCount, emptySearch, requestDepartments } from '../actions/search'
+
+import solr from '../utils/SolrHelpers'
+
+import TabPicker from '../components/TabPicker'
+
+import { tabList } from '../components/TabPicker'
+
+import querystring from 'querystring'
 
 export class ScholarsSearchApp extends Component {
 
@@ -24,14 +32,24 @@ export class ScholarsSearchApp extends Component {
     return {router: this.props.routing}
   }
 
+  onlyAdvanced(query) {
+   let flag = (typeof(query['advanced']) != 'undefined'  && _.size(query) == 1)
+   return flag
+  }
+
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
     const { location, dispatch } = this.props;
 
     let query = location.query
 
+    let onlyAdvanced = this.onlyAdvanced(query)
+    let blankSearch = solr.isEmptySearch(query)
+
+    dispatch(requestDepartments())
+
     // NOTE: was searching if no query parameters in route path, just searching everything
-    if (!_.isEmpty(query)) {
+    if (!_.isEmpty(query) && !(onlyAdvanced || blankSearch)) {
 
       // FIXME: I have these kinds of checks all over, would like to have it centralized
       // so don't have to remember to check everywhere
@@ -39,26 +57,52 @@ export class ScholarsSearchApp extends Component {
       if (!query['start']) {
         query['start'] = 0
       }
+
+      // FIXME: would need to get this from /path - right?
       if (!query['filter']) {
         query['filter'] = 'person'
       }
 
       let builtSearch = { ...query } 
+
+      // FIXME: a lot of this code is duplicated every time a search is done
+      // should centralize a bit more
       
-      dispatch(requestSearch(builtSearch))
-      dispatch(requestTabCount(builtSearch))
- 
+      // FIXME: get the facetQueries here ???
+      let tabPicker = new TabPicker(query['filter'])
+
+      let base_query = solr.buildComplexQuery(builtSearch)
+
+      dispatch(requestSearch(builtSearch, tabPicker.tab))
+      // NOTE: might need to change - tabs don't need facet_queries
+      // but should ignore anyway 
+      dispatch(requestTabCount(builtSearch, tabList))
+
+
+      // getting this.context.router is null here
+      /*
+      this.context.router.push({
+        pathname: "/",
+        query: query
+      })
+      */
+
+    } else if (onlyAdvanced || blankSearch) {
+       dispatch(emptySearch())
     }
+
+
+
   }
 
   constructor(props,context) {
     super(props,context)
   }
 
-  render() {
-    // FIXME: none of these props are used, why get them?
-    //const { search : { searchFields }, dispatch } = this.props;
 
+  render() {
+ 
+    // {this.props.children}   
     return (
 
       <Page>
@@ -72,9 +116,9 @@ export class ScholarsSearchApp extends Component {
 
 
 import { connect } from 'react-redux'
-//https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
+// https://github.com/reactjs/react-router/blob/master/docs/API.md#route-components
 //
-//The dynamic segments of the URL.
+// The dynamic segments of the URL.
 // NOTE: ownProps.location does NOT give an error here (and here only)
 //
 const mapStateToProps = (search, ownProps) => {
@@ -84,5 +128,5 @@ const mapStateToProps = (search, ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(ScholarsSearchApp);
+export default connect(mapStateToProps)(ScholarsSearchApp)
 

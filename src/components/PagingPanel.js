@@ -8,6 +8,8 @@ import classNames from 'classnames'
 
 import { requestSearch } from '../actions/search'
 
+import TabPicker from './TabPicker'
+
 export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
@@ -23,6 +25,9 @@ export class PagingPanel extends Component {
     
     this.handleNextPage = this.handleNextPage.bind(this)
     this.handlePreviousPage = this.handlePreviousPage.bind(this)
+ 
+    this.facets = this.props.facets
+  
   }
 
   handleNextPage(e) {
@@ -37,18 +42,34 @@ export class PagingPanel extends Component {
     let start = searchFields ? searchFields['start'] : 0
     let newStart = Math.floor(start) + PAGE_ROWS
 
-    // NOTE: if not a new 'query' obj - this error happens:
+    // NOTE: if not a new 'query' obj (like below) - this error happens:
     // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
     const query = { ...searchFields, start: newStart }
 
+    let full_query = { ...query }
+
+    // FIXME: I assume filter would be in the searchFields by now
+    // could add this to be safe:
+    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
+    // FIXME: how to persist facet filters ???
+    //
+    let filter = searchFields['filter']
+    let tabPicker =  new TabPicker(filter)
+
+    let chosen_ids = this.facets
+ 
+    let tab = tabPicker.tab
+    tab.setActiveFacets(chosen_ids)
+   
+    dispatch(requestSearch(full_query, tab))
+ 
     this.context.router.push({
       pathname: '/',
       query: query
 
     })
       
-    dispatch(requestSearch(query))
-    
   }
 
   handlePreviousPage(e) {
@@ -65,13 +86,28 @@ export class PagingPanel extends Component {
     
     const query = { ...searchFields, start: newStart }
 
+    let full_query = { ...query }
+
+    // FIXME: I assume filter would be in the searchFields by now
+    // could add this to be safe:
+    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+
+    let filter = searchFields['filter']
+    let tabPicker =  new TabPicker(filter)
+
+    let chosen_ids = this.facets
+ 
+    let tab = tabPicker.tab
+    tab.setActiveFacets(chosen_ids)
+ 
+    dispatch(requestSearch(full_query, tab))
+
     this.context.router.push({
       pathname: '/',
       query: query
 
     })
  
-    dispatch(requestSearch(query))
   }
 
   render() {
