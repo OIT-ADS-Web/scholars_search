@@ -136,7 +136,7 @@ class PeopleTab extends Tab {
   //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   applyFilters(searcher) {
     super.applyFilters(searcher)
-    searcher.setFacetField("{!ex=dept}department_facet_string", {prefix: "1|",  missing: "true", mincount: "1"})
+    searcher.setFacetField("{!ex=dept}department_facet_string", {prefix: "1|",  mincount: "1"})
     //searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true", mincount: "1"})
 
     this.applyOptionalFilters(searcher)

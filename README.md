@@ -145,3 +145,41 @@ To run tests:
 
 This will watch all files involved in the defined tests and automatically rebuild/test on save.
 
+
+## Tabs
+
+The tabs are setup in the *TabPicker* file.  The basic idea is each tab has a filter associated with it, and 
+any number of facets to add to the base query.
+
+
+Then each tab must have it's own class, that extends *Tab*.  This has various methods that can be overriden for
+tab specific behaviour:
+
+
+* facets
+  
+  This controls what shows up in the 'facets' section of the search results
+
+
+* applyFilters
+
+  This will, at the very least, apply the base_filter for a tab (which would typically be class:(Person) (for instance)
+
+
+* results
+
+  This will decide how results are displayed in the search results.  It will send in the docs and the highlighting information
+  from SOLR
+
+
+* csvFields
+
+  This adds fields to the default csv download, since each tab is a little different
+
+* pickDisplay
+
+  This is related to *results*.  The default *results* method calls this method and is returning a display per row - 
+  which is defined in classes such as *PersonDisplay*.  Each of those extends *HasSolrData* - since they often share 
+  the same basic information.
+
+ 

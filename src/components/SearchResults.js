@@ -25,6 +25,8 @@ import querystring from 'querystring'
 
 import { requestSearch } from '../actions/search'
 
+import ReactDOM from 'react-dom'
+
 export class SearchResults extends Component {
 
   static get contextTypes() {
@@ -49,11 +51,33 @@ export class SearchResults extends Component {
     //this.chosen_ids = []
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { search : { isFetching }} = nextProps
-    //return true
+  
+  componentDidUpdate() {
+    // NOTE: this does NOT work, but is supposed to
+    //ReactDOM.findDOMNode(this).scrollTop = 0
     
-    if (isFetching) {
+    // NOTE: this DOES work
+    //window.scrollTo(0, 0)
+
+  }
+  
+
+  
+  shouldComponentUpdate(nextProps, nextState) {
+    const { search : { isFetching, message, lastUpdated }} = nextProps
+    
+    // FIXME: if the app does not initialize correctly
+    // or there is an error this never ends
+    //
+    //return true
+    let now = Date.now()
+
+    let timeElapsed = now - lastUpdated
+    
+    //console.log("SearchResults#shouldComponentUpdate")
+    //console.log(timeElapsed)
+    //
+    if ((isFetching && !message) && (timeElapsed < 1000)) {
       return false
     } else {
       return true

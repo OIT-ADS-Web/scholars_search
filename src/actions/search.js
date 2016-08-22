@@ -10,7 +10,8 @@ export function requestSearch(searchFields, filterer) {
     results: {responseHeader: {}, response: {}, highlighting: {}},
     isFetching: true,
     searchFields: searchFields,
-    filterer: filterer
+    filterer: filterer,
+    requestedAt: Date.now()
   }
 }
 
@@ -41,7 +42,8 @@ export function cancelSearch() {
 export function searchFailed(message) {
   return {
     type: types.SEARCH_FAILED,
-    message: message
+    message: message,
+    failedAt: Date.now()
   }
 }
 
@@ -52,7 +54,8 @@ export function requestTabCount(searchFields, tabList) {
     grouped: {},
     isFetching: true,
     searchFields: searchFields,
-    tabList: tabList
+    tabList: tabList,
+    requestedAt: Date.now()
   }
 
 }
@@ -72,7 +75,8 @@ export function receiveTabCount(json) {
 export function tabCountFailed(message) {
   return {
     type: types.TABCOUNTS_FAILED,
-    message: message
+    message: message,
+    failedAt: Date.now()
   }
 }
 
@@ -100,7 +104,8 @@ export function receiveDepartments(json) {
 export function departmentsFailed(message) {
   return {
     type: types.DEPARTMENTS_FAILED,
-    message: message
+    message: message,
+    failedAt: Date.now()
   }
 }
 

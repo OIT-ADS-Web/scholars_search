@@ -15,7 +15,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
       isFetching: true,
       grouped: action.grouped,
       searchFields: action.searchFields,
-      tabList: action.tabList
+      tabList: action.tabList,
+      lastUpdated: action.requestedAt
   }
   case types.RECEIVE_TABCOUNTS:
 
@@ -28,7 +29,8 @@ function tabReducer(tabs = {isFetching: false, grouped: {}}, action) {
     
     return { ...tabs,
        isFetching: false,
-       message: action.message
+       message: action.message,
+       lastUpdated: action.failedAt
   }
   default:
     return tabs;
@@ -47,7 +49,8 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
       isFetching: true,
       results: action.results,
       searchFields: action.searchFields,
-      filterer: action.filterer
+      filterer: action.filterer,
+      lastUpdated: action.requestedAt
   }
   case types.RECEIVE_SEARCH:
     
@@ -65,7 +68,8 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
     
     return { ...search,
       isFetching: false,
-      message: action.message
+      message: action.message,
+      lastUpdated: action.failedAt
   }
   default:
     return search;

@@ -10,6 +10,10 @@ import { requestSearch } from '../actions/search'
 
 import TabPicker from './TabPicker'
 
+import ReactDOM from 'react-dom'
+
+import SearchTabs from './SearchTabs'
+
 export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
@@ -29,6 +33,15 @@ export class PagingPanel extends Component {
     this.facets = this.props.facets
   
   }
+
+  
+  componentDidUpdate() {
+    //ReactDOM.findDOMNode(this).scrollTop = 0
+    // do this, or not?
+    window.scrollTo(0, 0)
+
+  }
+ 
 
   handleNextPage(e) {
     e.preventDefault()
@@ -61,7 +74,9 @@ export class PagingPanel extends Component {
  
     let tab = tabPicker.tab
     tab.setActiveFacets(chosen_ids)
-   
+ 
+    // FIXME: would like this to force going back up to top of page
+    //
     dispatch(requestSearch(full_query, tab))
  
     this.context.router.push({
