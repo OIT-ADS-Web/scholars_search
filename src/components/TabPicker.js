@@ -65,6 +65,9 @@ class TabPicker {
     case 'other':
       this._tab = new OtherTab(config)
       break
+    case 'misc':
+      this._tab = new OtherTab(config)
+      break
     default:  
       this._tab = new GenericTab({})
     }
