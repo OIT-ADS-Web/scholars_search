@@ -66,23 +66,22 @@ export class SearchResults extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
     
-    // FIXME: if the app does not initialize correctly
-    // or there is an error this never ends
-    //
-    //return true
     let now = Date.now()
-
     let timeElapsed = now - lastUpdated
     
     //console.log("SearchResults#shouldComponentUpdate")
     //console.log(timeElapsed)
-    //
-    if ((isFetching && !message) && (timeElapsed < 1000)) {
+    
+    if ((isFetching && !message)) {
       return false
+    } else if ((!isFetching) && (timeElapsed > 0)) {
+      return true
     } else {
       return true
     }
-  
+    
+
+    //return true
 
   }
   
