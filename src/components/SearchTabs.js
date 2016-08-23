@@ -57,6 +57,10 @@ export class SearchTabs extends Component {
       //let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
       let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
 
+      //console.log("making tab")
+      //console.log(filter)
+      //console.log(tab.id)
+
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
 
     })
@@ -133,6 +137,7 @@ export class SearchTabs extends Component {
     }
  
     let first = _.head(tabList)
+
     // NOTE: every group has matches value, doesn't matter which one we take
     let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
 
