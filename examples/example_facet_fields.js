@@ -32,11 +32,17 @@ searcher.query = qry
 
 console.log(`query: ${qry}`)
 
-// ? prefix --
-searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
+searcher.setFacetField("department_facet_string", {prefix: "1|", mincount: "1"})
 
-//    }).setFilter("department","department_facet_string:" + department.nextFilter).execute().then(r => {
- 
+searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")
+
+// http://shalinsays.blogspot.com/2009/04/tagging-and-excluding-filters.html
+// http://yonik.com/multi-select-faceting/
+
+let filter = "{!tag=dept}department_facet_string:1|*individual/org50000761"
+
+searcher.addFilter("dept", filter)
+
 import _ from 'lodash'
 
 function printResults(json) {
@@ -63,11 +69,6 @@ function printResults(json) {
 
   // FIXME: this isn't sorted in any particular way
   console.log(results)
-
-  //let size = 
-      //while (i < size) {
-
-
 }
 
 searcher.execute().then(function(response) {

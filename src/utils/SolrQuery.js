@@ -45,6 +45,7 @@ class SolrQuery {
     
     this._facetFields = {}
     this._facetQueries = {}
+    this._facetLocalParams = {}
 
 
     // NOTE: to add group queries the options[group:true] needs to be set
@@ -142,6 +143,13 @@ class SolrQuery {
     return this
   }
 
+  setFacetLocalParam(name, param) {
+   // this._facetLocalParams = {}
+    this._facetLocalParams[name] = param
+    return this
+  }
+
+
   deleteFacetField(name) {
     delete this._facetFields[name]
     return this
@@ -153,10 +161,11 @@ class SolrQuery {
     // f.<fieldName>.<FacetParam>=<value>
     // https://wiki.apache.org/solr/SimpleFacetParameters
     // 
-    // am not actually using quite yet
     let facetOptions = {}
     let facets = Object.keys(this._facetFields)
     let queries = Object.keys(this._facetQueries)
+    
+    let facetParams = Object.keys(this._facetLocalParams)
     
     if (facets.length > 0 || queries.length > 0) {
       facetOptions['facet'] = true
@@ -164,21 +173,29 @@ class SolrQuery {
       return facetOptions
     }
 
+    // NOTE: this is only where the {!ex=tag} should go 
     if (facets.length > 0) {
-      facetOptions["facet.field"] = facets
+      
+      if (facetParams.length > 0) {
+        let _self = this
+        let alteredFacets = facets.map(function(f) {
+          // needs to find a matching localParam
+          let params = _self._facetLocalParams[f]
+          return `${params}${f}`
+        })
+
+        facetOptions["facet.field"] = alteredFacets    
+      } else {
+        facetOptions["facet.field"] = facets
+      }
     }
+    
 
     if (queries.length > 0) {
       facetOptions["facet.query"] = queries
     }
 
-    //console.debug(facetOptions)
-    // facet.query=nameRaw:medicine
-    // facet.query=medicine
-    //
-    // facet.query ===???
-    // 
-    // can override by field
+    // NOTE: can override by field
     facets.forEach(facetField => {
       let facetProperties = this._facetFields[facetField]
       Object.keys(facetProperties).forEach(facetProp => {

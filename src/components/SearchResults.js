@@ -252,14 +252,9 @@ export class SearchResults extends Component {
 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
-
-    // let sortOptions = tabPicker.sortOptions()
-    //
-    // let sortOptions = (   
-    //   <select onSelect={() => this.onSort()} className="form-control" defaultValue="score desc">
-    //        <option value="score desc">Relevance</option>
-    //    </select>
-    //  )
+    
+    // ?? something like this??
+    // let sortOptions = tab.sortOptions(this.handleSort)
    
     return (
       <section className="search-results">

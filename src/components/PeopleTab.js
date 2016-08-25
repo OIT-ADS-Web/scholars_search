@@ -136,9 +136,17 @@ class PeopleTab extends Tab {
   //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   applyFilters(searcher) {
     super.applyFilters(searcher)
-    searcher.setFacetField("{!ex=dept}department_facet_string", {prefix: "1|",  mincount: "1"})
-    //searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true", mincount: "1"})
+    searcher.setFacetField("department_facet_string", {prefix: "1|",  mincount: "1"})
 
+    // FIXME: this showed things like publications - might need to apply the tab filter ??
+    //
+    //searcher.setFacetField("{!ex=type}mostSpecificTypeURIs", {mincount: "1"})
+ 
+    // NOTE: see in applyOptionalFilters where {!tag=dept} is defined
+    //
+    searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")
+
+  
     this.applyOptionalFilters(searcher)
   }
 
@@ -150,8 +158,10 @@ class PeopleTab extends Tab {
  
   applyOptionalFilters(searcher) {
 
+    // each filter is id of active facet ??
+    //
+    // 1. get list of queries we need to run
     let list = _.map(this.filters, function(id) {
-      //let uri_to_search = `(1|https:/\/scholars.duke.edu/individual/${id})`  // FIXME: this must be wrong
       let uri_to_search = `(1|*individual/${id})`  // FIXME: this must be wrong
  
       if (id == "dept_null") { 
@@ -161,6 +171,7 @@ class PeopleTab extends Tab {
       }
     })
 
+    // 2. gather those into a big OR query
     if(list.length > 0) {
       let or_collection = list.join(' OR ')
       let qry = `{!tag=dept}${or_collection}`
@@ -168,6 +179,10 @@ class PeopleTab extends Tab {
       searcher.addFilter("facets", qry)
      }
 
+    // FIXME: probably need to AND other facets -- right ?
+    //
+    //
+    //
   }
 
   
@@ -198,6 +213,7 @@ class PeopleTab extends Tab {
       return ""
     }
 
+    // FIXME: should probably centralize this more - even though it's only used here right now
     let departmentNameMap = {}
     _.forEach(this.data.departments, function(obj) {
        departmentNameMap[obj.URI] = obj.name
@@ -240,11 +256,7 @@ class PeopleTab extends Tab {
       let department_uri = item.dept ? item.dept.replace("1|", "") : "None" 
       let label = item.dept ? departmentNameMap[department_uri] : "None"
       
-      let org_id = item.dept ? item.dept.replace(/[0-9]\|https:\/\/scholars.duke.edu\/individual\//g, "") : "dept_null"
-
-      if (org_id.length > 11) {
-        return ""
-      }
+      let org_id = item.dept ? item.dept.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "") : "dept_null"
 
       if (chosen_ids.indexOf(org_id) > -1) {
         

@@ -35,6 +35,15 @@ export default class Tab {
     return doc.URI
   }
 
+  sortOptions() {
+    // FIXME: how to deal with callback ??
+    return (   
+      <select onselect={() => this.onsort()} classname="form-control" defaultvalue="score desc">
+        <option value="score desc">relevance</option>
+      </select>
+    )
+  }
+ 
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]

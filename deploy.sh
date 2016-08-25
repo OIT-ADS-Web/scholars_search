@@ -22,16 +22,16 @@ for SERVER in "${SERVERS[@]}"; do
 
   echo "creating deploy directory on $SERVER..."
   ssh tomcat@$SERVER "[ -d $deploy_dir ] || mkdir $deploy_dir"
- 
+
   #echo "build dist with webpack"
-  #NODE_ENV=$ENVIRONMENT npm run build $ENVIRONMENT 
+  #NODE_ENV=$ENVIRONMENT npm run build $ENVIRONMENT
 
   echo "rsyncing app.js to $SERVER..."
   rsync -avz dist/app.js tomcat@$SERVER:$deploy_dir/app.js
- 
+
   echo "rsyncing index.html to $SERVER..."
   rsync -av dist/index.html tomcat@$SERVER:$deploy_dir/index.html
-   
+
   echo "rsyncing index.html to $SERVER..."
   rsync -av dist/app.js.map tomcat@$SERVER:$deploy_dir/app.js.map
 
@@ -41,4 +41,3 @@ for SERVER in "${SERVERS[@]}"; do
 
 
 done
-

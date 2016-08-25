@@ -53,7 +53,7 @@ let HasSolrData = (superclass) => class extends superclass {
         // NOTE: sometimes doc.type is undefined ... ??
         let docType = this.doc.type ? this.doc.type[0] : "?"
 
-        // FIXME: might have to look at highlight.nameText too 
+        // FIXME: might have to look at highlight.nameText too
         // then again, it might not -- not sure
         //
         display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
@@ -66,19 +66,19 @@ let HasSolrData = (superclass) => class extends superclass {
       //console.log("filtering highlight text")
       return this.filterHighlightText(display)
     }
- 
+
     return display
   }
 
   get highlightDisplay() {
-   
+
     let text = this.highlightText
-    
+
     // replace function ??? for grants (for instance)
     //Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant
     let replacedText = this.filterHighlightText ? this.filterHighlightText(text) : text
 
-    let fragment = ( 
+    let fragment = (
         <cite>
           <span>...</span>
           <span dangerouslySetInnerHTML={{__html: replacedText}}></span>
@@ -96,42 +96,41 @@ let HasSolrData = (superclass) => class extends superclass {
     let toggle = !showSolr
     this.setState({'showSolr': toggle})
   }
-  
+
   get solrDocDisplay() {
     let env = process.env.NODE_ENV
-    
+
     if (env == 'production') {
       return (<span></span>)
     }
- 
+
     let showSolr = this.state ? this.state.showSolr : false
-    
+
     let fragment = (
        <div className="row solr-doc-details">
         <div className="col-md-12"><a href="#" onClick={(e) => this.toggleSolrDetails(e)}><span className="glyphicon glyphicon-option-horizontal"></span></a>
           <pre className={showSolr ? '' : 'hidden'}>
-            {JSON.stringify(this.doc, null, 2)}          
+            {JSON.stringify(this.doc, null, 2)}
           </pre>
         </div>
       </div>
     )
-    
-    return fragment      
+
+    return fragment
   }
 
   get allTextDisplay() {
-    let fragment = ( 
+    let fragment = (
       <div className="row">
         <div className="col-md-12">
           <div className="alert alert-success"><strong>ALLTEXT</strong> {this.allText}</div>
         </div>
       </div>
     )
-      
+
     return fragment
   }
 
 }
 
 export default HasSolrData
-
