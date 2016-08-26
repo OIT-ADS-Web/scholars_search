@@ -95,6 +95,10 @@ export class SearchForm extends Component {
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
+    // NOTE: have to null these out
+    //tab.setActiveFacets([])
+    //tab.setActiveFacets(this.state.chosen_facets)
+ 
     if (solr.isEmptySearch(compoundSearch)) {
       dispatch(emptySearch())
     } 
@@ -105,7 +109,6 @@ export class SearchForm extends Component {
       let full_query = { ...compoundSearch }
 
       dispatch(requestSearch(full_query, tab))
-      
       dispatch(requestTabCount(compoundSearch, tabList))
     }
 

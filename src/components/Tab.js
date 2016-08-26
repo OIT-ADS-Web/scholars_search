@@ -2,11 +2,22 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
-export default class Tab {
+//let Tab = (superclass) => class extends superclass {
+class Tab {
 
-
+  
   constructor(config) {
+    //super()
     this.config = config
+  }
+   
+
+  set config(config) {
+    this._config = config
+  }
+
+  get config() {
+    return this._config;
   }
 
   addContext(data) {
@@ -20,7 +31,10 @@ export default class Tab {
   }
 
   // NOTE: should override
-  facets(facet_counts) { return ""}
+  facets(facet_counts) { 
+    return ""
+  }
+  
 
   //
   defaultQueryOptions() { 
@@ -86,4 +100,6 @@ export default class Tab {
 
 
 }
+
+export default Tab
 

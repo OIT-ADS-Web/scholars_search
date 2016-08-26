@@ -78,7 +78,6 @@ export class ScholarsSearchApp extends Component {
       // but should ignore anyway 
       dispatch(requestTabCount(builtSearch, tabList))
 
-
       // getting this.context.router is null here
       /*
       this.context.router.push({

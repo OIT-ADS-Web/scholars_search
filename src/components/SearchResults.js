@@ -48,7 +48,6 @@ export class SearchResults extends Component {
     }
 
     this.path = "/"
-    //this.chosen_ids = []
   }
 
   
@@ -58,19 +57,20 @@ export class SearchResults extends Component {
     
     // NOTE: this DOES work
     //window.scrollTo(0, 0)
-
+    // clear facets here ???
   }
   
 
   
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
-    
+ 
+    // NOTE: sometimes this makes debugging a little easier - forced
+    // an update every time:
+    //return true
+
     let now = Date.now()
     let timeElapsed = now - lastUpdated
-    
-    //console.log("SearchResults#shouldComponentUpdate")
-    //console.log(timeElapsed)
     
     if ((isFetching && !message)) {
       return false
@@ -250,6 +250,10 @@ export class SearchResults extends Component {
     
     let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
 
+    // FIXME: on search - state facets are not getting applied as
+    // filters
+    //tab.setActiveFacets(this.state.chosen_facets)
+ 
     // FIXME: the sorter - select should be it's own component at least
     // maybe even entire 'row' - download could be too ...
     
