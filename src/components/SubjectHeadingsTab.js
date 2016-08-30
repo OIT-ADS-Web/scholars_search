@@ -106,8 +106,9 @@ export class SubjectHeadingsTab extends Tab {
 
     // ? replace qry with searcher.qry in saga?
     searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-    searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
+    //searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
 
+    this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
     this.applyOptionalFilters(searcher)
   }
 
@@ -115,6 +116,8 @@ export class SubjectHeadingsTab extends Tab {
   //
   setActiveFacets(chosen_ids) {
     this.filters = chosen_ids
+    //this.filters = ['sh_text_fcq']
+
   }
  
   applyOptionalFilters(searcher) {
@@ -177,6 +180,8 @@ export class SubjectHeadingsTab extends Tab {
     //
     //let chosen_ids = _self.filters
  
+    return ""
+
     let facet_list = Object.keys(facet_queries).map(function (key) {
       let item = facet_queries[key]
       

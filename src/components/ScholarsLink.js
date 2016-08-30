@@ -18,7 +18,6 @@ class ScholarsLink extends Component {
     }
 
 
-
     return (
       <a href={uri} target="_blank">
         <span dangerouslySetInnerHTML={{__html: text}}></span>

@@ -2,7 +2,6 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
-//let Tab = (superclass) => class extends superclass {
 class Tab {
 
   
@@ -25,8 +24,12 @@ class Tab {
   }
 
   applyFilters(searcher) {
+    // FIXME: when adding filters have to careful
+    // that the name ("tab" in this case) is unique
+    // otherwise it'll override
+    //
     if (this.config.filter) {
-      searcher.addFilter("type", this.config.filter)
+      searcher.addFilter("tab", this.config.filter)
     }
   }
 

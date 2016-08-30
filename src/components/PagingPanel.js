@@ -70,6 +70,9 @@ export class PagingPanel extends Component {
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
+    // FIXME: this is sent in as from chosen_facets of search_results
+    // means we have to kind of keep tracking of reproducing the search
+    //
     let chosen_ids = this.facets
  
     let tab = tabPicker.tab

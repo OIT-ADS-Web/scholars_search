@@ -44,6 +44,8 @@ class PersonDisplay extends HasSolrData(Component) {
     replaced = replaced.replace("Agent Continuant Entity Independent Continuant Person Student", "")
     replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
 
+    replaced = replaced.replace("Chicago-Style Citation", "")
+
     return replaced
   }
 
@@ -125,6 +127,9 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
+import FacetList from './FacetList'
+import FacetItem from './FacetItem'
+
 class PeopleTab extends Tab {
 
   constructor(config) {
@@ -136,16 +141,13 @@ class PeopleTab extends Tab {
   //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   applyFilters(searcher) {
     super.applyFilters(searcher)
-    searcher.setFacetField("department_facet_string", {prefix: "1|",  mincount: "1"})
-
-    // FIXME: this showed things like publications - might need to apply the tab filter ??
-    //
-    //searcher.setFacetField("{!ex=type}mostSpecificTypeURIs", {mincount: "1"})
  
-    // NOTE: see in applyOptionalFilters where {!tag=dept} is defined
+    // FIXME: these are a little persnickety, if you leave off the localParam it'll
+    // crash - or if you leave off the facetField too
     //
+    searcher.setFacetField("department_facet_string", {prefix: "1|",  mincount: "1"})
     searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")
-
+ 
     searcher.setFacetField("mostSpecificTypeURIs", {mincount: "1"})
     searcher.setFacetLocalParam("mostSpecificTypeURIs", "{!ex=type}")
 
@@ -161,13 +163,20 @@ class PeopleTab extends Tab {
   }
  
   applyOptionalFilters(searcher) {
-
-    // each filter is id of active facet ??
+   
+    // FIXME: wow - this is super ugly, have to build or queries from facets
+    // picked - but each facets has it's own unique query building logic 
+    // there's one big code block per facet
     //
-    // 1. get list of queries we need to run
-    let list = _.map(this.filters, function(id) {
-      let uri_to_search = `(1|*individual/${id})`  // FIXME: this must be wrong
- 
+    //
+    // 1. department facet
+    let dept_filters = _.filter(this.filters, function(id) {
+       return id.startsWith("dept_") 
+    })   
+
+    let dept_list = _.map(dept_filters, function(id) {
+      let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
+      
       if (id == "dept_null") { 
         return `(-department_facet_string:[* TO *] AND *:*)`
       } else {
@@ -176,17 +185,37 @@ class PeopleTab extends Tab {
     })
 
     // 2. gather those into a big OR query
-    if(list.length > 0) {
-      let or_collection = list.join(' OR ')
-      let qry = `{!tag=dept}${or_collection}`
-      //let qry = `${or_collection}`
-      searcher.addFilter("facets", qry)
+    if(dept_list.length > 0) {
+       let or_collection = dept_list.join(' OR ')
+       let qry = `{!tag=dept}${or_collection}`
+       //let qry = `${or_collection}`
+       searcher.addFilter("dept", qry)
      }
 
-    // FIXME: probably need to AND other facets -- right ?
-    //
-    //
-    //
+
+    // 2. type facet
+    let type_filters = _.filter(this.filters, function(id) {
+      return id.startsWith("type_") 
+    })   
+
+    let type_list = _.map(type_filters, function(id) {
+      let uri_to_search = `(*core#${id})`.replace("type_", "")  // FIXME: this must be wrong
+      
+      if (id == "type_null") { 
+        return `(-mostSpecificTypeURIs:[* TO *] AND *:*)`
+      } else {
+        return `mostSpecificTypeURIs:${uri_to_search}`
+      }
+    })
+
+    // 2. gather those into a big OR query
+    if(type_list.length > 0) {
+       let or_collection = type_list.join(' OR ')
+       let qry = `{!tag=type}${or_collection}`
+       //let qry = `${or_collection}`
+       searcher.addFilter("type", qry)
+     }
+ 
   }
 
   
@@ -215,70 +244,7 @@ class PeopleTab extends Tab {
     _.forEach(this.data.departments, function(obj) {
        departmentNameMap[obj.URI] = obj.name
     })
- 
     return departmentNameMap
-  }
-
-  // Facet extends Component
-  //
-  // FacetList extends Component
-  //
-  // <Facets facet_counts={facet_counts} />
-  //
-  //  
-  //  for each x in results:
-  //   <FacetList list={x} />
-  //
-  //  would add callback (for chosen_ids etc...)
-  //
-  /*
-  function* listMaker(items, chosen_ids) {
-    let the_list = items.map(function(item) {
-
-      let label = yield item// get label
-      let the_id = yield item // get id
-
-  }
-
-  */
-
-  get departmentListGroup() {
-    //
-    let department_list  = items.map(function(item) {
-  
-      let department_uri = item.label ? item.label.replace("1|", "") : "None" 
-      let label = item.label ? departmentNameMap[department_uri] : "None"
-      
-      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "") : "dept_null"
-
-      if (chosen_ids.indexOf(org_id) > -1) {
-        
-        return (
-            <li className="list-group-item facet-item">
-              <span title={department_uri} className="badge">{item.count}</span>
-              <label for={org_id} >
-                <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
-                <span className="facet-label">{label}</span>
-              </label>
-            </li>
-          )
-        
-      } else {
-         
-        return (
-          <li className="list-group-item facet-item">
-            <span title={department_uri} className="badge">{item.count}</span> 
-            <label for={org_id}>
-              <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
-              <span className="facet-label">{label}</span>
-            </label>
-          </li>
-        )
-       
-      }
-
-    })
-
   }
 
   // need departments in here, somehow
@@ -323,24 +289,45 @@ class PeopleTab extends Tab {
     // FIXME: need a generalized way to display facets
     let departmentNameMap = this.departmentNameMap
 
+    // NOTE: data is blank for a while, but it doesn't seem to make a difference unless I try to call <FacetItem />
+
     let items = results['department_facet_string']
     let types = results['mostSpecificTypeURIs']
-     
-    let department_list  = items.map(function(item) {
+ 
+    // FIXME: seems like this should work, but it does not
+    let department_list  = _.map(items, (item) => {
   
       let department_uri = item.label ? item.label.replace("1|", "") : "None" 
-      let label = item.label ? departmentNameMap[department_uri] : "None"
-      
-      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "") : "dept_null"
+      let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
+      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
 
+      /*
+      let facetData = {org_id: org_id, 
+        assigned_id: org_id, 
+        count: item.count, 
+        chosen_ids: chosen_ids, 
+        facetLabel: label, 
+        title: department_uri,
+        onFacetClick: cb
+      }
+
+      return facetData
+      */
+
+      // FIXME: seems like this should work, but it does not
+      //let facetItem = (
+      //    <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_ids} onFacetClick={cb} facetLabel={facetLabel} title={department_uri} />
+      //)
+      //return facetItem
+     
       if (chosen_ids.indexOf(org_id) > -1) {
         
         return (
-            <li className="list-group-item facet-item">
+            <li className="list-group-item facet-item active">
               <span title={department_uri} className="badge">{item.count}</span>
-              <label for={org_id} >
+              <label forHtml={org_id} >
                 <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
-                <span className="facet-label">{label}</span>
+                <span className="facet-label">{facetLabel}</span>
               </label>
             </li>
           )
@@ -350,9 +337,9 @@ class PeopleTab extends Tab {
         return (
           <li className="list-group-item facet-item">
             <span title={department_uri} className="badge">{item.count}</span> 
-            <label for={org_id}>
+            <label forHtml={org_id}>
               <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
-              <span className="facet-label">{label}</span>
+              <span className="facet-label">{facetLabel}</span>
             </label>
           </li>
         )
@@ -361,35 +348,55 @@ class PeopleTab extends Tab {
 
     })
 
-
-    let position_list = types.map(function(item) {
+    let position_list = _.map(types, (item) => {
      // looks like this:
      //http://vivoweb.org/ontology/core#FacultyMember
-     let label = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "") : "type_null"
-     let type_id = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "") : "type_null"
+     let facetLabel = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "") : "type_null"
+     let type_id = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "type_") : "type_null"
 
-     return(
-        <li className="list-group-item facet-item">
-          <span className="badge">{item.count}</span>
-          <label for={type_id}>
-            <input id={type_id} type="checkbox" />
-            <span className="facet-label">{label}</span>
-          </label>
-        </li>
-      )
+     if (chosen_ids.indexOf(type_id) > -1) {
+      return (
+          <li className="list-group-item facet-item active">
+            <span className="badge">{item.count}</span>
+            <label forHtml={type_id}>
+              <input id={type_id} onClick={(e) => cb(e)} ref={type_id} type="checkbox" defaultChecked={true}/>
+              <span className="facet-label">{facetLabel}</span>
+            </label>
+          </li>
+        )
+ 
+    } else {
 
+      return (
+          <li className="list-group-item facet-item">
+            <span className="badge">{item.count}</span>
+            <label forHtml={type_id}>
+              <input id={type_id} onClick={(e) => cb(e)} ref={type_id} type="checkbox" />
+              <span className="facet-label">{facetLabel}</span>
+            </label>
+          </li>
+        )
+
+      }
     })
 
-    // let department_list = build_facet_list(...)
-    // let position_list = build_facet_list(...)
 
-    let departmentFacets =  (<ul className="list-group">{department_list}</ul>)
-    let positionTypeFacets = (<ul className="list-group">{position_list}</ul>)
-   
+    //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids} results={department_list} />)
+    //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids}>{department_list}</FacetList>)
+    let departmentFacets = (<FacetList label="Departments">{department_list}</FacetList>)
+    let positionTypeFacets = (<FacetList label="Position Type">{position_list}</FacetList>)
+ 
+    //let positionTypeFacets = (
+    //  <ul className="list-group">
+    //    <h4 className="list-group-item-heading">Position Type</h4>
+    //      {position_list}
+    //  </ul>
+    //)
+     
     let facets = (
       <div>
         {departmentFacets}
-        { /*positionTypeFacets */}
+        {/*positionTypeFacets*/}
       </div>
     )
     return facets
@@ -401,72 +408,12 @@ class PeopleTab extends Tab {
 
     let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_ids, cb)
 
-    // FIXME: would the 'cb' be in the component? 
-    // return <Facets facet_fields={facet_fields} chosen_ids={chosen_ids} />
     return (
       <div>
         {facetFieldDisplay}
       </div>
      )
   }
-
-
-}
-
-// NOTE: if Tab were a Component it would need a render() method
-//
-// but it 'renders' the search results ...
-//
-class Facets extends Component {
-
-  constructor(props) {
-    super(props)
-    this.facet_fields = props.facet_fields
-    this.chosen_ids = props.chosen_ids
-
-    // this.cb ?
-  }
-
-  // FIXME: is there a way to take this out of <SearchResults> and put it into <Facets>
-  /* or alternately have it be a yield of some sort
-   *
-    handleFacetClick(e) {
-   //const { search : { searchFields }, dispatch } = this.props
-    const { search : { searchFields }, departments: { data }, dispatch } = this.props
-
-    let query = solr.buildComplexQuery(searchFields)
-     
-    // FIXME: this same logic appears in many, many places - it should be centralized
-    // or defaulted at a higher level, or something
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-    
-    let tabPicker = new TabPicker(filter)
-    let tab = tabPicker.tab
-
-    let id = e.target.id
-
-    let full_query = { ...searchFields }
-    full_query['start'] = 0
-
-    let chosen_ids = this.state.chosen_facets
-  
-    if (e.target.checked) {
-      chosen_ids.push(id)
-    } else {
-      chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
-    }
-
-    // FIXME: this seems wrong.  I can't depend on the state updating
-    this.setState({chosen_facets: chosen_ids}, function() {
-      // FIXME: needs to be added BEFORE
-      tab.addContext({'departments': data })
-      tab.setActiveFacets(this.state.chosen_facets)
-      dispatch(requestSearch(full_query, tab))
-    })
- 
-
-  }
-  */
 
 
 }

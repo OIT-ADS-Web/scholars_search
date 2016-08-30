@@ -43,6 +43,8 @@ export class SearchResults extends Component {
     this.handleDownload= _.debounce(this.handleDownload,1000);
     this.handleSort = this.handleSort.bind(this)
 
+    this.handleFacetClick = this.handleFacetClick.bind(this)
+ 
     this.state = {
       chosen_facets: []
     }
@@ -118,6 +120,9 @@ export class SearchResults extends Component {
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
+    // FIXME: this is reproducing search already performed.  As the search gets more
+    // complex (facets etc...) this will get more complex
+    //
     fetchSearchApi(searchFields, tab, maxRows).then(function(json) {
 
       let csv = tab.toCSV(json)
@@ -190,6 +195,7 @@ export class SearchResults extends Component {
       // FIXME: needs to be added BEFORE
       tab.addContext({'departments': data })
       tab.setActiveFacets(this.state.chosen_facets)
+
       dispatch(requestSearch(full_query, tab))
     })
  
@@ -242,24 +248,13 @@ export class SearchResults extends Component {
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
 
-    let cb = this.handleFacetClick.bind(this)
-    
     // FIXME: needs to be called BEFORE tab.facets is called (so it has
-    // meta-data)
+    // meta-data) this seems wrong
+    //
     tab.addContext({'departments': data })
     
-    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
+    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, this.handleFacetClick)
 
-    // FIXME: on search - state facets are not getting applied as
-    // filters
-    //tab.setActiveFacets(this.state.chosen_facets)
- 
-    // FIXME: the sorter - select should be it's own component at least
-    // maybe even entire 'row' - download could be too ...
-    
-    // ?? something like this??
-    // let sortOptions = tab.sortOptions(this.handleSort)
-   
     return (
       <section className="search-results">
         <div className="search-results-header">
@@ -268,6 +263,7 @@ export class SearchResults extends Component {
         
         <SearchTabs />
         
+
         <div className="search-results-table">
          
           <div className="row panel">
