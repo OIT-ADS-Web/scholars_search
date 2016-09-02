@@ -245,9 +245,12 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    'hl.fragsize': '350'
+    qf: 'duke_text nameText nameLowercase',
+    pf: 'duke_text nameText nameLowercase',
+    //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    'hl.fragsize': '350',
+    'hl.fl': 'duke_text'
   }
 
   return searcher
@@ -266,8 +269,10 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
+    qf: 'duke_text nameText nameLowercase',
+    pf: 'duke_text nameText nameLowercase'
+    //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+    //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }
 
   // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter

@@ -25,6 +25,11 @@ let HasSolrData = (superclass) => class extends superclass {
     return allText.join(" ")
   }
 
+  get dukeText() {
+    let dukeText = this.doc.duke_text|| []
+    return dukeText.join(" ")
+  }
+
   get types() {
     let typeList = this.doc.type || []
     return typeList.join("<br/>")
@@ -56,7 +61,9 @@ let HasSolrData = (superclass) => class extends superclass {
         // FIXME: might have to look at highlight.nameText too
         // then again, it might not -- not sure
         //
-        display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
+        //display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
+        display = this.highlight.duke_text ? this.highlight.duke_text[0] : docType
+
       } else {
         // no highlight -- not sure what to show
         display = ""
