@@ -249,7 +249,7 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     pf: 'duke_text nameText nameLowercase',
     //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    'hl.fragsize': '350',
+    'hl.fragsize': '175',
     'hl.fl': 'duke_text'
   }
 

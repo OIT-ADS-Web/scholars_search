@@ -73,9 +73,9 @@ export class ScholarsSearchApp extends Component {
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
+      //  tab.setChosenFacets(...) ?
+      //
       dispatch(requestSearch(builtSearch, tabPicker.tab))
-      // NOTE: might need to change - tabs don't need facet_queries
-      // but should ignore anyway 
       dispatch(requestTabCount(builtSearch, tabList))
 
       // getting this.context.router is null here

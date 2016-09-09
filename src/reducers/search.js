@@ -50,7 +50,8 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
       results: action.results,
       searchFields: action.searchFields,
       filterer: action.filterer,
-      lastUpdated: action.requestedAt
+      lastUpdated: action.requestedAt,
+      facetIds: action.facetIds
   }
   case types.RECEIVE_SEARCH:
     

@@ -30,6 +30,23 @@ class PersonDisplay extends HasSolrData(Component) {
     return flag
   }
 
+  get primaryEmail() {
+    let emailText = ''
+    if (this.doc.primaryEmail_text) {
+      emailText = this.doc.primaryEmail_text
+    }
+    return emailText
+  }
+
+  get profileURL() {
+    let urlText = ''
+    if (this.doc.profileURL_text) {
+      urlText = this.doc.profileURL_text
+    }
+
+    return urlText
+  }
+
   // We discussed potentially trimming the ALLTEXT to remove the ending string of text. This text often shows up 
   // in the highlighting and it is irrelevant (screenshot attached). If we can't easily remove the citation 
   // style text (which will vary), can we at least remove everything from 'Agent' to the end?
@@ -40,13 +57,16 @@ class PersonDisplay extends HasSolrData(Component) {
   // Agent Continuant Entity Faculty Member Independent Continuant Person
   //  Agent Continuant Entity Independent Continuant Person Student
   filterHighlightText(text) {
-    let replaced = text.replace("Agent Continuant Entity Faculty Member Independent Continuant Person", "")
-    replaced = replaced.replace("Agent Continuant Entity Independent Continuant Person Student", "")
-    replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
+    
+    return text
 
-    replaced = replaced.replace("Chicago-Style Citation", "")
+    //let replaced = text.replace("Agent Continuant Entity Faculty Member Independent Continuant Person", "")
+    //replaced = replaced.replace("Agent Continuant Entity Independent Continuant Person Student", "")
+    //replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
 
-    return replaced
+    //replaced = replaced.replace("Chicago-Style Citation", "")
+
+    //return replaced
   }
 
   get department() {
@@ -129,6 +149,7 @@ class PersonDisplay extends HasSolrData(Component) {
 
 import FacetList from './FacetList'
 import FacetItem from './FacetItem'
+import Facets from './Facets'
 
 class PeopleTab extends Tab {
 
@@ -225,15 +246,19 @@ class PeopleTab extends Tab {
   }
 
   get csvFields() {
+    
+    /*
     let firstEntryBeforeSpace = function(row) {
       let str = row['ALLTEXT.0']
       let result = str.substr(0, str.indexOf(' '))
       return result
     }
+    *
+    */
 
     return [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
-        { label: 'email', value: 'ALLTEXT.2',  default: ''}, 
-        { label: 'profileUrl', value: function(row) { return firstEntryBeforeSpace(row)}, default: ''}
+        { label: 'email', value: 'primaryEmail_text',  default: ''}, 
+        { label: 'profileUrl', value: 'profileUrl_text', default: ''}
     ]
   }
 
@@ -383,7 +408,7 @@ class PeopleTab extends Tab {
 
     //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids} results={department_list} />)
     //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids}>{department_list}</FacetList>)
-    let departmentFacets = (<FacetList label="Departments">{department_list}</FacetList>)
+    let departmentFacets = (<FacetList label="School/Unit">{department_list}</FacetList>)
     let positionTypeFacets = (<FacetList label="Position Type">{position_list}</FacetList>)
  
     //let positionTypeFacets = (
@@ -394,7 +419,9 @@ class PeopleTab extends Tab {
     //)
      
     let facets = (
-      <div>
+      <div className="facet-panel">
+        <h4 className="heading">Filter By</h4>
+ 
         {departmentFacets}
         {/*positionTypeFacets*/}
       </div>

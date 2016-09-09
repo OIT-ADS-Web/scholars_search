@@ -11,7 +11,8 @@ export function requestSearch(searchFields, filterer) {
     isFetching: true,
     searchFields: searchFields,
     filterer: filterer,
-    requestedAt: Date.now()
+    requestedAt: Date.now(),
+    facetIds: []
   }
 }
 

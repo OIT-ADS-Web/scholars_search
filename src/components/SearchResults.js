@@ -19,10 +19,6 @@ import TabPicker from './TabPicker'
 
 import querystring from 'querystring'
 
-// PersonTab extends SearchResults ??
-// etc...
-//
-
 import { requestSearch } from '../actions/search'
 
 import ReactDOM from 'react-dom'
@@ -67,8 +63,8 @@ export class SearchResults extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
  
-    // NOTE: sometimes this makes debugging a little easier - forced
-    // an update every time:
+    // NOTE: sometimes this makes debugging a little easier
+    // (since it just forces the component to update regardless)
     //return true
 
     let now = Date.now()
@@ -82,9 +78,6 @@ export class SearchResults extends Component {
       return true
     }
     
-
-    //return true
-
   }
   
   handleDownload() {
@@ -116,7 +109,7 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
-    // FIXME: this gets rid of facets
+    // FIXME: this needs to apply facets
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
@@ -165,7 +158,6 @@ export class SearchResults extends Component {
 
 
   handleFacetClick(e) {
-   //const { search : { searchFields }, dispatch } = this.props
     const { search : { searchFields }, departments: { data }, dispatch } = this.props
 
     let query = solr.buildComplexQuery(searchFields)
@@ -182,14 +174,27 @@ export class SearchResults extends Component {
     let full_query = { ...searchFields }
     full_query['start'] = 0
 
+    // let chosen_ids = searchFields['facetIds']
+    //
     let chosen_ids = this.state.chosen_facets
   
     if (e.target.checked) {
       chosen_ids.push(id)
     } else {
+      // chosen_ids = _.filter(searchFields['facetIds'], function(o) { return o != id })
+      //
       chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
     }
 
+    //dispatch(requestSearch(full_query, tab))
+    //full_query['facetIds'] = chosen_ids
+
+    //this.context.router.push({
+    //  pathname: this.path,
+    //  query: full_query
+    //})
+ 
+    // 
     // FIXME: this seems wrong.  I can't depend on the state updating
     this.setState({chosen_facets: chosen_ids}, function() {
       // FIXME: needs to be added BEFORE
@@ -249,7 +254,9 @@ export class SearchResults extends Component {
     let query = solr.buildComplexQuery(searchFields)
 
     // FIXME: needs to be called BEFORE tab.facets is called (so it has
-    // meta-data) this seems wrong
+    // meta-data) this seems wrong.  Should be further up in chain
+    // because it's loaded when the entire application is loaded
+    // although that could be wrong too
     //
     tab.addContext({'departments': data })
     
@@ -257,30 +264,36 @@ export class SearchResults extends Component {
 
     return (
       <section className="search-results">
+       {/*
         <div className="search-results-header">
           <div className="pull-left lead"><strong>Query: {query}</strong></div>
         </div>
+        */
+        }
         
         <SearchTabs />
-        
 
-        <div className="search-results-table">
+        {/* being search results tabel */ }
+        <div className="search-results-table fill">
          
-          <div className="row panel">
+          <div className="row panel fill">
             <div className="col-md-9">          
              {tabResults} 
            </div>
-           <div className="col-md-3 panel panel-info">
-              <div className="panel-body">
-                <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
-                  <span className="glyphicon glyphicon-download"> Download </span>
+           <div className="col-md-3 panel panel-info fill">
+              {tabFacets}
+
+               <div className="panel-body text-center">
+                <button type="button" className="btn btn-primary btn-small" onClick={this.handleDownload}>
+                  <span>Download results</span>
                 </button>
               </div>
-              {tabFacets}
+
            </div>
           </div>
 
         </div>
+        {/* end search results table */ }
 
         <PagingPanel facets={this.state.chosen_facets}></PagingPanel>
 

@@ -42,6 +42,9 @@ class TabPicker {
     // design pattern name for this
     switch(this.filter) {
     case 'person':
+      // FIXME: would like to maybe do something like this:
+      // return (<PeopleTabComponent />)
+      //
       this._tab = new PeopleTab(config)
       break
     case 'publications':
