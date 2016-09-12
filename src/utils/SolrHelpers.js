@@ -245,12 +245,13 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: 'duke_text nameText nameLowercase',
-    pf: 'duke_text nameText nameLowercase',
+    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     'hl.fragsize': '175',
-    'hl.fl': 'duke_text'
+    'hl.fl': 'duke_text',
+    'hl.usePhraseHighlighter': true
   }
 
   return searcher

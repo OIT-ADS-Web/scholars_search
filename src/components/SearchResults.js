@@ -41,10 +41,6 @@ export class SearchResults extends Component {
 
     this.handleFacetClick = this.handleFacetClick.bind(this)
  
-    this.state = {
-      chosen_facets: []
-    }
-
     this.path = "/"
   }
 
@@ -113,6 +109,17 @@ export class SearchResults extends Component {
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
+    // FIXME: once again doing this check -- needs to be centralized in some manner
+    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // have to convert to array if it's a single value
+    if (typeof chosen_ids === 'string') {
+       chosen_ids = [chosen_ids]
+    }
+ 
+    // FIXME: don't like having to always remember to call these methods 
+    tab.setActiveFacets(chosen_ids)
+
     // FIXME: this is reproducing search already performed.  As the search gets more
     // complex (facets etc...) this will get more complex
     //
@@ -168,43 +175,40 @@ export class SearchResults extends Component {
     
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
-
+    // FIXME: don't like haven't to remember to do this
+    // also, is it even necssary?
+    //tab.addContext({'departments': data })
+ 
     let id = e.target.id
 
     let full_query = { ...searchFields }
     full_query['start'] = 0
 
-    // let chosen_ids = searchFields['facetIds']
-    //
-    let chosen_ids = this.state.chosen_facets
+    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // have to convert to array if it's a single value
+    if (typeof chosen_ids === 'string') {
+       chosen_ids = [chosen_ids]
+    }
   
     if (e.target.checked) {
       chosen_ids.push(id)
     } else {
-      // chosen_ids = _.filter(searchFields['facetIds'], function(o) { return o != id })
-      //
-      chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
+      chosen_ids = _.filter(chosen_ids, function(o) { return o != id })
     }
 
-    //dispatch(requestSearch(full_query, tab))
-    //full_query['facetIds'] = chosen_ids
+    // FIXME: don't like having to remember to do this -- and it's also strangely
+    // in search results
+    tab.setActiveFacets(chosen_ids)
 
-    //this.context.router.push({
-    //  pathname: this.path,
-    //  query: full_query
-    //})
- 
-    // 
-    // FIXME: this seems wrong.  I can't depend on the state updating
-    this.setState({chosen_facets: chosen_ids}, function() {
-      // FIXME: needs to be added BEFORE
-      tab.addContext({'departments': data })
-      tab.setActiveFacets(this.state.chosen_facets)
+    dispatch(requestSearch(full_query, tab))
+    full_query['facetIds'] = chosen_ids
 
-      dispatch(requestSearch(full_query, tab))
+    this.context.router.push({
+      pathname: this.path,
+      query: full_query
     })
- 
-
+    
   }
 
   render() {
@@ -258,10 +262,24 @@ export class SearchResults extends Component {
     // because it's loaded when the entire application is loaded
     // although that could be wrong too
     //
+    
     tab.addContext({'departments': data })
     
-    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, this.handleFacetClick)
+    let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // FIXME: it's annoying having this everywhere we get the chosen facets
+    // in facet it's possible, by this far in the process, that it's already
+    // been array-ized 
+    if (typeof chosen_facets === 'string') {
+      chosen_facets = [chosen_facets]
+    }
 
+    // FIXME: don't like having to remember to call this - if we added PeopleTab as
+    // a 'connected' compoment, there would be no need (I think)
+    tab.setActiveFacets(chosen_facets)
+    
+    let tabFacets = tab.facets(facet_counts, chosen_facets, this.handleFacetClick)
+   
     return (
       <section className="search-results">
        {/*
@@ -281,13 +299,16 @@ export class SearchResults extends Component {
              {tabResults} 
            </div>
            <div className="col-md-3 panel panel-info fill">
-              {tabFacets}
-
-               <div className="panel-body text-center">
-                <button type="button" className="btn btn-primary btn-small" onClick={this.handleDownload}>
-                  <span>Download results</span>
-                </button>
-              </div>
+              <div className="facet-wrapper">
+                
+                {tabFacets}
+              
+                <div className="panel-body text-center">
+                  <button type="button" className="btn btn-primary btn-small" onClick={this.handleDownload}>
+                    <span>Download results</span>
+                  </button>
+                </div>
+             </div>
 
            </div>
           </div>
@@ -295,7 +316,7 @@ export class SearchResults extends Component {
         </div>
         {/* end search results table */ }
 
-        <PagingPanel facets={this.state.chosen_facets}></PagingPanel>
+        <PagingPanel facets={chosen_facets}></PagingPanel>
 
     </section>
 

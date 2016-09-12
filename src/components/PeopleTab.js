@@ -151,6 +151,26 @@ import FacetList from './FacetList'
 import FacetItem from './FacetItem'
 import Facets from './Facets'
 
+
+// FIXME: is it possible to have declarative tabs?:
+// e.g.
+// People {
+//   filter: type:(*Person)
+//   facets : {
+//     dept: department_facet_string, options={prefix: "1|", mincount: "1"}, params="{!ex=dept}"
+//        1) id_prefix = 'dept_'
+//        2) remove id_prefix to get id  of what to search 
+//        3) finder ? - *(1|individual/${id})  -- ???
+//           do the finder
+//   }
+// },
+// Publications: {
+//   filter: type:(*bibo/Document),
+//   facets:  ...
+//
+//   etc...
+// }
+//       
 class PeopleTab extends Tab {
 
   constructor(config) {
@@ -169,8 +189,8 @@ class PeopleTab extends Tab {
     searcher.setFacetField("department_facet_string", {prefix: "1|",  mincount: "1"})
     searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")
  
-    searcher.setFacetField("mostSpecificTypeURIs", {mincount: "1"})
-    searcher.setFacetLocalParam("mostSpecificTypeURIs", "{!ex=type}")
+    //searcher.setFacetField("mostSpecificTypeURIs", {mincount: "1"})
+    //searcher.setFacetLocalParam("mostSpecificTypeURIs", "{!ex=type}")
 
     this.applyOptionalFilters(searcher)
   }
@@ -180,7 +200,7 @@ class PeopleTab extends Tab {
   // that you have to remember in other files
   //
   setActiveFacets(chosen_ids) {
-    this.filters = chosen_ids
+    this.facet_ids = chosen_ids
   }
  
   applyOptionalFilters(searcher) {
@@ -190,8 +210,8 @@ class PeopleTab extends Tab {
     // there's one big code block per facet
     //
     //
-    // 1. department facet
-    let dept_filters = _.filter(this.filters, function(id) {
+    // 1(a). department facet
+    let dept_filters = _.filter(this.facet_ids, function(id) {
        return id.startsWith("dept_") 
     })   
 
@@ -205,7 +225,7 @@ class PeopleTab extends Tab {
       }
     })
 
-    // 2. gather those into a big OR query
+    // 1(b). gather those into a big OR query
     if(dept_list.length > 0) {
        let or_collection = dept_list.join(' OR ')
        let qry = `{!tag=dept}${or_collection}`
@@ -214,8 +234,9 @@ class PeopleTab extends Tab {
      }
 
 
-    // 2. type facet
-    let type_filters = _.filter(this.filters, function(id) {
+    /*
+    // 2(a). type facet
+    let type_filters = _.filter(this.facet_ids, function(id) {
       return id.startsWith("type_") 
     })   
 
@@ -229,14 +250,15 @@ class PeopleTab extends Tab {
       }
     })
 
-    // 2. gather those into a big OR query
+    // 2(b). gather those into a big OR query
     if(type_list.length > 0) {
        let or_collection = type_list.join(' OR ')
        let qry = `{!tag=type}${or_collection}`
        //let qry = `${or_collection}`
        searcher.addFilter("type", qry)
      }
- 
+    */
+
   }
 
   
@@ -317,7 +339,7 @@ class PeopleTab extends Tab {
     // NOTE: data is blank for a while, but it doesn't seem to make a difference unless I try to call <FacetItem />
 
     let items = results['department_facet_string']
-    let types = results['mostSpecificTypeURIs']
+    //let types = results['mostSpecificTypeURIs']
  
     // FIXME: seems like this should work, but it does not
     let department_list  = _.map(items, (item) => {
@@ -325,19 +347,6 @@ class PeopleTab extends Tab {
       let department_uri = item.label ? item.label.replace("1|", "") : "None" 
       let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
       let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
-
-      /*
-      let facetData = {org_id: org_id, 
-        assigned_id: org_id, 
-        count: item.count, 
-        chosen_ids: chosen_ids, 
-        facetLabel: label, 
-        title: department_uri,
-        onFacetClick: cb
-      }
-
-      return facetData
-      */
 
       // FIXME: seems like this should work, but it does not
       //let facetItem = (
@@ -349,7 +358,7 @@ class PeopleTab extends Tab {
         
         return (
             <li className="list-group-item facet-item active">
-              <span title={department_uri} className="badge">{item.count}</span>
+             <span title={department_uri} className="badge">{item.count}</span> 
               <label forHtml={org_id} >
                 <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
                 <span className="facet-label">{facetLabel}</span>
@@ -373,6 +382,7 @@ class PeopleTab extends Tab {
 
     })
 
+    /*
     let position_list = _.map(types, (item) => {
      // looks like this:
      //http://vivoweb.org/ontology/core#FacultyMember
@@ -404,24 +414,15 @@ class PeopleTab extends Tab {
 
       }
     })
+    */
 
 
-    //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids} results={department_list} />)
-    //let departmentFacets = (<FacetList label="Departments" onFacetClick={cb} chosen_ids={chosen_ids}>{department_list}</FacetList>)
     let departmentFacets = (<FacetList label="School/Unit">{department_list}</FacetList>)
-    let positionTypeFacets = (<FacetList label="Position Type">{position_list}</FacetList>)
+    //let positionTypeFacets = (<FacetList label="Position Type">{position_list}</FacetList>)
  
-    //let positionTypeFacets = (
-    //  <ul className="list-group">
-    //    <h4 className="list-group-item-heading">Position Type</h4>
-    //      {position_list}
-    //  </ul>
-    //)
-     
     let facets = (
       <div className="facet-panel">
         <h4 className="heading">Filter By</h4>
- 
         {departmentFacets}
         {/*positionTypeFacets*/}
       </div>

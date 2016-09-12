@@ -15,6 +15,7 @@ class PublicationDisplay extends HasSolrData(Component) {
     return (str || "").replace(/&#039;/g,"'");
   }
 
+
   // Continuant Document Entity Generically Dependent Continuant Information Content Entity
   filterHighlightText(text) {
     let replaced = text.replace("Continuant Document Entity Generically Dependent Continuant Information Content Entity", "")
@@ -26,10 +27,12 @@ class PublicationDisplay extends HasSolrData(Component) {
     return (
          <div key="{this.docId}" className="publication search-result-row">
             <div className="row">
-             <div className="col-md-12 col-sm-12"> 
+             <div className="col-md-11 col-sm-11"> 
               <strong>
                 <ScholarsLink uri={this.URI} text={this.name} />
               </strong>
+             </div>
+             <div className="col-md-1 col-sm-1">
              </div>
  
             </div>
