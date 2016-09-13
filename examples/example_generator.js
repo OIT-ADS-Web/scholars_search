@@ -41,3 +41,30 @@ let testFunction2 = function*(id) {
 for(let n of testFunction2("world")) {
   console.log(n)
 }
+
+
+let testFunction3 = function*(fn) {
+  yield fn()
+}
+
+testFunction3(function() { 
+    console.log("Hello")
+    console.log("World") 
+}).next()
+
+// this works - but it's abusing the 
+// for-loop construct
+for(let x of testFunction3(function() { 
+  console.log("HELLO")
+  console.log("WORLD")
+})) { }
+
+
+// was hoping this would work
+// (i.e. without the next())
+//
+// testFunction3(function() {
+//  console.log("hello")
+// })
+//
+//

@@ -175,10 +175,7 @@ export class SearchResults extends Component {
     
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
-    // FIXME: don't like haven't to remember to do this
-    // also, is it even necssary?
-    //tab.addContext({'departments': data })
- 
+    
     let id = e.target.id
 
     let full_query = { ...searchFields }
@@ -201,6 +198,15 @@ export class SearchResults extends Component {
     // in search results
     tab.setActiveFacets(chosen_ids)
 
+    // FIXME: since the action requires the tab -- it's mixing things up a bit
+    // it actually requires something that can modify the searcher
+    // by applying filters, etc ... which is determined from
+    // a) filter query param (e.g. 'tab')
+    // b) config items associated with that 'tab'
+    // c) any facetIds in query params
+    // d) anything else the tab might want to do specific that is 
+    //    too complicated to be json config property 
+    //
     dispatch(requestSearch(full_query, tab))
     full_query['facetIds'] = chosen_ids
 
@@ -263,8 +269,6 @@ export class SearchResults extends Component {
     // although that could be wrong too
     //
     
-    tab.addContext({'departments': data })
-    
     let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
     
     // FIXME: it's annoying having this everywhere we get the chosen facets
@@ -278,20 +282,13 @@ export class SearchResults extends Component {
     // a 'connected' compoment, there would be no need (I think)
     tab.setActiveFacets(chosen_facets)
     
-    let tabFacets = tab.facets(facet_counts, chosen_facets, this.handleFacetClick)
-   
+    let tabFacets = tab.facets(facet_counts, chosen_facets, this.handleFacetClick, data)
+
     return (
       <section className="search-results">
-       {/*
-        <div className="search-results-header">
-          <div className="pull-left lead"><strong>Query: {query}</strong></div>
-        </div>
-        */
-        }
-        
         <SearchTabs />
 
-        {/* being search results tabel */ }
+        {/* begin search results table */ }
         <div className="search-results-table fill">
          
           <div className="row panel fill">

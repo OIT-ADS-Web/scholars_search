@@ -152,25 +152,105 @@ import FacetItem from './FacetItem'
 import Facets from './Facets'
 
 
-// FIXME: is it possible to have declarative tabs?:
-// e.g.
-// People {
-//   filter: type:(*Person)
-//   facets : {
-//     dept: department_facet_string, options={prefix: "1|", mincount: "1"}, params="{!ex=dept}"
-//        1) id_prefix = 'dept_'
-//        2) remove id_prefix to get id  of what to search 
-//        3) finder ? - *(1|individual/${id})  -- ???
-//           do the finder
-//   }
-// },
-// Publications: {
-//   filter: type:(*bibo/Document),
-//   facets:  ...
-//
-//   etc...
-// }
-//       
+class PeopleFacets extends Component {
+
+  constructor(props) {
+    super(props)
+    
+    this.onFacetClick = props.onFacetClick
+   }
+
+  departmentNameMap(data) {
+    // FIXME: should probably centralize this more - even though it's only used here right now
+    let departmentNameMap = {}
+    _.forEach(data, function(obj) {
+       departmentNameMap[obj.URI] = obj.name
+    })
+    return departmentNameMap
+  }
+
+  facetFieldDisplay(facet_fields, chosen_facets, context) {
+    let size = facet_fields.length
+
+    console.log(context)
+    console.log(chosen_facets)
+    console.log(facet_fields)
+
+    if (!(facet_fields || size > 0)) {
+      return ""
+    }
+
+    // 1) first parse our search/facet_fields results
+    let results = {}
+    _.forEach(facet_fields, function(value, key) {
+      results[key] = []
+      
+      let array = value
+
+      let size = array.length
+      let i = 0
+      // strangely results are array, of [<count><field>, <count><field> ... ]
+      while (i < size) {
+        let label = array[i]
+        let count = array[i+1]
+        let summary = {label: label, count:count}
+        results[key].push(summary)
+
+        i = i + 2
+      }
+    })
+  
+    let departmentNameMap = this.departmentNameMap(context)
+
+    // NOTE: data is blank for a while, but it doesn't seem to make a difference unless I try to call <FacetItem />
+    let items = results['department_facet_string']
+ 
+    // FIXME: seems like this should work, but it does not
+    let department_list  = _.map(items, (item) => {
+  
+      let department_uri = item.label ? item.label.replace("1|", "") : "None" 
+      let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
+      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
+
+      let facetItem = (
+          <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={facetLabel} title={department_uri} />
+      )
+      return facetItem
+     
+    })
+
+    let departmentFacets = (<FacetList label="School/Unit">{department_list}</FacetList>)
+ 
+    let facets = (
+      <div className="facet-panel">
+        <h4 className="heading">Filter By</h4>
+        {departmentFacets}
+      </div>
+    )
+
+    return facets
+  }
+
+  render() {
+    const { facet_fields, chosen_facets, context } = this.props
+    
+    if (!context) {
+      return ""
+    }
+
+    let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_facets, context)
+
+    return (
+      <div>
+        {facetFieldDisplay }
+      </div>
+     )
+
+  }
+
+ }
+
+
 class PeopleTab extends Tab {
 
   constructor(config) {
@@ -261,11 +341,15 @@ class PeopleTab extends Tab {
 
   }
 
-  
-
   pickDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+  facets(facet_counts, chosen_ids, callback, data) {
+    let facet_fields = facet_counts.facet_fields
+    return (<PeopleFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+  }
+
 
   get csvFields() {
     
@@ -282,165 +366,6 @@ class PeopleTab extends Tab {
         { label: 'email', value: 'primaryEmail_text',  default: ''}, 
         { label: 'profileUrl', value: 'profileUrl_text', default: ''}
     ]
-  }
-
-
-  get departmentNameMap() {
-    // FIXME: should probably centralize this more - even though it's only used here right now
-    let departmentNameMap = {}
-    _.forEach(this.data.departments, function(obj) {
-       departmentNameMap[obj.URI] = obj.name
-    })
-    return departmentNameMap
-  }
-
-  // need departments in here, somehow
-  facetFieldDisplay(facet_fields, chosen_ids, cb) {
-    let size = facet_fields.length
-
-    if (!(facet_fields || size > 0)) {
-      return ""
-    }
-
-    // 1) first parse our search/facet_fields results
-    let results = {}
-    _.forEach(facet_fields, function(value, key) {
-      results[key] = []
-
-      let array = value
-      let size = array.length
-      let i = 0
-      // strangely results are array, of [<count><field>, <count><field> ... ]
-      while (i < size) {
-        let label = array[i]
-        let count = array[i+1]
-        let summary = {label: label, count:count}
-        results[key].push(summary)
-        i = i + 2
-      }
-    })
-
-    /*
-     *  
-    "department_facet_string": [
-      "3|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000832",
-      "2|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829",
-      "1|https://scholars.duke.edu/individual/org50000761",
-      "4|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000844|https://scholars.duke.edu/individual/org50000847",
-      "3|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829|https://scholars.duke.edu/individual/org50000844",
-      "2|https://scholars.duke.edu/individual/org50000761|https://scholars.duke.edu/individual/org50000829",
-      "1|https://scholars.duke.edu/individual/org50000761"
-    ],
-    */
-
-    // FIXME: need a generalized way to display facets
-    let departmentNameMap = this.departmentNameMap
-
-    // NOTE: data is blank for a while, but it doesn't seem to make a difference unless I try to call <FacetItem />
-
-    let items = results['department_facet_string']
-    //let types = results['mostSpecificTypeURIs']
- 
-    // FIXME: seems like this should work, but it does not
-    let department_list  = _.map(items, (item) => {
-  
-      let department_uri = item.label ? item.label.replace("1|", "") : "None" 
-      let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
-      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
-
-      // FIXME: seems like this should work, but it does not
-      //let facetItem = (
-      //    <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_ids} onFacetClick={cb} facetLabel={facetLabel} title={department_uri} />
-      //)
-      //return facetItem
-     
-      if (chosen_ids.indexOf(org_id) > -1) {
-        
-        return (
-            <li className="list-group-item facet-item active">
-             <span title={department_uri} className="badge">{item.count}</span> 
-              <label forHtml={org_id} >
-                <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" defaultChecked={true} />
-                <span className="facet-label">{facetLabel}</span>
-              </label>
-            </li>
-          )
-        
-      } else {
-         
-        return (
-          <li className="list-group-item facet-item">
-            <span title={department_uri} className="badge">{item.count}</span> 
-            <label forHtml={org_id}>
-              <input id={org_id} onClick={(e) => cb(e)} ref={org_id} type="checkbox" />
-              <span className="facet-label">{facetLabel}</span>
-            </label>
-          </li>
-        )
-       
-      }
-
-    })
-
-    /*
-    let position_list = _.map(types, (item) => {
-     // looks like this:
-     //http://vivoweb.org/ontology/core#FacultyMember
-     let facetLabel = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "") : "type_null"
-     let type_id = item.label ? item.label.replace(/http:\/\/vivoweb.org\/ontology\/core#/g, "type_") : "type_null"
-
-     if (chosen_ids.indexOf(type_id) > -1) {
-      return (
-          <li className="list-group-item facet-item active">
-            <span className="badge">{item.count}</span>
-            <label forHtml={type_id}>
-              <input id={type_id} onClick={(e) => cb(e)} ref={type_id} type="checkbox" defaultChecked={true}/>
-              <span className="facet-label">{facetLabel}</span>
-            </label>
-          </li>
-        )
- 
-    } else {
-
-      return (
-          <li className="list-group-item facet-item">
-            <span className="badge">{item.count}</span>
-            <label forHtml={type_id}>
-              <input id={type_id} onClick={(e) => cb(e)} ref={type_id} type="checkbox" />
-              <span className="facet-label">{facetLabel}</span>
-            </label>
-          </li>
-        )
-
-      }
-    })
-    */
-
-
-    let departmentFacets = (<FacetList label="School/Unit">{department_list}</FacetList>)
-    //let positionTypeFacets = (<FacetList label="Position Type">{position_list}</FacetList>)
- 
-    let facets = (
-      <div className="facet-panel">
-        <h4 className="heading">Filter By</h4>
-        {departmentFacets}
-        {/*positionTypeFacets*/}
-      </div>
-    )
-    return facets
-  }
-
-
-  facets(facet_counts, chosen_ids, cb) {
-    let facet_fields = facet_counts.facet_fields
-
-    let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_ids, cb)
-
-    return (
-      <div>
-        {facetFieldDisplay}
-      </div>
-     )
   }
 
 

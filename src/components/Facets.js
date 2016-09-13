@@ -12,6 +12,11 @@ class Facets extends Component {
     super(props)
   }
 
+  // render() {
+  //
+  //  if filter == 'people' --> ????
+  //
+  // }
 
 }
 

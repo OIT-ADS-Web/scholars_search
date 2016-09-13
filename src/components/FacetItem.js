@@ -1,81 +1,61 @@
 import React, { Component } from 'react';
 
+import classNames from 'classnames'
+
+class FacetCheckbox extends Component {
+
+  constructor(props) {
+    super(props)
+ 
+    this.assigned_id = this.props.assigned_id
+    this.onFacetClick = this.props.onFacetClick
+    
+    this.state = {
+      is_checked: false
+    }
+  }
+
+  render() {
+    const { assigned_id, is_checked } = this.props
+    
+    let selected = is_checked ? is_checked : (this.state.is_checked)
+
+       return (
+        <input id={assigned_id} checked={selected} onClick={(e) => this.onFacetClick(e)} ref={assigned_id} type="checkbox" />
+    )
+  }
+
+
+}
+
 class FacetItem extends Component {
 
   constructor(props) {
     super(props)
  
-    console.log("FacetItem#constructor")
-    console.log(props)   
- 
-    // console.log(this.props)
-
-    this.assigned_id = this.props.assigned_id
-    this.count = this.props.count
-    
-    this.chosen_ids = this.props.chosen_ids
     this.onFacetClick = this.props.onFacetClick
- 
-    this.facetLabel = this.props.facetLabel   
-    this.title = this.props.title
- 
-    //this.assigned_id = this.props.props.assigned_id
-    //this.count = this.props.props.count
-    //this.chosen_ids = this.props.props.chosen_ids
-    //this.onFacetClick = this.props.props.onFacetClick
- 
-    //this.label = this.props.props.label   
-    //this.title = this.props.props.title
+
   }
 
   render() {
-    console.log("FacetItem#render()")
+    const { assigned_id, count, chosen_ids, facetLabel, title } = this.props
     
-    console.log(this.facetLabel)
-    //console.log(this.chosen_ids)
+    let is_checked = false
 
-    //console.log(this.count)
-    //console.log(this.assigned_id)
+    if (chosen_ids.indexOf(assigned_id) > -1) { is_checked = true }
 
-    let assigned_id = this.assigned_id
-    let count = this.count
-    let chosen_ids = this.chosen_ids
- 
-    let facetLabel = this.facetLabel
-    let title = this.title
- 
-    if (chosen_ids.indexOf(assigned_id) > -1) {
- 
-      console.log("FacetItem#render() -- active ")
-      console.log(chosen_ids.indexOf(assigned_id))
-
-      return (
-          <li className="list-group-item facet-item active">
-            <span title={title} className="badge">{count}</span>
-            <label htmlFor={assigned_id}>
-              <input id={assigned_id} onClick={(e) => this.onFacetClick(e)} ref={assigned_id} type="checkbox" defaultChecked={true} />
-              <span className="facet-label">{facetLabel}</span>
-            </label>
-          </li>
-          )
-        
-    } else {
- 
-      console.log("FacetItem#render() -- NOT active ")
-      console.log(chosen_ids.indexOf(assigned_id))
-
-      return (
-        <li className="list-group-item facet-item">
+    const listClasses = classNames({'list-group-item': true, 'facet-item': true, 'active': is_checked})     
+   
+    return (
+        <li className={listClasses}>
           <span title={title} className="badge">{count}</span> 
           <label htmlFor={assigned_id}>
-            <input id={assigned_id} onClick={(e) => this.onFacetClick(e)} ref={assigned_id} type="checkbox" />
+            <FacetCheckbox assigned_id={assigned_id} onFacetClick={this.onFacetClick} is_checked={is_checked}/>
             <span className="facet-label">{facetLabel}</span>
           </label>
         </li>
-        )
-       
-      }
-    
+     )
+
   }
 
 

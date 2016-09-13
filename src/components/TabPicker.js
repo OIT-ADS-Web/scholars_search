@@ -34,17 +34,11 @@ class TabPicker {
   constructor(filter) {
     this.filter = filter
 
-    /// FIXME: this makes a new object every time - should probably not do that
-    //
+    /// FIXME: this makes a 'new' object every time - should probably not do that
     let config = findTab(filter)
 
-    // makes this be a router, or thin wrapper of sorts - there's probably a 
-    // design pattern name for this
     switch(this.filter) {
     case 'person':
-      // FIXME: would like to maybe do something like this:
-      // return (<PeopleTabComponent />)
-      //
       this._tab = new PeopleTab(config)
       break
     case 'publications':

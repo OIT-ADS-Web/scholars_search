@@ -2,6 +2,32 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
+// IsFaceted --
+//
+//   applyFilters(searcher)
+//   setActiveFacets(chosen_ids) 
+//
+//
+// IsTab --
+//
+//  mainFilter()
+//  sortOptions()
+//  toCsv()
+//  results()
+//  queryOptions()
+//  pickDisplay()
+//  results()
+//
+//
+//
+// FIXME: make like like HasSolrData ??
+// let Tab = (superclass) => class extends superclass {
+// extends Tab(Component) ???
+
+// render() {
+//
+// }
+//
 class Tab {
 
   
@@ -33,9 +59,16 @@ class Tab {
     }
   }
 
-  // NOTE: should override
-  facets(facet_counts) { 
-    return ""
+  // ??
+  // hasFacets() {
+  //   return false
+  // }
+  //
+  //
+  // NOTE: should override ---
+  facets(facet_counts, chosen_facets, callback, data) { 
+    //return ""
+    // return (<PeopleFacets />)
   }
   
 
@@ -61,6 +94,7 @@ class Tab {
     )
   }
  
+  // FIXME: is this in the right place ???
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
