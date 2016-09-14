@@ -146,9 +146,16 @@ export class SearchTabs extends Component {
 
     // FIXME: what to do if tabs error? e.g. if (message) { }
     
+    let query = solr.buildComplexQuery(searchFields)
+
+
     return (
       <div>
-        <div className="bg-info pull-right"><strong>Total Results Found: <span className="badge">{ungroupedCount}</span></strong></div>
+        <div className="pull-right">
+          <span className="search-text">
+          Query: {query} found {ungroupedCount} results
+          </span>
+        </div>
         <div className="clearfix"></div>
         <nav className="visible-xs">
             {mobileTabs}            

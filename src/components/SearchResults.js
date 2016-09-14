@@ -19,10 +19,6 @@ import TabPicker from './TabPicker'
 
 import querystring from 'querystring'
 
-// PersonTab extends SearchResults ??
-// etc...
-//
-
 import { requestSearch } from '../actions/search'
 
 import ReactDOM from 'react-dom'
@@ -43,12 +39,9 @@ export class SearchResults extends Component {
     this.handleDownload= _.debounce(this.handleDownload,1000);
     this.handleSort = this.handleSort.bind(this)
 
-    this.state = {
-      chosen_facets: []
-    }
-
+    this.handleFacetClick = this.handleFacetClick.bind(this)
+ 
     this.path = "/"
-    //this.chosen_ids = []
   }
 
   
@@ -58,32 +51,29 @@ export class SearchResults extends Component {
     
     // NOTE: this DOES work
     //window.scrollTo(0, 0)
-
+    // clear facets here ???
   }
   
 
   
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
-    
-    // FIXME: if the app does not initialize correctly
-    // or there is an error this never ends
-    //
+ 
+    // NOTE: sometimes this makes debugging a little easier
+    // (since it just forces the component to update regardless)
     //return true
-    let now = Date.now()
 
+    let now = Date.now()
     let timeElapsed = now - lastUpdated
     
-    //console.log("SearchResults#shouldComponentUpdate")
-    //console.log(timeElapsed)
-    //
-    if ((isFetching && !message) && (timeElapsed < 1000)) {
+    if ((isFetching && !message)) {
       return false
+    } else if ((!isFetching) && (timeElapsed > 0)) {
+      return true
     } else {
       return true
     }
-  
-
+    
   }
   
   handleDownload() {
@@ -115,10 +105,24 @@ export class SearchResults extends Component {
     }
     let type = `${figureType(format)};charset=utf-8`
 
-    // FIXME: this gets rid of facets
+    // FIXME: this needs to apply facets
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
 
+    // FIXME: once again doing this check -- needs to be centralized in some manner
+    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // have to convert to array if it's a single value
+    if (typeof chosen_ids === 'string') {
+       chosen_ids = [chosen_ids]
+    }
+ 
+    // FIXME: don't like having to always remember to call these methods 
+    tab.setActiveFacets(chosen_ids)
+
+    // FIXME: this is reproducing search already performed.  As the search gets more
+    // complex (facets etc...) this will get more complex
+    //
     fetchSearchApi(searchFields, tab, maxRows).then(function(json) {
 
       let csv = tab.toCSV(json)
@@ -161,7 +165,6 @@ export class SearchResults extends Component {
 
 
   handleFacetClick(e) {
-   //const { search : { searchFields }, dispatch } = this.props
     const { search : { searchFields }, departments: { data }, dispatch } = this.props
 
     let query = solr.buildComplexQuery(searchFields)
@@ -172,29 +175,46 @@ export class SearchResults extends Component {
     
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
-
+    
     let id = e.target.id
 
     let full_query = { ...searchFields }
     full_query['start'] = 0
 
-    let chosen_ids = this.state.chosen_facets
+    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // have to convert to array if it's a single value
+    if (typeof chosen_ids === 'string') {
+       chosen_ids = [chosen_ids]
+    }
   
     if (e.target.checked) {
       chosen_ids.push(id)
     } else {
-      chosen_ids = _.filter(this.state.chosen_facets, function(o) { return o != id })
+      chosen_ids = _.filter(chosen_ids, function(o) { return o != id })
     }
 
-    // FIXME: this seems wrong.  I can't depend on the state updating
-    this.setState({chosen_facets: chosen_ids}, function() {
-      // FIXME: needs to be added BEFORE
-      tab.addContext({'departments': data })
-      tab.setActiveFacets(this.state.chosen_facets)
-      dispatch(requestSearch(full_query, tab))
-    })
- 
+    // FIXME: don't like having to remember to do this -- and it's also strangely
+    // in search results
+    tab.setActiveFacets(chosen_ids)
 
+    // FIXME: since the action requires the tab -- it's mixing things up a bit
+    // it actually requires something that can modify the searcher
+    // by applying filters, etc ... which is determined from
+    // a) filter query param (e.g. 'tab')
+    // b) config items associated with that 'tab'
+    // c) any facetIds in query params
+    // d) anything else the tab might want to do specific that is 
+    //    too complicated to be json config property 
+    //
+    dispatch(requestSearch(full_query, tab))
+    full_query['facetIds'] = chosen_ids
+
+    this.context.router.push({
+      pathname: this.path,
+      query: full_query
+    })
+    
   }
 
   render() {
@@ -243,52 +263,57 @@ export class SearchResults extends Component {
     // to Solr - which is maybe fine
     let query = solr.buildComplexQuery(searchFields)
 
-    let cb = this.handleFacetClick.bind(this)
-    
     // FIXME: needs to be called BEFORE tab.facets is called (so it has
-    // meta-data)
-    tab.addContext({'departments': data })
-    
-    let tabFacets = tab.facets(facet_counts, this.state.chosen_facets, cb)
-
-    // FIXME: the sorter - select should be it's own component at least
-    // maybe even entire 'row' - download could be too ...
-
-    // let sortOptions = tabPicker.sortOptions()
+    // meta-data) this seems wrong.  Should be further up in chain
+    // because it's loaded when the entire application is loaded
+    // although that could be wrong too
     //
-    // let sortOptions = (   
-    //   <select onSelect={() => this.onSort()} className="form-control" defaultValue="score desc">
-    //        <option value="score desc">Relevance</option>
-    //    </select>
-    //  )
-   
+    
+    let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
+    
+    // FIXME: it's annoying having this everywhere we get the chosen facets
+    // in facet it's possible, by this far in the process, that it's already
+    // been array-ized 
+    if (typeof chosen_facets === 'string') {
+      chosen_facets = [chosen_facets]
+    }
+
+    // FIXME: don't like having to remember to call this - if we added PeopleTab as
+    // a 'connected' compoment, there would be no need (I think)
+    tab.setActiveFacets(chosen_facets)
+    
+    let tabFacets = tab.facets(facet_counts, chosen_facets, this.handleFacetClick, data)
+
     return (
       <section className="search-results">
-        <div className="search-results-header">
-          <div className="pull-left lead"><strong>Query: {query}</strong></div>
-        </div>
-        
         <SearchTabs />
-        
-        <div className="search-results-table">
+
+        {/* begin search results table */ }
+        <div className="search-results-table fill">
          
-          <div className="row panel">
+          <div className="row panel fill">
             <div className="col-md-9">          
              {tabResults} 
            </div>
-           <div className="col-md-3 panel panel-info">
-              <div className="panel-body">
-                <button type="button" className="btn btn-default btn-small" onClick={this.handleDownload}>
-                  <span className="glyphicon glyphicon-download"> Download </span>
-                </button>
-              </div>
-              {tabFacets}
+           <div className="col-md-3 panel panel-info fill">
+              <div className="facet-wrapper">
+                
+                {tabFacets}
+              
+                <div className="panel-body text-center">
+                  <button type="button" className="btn btn-primary btn-small" onClick={this.handleDownload}>
+                    <span>Download results</span>
+                  </button>
+                </div>
+             </div>
+
            </div>
           </div>
 
         </div>
+        {/* end search results table */ }
 
-        <PagingPanel facets={this.state.chosen_facets}></PagingPanel>
+        <PagingPanel facets={chosen_facets}></PagingPanel>
 
     </section>
 

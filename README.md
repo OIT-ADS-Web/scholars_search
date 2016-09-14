@@ -118,6 +118,23 @@ then run this on the command line:
   
   ```
 
+You can switch the organizations list from local to acceptance too (that is waht the `/orgs` is for above).  But you also
+have to ssh tunnel into web-test-04 as well.
+
+This JSON comes from VIVO itself - as a path `/orgservice` (see productMods/WEB-INF/web.xml):
+
+```
+  <servlet>
+    <servlet-name>Organization Service</servlet-name>
+    <servlet-class>edu.cornell.mannlib.vitro.webapp.controller.OrganizationServiceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Organization Service</servlet-name>
+    <url-pattern>/orgservice</url-pattern>
+  </servlet-mapping>
+
+```
+
 ## Building and Deploying
 
   First run the build command - this puts something in the `./dist` folder.  *NOTE*: you have to do `npm run build` not just `npm build`

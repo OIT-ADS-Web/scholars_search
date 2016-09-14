@@ -61,12 +61,9 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-// export class SubjectHeadingsTab extends SearchResults {
-//
-// }
-//
+import FacetList from './FacetList'
+
 export class SubjectHeadingsTab extends Tab {
-//export class SubjectHeadingsTab extends AbstractTab(Component)  {
 
   get csvFields() {
     return [{label: 'Name', value: 'nameRaw.0'}
@@ -95,10 +92,17 @@ export class SubjectHeadingsTab extends Tab {
 
     this.filters = []
 
+    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
+ 
   }
 
   applyFilters(searcher) {
     super.applyFilters(searcher)
+
+    // FIXME: this doesn't work
+    //searcher.setOption['qf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
+    //searcher.setOption['pf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
+ 
 
     // NOTE: will need query already defined here, so order of operations
     // matters a bit
@@ -106,8 +110,9 @@ export class SubjectHeadingsTab extends Tab {
 
     // ? replace qry with searcher.qry in saga?
     searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-    searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
+    searcher.setFacetQuery(`{!ex=match}duke_text:${qry}`)
 
+    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
     this.applyOptionalFilters(searcher)
   }
 
@@ -123,7 +128,7 @@ export class SubjectHeadingsTab extends Tab {
 
     let query_list = [ 
        {id: 'sh_name_fcq',  query: "nameText"}, 
-       {id: 'sh_text_fcq', query: "ALLTEXT"}
+       {id: 'sh_text_fcq', query: "duke_text"}
     ]
  
     let list = _.map(this.filters, function(id) {
@@ -145,8 +150,8 @@ export class SubjectHeadingsTab extends Tab {
 
   getFacetQueryById(id) {
     let query_list = [ 
-       {id: 'sh_name_fcq', label: 'Name Only', query: "{!ex=match}nameText"}, 
-       {id: 'sh_text_fcq', label: 'Any Text', query: "{!ex=match}ALLTEXT"}
+       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
+       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
     ]
  
     let found = _.find(query_list, function(o) { return o.id === id })
@@ -160,8 +165,8 @@ export class SubjectHeadingsTab extends Tab {
     var base_qry= qry.substr(0, qry.indexOf(':')) 
 
     let query_list = [ 
-       {id: 'sh_name_fcq', label: 'Name Only', query: "{!ex=match}nameText"}, 
-       {id: 'sh_text_fcq', label: 'Any Text', query: "{!ex=match}ALLTEXT"}
+       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
+       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
     ]
  
     let found = _.find(query_list, function(o) { return o.query === base_qry })
@@ -177,6 +182,11 @@ export class SubjectHeadingsTab extends Tab {
     //
     //let chosen_ids = _self.filters
  
+    // do this to blank out the facets
+    return ""
+
+    // _.map() =>
+    //
     let facet_list = Object.keys(facet_queries).map(function (key) {
       let item = facet_queries[key]
       
@@ -195,9 +205,9 @@ export class SubjectHeadingsTab extends Tab {
       //
       if (chosen_ids.indexOf(facetQuery.id) > -1) {
         return (
-            <li className="list-group-item facet-item">
+            <li className="list-group-item facet-item active">
               <span className="badge">{item}</span>
-              <label for={facetQuery.id}>
+              <label htmlFor={facetQuery.id}>
                 <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" defaultChecked={true} />
                 <span className="facet-label">{label}</span>
               </label>
@@ -207,7 +217,7 @@ export class SubjectHeadingsTab extends Tab {
         return (
           <li className="list-group-item facet-item">
             <span className="badge">{item}</span> 
-            <label for={facetQuery.id}>
+            <label htmlFor={facetQuery.id}>
               <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" />
               <span className="facet-label">{label}</span>
             </label>
@@ -216,7 +226,8 @@ export class SubjectHeadingsTab extends Tab {
       }
 
     })
-    let facets = (<ul className="list-group">{facet_list}</ul>)
+
+    let facets = (<FacetList label="Limit To">{facet_list}</FacetList>)
     return facets
   }
 

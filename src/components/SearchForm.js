@@ -78,7 +78,7 @@ export class SearchForm extends Component {
      * e.g. it really shouldn't search a 'blank' search
      *
      * FIXME: this pathname should be global, configurable, right?
-     * also - how would we add to /people or /organizations etc...
+    * also - how would we add to /people or /organizations etc...
      *
      */
     //let path = `/${filter}`
@@ -89,12 +89,14 @@ export class SearchForm extends Component {
       query: compoundSearch 
     })
 
-
     // NOTE: this creates a new PersonTab() (for instance)
     //
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
-
+    
+    // FIXME: is this necessasry ????
+    //tab.setActiveFacets([])
+     
     if (solr.isEmptySearch(compoundSearch)) {
       dispatch(emptySearch())
     } 
@@ -104,8 +106,10 @@ export class SearchForm extends Component {
       
       let full_query = { ...compoundSearch }
 
+      //tab.setActiveFacets([])
+      full_query['facetIds'] = []
+ 
       dispatch(requestSearch(full_query, tab))
-      
       dispatch(requestTabCount(compoundSearch, tabList))
     }
 

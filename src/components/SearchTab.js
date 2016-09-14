@@ -50,7 +50,8 @@ export class SearchTab extends Component {
     // setting default start to 0 - so paging is reset - luckily
     // filter should always be present
     const query  = {...searchFields, start: 0, filter: filter }
-
+    query['facetIds'] = []
+ 
     // FIXME: needs to do this on default search (from URL) too
     // FIXME: is this a good place for adding facet - counts etc...
     let tabPicker = new TabPicker(filter)

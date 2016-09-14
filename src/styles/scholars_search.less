@@ -26,7 +26,9 @@ div.search-results {
 
 
 div.search-result-row {
+  /*
   border: 1px dotted #d3d3d3;
+  */
   text-align: left;
   vertical-align: top;
   margin-bottom: 1em;
@@ -56,6 +58,10 @@ img.profile-thumbnail {
 }
 
 .search-results-header div.lead {
+  font-size: 14px;
+}
+
+.search-results-header div.lead {
   margin-bottom: 2px;
 }
 .search-form.well {
@@ -64,8 +70,9 @@ img.profile-thumbnail {
   padding-top: 2px;
 }
 .search-tab a {
-  font-size: 11px;
+  font-size: 12px;
 }
+
 
 .search-form div.form-group {
   margin-bottom: 4px;
@@ -92,3 +99,96 @@ span.facet-label {
   font-size: 10px;
 }
 
+
+.search-text {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+
+.panel-info {
+  background-color: #F5F5F5;
+}
+
+/*
+.panel-info div.wrapper {
+  background-color: #F5F5F5;
+  padding: 4px;
+}
+*/
+
+.panel-info h4 {
+  font-size: 11pt;
+  /*background-color: #A9A9A9; */ 
+}
+
+.panel-info .btn-small {
+  font-size: 9pt;
+}
+
+.facet-panel h4 {
+  font-size: 10pt;
+  /*background-color: #A9A9A9; */
+}
+
+.facet-panel h4.heading {
+  background-color: #A9A9A9; 
+  padding: .2em .6em .3em;
+  font-size: 12pt;
+}
+
+li.search-tab {
+  /*border-bottom: 1px #235f9c solid; */
+}
+
+li.search-tab a {
+  margin-right: 4px;
+  border-radius: 4px 4px 0px 0px; 
+
+}
+
+.nav li.search-tab a {
+  padding-top: 4px;
+  padding-right: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+}
+
+.nav li.search-tab {
+  border-bottom: 1px #235f9c solid;
+ 
+
+}
+
+.nav li.search-tab.active {
+   border-bottom: 0px;
+}
+
+.nav li.search-tab a {
+  background-color: #235f9c;
+  color: #FFFFFF;
+ 
+}
+.nav  li.search-tab.active a {
+  background-color: #FFFFFF;
+  color: #235f9c;
+  border-top: 1px #235f9c solid;
+  border-right: 1px #235f9c solid;
+  border-left: 1px #235f9c solid;
+} 
+
+/* FIXME: trying to get facets to take up entire space and put download button at bottom */
+/* http://stackoverflow.com/questions/11677886/twitter-bootstrap-div-in-container-with-100-height */
+#content {
+  height: 100%;
+}
+
+.panel-info {
+    /*border-color: #F5F5F5; */
+    border: none;
+}
+
+.fill { 
+  min-height: 100%;
+  height: 100%;
+}

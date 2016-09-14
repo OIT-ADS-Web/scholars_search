@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-//import { PAGE_ROWS } from '../actions/search'
 import { PAGE_ROWS } from '../actions/constants'
 
 import classNames from 'classnames'
@@ -70,18 +69,27 @@ export class PagingPanel extends Component {
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
+    // FIXME: this is sent in as from chosen_facets of search_results
+    // means we have to kind of keep tracking of reproducing the search
+    //
     let chosen_ids = this.facets
  
     let tab = tabPicker.tab
-    tab.setActiveFacets(chosen_ids)
- 
+
+    if (chosen_ids) {
+      tab.setActiveFacets(chosen_ids)
+      full_query['facetIds'] = this.chosen_ids
+   
+    }
     // FIXME: would like this to force going back up to top of page
     //
     dispatch(requestSearch(full_query, tab))
  
+    full_query['facetIds'] = this.facets
+
     this.context.router.push({
       pathname: '/',
-      query: query
+      query: full_query
 
     })
       
@@ -111,15 +119,19 @@ export class PagingPanel extends Component {
     let tabPicker =  new TabPicker(filter)
 
     let chosen_ids = this.facets
- 
+
     let tab = tabPicker.tab
-    tab.setActiveFacets(chosen_ids)
- 
+
+    if (chosen_ids) {
+      tab.setActiveFacets(chosen_ids)
+      full_query['facetIds'] = this.chosen_ids
+    }
+
     dispatch(requestSearch(full_query, tab))
 
     this.context.router.push({
       pathname: '/',
-      query: query
+      query: full_query
 
     })
  

@@ -39,10 +39,12 @@ export class ScholarsSearchApp extends Component {
 
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
-    const { location, dispatch } = this.props;
+    const { location, dispatch, departments: { data }} = this.props;
+
+   //const { departments: { data } } = this.props
 
     let query = location.query
-
+    
     let onlyAdvanced = this.onlyAdvanced(query)
     let blankSearch = solr.isEmptySearch(query)
 
@@ -67,25 +69,30 @@ export class ScholarsSearchApp extends Component {
 
       // FIXME: a lot of this code is duplicated every time a search is done
       // should centralize a bit more
-      
+
       // FIXME: get the facetQueries here ???
       let tabPicker = new TabPicker(query['filter'])
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      dispatch(requestSearch(builtSearch, tabPicker.tab))
-      // NOTE: might need to change - tabs don't need facet_queries
-      // but should ignore anyway 
+      let tab = tabPicker.tab
+      // fixme: this doesn't seem to be necessary
+      //tab.addContext({'departments': data })
+ 
+      //let parsed = querystring.parse(
+
+      let chosen_ids = query['facetIds'] ? query['facetIds'] : []
+      if (typeof chosen_ids === 'string') {
+         chosen_ids = [chosen_ids]
+      }
+
+      if (chosen_ids) {
+        tab.setActiveFacets(chosen_ids)
+      }
+      
+      dispatch(requestSearch(builtSearch, tab))
       dispatch(requestTabCount(builtSearch, tabList))
 
-
-      // getting this.context.router is null here
-      /*
-      this.context.router.push({
-        pathname: "/",
-        query: query
-      })
-      */
 
     } else if (onlyAdvanced || blankSearch) {
        dispatch(emptySearch())

@@ -2,11 +2,47 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
-export default class Tab {
+// IsFaceted --
+//
+//   applyFilters(searcher)
+//   setActiveFacets(chosen_ids) 
+//
+//
+// IsTab --
+//
+//  mainFilter()
+//  sortOptions()
+//  toCsv()
+//  results()
+//  queryOptions()
+//  pickDisplay()
+//  results()
+//
+//
+//
+// FIXME: make like like HasSolrData ??
+// let Tab = (superclass) => class extends superclass {
+// extends Tab(Component) ???
 
+// render() {
+//
+// }
+//
+class Tab {
 
+  
   constructor(config) {
+    //super()
     this.config = config
+  }
+   
+
+  set config(config) {
+    this._config = config
+  }
+
+  get config() {
+    return this._config;
   }
 
   addContext(data) {
@@ -14,13 +50,27 @@ export default class Tab {
   }
 
   applyFilters(searcher) {
+    // FIXME: when adding filters have to careful
+    // that the name ("tab" in this case) is unique
+    // otherwise it'll override
+    //
     if (this.config.filter) {
-      searcher.addFilter("type", this.config.filter)
+      searcher.addFilter("tab", this.config.filter)
     }
   }
 
-  // NOTE: should override
-  facets(facet_counts) { return ""}
+  // ??
+  // hasFacets() {
+  //   return false
+  // }
+  //
+  //
+  // NOTE: should override ---
+  facets(facet_counts, chosen_facets, callback, data) { 
+    //return ""
+    // return (<PeopleFacets />)
+  }
+  
 
   //
   defaultQueryOptions() { 
@@ -35,6 +85,16 @@ export default class Tab {
     return doc.URI
   }
 
+  sortOptions() {
+    // FIXME: how to deal with callback ??
+    return (   
+      <select onselect={() => this.onsort()} classname="form-control" defaultvalue="score desc">
+        <option value="score desc">relevance</option>
+      </select>
+    )
+  }
+ 
+  // FIXME: is this in the right place ???
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
@@ -77,4 +137,6 @@ export default class Tab {
 
 
 }
+
+export default Tab
 

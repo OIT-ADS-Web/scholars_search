@@ -61,11 +61,33 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   //
   searcher.setupDefaultSearch(maxRows, start)
  
+  // in theory should either
+  // a) remove facetIds or
+  // b) incorporate facetIds into building the search
+  //
   searcher.search =  searchFields
 
   // NOTE: apply filters last, after search has been defined
   filterer.applyFilters(searcher)
  
+  
+  // FIXME: could apply chosen facets here - even those it's kind of a UI
+  // thing, but it's also a state thing (from the URL) ...
+  //
+  //
+  // let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+  // 
+  // have to convert to array if it's a single value
+  //  if (typeof chosen_ids === 'string') {
+  //     chosen_ids = [chosen_ids]
+  //  }
+  //
+  //  if (chosen_ids) {
+  //    filterer.setActiveFacets(chosen_ids)
+  //    full_query['facetIds'] = this.chosen_ids
+  //  
+  //  }
+  
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())
