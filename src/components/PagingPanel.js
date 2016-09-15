@@ -122,6 +122,7 @@ export class PagingPanel extends Component {
 
     let tab = tabPicker.tab
 
+    // FIXME: wherever this happens need to not allow duplicates
     if (chosen_ids) {
       tab.setActiveFacets(chosen_ids)
       full_query['facetIds'] = this.chosen_ids
@@ -140,6 +141,13 @@ export class PagingPanel extends Component {
   render() {
     // so start should be coming from search object (state)
     const { search : { results, searchFields } } = this.props
+
+    const { facets } = this.props
+     
+    // FIXME: maybe just get facets from searchFields ???
+    if (facets) {
+      this.facets = facets
+    }
 
     let { response={} } = results
     let { numFound=0,docs } = response

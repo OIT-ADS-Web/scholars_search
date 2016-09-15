@@ -47,17 +47,7 @@ class PersonDisplay extends HasSolrData(Component) {
     return urlText
   }
 
-  // We discussed potentially trimming the ALLTEXT to remove the ending string of text. This text often shows up 
-  // in the highlighting and it is irrelevant (screenshot attached). If we can't easily remove the citation 
-  // style text (which will vary), can we at least remove everything from 'Agent' to the end?
-
-  // For example:
-  // "Chicago-Style Citation Agent Continuant Entity Faculty Member Independent Continuant Person" 
-
-  // Agent Continuant Entity Faculty Member Independent Continuant Person
-  //  Agent Continuant Entity Independent Continuant Person Student
   filterHighlightText(text) {
-    
     return text
 
     //let replaced = text.replace("Agent Continuant Entity Faculty Member Independent Continuant Person", "")
@@ -65,7 +55,6 @@ class PersonDisplay extends HasSolrData(Component) {
     //replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
 
     //replaced = replaced.replace("Chicago-Style Citation", "")
-
     //return replaced
   }
 
@@ -95,7 +84,6 @@ class PersonDisplay extends HasSolrData(Component) {
     let newLoc = orig.replace("https://scholars.duke.edu/individual/i", "https://scholars.duke.edu/individual/t")
 
     return newLoc
-
   } 
 
   get thumbnailUrl() {
@@ -172,10 +160,6 @@ class PeopleFacets extends Component {
   facetFieldDisplay(facet_fields, chosen_facets, context) {
     let size = facet_fields.length
 
-    console.log(context)
-    console.log(chosen_facets)
-    console.log(facet_fields)
-
     if (!(facet_fields || size > 0)) {
       return ""
     }
@@ -251,11 +235,31 @@ class PeopleFacets extends Component {
  }
 
 
+/*
+class PeopleDisplayer extends Displayer {
+
+  pickDisplay(doc, highlight) {
+    return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+  facets(facet_counts, chosen_ids, callback, data) {
+    let facet_fields = facet_counts.facet_fields
+    return (<PeopleFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+  }
+
+}
+*/
+
+
+//class PeopleTab extends Filterer
+
 class PeopleTab extends Tab {
 
   constructor(config) {
     super()
     this.config = config
+    
+    this.facet_ids = []
   }
 
   
@@ -287,8 +291,8 @@ class PeopleTab extends Tab {
    
     // FIXME: wow - this is super ugly, have to build or queries from facets
     // picked - but each facets has it's own unique query building logic 
-    // there's one big code block per facet
-    //
+    // so there needs to be one big code block per facet
+    // 
     //
     // 1(a). department facet
     let dept_filters = _.filter(this.facet_ids, function(id) {
@@ -314,7 +318,8 @@ class PeopleTab extends Tab {
      }
 
 
-    /*
+    /* NOTE: this is what a second one would look like ... nearly the same, but not quie
+     *
     // 2(a). type facet
     let type_filters = _.filter(this.facet_ids, function(id) {
       return id.startsWith("type_") 
@@ -341,6 +346,7 @@ class PeopleTab extends Tab {
 
   }
 
+  // the rest of the methods are kind of UI centered
   pickDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
@@ -353,15 +359,6 @@ class PeopleTab extends Tab {
 
   get csvFields() {
     
-    /*
-    let firstEntryBeforeSpace = function(row) {
-      let str = row['ALLTEXT.0']
-      let result = str.substr(0, str.indexOf(' '))
-      return result
-    }
-    *
-    */
-
     return [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
         { label: 'email', value: 'primaryEmail_text',  default: ''}, 
         { label: 'profileUrl', value: 'profileUrl_text', default: ''}

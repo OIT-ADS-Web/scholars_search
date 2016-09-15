@@ -18,7 +18,8 @@ class FacetCheckbox extends Component {
   render() {
     const { assigned_id, is_checked } = this.props
     
-    let selected = is_checked ? is_checked : (this.state.is_checked)
+    let selected = is_checked
+    //let selected = is_checked ? is_checked : (this.state.is_checked)
 
        return (
         <input id={assigned_id} checked={selected} onClick={(e) => this.onFacetClick(e)} ref={assigned_id} type="checkbox" />

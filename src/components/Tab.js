@@ -2,41 +2,12 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
-// IsFaceted --
-//
-//   applyFilters(searcher)
-//   setActiveFacets(chosen_ids) 
-//
-//
-// IsTab --
-//
-//  mainFilter()
-//  sortOptions()
-//  toCsv()
-//  results()
-//  queryOptions()
-//  pickDisplay()
-//  results()
-//
-//
-//
-// FIXME: make like like HasSolrData ??
-// let Tab = (superclass) => class extends superclass {
-// extends Tab(Component) ???
-
-// render() {
-//
-// }
-//
 class Tab {
 
-  
   constructor(config) {
-    //super()
     this.config = config
   }
    
-
   set config(config) {
     this._config = config
   }
@@ -52,28 +23,28 @@ class Tab {
   applyFilters(searcher) {
     // FIXME: when adding filters have to careful
     // that the name ("tab" in this case) is unique
-    // otherwise it'll override
+    // otherwise it'll override.  So ... it's a potential
+    // cause for confusion.  Perhaps utils/Solr should throw a 
+    // 'key already in use' type of error
     //
     if (this.config.filter) {
       searcher.addFilter("tab", this.config.filter)
     }
   }
 
-  // ??
-  // hasFacets() {
-  //   return false
-  // }
-  //
-  //
-  // NOTE: should override ---
+  // NOTE: tab with facets should override ---
   facets(facet_counts, chosen_facets, callback, data) { 
-    //return ""
-    // return (<PeopleFacets />)
+    return ""
   }
   
 
   //
   defaultQueryOptions() { 
+   // this would possibly be a way to set query options per tab -- two problems
+   // a) I tried it and it seemed to have no effect on the search
+   // b) would, techincally, also need to be applied to tabs
+   //
+   //
    //   qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
    //   pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
   }
@@ -85,10 +56,12 @@ class Tab {
     return doc.URI
   }
 
-  sortOptions() {
-    // FIXME: how to deal with callback ??
+  sortOptions(callback) {
+    // FIXME: how to deal with callback ?? right now this function does not work - will probably
+    // end up making a <Sorter callback={callback} /> type of component
+    //
     return (   
-      <select onselect={() => this.onsort()} classname="form-control" defaultvalue="score desc">
+      <select onselect={() => callback()} classname="form-control" defaultvalue="score desc">
         <option value="score desc">relevance</option>
       </select>
     )
