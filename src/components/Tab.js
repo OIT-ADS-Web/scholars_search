@@ -25,7 +25,8 @@ class TabFilterer {
   defaultQueryOptions() { 
    // this would possibly be a way to set query options per tab -- two problems
    // a) I tried it and it seemed to have no effect on the search
-   // b) would, techincally, also need to be applied to tabs
+   // b) would, technically, also need to be applied to tabs (e.g. the group query 
+   //    to get number counts [People(12)][Organizations(4)] etc.... )
    //
    //
    //   qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',

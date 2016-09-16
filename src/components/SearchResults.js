@@ -6,11 +6,8 @@ import {saveAs} from 'file-saver'
 import querystring from 'querystring'
 import _ from 'lodash'
 
-//import Loading from './Loading'
 import SearchTabs from './SearchTabs'
-//import PagingPanel from './PagingPanel'
 import TabResults from './TabResults'
-
 import TabPicker from './TabPicker'
 
 import solr from '../utils/SolrHelpers'

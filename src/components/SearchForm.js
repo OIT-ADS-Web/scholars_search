@@ -26,6 +26,8 @@ export class SearchForm extends Component {
     super(props, context)
     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
     this.handleAdvancedSearch = this.handleAdvancedSearch.bind(this)
+  
+    this.path = "/"
   }
 
   handleAdvancedSearch(e) {
@@ -58,7 +60,9 @@ export class SearchForm extends Component {
     
     // NOTE: persist tab for search - but default to 'person' tab if nothing is there
     let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-
+    // per Julia's request - just default to people tab on any new search
+    filter = 'person'
+    //
     // NOTE: if it's a new search - default to page 0 so we're not trying 
     // to get a non-existent page of data
     let start = 0
@@ -77,23 +81,19 @@ export class SearchForm extends Component {
      * FIXME: should only add these to route if there is a value
      * e.g. it really shouldn't search a 'blank' search
      */
-    let path = "/"
+    //let path = "/"
     
     this.context.router.push({
-      pathname: path,
+      pathname: this.path,
       query: compoundSearch 
     })
 
     // NOTE: this creates a new PersonTab() (for instance)
     //
     let tabPicker = new TabPicker(filter)
-    let tab = tabPicker.tab
  
     let filterer = tabPicker.filterer
 
-    // FIXME: is this necessasry ????
-    //tab.setActiveFacets([])
-     
     if (solr.isEmptySearch(compoundSearch)) {
       dispatch(emptySearch())
     } 
@@ -103,10 +103,9 @@ export class SearchForm extends Component {
       
       let full_query = { ...compoundSearch }
 
-      //tab.setActiveFacets([])
+      // empty out the facets when we do a new search
       full_query['facetIds'] = []
  
-      //dispatch(requestSearch(full_query, tab))
       dispatch(requestSearch(full_query, filterer))
 
       dispatch(requestTabCount(compoundSearch, tabList))

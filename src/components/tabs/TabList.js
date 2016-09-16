@@ -1,38 +1,12 @@
-//import React from 'react'
-
-//import _ from 'lodash'
-
-// NOTE: just a dumb trick so I can keep separate (for babel-node to run examples/example_*_.js files)
-// but still only import one thing
-//import { tabList as tabs } from './TabList'
-
-//export const tabList = tabs
-
-//export function findTab(name) {
-//  let tab = _.find(tabList, function(tab) { return tab.id == name })
-//  return tab
-//}
-
-//http://stackoverflow.com/questions/34655616/create-an-instance-of-a-class-in-es6-with-a-dynamic-name
-
-/*
-import PeopleTab from './PeopleTab'
-import PublicationsTab from './PublicationsTab'
-import OrganizationsTab from './OrganizationsTab'
-import GenericTab from './GenericTab'
-import ArtisticWorksTab from './ArtisticWorksTab'
-import SubjectHeadingsTab from './SubjectHeadingsTab'
-import GrantsTab from './GrantsTab'
-import CoursesTab from './CoursesTab'
-import OtherTab from './OtherTab'
-*/
-
 // NOTE: had to have this in a separate file so I could import it in babel-node environment
 // e.g. in the examples/example_*.js scripts.  
 //
 // The {!tag=?} part is used to match the id to
 // the filter - so they have to match and be there.  Otherwise we have to match on entire
 // type:(*?) statement
+// 
+// I thought it would be cool to have this information automatically loaded from ./tabs/... path
+// but it does create problems with the examples/_*.js (which nobody but me is likely to use, ha!)
 //
 export const tabList = [
   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People", tabClass: "PeopleTab" },
