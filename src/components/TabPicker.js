@@ -12,7 +12,43 @@ export function findTab(name) {
   let tab = _.find(tabList, function(tab) { return tab.id == name })
   return tab
 }
- 
+
+//http://stackoverflow.com/questions/34655616/create-an-instance-of-a-class-in-es6-with-a-dynamic-name
+/*
+ *
+import PeopleTab from './PeopleTab'
+import PublicationsTab from './PublicationsTab'
+import OrganizationsTab from './OrganizationsTab'
+import GenericTab from './GenericTab'
+import ArtisticWorksTab from './ArtisticWorksTab'
+import SubjectHeadingsTab from './SubjectHeadingsTab'
+import GrantsTab from './GrantsTab'
+import CoursesTab from './CoursesTab'
+import OtherTab from './OtherTab'
+
+const tabClasses = {
+  PeopleTab,
+  PublicationsTab,
+  OrganizationsTab,
+  GenericTab,
+  ArtisticWorksTab,
+  SubjectHeadingsTab,
+  GrantsTab,
+  CoursesTab,
+  OtherTab
+}
+
+class DynamicTab {
+    constructor (className, opts) {
+        return new tabClasses[className](opts)
+    }
+}
+
+switch(filter)
+  case "people" --> DynamicTab("PeopleTab") e.g. DynamicTab(initialCap(filter) + "Tab")
+
+*/
+
 import PeopleTab from './PeopleTab'
 import PublicationsTab from './PublicationsTab'
 import OrganizationsTab from './OrganizationsTab'
@@ -31,6 +67,13 @@ import OtherTab from './OtherTab'
 //
 class TabPicker {
 
+  // example:
+  //
+  // let tabPicker = new TabPicker("people")
+  // let tab = tabPicker.tab
+  // let filterer = tabPicker.filterer
+  // let displayer = tabPicker.displayer
+  //
   constructor(filter) {
     this.filter = filter
 
@@ -70,6 +113,19 @@ class TabPicker {
     }
   }
 
+  
+  get filterer() {
+    return this._tab.filterer
+  }
+
+  get displayer() {
+    return this._tab.displayer
+  }
+
+  get downloader() {
+    return this._tab.downloader
+  }
+
   get tab() {
     return this._tab
   }
@@ -78,30 +134,4 @@ class TabPicker {
 
 
 export default TabPicker
-
-
-/*
-FIXME: tried to do something like this, but ran into problems:
-
-import PeopleTab from './components/PeopleTab'
-import PublicationsTab from './components/PublicationsTab'
-import OrganizationsTab from './components/OrganizationsTab'
-import ArtisticWorksTab from './components/ArtisticWorksTab'
-import SubjectHeadingsTab from './components/SubjectHeadingsTab'
-import GrantsTab from './components/GrantsTab'
-import CoursesTab from './components/CoursesTab'
-import OtherTab from './components/OtherTab'
-
-let tabs = {}
-tabs["person"] = new PeopleTab({id: "person", filter: "{!tag=person}type:(*Person)", label: "People" })
-tabs["publications"] = new PublicationsTab({ id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications" })
-tabs["organizations"] = new OrganizationsTab({ id: "organizations",  filter: "{!tag=organizations}type:(*Organization)", label: "Organizations" }) 
-tabs["grants"] = new GrantsTab({ id: "grants",  filter: "{!tag=grants}type:(*Grant)", label: "Grants" })
-tabs["courses"] = new CoursesTab({ id: "courses",  filter: "{!tag=courses}type:(*Course)", label: "Courses" })
-tabs["artisticworks"] = new ArtisticWorksTab({ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" })
-tabs["subjectheadings"] = new SubjectHeadingsTab({ id: "subjectheadings", filter: "{!tag=subjectheadings}type:(*Concept)", label: "Subject Headings" })
-tabs["others"] = new OtherTab({ id: "misc",  filter: "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))", label: "Other"})
-
-export const TABS = tabs
-*/
 

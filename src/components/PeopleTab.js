@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 
-import Tab from './Tab'
+import HasSolrData from './HasSolrData'
+import ScholarsLink from './ScholarsLink'
 
 // needed for thumbnail stuff, I guess
 require('../styles/scholars_search.less');
-
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
 
 class PersonDisplay extends HasSolrData(Component) {
 
@@ -139,7 +137,6 @@ import FacetList from './FacetList'
 import FacetItem from './FacetItem'
 import Facets from './Facets'
 
-
 class PeopleFacets extends Component {
 
   constructor(props) {
@@ -225,9 +222,9 @@ class PeopleFacets extends Component {
     let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_facets, context)
 
     return (
-      <div>
+      <Facets>
         {facetFieldDisplay }
-      </div>
+      </Facets>
      )
 
   }
@@ -235,8 +232,14 @@ class PeopleFacets extends Component {
  }
 
 
-/*
-class PeopleDisplayer extends Displayer {
+import Tab from './Tab'
+import { TabDisplayer, TabFilterer, TabDownloader } from './Tab'
+
+class PeopleDisplayer extends TabDisplayer {
+
+  constructor() {
+    super()
+  }
 
   pickDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
@@ -248,21 +251,13 @@ class PeopleDisplayer extends Displayer {
   }
 
 }
-*/
 
-
-//class PeopleTab extends Filterer
-
-class PeopleTab extends Tab {
+class PeopleFilterer extends TabFilterer {
 
   constructor(config) {
-    super()
-    this.config = config
-    
-    this.facet_ids = []
+    super(config)
   }
 
-  
   //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   applyFilters(searcher) {
     super.applyFilters(searcher)
@@ -279,14 +274,6 @@ class PeopleTab extends Tab {
     this.applyOptionalFilters(searcher)
   }
 
-  // FIXME: this *has* to be called BEFORE applyFilters()
-  // which is annoying becuase it's an implementation details in this file
-  // that you have to remember in other files
-  //
-  setActiveFacets(chosen_ids) {
-    this.facet_ids = chosen_ids
-  }
- 
   applyOptionalFilters(searcher) {
    
     // FIXME: wow - this is super ugly, have to build or queries from facets
@@ -317,8 +304,7 @@ class PeopleTab extends Tab {
        searcher.addFilter("dept", qry)
      }
 
-
-    /* NOTE: this is what a second one would look like ... nearly the same, but not quie
+    /* NOTE: this is what a second one would look like ... nearly the same, but not quite
      *
     // 2(a). type facet
     let type_filters = _.filter(this.facet_ids, function(id) {
@@ -344,29 +330,46 @@ class PeopleTab extends Tab {
      }
     */
 
-  }
-
-  // the rest of the methods are kind of UI centered
-  pickDisplay(doc, highlight) {
-    return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
-  }
-
-  facets(facet_counts, chosen_ids, callback, data) {
-    let facet_fields = facet_counts.facet_fields
-    return (<PeopleFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
-  }
-
-
-  get csvFields() {
     
-    return [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
-        { label: 'email', value: 'primaryEmail_text',  default: ''}, 
-        { label: 'profileUrl', value: 'profileUrl_text', default: ''}
+  }
+
+}
+
+
+class PeopleTab extends Tab {
+
+  constructor(config) {
+    super(config)
+
+    this._filterer = new PeopleFilterer(this.config.filter)
+    this._displayer = new PeopleDisplayer()
+
+    let fields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
+      { label: 'email', value: 'primaryEmail_text',  default: ''}, 
+      { label: 'profileUrl', value: 'profileUrl_text', default: ''}
     ]
+ 
+    this._downloader = new TabDownloader(fields)
+  }
+
+  get filterer() {
+    return this._filterer
+    //return new PeopleFilter(this.config.filter)
+  }
+
+  get displayer() {
+    return this._displayer
+    //return new PeopleDisplayer()
+  }
+
+  get downloader() {
+    return this._downloader
+    //return new PeopleDownloader(fields)
   }
 
 
 }
+
 
 export default PeopleTab 
 

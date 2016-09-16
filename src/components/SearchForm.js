@@ -76,14 +76,9 @@ export class SearchForm extends Component {
     /*
      * FIXME: should only add these to route if there is a value
      * e.g. it really shouldn't search a 'blank' search
-     *
-     * FIXME: this pathname should be global, configurable, right?
-    * also - how would we add to /people or /organizations etc...
-     *
      */
-    //let path = `/${filter}`
     let path = "/"
-
+    
     this.context.router.push({
       pathname: path,
       query: compoundSearch 
@@ -93,7 +88,9 @@ export class SearchForm extends Component {
     //
     let tabPicker = new TabPicker(filter)
     let tab = tabPicker.tab
-    
+ 
+    let filterer = tabPicker.filterer
+
     // FIXME: is this necessasry ????
     //tab.setActiveFacets([])
      
@@ -109,7 +106,9 @@ export class SearchForm extends Component {
       //tab.setActiveFacets([])
       full_query['facetIds'] = []
  
-      dispatch(requestSearch(full_query, tab))
+      //dispatch(requestSearch(full_query, tab))
+      dispatch(requestSearch(full_query, filterer))
+
       dispatch(requestTabCount(compoundSearch, tabList))
     }
 

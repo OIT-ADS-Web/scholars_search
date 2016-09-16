@@ -53,13 +53,24 @@ class PublicationDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class PublicationsTab extends Tab  {
+import { TabDisplayer } from './Tab'
 
-  // render() ???
-  //
+class PublicationsTabDisplayer extends TabDisplayer {
+
   pickDisplay(doc, highlight) {
     return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+}
+
+class PublicationsTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new PublicationsTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
 
 }
 

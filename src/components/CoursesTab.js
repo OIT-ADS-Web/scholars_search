@@ -40,7 +40,9 @@ class CourseDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class CoursesTab extends Tab {
+import { TabDisplayer } from './Tab'
+
+class CoursesTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <CourseDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
@@ -48,5 +50,15 @@ class CoursesTab extends Tab {
 
 }
 
+class CoursesTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new CoursesTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
+
+}
 
 export default CoursesTab 

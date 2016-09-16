@@ -55,12 +55,13 @@ export class SearchTab extends Component {
     // FIXME: needs to do this on default search (from URL) too
     // FIXME: is this a good place for adding facet - counts etc...
     let tabPicker = new TabPicker(filter)
+    let filterer = tabPicker.filterer
 
     let base_query = solr.buildComplexQuery(searchFields)
 
     let full_query = { ...query }
     
-    dispatch(requestSearch(full_query, tabPicker.tab))
+    dispatch(requestSearch(full_query, filterer))
 
     // NOTE: wasn't doing this before I cancel update of SearchResults
     // (with componentShouldUpdate)

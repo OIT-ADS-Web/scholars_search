@@ -39,11 +39,24 @@ class GenericDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class GenericTab extends Tab {
+import { TabDisplayer } from './Tab'
+
+class GenericTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+}
+
+class GenericTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new GenericTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
 
 }
 

@@ -40,11 +40,24 @@ class ArtisticWorkDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class ArtisticWorksTab extends Tab {
+import { TabDisplayer } from './Tab'
+
+class ArtisticWorksTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
-    return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+    return <ArtisticWorksDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+}
+
+class ArtisticWorksTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new ArtisticWorksTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
 
 }
 

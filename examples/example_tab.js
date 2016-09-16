@@ -8,25 +8,6 @@ const solrUrl = process.env.SOLR_URL
 
 let searcher = new SolrQuery(solrUrl)
  
-//import PeopleTab from '../src/components/PeopleTab'
-
-//class AbstractSearchFilter
-/*
-class SearchFilter {
-    
-    constructor(searcher) {
-      this.searcher = searcher
-      this.init()
-    }
-
-    init() {
-      this.addFilter()
-      this.addFacets()
-  }
-
-}
-*/
-
 const compoundSearch = {
     'allWords': 'med*'
 }
@@ -40,9 +21,10 @@ solr.setupDefaultSearch(searcher)
 class SearchResults {
 
   constructor(results) {
-    let { highlighting={}, response={}, facet_counts={} } = results
-    let { numFound=0,docs } = response
-    let { facet_queries, facet_fields } = facet_counts
+    // NOTE: this is sort of a mock of a component with props
+    const { highlighting={}, response={}, facet_counts={} } = results
+    const { numFound=0,docs } = response
+    const { facet_queries, facet_fields } = facet_counts
      
     this.highlighting = highlighting
     this.response = response
@@ -56,12 +38,8 @@ class SearchResults {
 
 }
 
-class Tab {
-
-  pickDisplay(doc, highlight) {
-    return doc.URI
-  }
-
+class TabDisplay {
+ 
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
@@ -70,26 +48,21 @@ class Tab {
     return resultSet
   }
 
-  
+  pickDisplay(doc, highlight) { }
+  facets(facet_counts) {}
+
 }
 
+class TabFilterer {
+  applyFilters(searcher) {}
+}
 
-class PeopleTab extends Tab {
+class PersonDisplay extends TabDisplay {
 
   pickDisplay(doc, highlight) {
-    return doc.URI
+    return "->" + doc.URI
   }
 
-  applyFilters(searcher) {
-    searcher.addFilter("type", "type:(*Person)")
-    searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
-  }
-
- // parseFacetCounts(facet_counts) {
- //
- // } 
- //
- //
  facets(facet_counts) {
    //console.log(facet_counts.facet_fields.department_facet_string)
    let ary = facet_counts.facet_fields['department_facet_string']
@@ -98,19 +71,43 @@ class PeopleTab extends Tab {
 
 }
 
-let tab = new PeopleTab()
-tab.applyFilters(searcher)
+class PeopleFilterer extends TabFilterer {
 
+  applyFilters(searcher) {
+    searcher.addFilter("type", "type:(*Person)")
+    searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
+  }
+
+}
+
+class PeopleTab {
+
+  get filterer() {
+    return new PeopleFilterer()
+  }
+
+  get displayer() {
+    return new PersonDisplay()
+  }
+
+}
+
+let tab = new PeopleTab()
+let filterer = tab.filterer
+
+filterer.applyFilters(searcher)
 
 function printResults(json) {
+  console.log("printResults")
   let results =  new SearchResults(json)
-  let display = new PeopleTab()
-  
-  let html = display.results(results.docs, results.highlighting)
+  let tab = new PeopleTab()
+  let displayer = tab.displayer
+
+  let html = displayer.results(results.docs, results.highlighting)
 
   console.log(html)
-
-  let facets = display.facets(results.facet_counts)
+  
+  let facets = displayer.facets(results.facet_counts)
   console.log(facets)
 
 }
@@ -122,87 +119,3 @@ searcher.execute().then(function(response) {
 })
 
 
-//searcher.addFilter("type", "type:(*Person)")
-
-//const qry = searcher.buildQuery(compoundSearch)
-//searcher.query = qry
-
-//console.log(`query: ${qry}`)
-
-// ? prefix --
-//searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
-
-
-// searcher
-// displayer
-//
-//
-//
-//
-// init(searcher)
-// .addFilter
-// .setFacetField()
-// ...
-//  AbstractTab() {
-//
-//    constructor(searcher) {
-//      this.searcher = searcher
-//      this.init()
-//    }
-//
-//    init() {
-//      this.addFilter()
-//      this.addFacets()
-//  }
-//
-//  PersonTab() {
-//   
-//   constructor(searcher) {
-//     this.searcher = searcher
-//   }
-//
-//   filter() {
-//     this.searcher.addFilter("type", "type:(*Person)")
-//   }
-//
-//   addFacets() {
-//     this.searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
-//   
-//    let qry = searcher.query
-//
-//    searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-//    searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
-
-// }
-// 
-// PersonDisplay() {
-//
-// }
-//
-// PersonTabDisplay() {
-//
-//
-//    constructor(results) {
-//      let { highlighting={}, response={}, facet_counts={} } = results
-//      let { numFound=0,docs } = response
-//      let { facet_queries, facet_fields } = facet_counts
-//     
-//      this.highlighting = highlighting
-//      this.response = response
-//      this.facet_counts = facet_counts
-//      this.numFound = numFound
-//      this.docs = docs
-//      this.facet_queries = facet_queries
-//      this.facet_fields = facet_fields
-//
-//    }
-//
-//    facetQueries() {
-//
-//    }
-//
-//    facetFields() {
-//
-//    }
-//
-// }

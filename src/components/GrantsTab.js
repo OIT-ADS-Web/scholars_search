@@ -48,13 +48,27 @@ class GrantDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class GrantsTab extends Tab {
+import { TabDisplayer } from './Tab'
+
+class GrantsTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
 }
+
+class GrantsTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new GrantsTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
+
+}
+
 
 export default GrantsTab 
 

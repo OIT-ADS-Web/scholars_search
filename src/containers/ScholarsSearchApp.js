@@ -25,13 +25,21 @@ export class ScholarsSearchApp extends Component {
       router: PropTypes.object
     })
   }
-
+ 
   //https://facebook.github.io/react/docs/context.html
   //https://medium.com/@skwee357/the-land-of-undocumented-react-js-the-context-99b3f931ff73#.ewo0he7cd
   static get childContext() {
     return {router: this.props.routing}
   }
 
+  constructor(props, context) {
+    super(props, context)
+    // FIXME: should this happen here, or in componentDidMount ?
+    //const { dispatch } = this.props
+    //dispatch(requestDepartments())
+  }
+
+  
   onlyAdvanced(query) {
    let flag = (typeof(query['advanced']) != 'undefined'  && _.size(query) == 1)
    return flag
@@ -40,8 +48,6 @@ export class ScholarsSearchApp extends Component {
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
     const { location, dispatch, departments: { data }} = this.props;
-
-   //const { departments: { data } } = this.props
 
     let query = location.query
     
@@ -75,22 +81,26 @@ export class ScholarsSearchApp extends Component {
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      let tab = tabPicker.tab
-      // fixme: this doesn't seem to be necessary
-      //tab.addContext({'departments': data })
- 
-      //let parsed = querystring.parse(
+      //let tab = tabPicker.tab
+      
+      let filterer = tabPicker.filterer
 
+      // FIXME: don't like putting this check everywhere - could
+      // encode using querystring
       let chosen_ids = query['facetIds'] ? query['facetIds'] : []
       if (typeof chosen_ids === 'string') {
          chosen_ids = [chosen_ids]
       }
 
       if (chosen_ids) {
-        tab.setActiveFacets(chosen_ids)
+        //tab.setActiveFacets(chosen_ids)
+        filterer.setActiveFacets(chosen_ids)
       }
       
-      dispatch(requestSearch(builtSearch, tab))
+      console.log(filterer)
+      dispatch(requestSearch(builtSearch, filterer))
+
+      //dispatch(requestSearch(builtSearch, tab))
       dispatch(requestTabCount(builtSearch, tabList))
 
 
@@ -102,19 +112,13 @@ export class ScholarsSearchApp extends Component {
 
   }
 
-  constructor(props,context) {
-    super(props,context)
-  }
-
-
   render() {
  
-    // {this.props.children}   
     return (
 
       <Page>
         <SearchForm />
-        <SearchResults />
+        <SearchResults /> 
       </Page>
     )
   }

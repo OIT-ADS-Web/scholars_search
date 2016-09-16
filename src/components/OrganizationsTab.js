@@ -41,11 +41,24 @@ class OrganizationDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-class OrganizationsTab extends Tab  {
+import { TabDisplayer } from './Tab'
+
+class OrganizationsTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <OrganizationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+}
+
+class OrganizationsTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new OrganizationsTabDisplayer()
+  }
+
+  get displayer() { return this._displayer } 
 
 }
 

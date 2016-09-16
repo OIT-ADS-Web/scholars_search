@@ -61,8 +61,35 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 import Tab from './Tab'
 
-import FacetList from './FacetList'
+//import FacetList from './FacetList'
 
+import { TabDisplayer, TabDownloader, TabFilterer } from './Tab'
+
+class SubjectHeadingsTabDisplayer extends TabDisplayer {
+
+  pickDisplay(doc, highlight) {
+    return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+  }
+
+}
+
+class SubjectHeadingsTab extends Tab  {
+
+  constructor(config) {
+    super(config)
+    this._displayer = new SubjectHeadingsTabDisplayer()
+  
+    let fields = [{label: 'Name', value: 'nameRaw.0'}]
+    this._downloader = new TabDownloader(fields)
+  }
+
+  get displayer() { return this._displayer } 
+  get downloader() { return this._downloader }
+
+}
+
+
+/*
 export class SubjectHeadingsTab extends Tab {
 
   get csvFields() {
@@ -74,18 +101,18 @@ export class SubjectHeadingsTab extends Tab {
     return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
-  /*
-    NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
-    the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
   
-   leads to this going to searcher:
-
-   searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-   searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
-
-   searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
- 
-  */
+  //  NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
+  //  the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
+ // 
+ //  leads to this going to searcher:
+//
+ //  searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
+  // searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
+//
+ //  searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
+// 
+ ///
 
   constructor(props) {
     super(props)
@@ -116,12 +143,6 @@ export class SubjectHeadingsTab extends Tab {
     this.applyOptionalFilters(searcher)
   }
 
-  // NOTE: this would need to be called BEFORE applyFilters()
-  //
-  setActiveFacets(chosen_ids) {
-    this.filters = chosen_ids
-  }
- 
   applyOptionalFilters(searcher) {
     //let qry = searcher.qry
     let _self = this
@@ -238,7 +259,7 @@ export class SubjectHeadingsTab extends Tab {
 
 
 }
-
+*/
 
 export default SubjectHeadingsTab
 
