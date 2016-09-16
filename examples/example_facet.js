@@ -35,18 +35,9 @@ const compoundSearch = {
   'allWords': 'medicine'
 }
 
-    // example from Jim's original person search
-    //}).setFilter("type","classgroup:*people").setFacetField("department_facet_string",{
-    //  prefix: "1|",
-    //  mincount: "1"
-    //})
-
 searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
 
-import { tabList } from '../src/components/TabPicker'
-
-//import { tabList } from '../src/components/TabList'
-
+import { tabList } from '../src/components/tabs/TabList'
 
 // should be 'people' tab filter
 const filterStr = tabList[0].filter

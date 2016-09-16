@@ -113,7 +113,10 @@ class TabDownloader {
 
 export { TabFilterer, TabDownloader, TabDisplayer }
 
-class Tab {
+
+// FIXME: is it better to define that at top, or bottom of file?
+//
+export default class Tab {
 
   constructor(config) {
     this.config = config
@@ -140,5 +143,4 @@ class Tab {
 
 }
 
-export default Tab
 

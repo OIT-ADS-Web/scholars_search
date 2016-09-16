@@ -1,12 +1,6 @@
 import _ from 'lodash'
 
-// NOTE: just a dumb trick so I can keep separate (for babel-node to run examples/example_*_.js files)
-// but still only import one thing
-import { tabList as tabs } from './TabList'
-export const tabList = tabs
-// the reason is because PeopleTab requires css and SubjectHeadingsTab requires image files
-// babel-node tries to read those as *.js files and fails
-//
+import { tabList } from './TabList'
 
 export function findTab(name) {
   let tab = _.find(tabList, function(tab) { return tab.id == name })
