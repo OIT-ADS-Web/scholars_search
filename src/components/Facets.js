@@ -2,12 +2,6 @@ import React, { Component, PropTypes } from 'react'
 
 class Facets extends Component {
 
-  static get contextTypes() {
-    return({
-      router: PropTypes.object
-    })
-  }
-
   constructor(props) {
     super(props)
   }
@@ -24,13 +18,5 @@ class Facets extends Component {
 }
 
 
-import { connect } from 'react-redux'
-
-
-const mapStateToProps = (search) => {
-  return search
-}
-
-
-export default connect(mapStateToProps)(Facets)
+export default Facets
 
