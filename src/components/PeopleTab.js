@@ -364,7 +364,8 @@ class PeopleTab extends Tab {
 
   get downloader() {
     return this._downloader
-    //return new PeopleDownloader(fields)
+    // let fields = ??
+    //return new TabDownloader(fields)
   }
 
 
