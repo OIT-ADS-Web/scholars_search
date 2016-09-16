@@ -74,16 +74,16 @@ export class PagingPanel extends Component {
     //
     let chosen_ids = this.facets
  
-    let tab = tabPicker.tab
+    let filterer = tabPicker.filterer
 
     if (chosen_ids) {
-      tab.setActiveFacets(chosen_ids)
+      filterer.setActiveFacets(chosen_ids)
       full_query['facetIds'] = this.chosen_ids
    
     }
     // FIXME: would like this to force going back up to top of page
     //
-    dispatch(requestSearch(full_query, tab))
+    dispatch(requestSearch(full_query, filterer))
  
     full_query['facetIds'] = this.facets
 
@@ -120,15 +120,15 @@ export class PagingPanel extends Component {
 
     let chosen_ids = this.facets
 
-    let tab = tabPicker.tab
+    let filterer = tabPicker.filterer
 
     // FIXME: wherever this happens need to not allow duplicates
     if (chosen_ids) {
-      tab.setActiveFacets(chosen_ids)
+      filterer.setActiveFacets(chosen_ids)
       full_query['facetIds'] = this.chosen_ids
     }
 
-    dispatch(requestSearch(full_query, tab))
+    dispatch(requestSearch(full_query, filterer))
 
     this.context.router.push({
       pathname: '/',

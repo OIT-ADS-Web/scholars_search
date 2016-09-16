@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
-class ArtisticWorkDisplay extends HasSolrData(Component) {
+class GenericDisplay extends HasSolrData(Component) {
 
   constructor(props) {
-    super(props)
-    this.doc = this.props.doc
+    super(props);
+    this.doc = this.props.doc;
     this.highlight = this.props.highlight
   }
 
@@ -16,21 +16,20 @@ class ArtisticWorkDisplay extends HasSolrData(Component) {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
-              <div className="col-md-12 col-sm-12"> 
+              <div className="col-md-12 col-sm-12">
                 <strong>
                   <ScholarsLink uri={this.URI} text={this.name} />
                 </strong>
               </div>
             </div>
-
             <div className="row highlight-text">
               <div className="col-md-12">
-                 {this.highlightDisplay}
+               {this.highlightDisplay}
               </div>
             </div>
-            
+
             {this.solrDocDisplay}
- 
+            
         </div>
     );
   }
@@ -38,28 +37,28 @@ class ArtisticWorkDisplay extends HasSolrData(Component) {
 }
 
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-import { TabDisplayer } from './Tab'
+import { TabDisplayer } from '../Tab'
 
-class ArtisticWorksTabDisplayer extends TabDisplayer {
+class GenericTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
-    return <ArtisticWorksDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+    return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
 }
 
-class ArtisticWorksTab extends Tab  {
+class GenericTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new ArtisticWorksTabDisplayer()
+    this._displayer = new GenericTabDisplayer()
   }
 
   get displayer() { return this._displayer } 
 
 }
 
-export default ArtisticWorksTab 
 
+export default GenericTab 

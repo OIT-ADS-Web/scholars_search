@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
 class PublicationDisplay extends HasSolrData(Component) {
 
@@ -51,9 +51,9 @@ class PublicationDisplay extends HasSolrData(Component) {
 
 }
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-import { TabDisplayer } from './Tab'
+import { TabDisplayer } from '../Tab'
 
 class PublicationsTabDisplayer extends TabDisplayer {
 

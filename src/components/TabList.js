@@ -1,5 +1,7 @@
 // NOTE: had to have this in a separate file so I could import it in babel-node environment
-// e.g. in the examples/example_*.js scripts.  the {!tag=?} part is used to match the id to
+// e.g. in the examples/example_*.js scripts.  
+//
+// The {!tag=?} part is used to match the id to
 // the filter - so they have to match and be there.  Otherwise we have to match on entire
 // type:(*?) statement
 //
@@ -20,5 +22,4 @@ export const tabList = [
   }
   */
 ]
-// {!tag=misc}type:(*Award) OR (*Presentation))
 

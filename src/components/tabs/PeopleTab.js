@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
 // needed for thumbnail stuff, I guess
-require('../styles/scholars_search.less');
+require('../../styles/scholars_search.less');
 
 class PersonDisplay extends HasSolrData(Component) {
 
@@ -133,9 +133,9 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
-import FacetList from './FacetList'
-import FacetItem from './FacetItem'
-import Facets from './Facets'
+import FacetList from '../FacetList'
+import FacetItem from '../FacetItem'
+import Facets from '../Facets'
 
 class PeopleFacets extends Component {
 
@@ -232,8 +232,8 @@ class PeopleFacets extends Component {
  }
 
 
-import Tab from './Tab'
-import { TabDisplayer, TabFilterer, TabDownloader } from './Tab'
+import Tab from '../Tab'
+import { TabDisplayer, TabFilterer, TabDownloader } from '../Tab'
 
 class PeopleDisplayer extends TabDisplayer {
 

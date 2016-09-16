@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
-import meshLogo from '../images/meshhead.gif'
-import locLogo from '../images/loc-logo.png'
-import dukeLogo from '../images/duke-text-logo.png'
+import meshLogo from '../../images/meshhead.gif'
+import locLogo from '../../images/loc-logo.png'
+import dukeLogo from '../../images/duke-text-logo.png'
 
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
@@ -59,11 +59,10 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 }
 
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-//import FacetList from './FacetList'
 
-import { TabDisplayer, TabDownloader, TabFilterer } from './Tab'
+import { TabDisplayer, TabDownloader, TabFilterer } from '../Tab'
 
 class SubjectHeadingsTabDisplayer extends TabDisplayer {
 

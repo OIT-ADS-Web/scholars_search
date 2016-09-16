@@ -11,7 +11,6 @@ import { requestSearch, requestTabCount, emptySearch, requestDepartments } from 
 import solr from '../utils/SolrHelpers'
 
 import TabPicker from '../components/TabPicker'
-
 import { tabList } from '../components/TabPicker'
 
 import querystring from 'querystring'
@@ -54,6 +53,10 @@ export class ScholarsSearchApp extends Component {
     let onlyAdvanced = this.onlyAdvanced(query)
     let blankSearch = solr.isEmptySearch(query)
 
+    // FIXME: this is too specific to Duke - if we were to try and componentize and share
+    // this app - this part would need to change
+    //
+    // dispatch(loadInitialData())  ?? something like that - some kind of callback or something ???
     dispatch(requestDepartments())
 
     // NOTE: was searching if no query parameters in route path, just searching everything
@@ -66,7 +69,6 @@ export class ScholarsSearchApp extends Component {
         query['start'] = 0
       }
 
-      // FIXME: would need to get this from /path - right?
       if (!query['filter']) {
         query['filter'] = 'person'
       }
@@ -75,14 +77,10 @@ export class ScholarsSearchApp extends Component {
 
       // FIXME: a lot of this code is duplicated every time a search is done
       // should centralize a bit more
-
-      // FIXME: get the facetQueries here ???
       let tabPicker = new TabPicker(query['filter'])
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      //let tab = tabPicker.tab
-      
       let filterer = tabPicker.filterer
 
       // FIXME: don't like putting this check everywhere - could
@@ -93,14 +91,10 @@ export class ScholarsSearchApp extends Component {
       }
 
       if (chosen_ids) {
-        //tab.setActiveFacets(chosen_ids)
         filterer.setActiveFacets(chosen_ids)
       }
       
-      console.log(filterer)
       dispatch(requestSearch(builtSearch, filterer))
-
-      //dispatch(requestSearch(builtSearch, tab))
       dispatch(requestTabCount(builtSearch, tabList))
 
 
@@ -112,6 +106,19 @@ export class ScholarsSearchApp extends Component {
 
   }
 
+  // NOTE: if we wrapped this up and try to make it usable by other, might need
+  // <Page>
+  //   <SearchForm />
+  //   <SearchResults tabs={tabList} />
+  //  </Page>
+  //   
+  //   then SearchResults might look like this:
+  //  
+  //   <TabRouter tabs={tabList}>
+  //     <TabResults onFacetClick={this.onFacetClick} etc... >  
+  //   </TabRouter>
+  //
+  //   ?? I don't know
   render() {
  
     return (
