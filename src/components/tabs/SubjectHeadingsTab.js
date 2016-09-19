@@ -76,51 +76,80 @@ class SubjectHeadingsTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new SubjectHeadingsTabDisplayer()
+    this.displayer = new SubjectHeadingsTabDisplayer()
   
     let fields = [{label: 'Name', value: 'nameRaw.0'}]
-    this._downloader = new TabDownloader(fields)
+    this.downloader = new TabDownloader(fields)
   }
 
-  get displayer() { return this._displayer } 
-  get downloader() { return this._downloader }
 
 }
 
 
 /*
-export class SubjectHeadingsTab extends Tab {
-
-  get csvFields() {
-    return [{label: 'Name', value: 'nameRaw.0'}
-    ]
-  }
-
-  pickDisplay(doc, highlight) {
-    return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
-  }
-
-  
-  //  NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
-  //  the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
- // 
- //  leads to this going to searcher:
-//
- //  searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-  // searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
-//
- //  searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
-// 
- ///
-
-  constructor(props) {
-    super(props)
-
-    this.filters = []
-
-    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
  
+class SubjectHeadingsDisplayer extends TabDisplayer {
+  
+  facets(facet_counts, chosen_ids, cb) {
+    let facet_queries = facet_counts.facet_queries
+    
+    let _self = this
+    // NOTE: chosen_ids can't be this.filters at this point
+    //
+    //let chosen_ids = _self.filters
+ 
+    // do this to blank out the facets
+    return ""
+
+    // _.map() =>
+    //
+    let facet_list = Object.keys(facet_queries).map(function (key) {
+      let item = facet_queries[key]
+      
+      let facetQuery = _self.getFacetQueryByQuery(key)
+ 
+      //let facetQuery = null
+      // if we can't find it - just blank it out
+      if (!facetQuery) {
+        return ""
+      }
+
+      let label = facetQuery.label 
+
+ 
+      // chosen_ids not set at this point - ordering matter!!
+      //
+      if (chosen_ids.indexOf(facetQuery.id) > -1) {
+        return (
+            <li className="list-group-item facet-item active">
+              <span className="badge">{item}</span>
+              <label htmlFor={facetQuery.id}>
+                <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" defaultChecked={true} />
+                <span className="facet-label">{label}</span>
+              </label>
+            </li>
+          )
+      } else {
+        return (
+          <li className="list-group-item facet-item">
+            <span className="badge">{item}</span> 
+            <label htmlFor={facetQuery.id}>
+              <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" />
+              <span className="facet-label">{label}</span>
+            </label>
+          </li>
+        )
+      }
+
+    })
+
+    let facets = (<FacetList label="Limit To">{facet_list}</FacetList>)
+    return facets
   }
+
+}
+
+class SubjectHeadingsFilterer extends TabFilterer {
 
   applyFilters(searcher) {
     super.applyFilters(searcher)
@@ -191,69 +220,6 @@ export class SubjectHeadingsTab extends Tab {
  
     let found = _.find(query_list, function(o) { return o.query === base_qry })
     return found
-  }
-
-
-  facets(facet_counts, chosen_ids, cb) {
-    let facet_queries = facet_counts.facet_queries
-    
-    let _self = this
-    // NOTE: chosen_ids can't be this.filters at this point
-    //
-    //let chosen_ids = _self.filters
- 
-    // do this to blank out the facets
-    return ""
-
-    // _.map() =>
-    //
-    let facet_list = Object.keys(facet_queries).map(function (key) {
-      let item = facet_queries[key]
-      
-      let facetQuery = _self.getFacetQueryByQuery(key)
- 
-      //let facetQuery = null
-      // if we can't find it - just blank it out
-      if (!facetQuery) {
-        return ""
-      }
-
-      let label = facetQuery.label 
-
- 
-      // chosen_ids not set at this point - ordering matter!!
-      //
-      if (chosen_ids.indexOf(facetQuery.id) > -1) {
-        return (
-            <li className="list-group-item facet-item active">
-              <span className="badge">{item}</span>
-              <label htmlFor={facetQuery.id}>
-                <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" defaultChecked={true} />
-                <span className="facet-label">{label}</span>
-              </label>
-            </li>
-          )
-      } else {
-        return (
-          <li className="list-group-item facet-item">
-            <span className="badge">{item}</span> 
-            <label htmlFor={facetQuery.id}>
-              <input id={facetQuery.id} onClick={(e) => cb(e)} ref={facetQuery.id} type="checkbox" />
-              <span className="facet-label">{label}</span>
-            </label>
-          </li>
-        )
-      }
-
-    })
-
-    let facets = (<FacetList label="Limit To">{facet_list}</FacetList>)
-    return facets
-  }
-
-
-  sortOptions() {
-    return ['sort desc', 'sort asc']
   }
 
 

@@ -55,10 +55,9 @@ class OrganizationsTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new OrganizationsTabDisplayer()
+    this.displayer = new OrganizationsTabDisplayer()
   }
 
-  get displayer() { return this._displayer } 
 
 }
 

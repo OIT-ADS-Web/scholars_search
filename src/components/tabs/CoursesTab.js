@@ -54,10 +54,8 @@ class CoursesTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new CoursesTabDisplayer()
+    this.displayer = new CoursesTabDisplayer()
   }
-
-  get displayer() { return this._displayer } 
 
 }
 

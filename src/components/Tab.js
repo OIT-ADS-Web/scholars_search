@@ -122,25 +122,31 @@ export default class Tab {
 
   constructor(config) {
     this.config = config
+  
   }
 
   get filterer() {
-    return new TabFilterer(this.config.filter)
-    // example
-    // return new PeopleFilter(this.config.filter)
+    return this._filterer || new TabFilterer(this.config.filter)
   }
 
   get displayer() {
-    return new TabDisplayer()
-    // example
-    // return new PeopleDisplayer()
-    //
+    return this._displayer || new TabDisplayer()
   }
 
   get downloader() {
-    return new TabDownloader([])
-    // example:
-    // return new PeopleDownloader(fields)
+    return this._downloader || new TabDownloader()
+  }
+
+  set filterer(filterer) {
+    this._filterer = filterer
+  }
+
+  set displayer(displayer) {
+    this._displayer = displayer
+  }
+
+  set downloader(downloader) {
+    this._downloader = downloader
   }
 
 }

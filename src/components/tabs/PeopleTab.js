@@ -343,17 +343,18 @@ class PeopleTab extends Tab {
   constructor(config) {
     super(config)
 
-    this._filterer = new PeopleFilterer(this.config.filter)
-    this._displayer = new PeopleDisplayer()
+    this.filterer = new PeopleFilterer(this.config.filter)
+    this.displayer = new PeopleDisplayer()
 
     let fields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
       { label: 'email', value: 'primaryEmail_text',  default: ''}, 
       { label: 'profileUrl', value: 'profileUrl_text', default: ''}
     ]
  
-    this._downloader = new TabDownloader(fields)
+    this.downloader = new TabDownloader(fields)
   }
 
+  /*
   get filterer() {
     return this._filterer
     // or this ?? does it matter?
@@ -370,6 +371,7 @@ class PeopleTab extends Tab {
     // let fields = ??
     //return new TabDownloader(fields)
   }
+  */
 
 
 }

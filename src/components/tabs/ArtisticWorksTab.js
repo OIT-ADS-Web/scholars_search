@@ -54,16 +54,17 @@ class ArtisticWorksTab extends Tab  {
 
   //{ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
  
-  // id = artisticworks
-  // label = ArtisticWorks
-  // filter = {!tag=artisticworks}type:(*ArtisticWork)
+  // this.id = "artisticworks"
+  // this.label = "ArtisticWorks"
+  // this.filter = "{!tag=artisticworks}type:(*ArtisticWork)"
+  //
   //
   constructor(config) {
     super(config)
-    this._displayer = new ArtisticWorksTabDisplayer()
+    this.displayer = new ArtisticWorksTabDisplayer()
+  
+  
   }
-
-  get displayer() { return this._displayer } 
 
 }
 

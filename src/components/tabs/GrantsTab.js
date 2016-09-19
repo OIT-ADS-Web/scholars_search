@@ -62,10 +62,9 @@ class GrantsTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new GrantsTabDisplayer()
+    this.displayer = new GrantsTabDisplayer()
   }
 
-  get displayer() { return this._displayer } 
 
 }
 

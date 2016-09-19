@@ -67,10 +67,9 @@ class PublicationsTab extends Tab  {
 
   constructor(config) {
     super(config)
-    this._displayer = new PublicationsTabDisplayer()
+    this.displayer = new PublicationsTabDisplayer()
   }
 
-  get displayer() { return this._displayer } 
 
 }
 

@@ -8,6 +8,8 @@
 // I thought it would be cool to have this information automatically loaded from ./tabs/... path
 // but it does create problems with the examples/_*.js (which nobody but me is likely to use, ha!)
 //
+// id, filter, label
+//
 export const tabList = [
   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People", tabClass: "PeopleTab" },
   { id: "publications",  filter: "{!tag=publications}type:(*bibo/Document)", label: "Publications", tabClass: "PublicationsTab" },

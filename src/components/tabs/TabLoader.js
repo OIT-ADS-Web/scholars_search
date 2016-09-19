@@ -38,7 +38,8 @@ class TabRouter {
 
      if (tab) {
         let tabClass = tab.tabClass
-        let opts = tab
+        //{ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
+        let opts = tab // let opts = { id: tab.id, filter: tab.filter, label: tab.label }
         return new tabClasses[tabClass](opts)
      } else {
        return new GenericTab({})
