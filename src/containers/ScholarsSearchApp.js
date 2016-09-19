@@ -33,9 +33,6 @@ export class ScholarsSearchApp extends Component {
 
   constructor(props, context) {
     super(props, context)
-    // FIXME: should this happen here, or in componentDidMount ?
-    //const { dispatch } = this.props
-    //dispatch(requestDepartments())
   }
 
   
@@ -75,25 +72,12 @@ export class ScholarsSearchApp extends Component {
 
       let builtSearch = { ...query } 
 
-      // FIXME: a lot of this code is duplicated every time a search is done
-      // should centralize a bit more
       let tabPicker = new TabPicker(query['filter'])
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
       let filterer = tabPicker.filterer
 
-      // FIXME: don't like putting this check everywhere - could
-      // encode using querystring
-      let chosen_ids = query['facetIds'] ? query['facetIds'] : []
-      if (typeof chosen_ids === 'string') {
-         chosen_ids = [chosen_ids]
-      }
-
-      if (chosen_ids) {
-        filterer.setActiveFacets(chosen_ids)
-      }
-      
       dispatch(requestSearch(builtSearch, filterer))
       dispatch(requestTabCount(builtSearch, tabList))
 
@@ -103,22 +87,8 @@ export class ScholarsSearchApp extends Component {
     }
 
 
-
   }
 
-  // NOTE: if we wrapped this up and try to make it usable by other, might need
-  // <Page>
-  //   <SearchForm />
-  //   <SearchResults tabs={tabList} />
-  //  </Page>
-  //   
-  //   then SearchResults might look like this:
-  //  
-  //   <TabRouter tabs={tabList}>
-  //     <TabResults onFacetClick={this.onFacetClick} etc... >  
-  //   </TabRouter>
-  //
-  //   ?? I don't know
   render() {
  
     return (

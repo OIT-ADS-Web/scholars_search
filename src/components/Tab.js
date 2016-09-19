@@ -22,6 +22,8 @@ class TabFilterer {
     }
   }
 
+  applyOptionalFilters(searcher) { /* noop */ }
+
   defaultQueryOptions() { 
    // this would possibly be a way to set query options per tab -- two problems
    // a) I tried it and it seemed to have no effect on the search

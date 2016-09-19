@@ -275,7 +275,9 @@ class PeopleFilterer extends TabFilterer {
   }
 
   applyOptionalFilters(searcher) {
-   
+ 
+    console.log(`applyOptionFilters: ${this.facet_ids}`)
+
     // FIXME: wow - this is super ugly, have to build or queries from facets
     // picked - but each facets has it's own unique query building logic 
     // so there needs to be one big code block per facet
@@ -354,6 +356,7 @@ class PeopleTab extends Tab {
 
   get filterer() {
     return this._filterer
+    // or this ?? does it matter?
     //return new PeopleFilter(this.config.filter)
   }
 

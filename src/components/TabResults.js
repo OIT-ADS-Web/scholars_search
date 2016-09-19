@@ -122,7 +122,7 @@ class TabResults extends Component {
 
           </div>
         
-          <PagingPanel facets={chosen_facets}></PagingPanel>
+          <PagingPanel />
  
         </div>
 

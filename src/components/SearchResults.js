@@ -70,20 +70,6 @@ export class SearchResults extends Component {
     let downloader = tabPicker.downloader
     let searchFilter = tabPicker.filterer
     
-    // FIXME: once again doing this check -- needs to be centralized in some manner
-    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
-    
-    // have to convert to array if it's a single value
-    if (typeof chosen_ids === 'string') {
-       chosen_ids = [chosen_ids]
-    }
- 
-    // FIXME: could move to searchFields entirely and not have to do this on UI level
-    searchFilter.setActiveFacets(chosen_ids)
-
-    // FIXME: this is reproducing search already performed.  As the search gets more
-    // complex (facets etc...) this will get more complex
-    //
     fetchSearchApi(searchFields, searchFilter, maxRows).then(function(json) {
 
       let csv = downloader.toCSV(json)
@@ -148,7 +134,8 @@ export class SearchResults extends Component {
 
     let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
     
-    // have to convert to array if it's a single value
+    // have to convert to array if it's a single value. 
+    // FIXME: there is probably a better way to do this
     if (typeof chosen_ids === 'string') {
        chosen_ids = [chosen_ids]
     }
@@ -159,7 +146,7 @@ export class SearchResults extends Component {
       chosen_ids = _.filter(chosen_ids, function(o) { return o != id })
     }
 
-    filterer.setActiveFacets(chosen_ids)
+    full_query['facetIds'] = chosen_ids
 
     // FIXME: since the action requires the tab -- it's mixing things up a bit
     // it actually requires something that can modify the searcher
@@ -171,7 +158,6 @@ export class SearchResults extends Component {
     //    too complicated to be json config property 
     //
     dispatch(requestSearch(full_query, filterer))
-    full_query['facetIds'] = chosen_ids
 
     this.context.router.push({
       pathname: this.path,
