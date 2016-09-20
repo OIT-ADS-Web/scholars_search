@@ -44,17 +44,6 @@ let HasSolrData = (superclass) => class extends superclass {
   get typeDisplay() {
     let specificTypes = this.doc.mostSpecificTypeURIs || []
     
-    /*
-    let abbreviation_list = _.map(specificTypes, function(s) {
-      let abbreviation = s.split("#")[1] || s
-      
-      if (abbreviation == s) {
-        abbreviation = s.substring(s.lastIndexOf("/") + 1)
-      }
-      return abbreviation
-    })
-    */
-
     // FIXME: despite the data types, I think 'mostSpecificType'
     // should just be ONE item
     let display = specificTypes.map(type => { 
