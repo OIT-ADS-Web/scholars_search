@@ -120,13 +120,12 @@ export { TabFilterer, TabDownloader, TabDisplayer }
 //
 export default class Tab {
 
-  constructor(config) {
-    this.config = config
-  
+  constructor() {
+    //this.config = config
   }
 
   get filterer() {
-    return this._filterer || new TabFilterer(this.config.filter)
+    return this._filterer || new TabFilterer(this.filter)
   }
 
   get displayer() {

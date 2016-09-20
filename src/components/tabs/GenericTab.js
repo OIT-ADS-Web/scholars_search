@@ -51,8 +51,8 @@ class GenericTabDisplayer extends TabDisplayer {
 
 class GenericTab extends Tab  {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
     this.displayer = new GenericTabDisplayer()
   }
 

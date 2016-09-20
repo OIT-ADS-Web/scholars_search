@@ -2,13 +2,15 @@ import React from 'react'
 
 import _ from 'lodash'
 
-// NOTE: just a dumb trick so I can keep separate (for babel-node to run examples/example_*_.js files)
-// but still only import something with the same name e.g. 'tabList'
+import { tabList as tabs } from './tabs/TabLoader'
 
-// the reason is because PeopleTab requires css and SubjectHeadingsTab requires image files
-// babel-node tries to read those as *.js files and fails
-import { tabList as tabs } from './tabs/TabList'
-export const tabList = tabs
+export const tabList = _.map(tabs, function(tab) {
+  let instance = new tab.clz()
+  console.log(instance)
+  return {id: instance.id, label: instance.label, filter: instance.filter}
+})
+
+//export const tabList = tabs
 
 import TabLoader from './tabs/TabLoader'
 
@@ -19,7 +21,9 @@ class TabPicker {
   // let tabPicker = new TabPicker("people")
   // let filterer = tabPicker.filterer
   // let displayer = tabPicker.displayer
-  //
+  // 
+  // note "filter" is just an id, like "people", "organizations" etc...
+  // not an actual filter
   constructor(filter) {
     this.filter = filter
     return new TabLoader(filter)

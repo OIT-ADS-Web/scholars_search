@@ -52,17 +52,14 @@ class ArtisticWorksTabDisplayer extends TabDisplayer {
 
 class ArtisticWorksTab extends Tab  {
 
-  //{ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
- 
-  // this.id = "artisticworks"
-  // this.label = "ArtisticWorks"
-  // this.filter = "{!tag=artisticworks}type:(*ArtisticWork)"
-  //
-  //
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
+    
+    this.id = "artisticworks"
+    this.label = "ArtisticWorks"
+    this.filter = "{!tag=artisticworks}type:(*ArtisticWork)"
+       
     this.displayer = new ArtisticWorksTabDisplayer()
-  
   
   }
 

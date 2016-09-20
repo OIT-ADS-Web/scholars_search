@@ -65,8 +65,13 @@ class PublicationsTabDisplayer extends TabDisplayer {
 
 class PublicationsTab extends Tab  {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
+
+    this.id = "publications"
+    this.filter = "{!tag=publications}type:(*bibo/Document)"
+    this.label = "Publications"
+ 
     this.displayer = new PublicationsTabDisplayer()
   }
 

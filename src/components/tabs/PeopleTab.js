@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 import HasSolrData from '../HasSolrData'
 import ScholarsLink from '../ScholarsLink'
 
-// needed for thumbnail stuff, I guess
-require('../../styles/scholars_search.less');
-
 class PersonDisplay extends HasSolrData(Component) {
 
   constructor(props) {
@@ -40,6 +37,8 @@ class PersonDisplay extends HasSolrData(Component) {
     let urlText = ''
     if (this.doc.profileURL_text) {
       urlText = this.doc.profileURL_text
+    } else {
+      urlText = this.doc.URI
     }
 
     return urlText
@@ -113,7 +112,7 @@ class PersonDisplay extends HasSolrData(Component) {
             
                <div className="col-lg-10 col-md-12 col-xs-12 col-sm-12">
                  <strong>
-                   <ScholarsLink uri={this.URI} text={this.name} />
+                   <ScholarsLink uri={this.profileURL} text={this.name} />
                  </strong>
                  <span> - {this.preferredTitle}</span>
                  <div>{this.department}</div>
@@ -340,10 +339,14 @@ class PeopleFilterer extends TabFilterer {
 
 class PeopleTab extends Tab {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
 
-    this.filterer = new PeopleFilterer(this.config.filter)
+    this.id = "person"
+    this.filter = "{!tag=person}type:(*Person)"
+    this.label = "People"
+       
+    this.filterer = new PeopleFilterer(this.filter)
     this.displayer = new PeopleDisplayer()
 
     let fields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
@@ -353,25 +356,6 @@ class PeopleTab extends Tab {
  
     this.downloader = new TabDownloader(fields)
   }
-
-  /*
-  get filterer() {
-    return this._filterer
-    // or this ?? does it matter?
-    //return new PeopleFilter(this.config.filter)
-  }
-
-  get displayer() {
-    return this._displayer
-    //return new PeopleDisplayer()
-  }
-
-  get downloader() {
-    return this._downloader
-    // let fields = ??
-    //return new TabDownloader(fields)
-  }
-  */
 
 
 }

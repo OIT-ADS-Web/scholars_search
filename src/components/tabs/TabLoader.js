@@ -1,13 +1,5 @@
 import _ from 'lodash'
 
-import { tabList } from './TabList'
-
-export function findTab(name) {
-  let tab = _.find(tabList, function(tab) { return tab.id == name })
-  return tab
-}
-
-//http://stackoverflow.com/questions/34655616/create-an-instance-of-a-class-in-es6-with-a-dynamic-name
 import PeopleTab from './PeopleTab'
 import PublicationsTab from './PublicationsTab'
 import OrganizationsTab from './OrganizationsTab'
@@ -18,35 +10,38 @@ import GrantsTab from './GrantsTab'
 import CoursesTab from './CoursesTab'
 import OtherTab from './OtherTab'
 
-//http://stackoverflow.com/questions/34655616/create-an-instance-of-a-class-in-es6-with-a-dynamic-name
-const tabClasses = {
-    PeopleTab,
-    PublicationsTab,
-    OrganizationsTab,
-    GenericTab,
-    ArtisticWorksTab,
-    SubjectHeadingsTab,
-    GrantsTab,
-    CoursesTab,
-    OtherTab,
+export const tabList = [
+  { id: "person", clz: PeopleTab },
+  { id: "publications",  clz: PublicationsTab },
+  { id: "organizations",  clz: OrganizationsTab }, 
+  { id: "grants",  clz: GrantsTab }, 
+  { id: "courses",  clz: CoursesTab },
+  { id: "artisticworks",  clz: ArtisticWorksTab },
+  { id: "subjectheadings", clz: SubjectHeadingsTab },
+  { id: "misc", clz: OtherTab }
+]
+
+export function findTab(name) {
+  let tab = _.find(tabList, function(tab) { return tab.id == name })
+  return tab
 }
 
 // NOTE: this is a little fancy, but is a half-way point to declarative tabs
-class TabRouter {
+// got idea for dynamic class loading based on string value of name from here:
+// http://stackoverflow.com/questions/34655616/create-an-instance-of-a-class-in-es6-with-a-dynamic-name
+
+class TabLoader {
     constructor (name) {
       const tab = findTab(name)
-
-     if (tab) {
-        let tabClass = tab.tabClass
-        //{ id: "artisticworks",  filter: "{!tag=artisticworks}type:(*ArtisticWork)", label: "Artistic Works" },
-        let opts = tab // let opts = { id: tab.id, filter: tab.filter, label: tab.label }
-        return new tabClasses[tabClass](opts)
+      
+      if (tab) {
+        return new tab.clz()
      } else {
-       return new GenericTab({})
+       return new GenericTab()
      }
   }
 
 }
 
-export default TabRouter
+export default TabLoader
 

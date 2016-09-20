@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import HasSolrData from '../HasSolrData'
 import ScholarsLink from '../ScholarsLink'
 
-import meshLogo from '../../images/meshhead.gif'
-import locLogo from '../../images/loc-logo.png'
-import dukeLogo from '../../images/duke-text-logo.png'
+// NOTE: wanted to do this, but babel-node tries to interpret
+//
+//import meshLogo from '../../images/meshhead.gif'
+//import locLogo from '../../images/loc-logo.png'
+//import dukeLogo from '../../images/duke-text-logo.png'
 
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
@@ -22,14 +24,17 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     let uri = this.URI
     let isMesh = meshMatch.test(uri)
     let isLoc = locMatch.test(uri)
-    
+
     let logo = function() {
       if (isMesh) {
-        return meshLogo
+        return require('../../images/meshhead.gif')
+        //return meshLogo
       } else if (isLoc) {
-        return locLogo 
+        return require('../../images/loc-logo.png')
+        //return locLogo 
       } else {
-        return dukeLogo
+        return require('../../images/duke-text-logo.png')
+        //return dukeLogo
       }
     }()
 
@@ -74,8 +79,13 @@ class SubjectHeadingsTabDisplayer extends TabDisplayer {
 
 class SubjectHeadingsTab extends Tab  {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
+
+    this.id = "subjectheadings"
+    this.filter = "{!tag=subjectheadings}type:(*Concept)"
+    this.label = "Subject Headings"
+ 
     this.displayer = new SubjectHeadingsTabDisplayer()
   
     let fields = [{label: 'Name', value: 'nameRaw.0'}]

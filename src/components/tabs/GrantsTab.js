@@ -60,8 +60,13 @@ class GrantsTabDisplayer extends TabDisplayer {
 
 class GrantsTab extends Tab  {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
+
+    this.id = "grants"
+    this.label = "Grants"
+    this.filter = "{!tag=grants}type:(*Grant)" 
+ 
     this.displayer = new GrantsTabDisplayer()
   }
 

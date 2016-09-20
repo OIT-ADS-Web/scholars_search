@@ -53,8 +53,13 @@ class OrganizationsTabDisplayer extends TabDisplayer {
 
 class OrganizationsTab extends Tab  {
 
-  constructor(config) {
-    super(config)
+  constructor() {
+    super()
+
+    this.id = "organizations"
+    this.filter = "{!tag=organizations}type:(*Organization)"
+    this.label = "Organizations" 
+ 
     this.displayer = new OrganizationsTabDisplayer()
   }
 
