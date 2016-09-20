@@ -27,15 +27,19 @@ class PublicationDisplay extends HasSolrData(Component) {
     return (
          <div key="{this.docId}" className="publication search-result-row">
             <div className="row">
+             
              <div className="col-md-11 col-sm-11"> 
               <strong>
                 <ScholarsLink uri={this.URI} text={this.name} />
               </strong>
              </div>
-             <div className="col-md-1 col-sm-1">
+            
+             <div className="col-md-3 col-sml-3">
+                <span><i>{this.typeDisplay}</i></span>
              </div>
- 
-            </div>
+
+             
+           </div>
             
             <div className="row highlight-text">
               <div className="col-md-12">

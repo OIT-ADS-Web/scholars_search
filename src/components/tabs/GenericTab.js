@@ -22,9 +22,11 @@ class GenericDisplay extends HasSolrData(Component) {
                 </strong>
               </div>
             </div>
+
             <div className="row highlight-text">
               <div className="col-md-12">
-               {this.highlightDisplay}
+               {/*this.highlightDisplay*/}
+               {this.typeDisplay}
               </div>
             </div>
 
@@ -53,6 +55,14 @@ class GenericTab extends Tab  {
 
   constructor() {
     super()
+     
+    // NOTE: giving these properties just in case tabs are ill-defined and this
+    // one ends up defaulting.  Should never actually use this as a tab though
+    //
+    this.id = "generic"
+    this.label = "Generic"
+    this.filter = "{!tag=things}type:(*Thing)" 
+ 
     this.displayer = new GenericTabDisplayer()
   }
 

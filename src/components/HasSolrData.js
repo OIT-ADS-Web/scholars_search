@@ -41,6 +41,40 @@ let HasSolrData = (superclass) => class extends superclass {
     return specificTypes.join(" ")
   }
 
+  get typeDisplay() {
+    let specificTypes = this.doc.mostSpecificTypeURIs || []
+    
+    /*
+    let abbreviation_list = _.map(specificTypes, function(s) {
+      let abbreviation = s.split("#")[1] || s
+      
+      if (abbreviation == s) {
+        abbreviation = s.substring(s.lastIndexOf("/") + 1)
+      }
+      return abbreviation
+    })
+    */
+
+    // FIXME: despite the data types, I think 'mostSpecificType'
+    // should just be ONE item
+    let display = specificTypes.map(type => { 
+        let abb = type.split("#")[1] || type
+ 
+        if (abb === type) {
+          abb= type.substring(type.lastIndexOf("/") + 1)
+        }
+           
+        return (
+            <span className="type-display">
+              <i><a href={type} target="_blank">{abb}</a></i>
+            </span>
+        )
+    })
+ 
+    return display
+ 
+  }
+
   get score() {
     // maybe just two decimal places
     let score = parseFloat(this.doc.score).toFixed(2)
@@ -55,14 +89,12 @@ let HasSolrData = (superclass) => class extends superclass {
 
     let display = ""
       if (this.highlight) {
-        // NOTE: sometimes doc.type is undefined ... ??
+        // NOTE: sometimes doc.type is undefined (strangely enough) 
         let docType = this.doc.type ? this.doc.type[0] : "?"
 
         // FIXME: might have to look at highlight.nameText too
-        // then again, it might not -- not sure
-        //
-        //display = this.highlight.ALLTEXT ? this.highlight.ALLTEXT[0] : docType
-        display = this.highlight.duke_text ? this.highlight.duke_text[0] : docType
+        // then again, might not -- not sure
+        display = this.highlight.duke_text ? this.highlight.duke_text[0] : ""
 
       } else {
         // no highlight -- not sure what to show
@@ -70,7 +102,6 @@ let HasSolrData = (superclass) => class extends superclass {
       }
 
     if (this.filterHighlightText) {
-      //console.log("filtering highlight text")
       return this.filterHighlightText(display)
     }
 
@@ -81,9 +112,13 @@ let HasSolrData = (superclass) => class extends superclass {
 
     let text = this.highlightText
 
-    // replace function ??? for grants (for instance)
-    //Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant
+    // NOTE: left this in place as a hook for a replace text function to modify what is shown 
+    // as 'highlight' text.  It was used for grants (for instance) with text like this:
+    // "Continuant Entity Grant Institutional Training Grant Relationship Specifically Dependent Continuant"
+    //
     let replacedText = this.filterHighlightText ? this.filterHighlightText(text) : text
+
+    if (text === "") { return "" }
 
     let fragment = (
         <cite>

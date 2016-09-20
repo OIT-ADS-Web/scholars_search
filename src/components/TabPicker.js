@@ -6,11 +6,9 @@ import { tabList as tabs } from './tabs/TabLoader'
 
 export const tabList = _.map(tabs, function(tab) {
   let instance = new tab.clz()
-  console.log(instance)
   return {id: instance.id, label: instance.label, filter: instance.filter}
 })
 
-//export const tabList = tabs
 
 import TabLoader from './tabs/TabLoader'
 
@@ -22,11 +20,9 @@ class TabPicker {
   // let filterer = tabPicker.filterer
   // let displayer = tabPicker.displayer
   // 
-  // note "filter" is just an id, like "people", "organizations" etc...
-  // not an actual filter
-  constructor(filter) {
-    this.filter = filter
-    return new TabLoader(filter)
+  constructor(id) {
+    //this.filter = filter
+    return new TabLoader(id)
   }
 
   

@@ -18,15 +18,22 @@ class OrganizationDisplay extends HasSolrData(Component) {
   }
 
   render() {
+
+    // let typeLinks = this.typeLinks
+    
     return (
          <div key="{this.docId}" className="organization search-result-row">
             
             <div className="row"> 
-              <div className="col-md-12 col-sml-12"> 
+              <div className="col-md-9 col-sml-9"> 
                  <strong>
                   <ScholarsLink uri={this.URI} text={this.name} />
                 </strong>
               </div>
+              <div className="col-md-3 col-sml-3">
+                 {this.typeDisplay}
+              </div>
+
             </div>
             
             {this.solrDocDisplay}

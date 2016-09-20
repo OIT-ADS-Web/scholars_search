@@ -16,11 +16,15 @@ class ArtisticWorkDisplay extends HasSolrData(Component) {
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
-              <div className="col-md-12 col-sm-12"> 
+              <div className="col-md-9 col-sm-9"> 
                 <strong>
                   <ScholarsLink uri={this.URI} text={this.name} />
                 </strong>
               </div>
+              <div className="col-md-3 col-sm-3">
+                {this.typeDisplay}
+              </div>
+
             </div>
 
             <div className="row highlight-text">
@@ -45,7 +49,7 @@ import { TabDisplayer } from '../Tab'
 class ArtisticWorksTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
-    return <ArtisticWorksDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+    return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
 }

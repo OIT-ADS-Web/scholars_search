@@ -23,11 +23,6 @@ class CourseDisplay extends HasSolrData(Component) {
               </div>
             </div>
 
-            <div className="row highlight-text">
-              <div className="col-md-12">
-                {this.highlightDisplay}
-              </div>
-            </div>
 
             {this.solrDocDisplay}
  
