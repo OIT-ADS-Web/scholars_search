@@ -28,17 +28,12 @@ export class PagingPanel extends Component {
     
     this.handleNextPage = this.handleNextPage.bind(this)
     this.handlePreviousPage = this.handlePreviousPage.bind(this)
- 
-    this.facets = this.props.facets
   
   }
 
   
   componentDidUpdate() {
-    //ReactDOM.findDOMNode(this).scrollTop = 0
-    // do this, or not?
     window.scrollTo(0, 0)
-
   }
  
 
@@ -60,33 +55,13 @@ export class PagingPanel extends Component {
 
     let full_query = { ...query }
 
-    // FIXME: I assume filter would be in the searchFields by now
-    // could add this to be safe:
-    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-
-    // FIXME: how to persist facet filters ???
-    //
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
-    // FIXME: this is sent in as from chosen_facets of search_results
-    // means we have to kind of keep tracking of reproducing the search
-    //
-    let chosen_ids = this.facets
- 
-    let tab = tabPicker.tab
+    let filterer = tabPicker.filterer
 
-    if (chosen_ids) {
-      tab.setActiveFacets(chosen_ids)
-      full_query['facetIds'] = this.chosen_ids
-   
-    }
-    // FIXME: would like this to force going back up to top of page
-    //
-    dispatch(requestSearch(full_query, tab))
+    dispatch(requestSearch(full_query, filterer))
  
-    full_query['facetIds'] = this.facets
-
     this.context.router.push({
       pathname: '/',
       query: full_query
@@ -111,23 +86,12 @@ export class PagingPanel extends Component {
 
     let full_query = { ...query }
 
-    // FIXME: I assume filter would be in the searchFields by now
-    // could add this to be safe:
-    //let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-
     let filter = searchFields['filter']
     let tabPicker =  new TabPicker(filter)
 
-    let chosen_ids = this.facets
+    let filterer = tabPicker.filterer
 
-    let tab = tabPicker.tab
-
-    if (chosen_ids) {
-      tab.setActiveFacets(chosen_ids)
-      full_query['facetIds'] = this.chosen_ids
-    }
-
-    dispatch(requestSearch(full_query, tab))
+    dispatch(requestSearch(full_query, filterer))
 
     this.context.router.push({
       pathname: '/',
@@ -150,8 +114,6 @@ export class PagingPanel extends Component {
       return ( <div></div> )
     }
 
-     // FIXME: need to update this the [<<][<][1][2]...[>][>>] kind of thing
-    
     // 105 results
     // start at 50
     // would be page 2 of 3

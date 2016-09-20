@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
 class GrantDisplay extends HasSolrData(Component) {
 
@@ -46,15 +46,33 @@ class GrantDisplay extends HasSolrData(Component) {
 }
 
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-class GrantsTab extends Tab {
+import { TabDisplayer } from '../Tab'
+
+class GrantsTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
 }
+
+class GrantsTab extends Tab  {
+
+  constructor() {
+    super()
+
+    this.id = "grants"
+    this.label = "Grants"
+    this.filter = "{!tag=grants}type:(*Grant)" 
+ 
+    this.displayer = new GrantsTabDisplayer()
+  }
+
+
+}
+
 
 export default GrantsTab 
 

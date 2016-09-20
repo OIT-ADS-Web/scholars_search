@@ -1,9 +1,5 @@
 import * as types from './types'
 
-// ******* search *******
-// export function requestSearch(searchFields, filters) {
-//
-//
 export function requestSearch(searchFields, filterer) {
   return {
     type: types.REQUEST_SEARCH,

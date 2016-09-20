@@ -70,24 +70,21 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   // NOTE: apply filters last, after search has been defined
   filterer.applyFilters(searcher)
  
-  
-  // FIXME: could apply chosen facets here - even those it's kind of a UI
-  // thing, but it's also a state thing (from the URL) ...
-  //
-  //
-  // let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
-  // 
+  let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
+   
   // have to convert to array if it's a single value
-  //  if (typeof chosen_ids === 'string') {
-  //     chosen_ids = [chosen_ids]
-  //  }
-  //
-  //  if (chosen_ids) {
-  //    filterer.setActiveFacets(chosen_ids)
-  //    full_query['facetIds'] = this.chosen_ids
-  //  
-  //  }
+  if (typeof chosen_ids === 'string') {
+    chosen_ids = [chosen_ids]
+  }
   
+  if (chosen_ids) {
+    filterer.setActiveFacets(chosen_ids)
+  }
+
+  // FIXME: have to remember to call this AFTER setActiveFacets ... 
+  // could even be part of the same function call
+  filterer.applyOptionalFilters(searcher)
+
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => res.json())

@@ -56,10 +56,6 @@ export default class ScholarsSearch extends Component {
       <Provider store={store}>
         <Router history={history}>
           {routes}
-          {/*
-          <Route path="/" component={ScholarsSearchApp} />
-          <Route path="/people" component={PeopleSearch} />
-          */}
         </Router>
       </Provider>
     )        

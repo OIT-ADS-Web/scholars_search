@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
-import meshLogo from '../images/meshhead.gif'
-import locLogo from '../images/loc-logo.png'
-import dukeLogo from '../images/duke-text-logo.png'
+// NOTE: wanted to do this, but babel-node tries to interpret
+//
+//import meshLogo from '../../images/meshhead.gif'
+//import locLogo from '../../images/loc-logo.png'
+//import dukeLogo from '../../images/duke-text-logo.png'
 
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
@@ -22,14 +24,17 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     let uri = this.URI
     let isMesh = meshMatch.test(uri)
     let isLoc = locMatch.test(uri)
-    
+
     let logo = function() {
       if (isMesh) {
-        return meshLogo
+        return require('../../images/meshhead.gif')
+        //return meshLogo
       } else if (isLoc) {
-        return locLogo 
+        return require('../../images/loc-logo.png')
+        //return locLogo 
       } else {
-        return dukeLogo
+        return require('../../images/duke-text-logo.png')
+        //return dukeLogo
       }
     }()
 
@@ -59,121 +64,42 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 }
 
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-import FacetList from './FacetList'
 
-export class SubjectHeadingsTab extends Tab {
+import { TabDisplayer, TabDownloader, TabFilterer } from '../Tab'
 
-  get csvFields() {
-    return [{label: 'Name', value: 'nameRaw.0'}
-    ]
-  }
+class SubjectHeadingsTabDisplayer extends TabDisplayer {
 
   pickDisplay(doc, highlight) {
     return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
-  /*
-    NOTE: the {!ex...} part is what makes showing counts for queries even when filter is on
-    the 'match' part is just an arbitary name given by the {!tag=...} SOLR local parameter 
+}
+
+class SubjectHeadingsTab extends Tab  {
+
+  constructor() {
+    super()
+
+    this.id = "subjectheadings"
+    this.filter = "{!tag=subjectheadings}type:(*Concept)"
+    this.label = "Subject Headings"
+ 
+    this.displayer = new SubjectHeadingsTabDisplayer()
   
-   leads to this going to searcher:
-
-   searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-   searcher.setFacetQuery(`{!ex=match}ALLTEXT:${qry}`)
-
-   searcher.addFilter("match", `{!tag=match}nameText:${qry}`)
- 
-  */
-
-  constructor(props) {
-    super(props)
-
-    this.filters = []
-
-    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
- 
-  }
-
-  applyFilters(searcher) {
-    super.applyFilters(searcher)
-
-    // FIXME: this doesn't work
-    //searcher.setOption['qf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
-    //searcher.setOption['pf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
- 
-
-    // NOTE: will need query already defined here, so order of operations
-    // matters a bit
-    let qry = searcher.query
-
-    // ? replace qry with searcher.qry in saga?
-    searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
-    searcher.setFacetQuery(`{!ex=match}duke_text:${qry}`)
-
-    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
-    this.applyOptionalFilters(searcher)
-  }
-
-  // NOTE: this would need to be called BEFORE applyFilters()
-  //
-  setActiveFacets(chosen_ids) {
-    this.filters = chosen_ids
-  }
- 
-  applyOptionalFilters(searcher) {
-    //let qry = searcher.qry
-    let _self = this
-
-    let query_list = [ 
-       {id: 'sh_name_fcq',  query: "nameText"}, 
-       {id: 'sh_text_fcq', query: "duke_text"}
-    ]
- 
-    let list = _.map(this.filters, function(id) {
-      let facet = _.find(query_list, function(o) { return o.id === id })
-      
-      let filter = facet.query
-      let qry = searcher.query
-      
-      return `{!tag=match}${filter}:${qry}`
-    })
-
-    let or_collection = list.join(' OR ')
-    searcher.addFilter("facets", or_collection)
-
-  }
-
-  //let or_collection = filter_query_list.join(' OR ')
-  //  searcher.addFilter(filterKey, or_collection)
-
-  getFacetQueryById(id) {
-    let query_list = [ 
-       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
-       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
-    ]
- 
-    let found = _.find(query_list, function(o) { return o.id === id })
-    return found
+    let fields = [{label: 'Name', value: 'nameRaw.0'}]
+    this.downloader = new TabDownloader(fields)
   }
 
 
-  // this matches our internal - conceptual - query with what has been
-  // stored as the key of the results sent back from SOLR (in facet_queries: [])
-  getFacetQueryByQuery(qry) {
-    var base_qry= qry.substr(0, qry.indexOf(':')) 
+}
 
-    let query_list = [ 
-       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
-       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
-    ]
+
+/*
  
-    let found = _.find(query_list, function(o) { return o.query === base_qry })
-    return found
-  }
-
-
+class SubjectHeadingsDisplayer extends TabDisplayer {
+  
   facets(facet_counts, chosen_ids, cb) {
     let facet_queries = facet_counts.facet_queries
     
@@ -231,14 +157,84 @@ export class SubjectHeadingsTab extends Tab {
     return facets
   }
 
+}
 
-  sortOptions() {
-    return ['sort desc', 'sort asc']
+class SubjectHeadingsFilterer extends TabFilterer {
+
+  applyFilters(searcher) {
+    super.applyFilters(searcher)
+
+    // FIXME: this doesn't work
+    //searcher.setOption['qf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
+    //searcher.setOption['pf'] = 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
+ 
+
+    // NOTE: will need query already defined here, so order of operations
+    // matters a bit
+    let qry = searcher.query
+
+    // ? replace qry with searcher.qry in saga?
+    searcher.setFacetQuery(`{!ex=match}nameText:${qry}`)
+    searcher.setFacetQuery(`{!ex=match}duke_text:${qry}`)
+
+    //this.setActiveFacets(['sh_name_fcq']) // NOTE: this fools it into applying one facet
+    this.applyOptionalFilters(searcher)
+  }
+
+  applyOptionalFilters(searcher) {
+    //let qry = searcher.qry
+    let _self = this
+
+    let query_list = [ 
+       {id: 'sh_name_fcq',  query: "nameText"}, 
+       {id: 'sh_text_fcq', query: "duke_text"}
+    ]
+ 
+    let list = _.map(this.filters, function(id) {
+      let facet = _.find(query_list, function(o) { return o.id === id })
+      
+      let filter = facet.query
+      let qry = searcher.query
+      
+      return `{!tag=match}${filter}:${qry}`
+    })
+
+    let or_collection = list.join(' OR ')
+    searcher.addFilter("facets", or_collection)
+
+  }
+
+  //let or_collection = filter_query_list.join(' OR ')
+  //  searcher.addFilter(filterKey, or_collection)
+
+  getFacetQueryById(id) {
+    let query_list = [ 
+       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
+       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
+    ]
+ 
+    let found = _.find(query_list, function(o) { return o.id === id })
+    return found
+  }
+
+
+  // this matches our internal - conceptual - query with what has been
+  // stored as the key of the results sent back from SOLR (in facet_queries: [])
+  getFacetQueryByQuery(qry) {
+    var base_qry= qry.substr(0, qry.indexOf(':')) 
+
+    let query_list = [ 
+       {id: 'sh_name_fcq', label: 'Match Keyword', query: "{!ex=match}nameText"}, 
+       {id: 'sh_text_fcq', label: 'Match Related', query: "{!ex=match}duke_text"}
+    ]
+ 
+    let found = _.find(query_list, function(o) { return o.query === base_qry })
+    return found
   }
 
 
 }
-
+*/
 
 export default SubjectHeadingsTab
 

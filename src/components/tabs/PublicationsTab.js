@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import HasSolrData from './HasSolrData'
-import ScholarsLink from './ScholarsLink'
+import HasSolrData from '../HasSolrData'
+import ScholarsLink from '../ScholarsLink'
 
 class PublicationDisplay extends HasSolrData(Component) {
 
@@ -51,15 +51,30 @@ class PublicationDisplay extends HasSolrData(Component) {
 
 }
 
-import Tab from './Tab'
+import Tab from '../Tab'
 
-class PublicationsTab extends Tab  {
+import { TabDisplayer } from '../Tab'
 
-  // render() ???
-  //
+class PublicationsTabDisplayer extends TabDisplayer {
+
   pickDisplay(doc, highlight) {
     return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
+
+}
+
+class PublicationsTab extends Tab  {
+
+  constructor() {
+    super()
+
+    this.id = "publications"
+    this.filter = "{!tag=publications}type:(*bibo/Document)"
+    this.label = "Publications"
+ 
+    this.displayer = new PublicationsTabDisplayer()
+  }
+
 
 }
 

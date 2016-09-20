@@ -11,7 +11,6 @@ import { requestSearch, requestTabCount, emptySearch, requestDepartments } from 
 import solr from '../utils/SolrHelpers'
 
 import TabPicker from '../components/TabPicker'
-
 import { tabList } from '../components/TabPicker'
 
 import querystring from 'querystring'
@@ -25,13 +24,18 @@ export class ScholarsSearchApp extends Component {
       router: PropTypes.object
     })
   }
-
+ 
   //https://facebook.github.io/react/docs/context.html
   //https://medium.com/@skwee357/the-land-of-undocumented-react-js-the-context-99b3f931ff73#.ewo0he7cd
   static get childContext() {
     return {router: this.props.routing}
   }
 
+  constructor(props, context) {
+    super(props, context)
+  }
+
+  
   onlyAdvanced(query) {
    let flag = (typeof(query['advanced']) != 'undefined'  && _.size(query) == 1)
    return flag
@@ -41,13 +45,15 @@ export class ScholarsSearchApp extends Component {
   componentDidMount() {
     const { location, dispatch, departments: { data }} = this.props;
 
-   //const { departments: { data } } = this.props
-
     let query = location.query
     
     let onlyAdvanced = this.onlyAdvanced(query)
     let blankSearch = solr.isEmptySearch(query)
 
+    // FIXME: this is too specific to Duke - if we were to try and componentize and share
+    // this app - this part would need to change
+    //
+    // dispatch(loadInitialData())  ?? something like that - some kind of callback or something ???
     dispatch(requestDepartments())
 
     // NOTE: was searching if no query parameters in route path, just searching everything
@@ -60,37 +66,19 @@ export class ScholarsSearchApp extends Component {
         query['start'] = 0
       }
 
-      // FIXME: would need to get this from /path - right?
       if (!query['filter']) {
         query['filter'] = 'person'
       }
 
       let builtSearch = { ...query } 
 
-      // FIXME: a lot of this code is duplicated every time a search is done
-      // should centralize a bit more
-
-      // FIXME: get the facetQueries here ???
       let tabPicker = new TabPicker(query['filter'])
 
       let base_query = solr.buildComplexQuery(builtSearch)
 
-      let tab = tabPicker.tab
-      // fixme: this doesn't seem to be necessary
-      //tab.addContext({'departments': data })
- 
-      //let parsed = querystring.parse(
+      let filterer = tabPicker.filterer
 
-      let chosen_ids = query['facetIds'] ? query['facetIds'] : []
-      if (typeof chosen_ids === 'string') {
-         chosen_ids = [chosen_ids]
-      }
-
-      if (chosen_ids) {
-        tab.setActiveFacets(chosen_ids)
-      }
-      
-      dispatch(requestSearch(builtSearch, tab))
+      dispatch(requestSearch(builtSearch, filterer))
       dispatch(requestTabCount(builtSearch, tabList))
 
 
@@ -99,22 +87,15 @@ export class ScholarsSearchApp extends Component {
     }
 
 
-
   }
-
-  constructor(props,context) {
-    super(props,context)
-  }
-
 
   render() {
  
-    // {this.props.children}   
     return (
 
       <Page>
         <SearchForm />
-        <SearchResults />
+        <SearchResults /> 
       </Page>
     )
   }

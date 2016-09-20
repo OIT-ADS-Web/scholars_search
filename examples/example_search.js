@@ -51,7 +51,7 @@ const compoundSearch2 = {
 const qry2 = searcher.buildQuery(compoundSearch2)
 searcher.query = qry2
 
-import { tabList } from '../src/components/TabList'
+import { tabList } from '../src/components/tabs/TabList'
 
 const tabs = tabList 
 console.log(tabs)
