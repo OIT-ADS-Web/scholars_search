@@ -182,16 +182,52 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
 
 ### Displayer (things that are REACT components  and meant for display)
 
-* pickDisplay
+* individualDisplay
 
   This is related to *results*.  The default *results* method calls this method and is returning a display per row - 
   which is defined in classes such as *PersonDisplay*.  Each of those extends *HasSolrData* - since they often share 
   the same basic information.
 
-* facets
+* facetDisplay
   
-  This controls what shows up in the 'facets' section of the search results
+  This controls what shows up in the 'facets' section of the search results.  An example of how to use this is in 
+  *OrganizationsFacets* (in the *tabs/OrganizationsTab.js* file.  The typical idea is you only have to return a 
+  component that uses the mixin *HasFacets* and then set the actual facets in the constructor of the component 
+  that #facetDisplay() returns e.g.:
 
+
+  ```
+
+    return (<OrganizationsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+ 
+  
+  ```
+  
+  then in the componet something like this:
+
+  
+  ```
+  
+  class OrganizationsFacets extends HasFacets(Component) {
+
+    constructor(props) {
+      super(props)
+    
+      this.onFacetClick = props.onFacetClick
+      this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+    }
+
+  ```
+
+  Then everything else falls into place.  
+
+  **Note**: the *prefix* parameter is not self-explantory.  It is necessary
+  as a UI thing to give a checkbox an id (e.g. dept\_org5000001) - but it is also sent in 
+  query params of the URL (e.g. facetIds=dept\_org5000001) which is turn is used to parse 
+  back out to whic filter to apply to the SOLR query 
+  (.e.g + OR (department\_facet\_string:\*org5000001)). It could call be called 'tag', 
+  or 'differentiator' too.  
+ 
 
 ### Downloader
 
