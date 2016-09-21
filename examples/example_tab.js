@@ -43,13 +43,13 @@ class TabDisplay {
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
-        return this.pickDisplay(doc, highlight)
+        return this.individualDisplay(doc, highlight)
     })
     return resultSet
   }
 
-  pickDisplay(doc, highlight) { }
-  facets(facet_counts) {}
+  individualDisplay(doc, highlight) { }
+  facetsDisplay(facet_counts) {}
 
 }
 
@@ -59,11 +59,11 @@ class TabFilterer {
 
 class PersonDisplay extends TabDisplay {
 
-  pickDisplay(doc, highlight) {
+  individualDisplay(doc, highlight) {
     return "->" + doc.URI
   }
 
- facets(facet_counts) {
+ facetDisplay(facet_counts) {
    //console.log(facet_counts.facet_fields.department_facet_string)
    let ary = facet_counts.facet_fields['department_facet_string']
    return ary
@@ -80,6 +80,9 @@ class PeopleFilterer extends TabFilterer {
 
 }
 
+// NOTE: this is just an example of the tabs in a conceptually simplied
+// form i.e. there is a displayer and a filterer
+//
 class PeopleTab {
 
   get filterer() {
