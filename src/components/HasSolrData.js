@@ -52,7 +52,9 @@ let HasSolrData = (superclass) => class extends superclass {
         if (abb === type) {
           abb= type.substring(type.lastIndexOf("/") + 1)
         }
-           
+ 
+        abb = abb.replace(/([A-Z])/g, ' $1') // NOTE: changes "AcademicDepartment" to "Academic Department"
+         
         return (
             <span className="type-display">
               <i><a href={type} target="_blank">{abb}</a></i>

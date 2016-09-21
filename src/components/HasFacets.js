@@ -22,7 +22,7 @@ let HasFacets = (superclass) => class extends superclass {
   
       let id = `${prefix}_${abb}`
       let title = abb
-      let label = abb
+      let label = abb.replace(/([A-Z])/g, ' $1') // NOTE: changes "AcademicDepartment" to "Academic Department"
     
       let facetItem = (
            <FacetItem key={id} assigned_id={id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={label} title={title} />

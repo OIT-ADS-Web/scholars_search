@@ -82,15 +82,6 @@ class TabDisplayer {
     return ""
   }
    
-  // NOTE: just a default for debugging purposes
-  pickDisplay(doc, highlight) {
-    return doc.URI
-  }
-
-  facets(facet_counts, chosen_facets, callback, data) { 
-    return ""
-  }
- 
   sortOptions(callback) {
     // FIXME: how to deal with callback ?? right now this function does not work - will probably
     // end up making a <Sorter callback={callback} /> type of component
@@ -208,7 +199,7 @@ class Faceter {
     let list = _.map(filters, (id) => {
       /*
      
-      people by departments is like this: ---
+      people by departments is like this: ---  maybe?
 
       let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
       
