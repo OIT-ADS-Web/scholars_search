@@ -198,7 +198,12 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
 
   ```
 
-    return (<OrganizationsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (
+      <OrganizationsFacets facet_fields={facet_fields} 
+          chosen_facets={chosen_ids} 
+          onFacetClick={callback} 
+          context={data}/>      
+    )
  
   
   ```
