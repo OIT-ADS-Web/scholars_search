@@ -22,6 +22,37 @@ class TabFilterer {
     }
   }
 
+  /*
+  applyFilters(searcher) {
+    if (this.filter) {
+      searcher.addFilter("tab", this.filter)
+    }
+ 
+    _.forEach(this.facet_list, (value, key) => {
+       this.applyFacet(searcher, value.field, value.prefix, value.options)
+    })
+  }
+
+  // NOTE: this is called by saga
+  applyOptionalFilters(searcher) {
+
+    _.forEach(this.facet_list, (value, key) => {
+      let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
+      faceter.applyFacet()
+    })
+   
+  }
+  */
+
+  
+  applyFacet(searcher, field, prefix, options={}) {
+    // FIXME: these are a little persnickety, if you leave off the localParam it'll
+    // crash - or if you leave off the facetField too
+    searcher.setFacetField(field, options)
+    searcher.setFacetLocalParam(field, `{!ex=${prefix}}`)
+  }
+
+  
   applyOptionalFilters(searcher) { /* noop */ }
 
   defaultQueryOptions() { 
@@ -43,18 +74,23 @@ class TabFilterer {
 
 class TabDisplayer {
 
-  // hasFacets() { ???? }
-  //
-  // NOTE: tab with facets should override ---
-  facets(facet_counts, chosen_facets, callback, data) { 
+  individualDisplay(doc, highlight) {
+    return doc.URI
+  }
+
+  facetDisplay(facet_counts, chosen_facets, callback, data) { 
     return ""
   }
-  
+   
   // NOTE: just a default for debugging purposes
   pickDisplay(doc, highlight) {
     return doc.URI
   }
 
+  facets(facet_counts, chosen_facets, callback, data) { 
+    return ""
+  }
+ 
   sortOptions(callback) {
     // FIXME: how to deal with callback ?? right now this function does not work - will probably
     // end up making a <Sorter callback={callback} /> type of component
@@ -70,7 +106,7 @@ class TabDisplayer {
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
-        return this.pickDisplay(doc, highlight)
+          return this.individualDisplay(doc, highlight)
     })
     return resultSet
   }
@@ -113,16 +149,99 @@ class TabDownloader {
 
 }
 
-export { TabFilterer, TabDownloader, TabDisplayer }
+class FacetHelper {
+ 
+  mapURIsToName(data) {
+    let hash = {}
+    _.forEach(data, function(obj) {
+       hash[obj.URI] = obj.name
+    })
+    return hash
+  }
+
+  
+  parseFacetFields(facet_fields) {
+    //
+    // 1) first parse our search/facet_fields results
+    let results = {}
+    _.forEach(facet_fields, function(value, key) {
+      results[key] = []
+      
+      let array = value
+
+      let size = array.length
+      let i = 0
+      // strangely results are array, of [<count><field>, <count><field> ... ]
+      while (i < size) {
+        let label = array[i]
+        let count = array[i+1]
+        let summary = {label: label, count:count}
+        results[key].push(summary)
+
+        i = i + 2
+      }
+    })
+
+    return results
+  }
+
+}
+
+class Faceter {
+
+  constructor(searcher, field, facet_ids, prefix) {
+    this.searcher = searcher
+    this.field = field
+    this.facet_ids = facet_ids
+    this.prefix = prefix
+  }
+
+
+  applyFacet() {
+
+    let _self = this
+
+    let filters = _.filter(this.facet_ids, (id) => {
+      return id.startsWith(`${_self.prefix}_`)
+    })
+
+    let list = _.map(filters, (id) => {
+      /*
+     
+      people by departments is like this: ---
+
+      let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
+      
+    */
+
+      let uri_to_search = `(*${id})`.replace(`${_self.prefix}_`, "") 
+      
+      if (id == `${_self.prefix}_null`) {
+        return `(-${_self.field}:[* TO *] AND *:*)`
+      } 
+
+      return `${_self.field}:${uri_to_search}`
+    })
+ 
+    if(list.length > 0) {
+       let or_collection = list.join(' OR ')
+       let qry = `{!tag=${this.prefix}}${or_collection}`
+       this.searcher.addFilter(`${this.prefix}`, qry)
+     }
+
+  }
+
+}
+
+
+export { TabFilterer, TabDownloader, TabDisplayer, Faceter, FacetHelper }
 
 
 // FIXME: is it better to define that at top, or bottom of file?
 //
 export default class Tab {
 
-  constructor() {
-    //this.config = config
-  }
+  constructor() { }
 
   get filterer() {
     return this._filterer || new TabFilterer(this.filter)

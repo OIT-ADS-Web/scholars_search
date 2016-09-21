@@ -11,14 +11,14 @@ import CoursesTab from './CoursesTab'
 import OtherTab from './OtherTab'
 
 export const tabList = [
-  { id: "person", clz: PeopleTab },
-  { id: "publications",  clz: PublicationsTab },
-  { id: "organizations",  clz: OrganizationsTab }, 
-  { id: "grants",  clz: GrantsTab }, 
-  { id: "courses",  clz: CoursesTab },
-  { id: "artisticworks",  clz: ArtisticWorksTab },
-  { id: "subjectheadings", clz: SubjectHeadingsTab },
-  { id: "misc", clz: OtherTab }
+  { id: "person", clz: PeopleTab, instance: new PeopleTab() },
+  { id: "publications",  clz: PublicationsTab, instance: new PublicationsTab() },
+  { id: "organizations",  clz: OrganizationsTab, instance: new OrganizationsTab() }, 
+  { id: "grants",  clz: GrantsTab, instance: new GrantsTab() }, 
+  { id: "courses",  clz: CoursesTab, instance: new CoursesTab() },
+  { id: "artisticworks",  clz: ArtisticWorksTab, instance: new ArtisticWorksTab() },
+  { id: "subjectheadings", clz: SubjectHeadingsTab, instance: new SubjectHeadingsTab() },
+  { id: "misc", clz: OtherTab, instance: new OtherTab() }
 ]
 
 export function findTab(name) {
@@ -33,9 +33,10 @@ export function findTab(name) {
 class TabLoader {
     constructor (name) {
       const tab = findTab(name)
-      
+     
       if (tab) {
-        return new tab.clz()
+        return tab.instance
+        //return new tab.clz()
      } else {
        return new GenericTab()
      }

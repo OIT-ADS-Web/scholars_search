@@ -23,11 +23,6 @@ class CourseDisplay extends HasSolrData(Component) {
               </div>
             </div>
 
-            <div className="row highlight-text">
-              <div className="col-md-12">
-                {this.highlightDisplay}
-              </div>
-            </div>
 
             {this.solrDocDisplay}
  
@@ -44,7 +39,7 @@ import { TabDisplayer } from '../Tab'
 
 class CoursesTabDisplayer extends TabDisplayer {
 
-  pickDisplay(doc, highlight) {
+  individualDisplay(doc, highlight) {
     return <CourseDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
