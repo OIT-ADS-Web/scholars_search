@@ -46,13 +46,6 @@ class PersonDisplay extends HasSolrData(Component) {
 
   filterHighlightText(text) {
     return text
-
-    //let replaced = text.replace("Agent Continuant Entity Faculty Member Independent Continuant Person", "")
-    //replaced = replaced.replace("Agent Continuant Entity Independent Continuant Person Student", "")
-    //replaced = replaced.replace("Agent Continuant Entity Independent Continuant Non-Faculty Academic Person", "")
-
-    //replaced = replaced.replace("Chicago-Style Citation", "")
-    //return replaced
   }
 
   get department() {
@@ -234,6 +227,8 @@ class PeopleFacets extends Component {
 import Tab from '../Tab'
 import { TabDisplayer, TabFilterer, TabDownloader } from '../Tab'
 
+import { Faceter } from '../Tab'
+
 class PeopleDisplayer extends TabDisplayer {
 
   constructor() {
@@ -257,31 +252,32 @@ class PeopleFilterer extends TabFilterer {
     super(config)
   }
 
-  //   { id: "person", filter: "{!tag=person}type:(*Person)", label: "People" },
   applyFilters(searcher) {
     super.applyFilters(searcher)
  
+    this.applyFacet(searcher, "department_facet_string", "dept", {prefix: "1|", mincount: "1"})
+  }
+
+
+  /*
+  applyFacet(searcher, field, prefix, options={}) {
     // FIXME: these are a little persnickety, if you leave off the localParam it'll
     // crash - or if you leave off the facetField too
-    //
-    searcher.setFacetField("department_facet_string", {prefix: "1|",  mincount: "1"})
-    searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")
  
-    //searcher.setFacetField("mostSpecificTypeURIs", {mincount: "1"})
-    //searcher.setFacetLocalParam("mostSpecificTypeURIs", "{!ex=type}")
-
-    this.applyOptionalFilters(searcher)
+    searcher.setFacetField(field, options)
+    searcher.setFacetLocalParam(field, `{!ex=${prefix}}`)
   }
+  */
 
   applyOptionalFilters(searcher) {
  
-    console.log(`applyOptionFilters: ${this.facet_ids}`)
-
-    // FIXME: wow - this is super ugly, have to build or queries from facets
-    // picked - but each facets has it's own unique query building logic 
-    // so there needs to be one big code block per facet
-    // 
+    // FIXME: would like to to this - but the `(1|*individul/${id}` part is different
+    // but maybe it works anyway
     //
+     let faceter = new Faceter(searcher, "department_facet_string", this.facet_ids, "dept")
+     faceter.applyFacet()
+
+    /*
     // 1(a). department facet
     let dept_filters = _.filter(this.facet_ids, function(id) {
        return id.startsWith("dept_") 
@@ -304,34 +300,8 @@ class PeopleFilterer extends TabFilterer {
        //let qry = `${or_collection}`
        searcher.addFilter("dept", qry)
      }
-
-    /* NOTE: this is what a second one would look like ... nearly the same, but not quite
-     *
-    // 2(a). type facet
-    let type_filters = _.filter(this.facet_ids, function(id) {
-      return id.startsWith("type_") 
-    })   
-
-    let type_list = _.map(type_filters, function(id) {
-      let uri_to_search = `(*core#${id})`.replace("type_", "")  // FIXME: this must be wrong
-      
-      if (id == "type_null") { 
-        return `(-mostSpecificTypeURIs:[* TO *] AND *:*)`
-      } else {
-        return `mostSpecificTypeURIs:${uri_to_search}`
-      }
-    })
-
-    // 2(b). gather those into a big OR query
-    if(type_list.length > 0) {
-       let or_collection = type_list.join(' OR ')
-       let qry = `{!tag=type}${or_collection}`
-       //let qry = `${or_collection}`
-       searcher.addFilter("type", qry)
-     }
-    */
-
     
+    */
   }
 
 }

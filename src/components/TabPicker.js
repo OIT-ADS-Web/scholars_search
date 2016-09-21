@@ -21,7 +21,6 @@ class TabPicker {
   // let displayer = tabPicker.displayer
   // 
   constructor(id) {
-    //this.filter = filter
     return new TabLoader(id)
   }
 

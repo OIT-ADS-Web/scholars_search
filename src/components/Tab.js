@@ -22,6 +22,14 @@ class TabFilterer {
     }
   }
 
+  applyFacet(searcher, field, prefix, options={}) {
+    // FIXME: these are a little persnickety, if you leave off the localParam it'll
+    // crash - or if you leave off the facetField too
+    searcher.setFacetField(field, options)
+    searcher.setFacetLocalParam(field, `{!ex=${prefix}}`)
+  }
+
+  
   applyOptionalFilters(searcher) { /* noop */ }
 
   defaultQueryOptions() { 
@@ -113,16 +121,91 @@ class TabDownloader {
 
 }
 
-export { TabFilterer, TabDownloader, TabDisplayer }
+class FacetHelper {
+  
+  parseFacetFields(facet_fields) {
+    // FIXME: this could be generalized in base Component of some sort
+    //
+    // 1) first parse our search/facet_fields results
+    let results = {}
+    _.forEach(facet_fields, function(value, key) {
+      results[key] = []
+      
+      let array = value
+
+      let size = array.length
+      let i = 0
+      // strangely results are array, of [<count><field>, <count><field> ... ]
+      while (i < size) {
+        let label = array[i]
+        let count = array[i+1]
+        let summary = {label: label, count:count}
+        results[key].push(summary)
+
+        i = i + 2
+      }
+    })
+
+    return results
+  }
+
+}
+
+class Faceter {
+
+  constructor(searcher, field, facet_ids, prefix) {
+    this.searcher = searcher
+    this.field = field
+    this.facet_ids = facet_ids
+    this.prefix = prefix
+  }
+
+
+  applyFacet() {
+
+    let _self = this
+
+    let filters = _.filter(this.facet_ids, (id) => {
+      return id.startsWith(`${_self.prefix}_`)
+    })
+
+    let list = _.map(filters, (id) => {
+      /*
+     
+      people by departments is like this: ---
+
+      let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
+      
+    */
+
+      let uri_to_search = `(*${id})`.replace(`${_self.prefix}_`, "") 
+      
+      if (id == `${_self.prefix}_null`) {
+        return `(-${_self.field}:[* TO *] AND *:*)`
+      } 
+
+      return `${_self.field}:${uri_to_search}`
+    })
+ 
+    if(list.length > 0) {
+       let or_collection = list.join(' OR ')
+       let qry = `{!tag=${this.prefix}}${or_collection}`
+       this.searcher.addFilter(`${this.prefix}`, qry)
+     }
+
+  }
+
+}
+
+
+export { TabFilterer, TabDownloader, TabDisplayer, Faceter }
 
 
 // FIXME: is it better to define that at top, or bottom of file?
 //
 export default class Tab {
 
-  constructor() {
-    //this.config = config
-  }
+  constructor() { }
 
   get filterer() {
     return this._filterer || new TabFilterer(this.filter)
