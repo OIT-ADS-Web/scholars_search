@@ -226,12 +226,16 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
 
   Then everything else falls into place.  
 
-  **Note**: the *prefix* parameter is not self-explantory.  It is necessary
-  as a UI thing to give a checkbox an id (e.g. dept\_org5000001) - but it is also sent in 
-  query params of the URL (e.g. facetIds=dept\_org5000001) which is turn is used to parse 
-  back out to whic filter to apply to the SOLR query 
-  (.e.g + OR (department\_facet\_string:\*org5000001)). It could call be called 'tag', 
-  or 'differentiator' too.  
+  **Note**: the *prefix* parameter is not self-explanatory.  It is necessary
+  as a UI thing to give a checkbox an id.  So, for instance, if the prefix were "dept"
+  the id for the checkbox might be dept\_org5000001.
+  It is also sent in  query params of the URL (e.g. ?facetIds=dept\_org5000001) which 
+  in turn is used to parse  back out to whic filter to apply to the SOLR query
+  (.e.g + OR (department\_facet\_string:\*org5000001)). 
+
+  It could call be called 'tag', or 'differentiator' too.  Or even "namespace", because
+  it is a way to group facet values that are returned - and make suitable html
+  identifiers.
  
 
 ### Downloader
