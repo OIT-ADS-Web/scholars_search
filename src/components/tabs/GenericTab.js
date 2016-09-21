@@ -45,7 +45,7 @@ import { TabDisplayer } from '../Tab'
 
 class GenericTabDisplayer extends TabDisplayer {
 
-  pickDisplay(doc, highlight) {
+  individualDisplay(doc, highlight) {
     return <GenericDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 

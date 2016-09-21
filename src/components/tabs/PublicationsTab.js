@@ -61,7 +61,7 @@ import { TabDisplayer } from '../Tab'
 
 class PublicationsTabDisplayer extends TabDisplayer {
 
-  pickDisplay(doc, highlight) {
+  individualDisplay(doc, highlight) {
     return <PublicationDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 

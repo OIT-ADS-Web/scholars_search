@@ -48,7 +48,7 @@ import { TabDisplayer } from '../Tab'
 
 class ArtisticWorksTabDisplayer extends TabDisplayer {
 
-  pickDisplay(doc, highlight) {
+  individualDisplay(doc, highlight) {
     return <ArtisticWorkDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 

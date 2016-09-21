@@ -125,84 +125,58 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
-import FacetList from '../FacetList'
 import FacetItem from '../FacetItem'
 import Facets from '../Facets'
 
-class PeopleFacets extends Component {
+import HasFacets from '../HasFacets'
+
+import { FacetHelper } from '../Tab'
+
+class PeopleFacets extends HasFacets(Component) {
 
   constructor(props) {
     super(props)
     
     this.onFacetClick = props.onFacetClick
+    this.facets = [{field: "department_facet_string", prefix: "dept", label: "School/Unit"}]
+  
+  }
+
+
+  // FIXME: have to override this for now because the labels for the factes require
+  // some logic - could probably come up with a better way though
+  facetItems(facet_fields, field, prefix, chosen_facets, context) {
+
+    let helper = new FacetHelper()
+    let results = helper.parseFacetFields(facet_fields)
+
+    // FIXME: not sure how to deal with the situation generically - as more tabs need more custom labels for facet URIs
+    let departmentNameMap = helper.mapURIsToName(context)
+
+    if (field === "department_facet_string") {
+      let helper = new FacetHelper()
+      let results = helper.parseFacetFields(facet_fields)
+ 
+      let items = results["department_facet_string"]
+ 
+      let list  = _.map(items, (item) => {
+        let department_uri = item.label ? item.label.replace("1|", "") : "None" 
+        let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
+        let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
+
+        let facetItem = (
+            <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={facetLabel} title={department_uri} />
+        )
+        return facetItem
+      })
+      return list
+
+    } else {
+     return super.facetItems(facet_fields, field, prefix, chosen_facets, context)
+    }
+      
    }
 
-  departmentNameMap(data) {
-    // FIXME: should probably centralize this more - even though it's only used here right now
-    let departmentNameMap = {}
-    _.forEach(data, function(obj) {
-       departmentNameMap[obj.URI] = obj.name
-    })
-    return departmentNameMap
-  }
-
-  facetFieldDisplay(facet_fields, chosen_facets, context) {
-    let size = facet_fields.length
-
-    if (!(facet_fields || size > 0)) {
-      return ""
-    }
-
-    // 1) first parse our search/facet_fields results
-    let results = {}
-    _.forEach(facet_fields, function(value, key) {
-      results[key] = []
-      
-      let array = value
-
-      let size = array.length
-      let i = 0
-      // strangely results are array, of [<count><field>, <count><field> ... ]
-      while (i < size) {
-        let label = array[i]
-        let count = array[i+1]
-        let summary = {label: label, count:count}
-        results[key].push(summary)
-
-        i = i + 2
-      }
-    })
-  
-    let departmentNameMap = this.departmentNameMap(context)
-
-    // NOTE: data is blank for a while, but it doesn't seem to make a difference unless I try to call <FacetItem />
-    let items = results['department_facet_string']
- 
-    // FIXME: seems like this should work, but it does not
-    let department_list  = _.map(items, (item) => {
-  
-      let department_uri = item.label ? item.label.replace("1|", "") : "None" 
-      let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
-      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
-
-      let facetItem = (
-          <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={facetLabel} title={department_uri} />
-      )
-      return facetItem
-     
-    })
-
-    let departmentFacets = (<FacetList label="School/Unit">{department_list}</FacetList>)
- 
-    let facets = (
-      <div className="facet-panel">
-        <h4 className="heading">Filter By</h4>
-        {departmentFacets}
-      </div>
-    )
-
-    return facets
-  }
 
   render() {
     const { facet_fields, chosen_facets, context } = this.props
@@ -211,11 +185,11 @@ class PeopleFacets extends Component {
       return ""
     }
 
-    let facetFieldDisplay = this.facetFieldDisplay(facet_fields, chosen_facets, context)
-
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+ 
     return (
       <Facets>
-        {facetFieldDisplay }
+        {facetDisplay }
       </Facets>
      )
 
@@ -227,81 +201,57 @@ class PeopleFacets extends Component {
 import Tab from '../Tab'
 import { TabDisplayer, TabFilterer, TabDownloader } from '../Tab'
 
-import { Faceter } from '../Tab'
-
 class PeopleDisplayer extends TabDisplayer {
 
   constructor() {
     super()
   }
 
-  pickDisplay(doc, highlight) {
+  
+  individualDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
-  facets(facet_counts, chosen_ids, callback, data) {
+  facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
     return (<PeopleFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
 
 }
 
+import { Faceter } from '../Tab'
+
 class PeopleFilterer extends TabFilterer {
 
   constructor(config) {
     super(config)
+    this.facets = [{field: "department_facet_string", prefix: "dept", options: {prefix: "1|", mincount: "1"}}]
   }
 
+ 
+  // NOTE: these two methods are exactly the same in the two faceted examples - so could
+  // just factor out completely 
+  //
   applyFilters(searcher) {
     super.applyFilters(searcher)
  
-    this.applyFacet(searcher, "department_facet_string", "dept", {prefix: "1|", mincount: "1"})
-  }
-
-
-  /*
-  applyFacet(searcher, field, prefix, options={}) {
-    // FIXME: these are a little persnickety, if you leave off the localParam it'll
-    // crash - or if you leave off the facetField too
- 
-    searcher.setFacetField(field, options)
-    searcher.setFacetLocalParam(field, `{!ex=${prefix}}`)
-  }
-  */
-
-  applyOptionalFilters(searcher) {
- 
-    // FIXME: would like to to this - but the `(1|*individul/${id}` part is different
-    // but maybe it works anyway
-    //
-     let faceter = new Faceter(searcher, "department_facet_string", this.facet_ids, "dept")
-     faceter.applyFacet()
-
-    /*
-    // 1(a). department facet
-    let dept_filters = _.filter(this.facet_ids, function(id) {
-       return id.startsWith("dept_") 
-    })   
-
-    let dept_list = _.map(dept_filters, function(id) {
-      let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
-      
-      if (id == "dept_null") { 
-        return `(-department_facet_string:[* TO *] AND *:*)`
-      } else {
-        return `department_facet_string:${uri_to_search}`
-      }
+    _.forEach(this.facets, (value, key) => {
+       this.applyFacet(searcher, value.field, value.prefix, value.options)
     })
+  }
+  
+  // NOTE: this is called by saga
+  applyOptionalFilters(searcher) {
 
-    // 1(b). gather those into a big OR query
-    if(dept_list.length > 0) {
-       let or_collection = dept_list.join(' OR ')
-       let qry = `{!tag=dept}${or_collection}`
-       //let qry = `${or_collection}`
-       searcher.addFilter("dept", qry)
-     }
-    
-    */
+    // FIXME: faceter needs to *AND* between each collection of *OR*
+    // even though it is reading multiple facets (from this.facets) it would not
+    // handle multiple facets correctly now
+    //
+    _.forEach(this.facets, (value, key) => {
+      let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
+      faceter.applyFacet()
+    })
+   
   }
 
 }

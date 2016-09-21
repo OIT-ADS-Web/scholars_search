@@ -22,6 +22,29 @@ class TabFilterer {
     }
   }
 
+  /*
+  applyFilters(searcher) {
+    if (this.filter) {
+      searcher.addFilter("tab", this.filter)
+    }
+ 
+    _.forEach(this.facet_list, (value, key) => {
+       this.applyFacet(searcher, value.field, value.prefix, value.options)
+    })
+  }
+
+  // NOTE: this is called by saga
+  applyOptionalFilters(searcher) {
+
+    _.forEach(this.facet_list, (value, key) => {
+      let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
+      faceter.applyFacet()
+    })
+   
+  }
+  */
+
+  
   applyFacet(searcher, field, prefix, options={}) {
     // FIXME: these are a little persnickety, if you leave off the localParam it'll
     // crash - or if you leave off the facetField too
@@ -51,18 +74,23 @@ class TabFilterer {
 
 class TabDisplayer {
 
-  // hasFacets() { ???? }
-  //
-  // NOTE: tab with facets should override ---
-  facets(facet_counts, chosen_facets, callback, data) { 
+  individualDisplay(doc, highlight) {
+    return doc.URI
+  }
+
+  facetDisplay(facet_counts, chosen_facets, callback, data) { 
     return ""
   }
-  
+   
   // NOTE: just a default for debugging purposes
   pickDisplay(doc, highlight) {
     return doc.URI
   }
 
+  facets(facet_counts, chosen_facets, callback, data) { 
+    return ""
+  }
+ 
   sortOptions(callback) {
     // FIXME: how to deal with callback ?? right now this function does not work - will probably
     // end up making a <Sorter callback={callback} /> type of component
@@ -78,7 +106,7 @@ class TabDisplayer {
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
-        return this.pickDisplay(doc, highlight)
+          return this.individualDisplay(doc, highlight)
     })
     return resultSet
   }
@@ -122,9 +150,17 @@ class TabDownloader {
 }
 
 class FacetHelper {
+ 
+  mapURIsToName(data) {
+    let hash = {}
+    _.forEach(data, function(obj) {
+       hash[obj.URI] = obj.name
+    })
+    return hash
+  }
+
   
   parseFacetFields(facet_fields) {
-    // FIXME: this could be generalized in base Component of some sort
     //
     // 1) first parse our search/facet_fields results
     let results = {}
@@ -198,7 +234,7 @@ class Faceter {
 }
 
 
-export { TabFilterer, TabDownloader, TabDisplayer, Faceter }
+export { TabFilterer, TabDownloader, TabDisplayer, Faceter, FacetHelper }
 
 
 // FIXME: is it better to define that at top, or bottom of file?

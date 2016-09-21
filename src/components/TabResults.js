@@ -92,7 +92,7 @@ class TabResults extends Component {
     let tabFacets = ""
 
     if (facet_fields) {   
-      tabFacets = displayer.facets(facet_counts, chosen_facets, this.onFacetClick, data)
+      tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, data)
     }
 
      let tabDownload =  (               
