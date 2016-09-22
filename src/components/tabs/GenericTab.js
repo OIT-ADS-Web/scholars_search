@@ -40,7 +40,6 @@ class GenericDisplay extends HasSolrData(Component) {
 
 
 import Tab from '../Tab'
-
 import { TabDisplayer } from '../Tab'
 
 class GenericTabDisplayer extends TabDisplayer {

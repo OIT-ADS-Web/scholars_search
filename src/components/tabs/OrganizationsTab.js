@@ -44,7 +44,6 @@ class OrganizationDisplay extends HasSolrData(Component) {
 
 
 import Facets from '../Facets'
-
 import HasFacets from '../HasFacets'
 
 class OrganizationsFacets extends HasFacets(Component) {

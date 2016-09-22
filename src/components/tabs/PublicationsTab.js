@@ -56,7 +56,6 @@ class PublicationDisplay extends HasSolrData(Component) {
 }
 
 import Tab from '../Tab'
-
 import { TabDisplayer } from '../Tab'
 
 class PublicationsTabDisplayer extends TabDisplayer {

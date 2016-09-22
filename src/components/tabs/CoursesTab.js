@@ -34,7 +34,6 @@ class CourseDisplay extends HasSolrData(Component) {
 
 
 import Tab from '../Tab'
-
 import { TabDisplayer } from '../Tab'
 
 class CoursesTabDisplayer extends TabDisplayer {

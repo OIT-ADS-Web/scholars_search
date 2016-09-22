@@ -11,10 +11,6 @@ class PersonDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
-  f(str) {
-    return (str || "").replace(/&#039;/g,"'");
-  }
-
   hasThumbnail() {
     let flag = false
 

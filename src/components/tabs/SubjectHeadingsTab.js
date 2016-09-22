@@ -60,10 +60,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 }
 
-
 import Tab from '../Tab'
-
-
 import { TabDisplayer, TabDownloader, TabFilterer } from '../Tab'
 
 class SubjectHeadingsTabDisplayer extends TabDisplayer {

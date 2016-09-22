@@ -51,7 +51,6 @@ class GrantDisplay extends HasSolrData(Component) {
 
 
 import Tab from '../Tab'
-
 import { TabDisplayer } from '../Tab'
 
 class GrantsTabDisplayer extends TabDisplayer {

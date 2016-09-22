@@ -7,6 +7,10 @@ import React from 'react'
 // NOTE: have to assume we are getting 'doc' and 'highlight' props
 let HasSolrData = (superclass) => class extends superclass {
 
+  f(str) {
+    return (str || "").replace(/&#039;/g,"'");
+  }
+
   get name() {
     let nameRaw = this.doc.nameRaw || [""]
     return nameRaw[0]
