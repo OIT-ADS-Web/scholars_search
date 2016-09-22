@@ -44,7 +44,6 @@ class OrganizationDisplay extends HasSolrData(Component) {
 
 
 import Facets from '../Facets'
-
 import HasFacets from '../HasFacets'
 
 class OrganizationsFacets extends HasFacets(Component) {
@@ -124,35 +123,11 @@ class OrganizationsTabDisplayer extends TabDisplayer {
 
 }
 
-import { Faceter } from '../Tab'
-
 class OrganizationsFilterer extends TabFilterer {
 
   constructor(config) {
     super(config)
     this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", options: {mincount: "1"}}]
-  }
-
-  applyFilters(searcher) {
-    super.applyFilters(searcher)
- 
-    _.forEach(this.facets, (value, key) => {
-       this.applyFacet(searcher, value.field, value.prefix, value.options)
-    })
-  }
-
-  // NOTE: this is called by saga
-  applyOptionalFilters(searcher) {
-
-    // FIXME: faceter needs to *AND* between each collection of *OR*
-    // even though it is reading multiple facets (from this.facets) it would not
-    // handle multiple facets correctly now
-    //
-    _.forEach(this.facets, (value, key) => {
-      let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
-      faceter.applyFacet()
-    })
-   
   }
 
 

@@ -7,6 +7,10 @@ import React from 'react'
 // NOTE: have to assume we are getting 'doc' and 'highlight' props
 let HasSolrData = (superclass) => class extends superclass {
 
+  f(str) {
+    return (str || "").replace(/&#039;/g,"'");
+  }
+
   get name() {
     let nameRaw = this.doc.nameRaw || [""]
     return nameRaw[0]
@@ -52,9 +56,11 @@ let HasSolrData = (superclass) => class extends superclass {
         if (abb === type) {
           abb= type.substring(type.lastIndexOf("/") + 1)
         }
-           
+ 
+        abb = abb.replace(/([A-Z])/g, ' $1') // NOTE: changes "AcademicDepartment" to "Academic Department"
+         
         return (
-            <span className="type-display">
+            <span key="${type}_display" className="type-display">
               <i><a href={type} target="_blank">{abb}</a></i>
             </span>
         )

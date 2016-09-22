@@ -2,9 +2,13 @@ import _ from 'lodash'
 
 function isEmptySearch(cs) {
   let flag = false
-    
-  if (cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' && cs['noMatch'] == '') {
-     flag = true
+ 
+  // FIXME: wow - ugly check for isEmpty ... seems like there's a better way
+  if ((cs['exactMatch'] == '' && cs['allWords'] == '' && cs['atLeastOne'] == '' && cs['noMatch'] == '') || 
+      (typeof(cs['exactMatch']) == 'undefined' && typeof(cs['allWords']) == 'undefined' && typeof(cs['atLeastOne']) == 'undefined' && typeof(cs['noMatch']) == 'undefined')
+     ) {
+     
+    flag = true
    }
 
   return flag
@@ -272,6 +276,7 @@ function setupTabGroups(searcher, tabList) {
     mm: 2,
     qf: 'duke_text nameText nameLowercase',
     pf: 'duke_text nameText nameLowercase'
+    //'group.limit': '1000'
     //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }

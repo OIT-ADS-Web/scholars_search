@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { tabList as tabs } from './tabs/TabLoader'
 
 export const tabList = _.map(tabs, function(tab) {
-  let instance = new tab.clz()
+  let instance = tab.instance
   return {id: instance.id, label: instance.label, filter: instance.filter}
 })
 

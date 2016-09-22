@@ -8,13 +8,7 @@ import { FacetHelper } from './Tab'
 
 let HasFacets = (superclass) => class extends superclass {
 
-  facetItems(facet_fields, field, prefix, chosen_facets, context={}) {
-    let helper = new FacetHelper()
-    let results = helper.parseFacetFields(facet_fields)
- 
-    let items = results[field]
- 
-    let list = _.map(items, (item) => {
+  facetItem(prefix, item, context={}) {
       let abb = item.label.split("#")[1] || item.label
       if (abb == item.label) {
         abb = item.label.substring(item.label.lastIndexOf("/") + 1)
@@ -22,8 +16,19 @@ let HasFacets = (superclass) => class extends superclass {
   
       let id = `${prefix}_${abb}`
       let title = abb
-      let label = abb
-    
+      let label = abb.replace(/([A-Z])/g, ' $1') // NOTE: changes "AcademicDepartment" to "Academic Department"
+      
+      return { id: id, title: title, label: label }
+  }
+
+  facetItems(facet_fields, field, prefix, chosen_facets, context={}) {
+    let helper = new FacetHelper()
+    let results = helper.parseFacetFields(facet_fields)
+ 
+    let items = results[field]
+ 
+    let list = _.map(items, (item) => {
+      let {id, title, label } = this.facetItem(prefix, item, context)
       let facetItem = (
            <FacetItem key={id} assigned_id={id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={label} title={title} />
         )

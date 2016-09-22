@@ -11,10 +11,6 @@ class PersonDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
-  f(str) {
-    return (str || "").replace(/&#039;/g,"'");
-  }
-
   hasThumbnail() {
     let flag = false
 
@@ -125,11 +121,8 @@ class PersonDisplay extends HasSolrData(Component) {
 }
 
 
-import FacetItem from '../FacetItem'
 import Facets from '../Facets'
-
 import HasFacets from '../HasFacets'
-
 import { FacetHelper } from '../Tab'
 
 class PeopleFacets extends HasFacets(Component) {
@@ -139,45 +132,29 @@ class PeopleFacets extends HasFacets(Component) {
     
     this.onFacetClick = props.onFacetClick
     this.facets = [{field: "department_facet_string", prefix: "dept", label: "School/Unit"}]
+ 
+    this.helper = new FacetHelper()
   
   }
 
 
-  // FIXME: have to override this for now because the labels for the factes require
-  // some logic - could probably come up with a better way though
-  facetItems(facet_fields, field, prefix, chosen_facets, context) {
+  // NOTE: have to override to get the right label for departments, otherwise this would be unnecessary
+  // matching on 'prefix' - and if/then/else  
+  //
+  facetItem(prefix, item, context) {
+    let departmentNameMap = this.helper.mapURIsToName(context)
 
-    let helper = new FacetHelper()
-    let results = helper.parseFacetFields(facet_fields)
-
-    // FIXME: not sure how to deal with the situation generically - as more tabs need more custom labels for facet URIs
-    let departmentNameMap = helper.mapURIsToName(context)
-
-    if (field === "department_facet_string") {
-      let helper = new FacetHelper()
-      let results = helper.parseFacetFields(facet_fields)
- 
-      let items = results["department_facet_string"]
- 
-      let list  = _.map(items, (item) => {
-        let department_uri = item.label ? item.label.replace("1|", "") : "None" 
-        let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
-        let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
-
-        let facetItem = (
-            <FacetItem key={org_id} assigned_id={org_id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={facetLabel} title={department_uri} />
-        )
-        return facetItem
-      })
-      return list
-
+    if(prefix === 'dept') {
+      let department_uri = item.label ? item.label.replace("1|", "") : "None" 
+      let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
+      let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
+      return { id: org_id, title: department_uri, label: facetLabel }
     } else {
-     return super.facetItems(facet_fields, field, prefix, chosen_facets, context)
+      return super.facetItem(prefix, item, context)
     }
-      
-   }
 
-
+  }
+  
   render() {
     const { facet_fields, chosen_facets, context } = this.props
     
@@ -189,7 +166,7 @@ class PeopleFacets extends HasFacets(Component) {
  
     return (
       <Facets>
-        {facetDisplay }
+        {facetDisplay}
       </Facets>
      )
 
@@ -207,7 +184,6 @@ class PeopleDisplayer extends TabDisplayer {
     super()
   }
 
-  
   individualDisplay(doc, highlight) {
     return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
@@ -219,8 +195,6 @@ class PeopleDisplayer extends TabDisplayer {
 
 }
 
-import { Faceter } from '../Tab'
-
 class PeopleFilterer extends TabFilterer {
 
   constructor(config) {
@@ -228,31 +202,6 @@ class PeopleFilterer extends TabFilterer {
     this.facets = [{field: "department_facet_string", prefix: "dept", options: {prefix: "1|", mincount: "1"}}]
   }
 
- 
-  // NOTE: these two methods are exactly the same in the two faceted examples - so could
-  // just factor out completely 
-  //
-  applyFilters(searcher) {
-    super.applyFilters(searcher)
- 
-    _.forEach(this.facets, (value, key) => {
-       this.applyFacet(searcher, value.field, value.prefix, value.options)
-    })
-  }
-  
-  // NOTE: this is called by saga
-  applyOptionalFilters(searcher) {
-
-    // FIXME: faceter needs to *AND* between each collection of *OR*
-    // even though it is reading multiple facets (from this.facets) it would not
-    // handle multiple facets correctly now
-    //
-    _.forEach(this.facets, (value, key) => {
-      let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
-      faceter.applyFacet()
-    })
-   
-  }
 
 }
 
@@ -275,6 +224,22 @@ class PeopleTab extends Tab {
     ]
  
     this.downloader = new TabDownloader(fields)
+  
+    // FIXME: could we do something like this:
+    // let facets = [
+    //   {field: "department_facet_string", prefix: "dept", label: "School/Unit", options={prefix: "1|", mincount: "1"}}
+    // ]
+    //
+    // filterer.facets = facets
+    // displayer.facets = facets
+    //
+    // prefix is a UI thing to give <checkbox> an id like "dept_org5000001" - which is also sent in query params 
+    // like ?facetIds=dept_org5000001 - which is then used to parse back out to filter SOLR query
+    // like  "(department_facet_string:*org5000001)"
+    //
+    // could call it tag, differentiator .. or something like that 
+    //
+ 
   }
 
 

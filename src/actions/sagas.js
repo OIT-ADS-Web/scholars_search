@@ -13,6 +13,13 @@ import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './
 // same as above
 import { receiveDepartments, departmentsFailed } from './search'
 
+function checkStatus(res) {
+  if (res.status >= 400) {
+    throw new Error(`Status: res.status`)
+  }
+  return res.json()
+}
+
 // ***** tabs *****0
 // 1. actual function
 function fetchTabsApi(searchFields, tabList) {
@@ -23,7 +30,8 @@ function fetchTabsApi(searchFields, tabList) {
   searcher.setupTabGroups(tabList)
   searcher.search = searchFields
 
-  return searcher.execute().then(res => res.json())
+  return searcher.execute().then(res => checkStatus(res))
+  //return searcher.execute().then(res => res.json())
 }
 
 // 2. what to do 
@@ -87,7 +95,8 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
 
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
-  return searcher.execute().then(res => res.json())
+  return searcher.execute().then(res => checkStatus(res))
+  //return searcher.execute().then(res => res.json())
 }
 
 // FIXME: how to cancel and how to deal with errors
@@ -134,7 +143,10 @@ import fetch from 'isomorphic-fetch'
 export function fetchDepartmentsApi() {
   const orgUrl = process.env.ORG_URL
   let attempt = fetch(orgUrl)
-  return attempt.then(res => res.json())
+
+  //return attempt.then(res => res.json())
+  return attempt.then(res => checkStatus(res))
+
 }
 
 export function* fetchDepartments() {

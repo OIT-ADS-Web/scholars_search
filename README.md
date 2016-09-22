@@ -182,16 +182,60 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
 
 ### Displayer (things that are REACT components  and meant for display)
 
-* pickDisplay
+* individualDisplay
 
   This is related to *results*.  The default *results* method calls this method and is returning a display per row - 
   which is defined in classes such as *PersonDisplay*.  Each of those extends *HasSolrData* - since they often share 
   the same basic information.
 
-* facets
+* facetDisplay
   
-  This controls what shows up in the 'facets' section of the search results
+  This controls what shows up in the 'facets' section of the search results.  An example of how to use this is in 
+  *OrganizationsFacets* (in the *tabs/OrganizationsTab.js* file.  The typical idea is you only have to return a 
+  component that uses the mixin *HasFacets* and then set the actual facets in the constructor of the component 
+  that #facetDisplay() returns e.g.:
 
+
+  ```
+
+    return (
+      <OrganizationsFacets facet_fields={facet_fields} 
+          chosen_facets={chosen_ids} 
+          onFacetClick={callback} 
+          context={data}/>      
+    )
+ 
+  
+  ```
+  
+  then in the componet something like this:
+
+  
+  ```
+  
+  class OrganizationsFacets extends HasFacets(Component) {
+
+    constructor(props) {
+      super(props)
+    
+      this.onFacetClick = props.onFacetClick
+      this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+    }
+
+  ```
+
+  Then everything else falls into place.  
+
+  **NOTE**: the *prefix* parameter is not self-explanatory.  It is necessary
+  as a UI thing to give a checkbox an id.  So, for instance, if the prefix were "dept"
+  the id for the checkbox might be dept\_org5000001.
+  It is also sent in  query params of the URL (e.g. ?facetIds=dept\_org5000001) which 
+  in turn is used to parse  back out to which filter to apply to the SOLR query
+  (.e.g + OR (department\_facet\_string:\*org5000001)). 
+
+  It could call be called 'tag', or 'differentiator' too.  Or even "namespace", because
+  it is a way to group facet values that are returned.
+ 
 
 ### Downloader
 
@@ -201,3 +245,17 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
   `TabDownloader` with fields specified (instead of overriding `TabDownloader`).
 
  
+## Examples
+
+There are a series of scripts in the 'examples' subdirectory which you may or may not find instructional.  The idea is that each script exercises the
+API of the application in some way.  So they can serve as examples or as exploratory bases of code from which to investigate.  Or starting points
+for command-line driven debugging efforts etc... 
+
+To run an example you need `babel-node` installed.  Then:
+
+  ```
+  > babel-node examples/example_[example].js
+
+  ```
+
+

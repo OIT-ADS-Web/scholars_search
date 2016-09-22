@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 
-// need this for the 'fetching' image
-//require('../styles/scholars_search.less');
-
 class Loading extends Component {
 
   constructor(props) {
