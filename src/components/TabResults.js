@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import PagingPanel from './PagingPanel'
 import TabPicker from './TabPicker'
 import Loading from './Loading'
+import ErrorHappened from './ErrorHappened'
 
 class TabResults extends Component {
 
@@ -76,7 +77,8 @@ class TabResults extends Component {
       )
     }
 
-    
+    if (message) { return <ErrorHappened>{message}</ErrorHappened> }
+     
     let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
     
     // FIXME: it's annoying having this boilerplate check everywhere we get the chosen facets
@@ -85,10 +87,6 @@ class TabResults extends Component {
       chosen_facets = [chosen_facets]
     }
 
-    // FIXME: don't like having to remember to call this - if we added PeopleTab as
-    // a 'connected' component, there would be no need (I think)
-    //tab.setActiveFacets(chosen_facets)
- 
     let tabFacets = ""
 
     if (facet_fields) {   

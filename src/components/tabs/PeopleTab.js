@@ -237,10 +237,9 @@ class PeopleTab extends Tab {
     // filterer.facets = facets
     // displayer.facets = facets
     //
-    // prefix is a UI thing to give <checkbox> and id e.g. dept_org5000001 - which is also sent in query params ?
-    // facetIds=dept_org5000001
-    // which is used to parse back out to filter SOLR query e.g.
-    // ... OR (department_facet_string:*org5000001)
+    // prefix is a UI thing to give <checkbox> an id like "dept_org5000001" - which is also sent in query params 
+    // like ?facetIds=dept_org5000001 - which is then used to parse back out to filter SOLR query
+    // like  "(department_facet_string:*org5000001)"
     //
     // could call it tag, differentiator .. or something like that 
     //
