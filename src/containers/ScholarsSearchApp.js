@@ -83,7 +83,8 @@ export class ScholarsSearchApp extends Component {
 
 
     } else if (onlyAdvanced || blankSearch) {
-       dispatch(emptySearch())
+      console.log("should *NOT* show tabs or any search results")
+      dispatch(emptySearch())
     }
 
 

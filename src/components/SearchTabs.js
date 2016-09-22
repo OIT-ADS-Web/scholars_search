@@ -75,8 +75,9 @@ export class SearchTabs extends Component {
     }
       
     let index = _.findIndex(tabList, function(o) { return o.id == filter })
+    
     let currentTab = tabList[index]
-
+    
     let count = currentTab.filter in grouped ? grouped[currentTab.filter].doclist.numFound : 0
     let label = currentTab.label
            
@@ -128,7 +129,9 @@ export class SearchTabs extends Component {
     // nothing at the moment
     const { tabs : {grouped, isFetching, message } } = this.props
 
-    if (isFetching) { 
+    // FIXME: why is filter getting this far as 'undefined' --  
+    //
+    if (isFetching || typeof(filter) == 'undefined' ) { 
       return ( 
           <div className="row">
             <Loading isFetching={isFetching}></Loading>
@@ -140,6 +143,7 @@ export class SearchTabs extends Component {
 
     // NOTE: every group has matches value, doesn't matter which one we take
     let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
+
 
     let desktopTabs = this.desktopTabs(isFetching, grouped, filter)
     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
