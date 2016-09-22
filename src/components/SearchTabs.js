@@ -6,6 +6,7 @@ import solr from '../utils/SolrHelpers'
 
 import SearchTab from './SearchTab'
 import Loading from './Loading'
+import ErrorHappened from './ErrorHappened'
 
 import { requestSearch } from '../actions/search'
 
@@ -42,19 +43,18 @@ export class SearchTabs extends Component {
 
       // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
        
-      // NOTE: had to do this so I can add arbitary text to group.query, but not have to use that
-      // exact same text to find the 'tab' - could be a waste of time though
+      // NOTE: had to do this so I can add arbitary text (like a big NOT, OR statement) to group.query, but not 
+      // have to use that exact same text to match the 'tab'
       let tagMatch = /^{!tag=(.*?)}/
       
-      // grouped by the tag, not the group.query
+      // so now group by the tag, not the group.query
       let regrouped = {}
       _.forEach(grouped, function(value, key) {
           let match = tagMatch.exec(key)
           regrouped[match[1]] = value
       })
       
-      // NOTE: here is where there would be a different query per tab (right?)
-      //let count = tab.filter in grouped ? grouped[tab.filter].doclist.numFound : 0
+      // find it by the id - so the {tag} and the tab.id - have to match 
       let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
 
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
@@ -77,12 +77,6 @@ export class SearchTabs extends Component {
     let count = currentTab.filter in grouped ? grouped[currentTab.filter].doclist.numFound : 0
     let label = currentTab.label
            
-    //  NOTE: tabList looks like this:
-    // export const tabList = [
-    //  { id: "person", filter: "type:(*Person)", label: "People" },
-    // ...
-    // ]
-
     let rows = []
     
     _.forEach(tabList, function(value) {
@@ -116,17 +110,15 @@ export class SearchTabs extends Component {
   render() {
     const { search : {searchFields} } = this.props
  
-    // FIXME: seems like I shouldn't default filter in this place - 
-    // e.g. it should be more global - these types of lines are in multiple
-    // places
+    // FIXME: seems like I shouldn't have to default filter in this place - 
+    // I'd like it more global because - these types of lines are in multiple
+    // places - feels too redundant
     let filter = searchFields ? searchFields['filter'] : 'person'
 
-    // FIXME: getting message here (which would mean error) but doing
-    // nothing at the moment
     const { tabs : {grouped, isFetching, message } } = this.props
 
-    // FIXME: why is filter getting this far as 'undefined' --  
-    //
+    // FIXME: why is filter getting all the way here as 'undefined' --  
+    // sometimes? have not figured that out
     if (isFetching || typeof(filter) == 'undefined' ) { 
       return ( 
           <div className="row">
@@ -135,20 +127,19 @@ export class SearchTabs extends Component {
       )
     }
  
-    // if (message) { return <div className="alert alert-warning">{message}</div> }
-    
+    if (message) { return <ErrorHappened>{message}</ErrorHappened> }
+ 
     let first = _.head(tabList)
 
-    // NOTE: every group has matches value, doesn't matter which one we take
+    // NOTE: every group has matches value, so it doesn't matter which one we take
+    // that's why I just did first
     let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
 
 
     let desktopTabs = this.desktopTabs(isFetching, grouped, filter)
     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)
 
-    // FIXME: what to do if tabs error? e.g. if (message) { }
     let query = solr.buildComplexQuery(searchFields)
-
 
     return (
       <div>
