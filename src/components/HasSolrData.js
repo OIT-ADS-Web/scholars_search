@@ -59,8 +59,10 @@ let HasSolrData = (superclass) => class extends superclass {
  
         abb = abb.replace(/([A-Z])/g, ' $1') // NOTE: changes "AcademicDepartment" to "Academic Department"
          
+        let type_display = `${type}_display`
+
         return (
-            <span key="${type}_display" className="type-display">
+            <span key={type_display} className="type-display">
               <i><a href={type} target="_blank">{abb}</a></i>
             </span>
         )
