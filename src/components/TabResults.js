@@ -7,6 +7,25 @@ import TabPicker from './TabPicker'
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'
 
+class EmptyResults extends Component {
+  
+  constructor(props) {
+    super(props)
+  }
+
+  render () {
+    return (
+        <div className="search-result-table">
+            <div className="row panel">
+              <div className="col-md-12 col-sm-12">
+                {this.props.children}
+              </div>
+            </div>
+        </div>
+        )
+   }
+}
+
 class TabResults extends Component {
 
   static get contextTypes() {
@@ -69,15 +88,33 @@ class TabResults extends Component {
       // e.g. if there are no docs - could be fetching, or could just be no
       // search.  So ... add <Loading> just in case.
       // FIXME: what to do if search error? e.g. if (message) { }
-      console.log("SearchResults.render() - NO DOCS")
       return ( 
-        <div className="row">
+        <EmptyResults>
           <Loading isFetching={isFetching}></Loading>
-        </div>
+        </EmptyResults>
       )
     }
 
-    if (message) { return <ErrorHappened>{message}</ErrorHappened> }
+
+    // FIXME: not crazy about this way of catching various situations (error, not results, etc...)
+    if (message) {
+
+      return ( 
+        <EmptyResults>
+          <ErrorHappened message={message}></ErrorHappened>
+        </EmptyResults>
+      ) 
+    }
+    
+    if (numFound == 0) {
+
+      return (
+          <EmptyResults>
+            <div className="alert alert-info search-results-info">No matching results found in this category.</div>
+          </EmptyResults>
+      )
+    }
+
      
     let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
     
@@ -89,18 +126,22 @@ class TabResults extends Component {
 
     let tabFacets = ""
 
-    if (facet_fields) {   
+    // FIXME: need a way to map facetIds to actual facet values
+    //
+    if (facet_fields && numFound > 0) {   
       tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, data)
     }
 
-     let tabDownload =  (               
+    let tabDownload = ""
+
+    tabDownload =  (               
        <div className="panel-body text-center">
         <button type="button" className="btn btn-primary btn-small" onClick={this.handleDownload}>
             <span>Download results</span>
         </button> 
        </div>
-     )
-    
+    )
+
     return (
            
        <div className="search-results-table">

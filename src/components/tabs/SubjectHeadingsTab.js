@@ -39,6 +39,12 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
       uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
     }
 
+    /*
+                <div className="pull-right">
+                   <img width="18px" src={logo}/>
+                </div>
+    */
+ 
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
@@ -46,9 +52,6 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
                  <strong>
                   <ScholarsLink uri={uri} text={this.name} />
                 </strong>
-                <div className="pull-right">
-                   <img width="18px" src={logo}/>
-                </div>
               </div>
             </div>
             
@@ -63,12 +66,30 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 import Tab from '../Tab'
 import { TabDisplayer, TabDownloader, TabFilterer } from '../Tab'
 
+/*
+class SubjectHeadingsFilterer extends TabFilterer {
+
+  constructor(config) {
+    super(config)
+    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", options: {mincount: "1"}}]
+  }
+
+}
+*/
+
 class SubjectHeadingsTabDisplayer extends TabDisplayer {
 
   individualDisplay(doc, highlight) {
     return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
+  /*
+  facetDisplay(facet_counts, chosen_ids, callback, data) {
+    let facet_fields = facet_counts.facet_fields
+    return (<SubjectHeadingsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+  }
+  */
+ 
 }
 
 class SubjectHeadingsTab extends Tab  {
@@ -81,7 +102,9 @@ class SubjectHeadingsTab extends Tab  {
     this.label = "Subject Headings"
  
     this.displayer = new SubjectHeadingsTabDisplayer()
-  
+ 
+    //this.filterer = new SubjectHeadingsFilterer()
+
     let fields = [{label: 'Name', value: 'nameRaw.0'}]
     this.downloader = new TabDownloader(fields)
   }

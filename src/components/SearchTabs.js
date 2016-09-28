@@ -127,7 +127,11 @@ export class SearchTabs extends Component {
       )
     }
  
-    if (message) { return <ErrorHappened>{message}</ErrorHappened> }
+    if (message) { 
+      return (
+        <ErrorHappened message={message}></ErrorHappened>
+      )
+    }
  
     let first = _.head(tabList)
 

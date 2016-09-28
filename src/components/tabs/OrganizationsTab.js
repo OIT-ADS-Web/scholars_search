@@ -23,12 +23,14 @@ class OrganizationDisplay extends HasSolrData(Component) {
          <div key="{this.docId}" className="organization search-result-row">
             
             <div className="row"> 
-              <div className="col-md-9 col-sml-9"> 
+              <div className="col-md-12 col-sml-12"> 
                  <strong>
                   <ScholarsLink uri={this.URI} text={this.name} />
                 </strong>
               </div>
-              <div className="col-md-3 col-sml-3">
+            </div>
+            <div className="row">
+              <div className="col-md-12 col-sml-12">
                  {this.typeDisplay}
               </div>
 
@@ -59,19 +61,6 @@ class OrganizationsFacets extends HasFacets(Component) {
   render() {
     const { facet_fields, chosen_facets, context } = this.props
  
-    // const { facets } = this.props
-    //
-    // this is just returning blank because it *may* (or may not) need the 'context' 
-    // (I do in the people facets for instance) - so just copied from PeopleTab code for now
-    // 
-    // context is just a global variable of sorts - but now it just loads departments
-    //
-    if (!context) {
-      return ""
-    }
-
-    // NOTE: this should only be called if this.facets defined as been defined (constructor)
-    //
     let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
     //
     return (
@@ -115,8 +104,6 @@ class OrganizationsTabDisplayer extends TabDisplayer {
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    
-    // return (<OrganizationsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
     return (<OrganizationsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
    

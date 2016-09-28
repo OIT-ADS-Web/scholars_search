@@ -14,12 +14,14 @@ section.facets {
   margin-bottom: 1em;
 }
 
+.person span.name {
+  font-weight: bold;
+  font-size: 12pt;
+}
 
 .organization {
   margin-bottom: 1em;
-
 }
-
 
 div.search-results {
 }
@@ -80,20 +82,50 @@ li.facet-item label {
   cursor: pointer; 
 }
 
-/*li.facet-item  */
-
 span.facet-label { 
   padding-left: 4px;
   padding-right: 4px;
 }
  
 .list-group-item.facet-item {
-  font-size: 10px;
-  padding: 2px 2px;
+  font-size: 11px;
+  padding: 0px 2px;
+}
+
+.list-group-item {
+  border: none;
+  background-color: transparent;
 }
 
 .facet-item span.badge {
-  font-size: 10px;
+  font-size: 11px;
+  background-color: transparent;
+  color: #333333;
+  padding: 4px 1px;
+}
+
+.facet-item.active span.badge {
+  background-color: transparent;
+  color:  #fff;
+}
+
+.facet-item span.badge:after{content:")"}
+.facet-item span.badge:before{content:"("}
+
+.facet-item a {
+  text-decoration: none;
+  color: #333333;
+}
+
+
+.facet-item.active a {
+  color: #FFF;
+  /*font-weight: normal; */
+}
+
+
+.facet-item.active span.badge {
+  /*font-weight: normal; */
 }
 
 
@@ -107,16 +139,8 @@ span.facet-label {
   background-color: #F5F5F5;
 }
 
-/*
-.panel-info div.wrapper {
-  background-color: #F5F5F5;
-  padding: 4px;
-}
-*/
-
 .panel-info h4 {
   font-size: 11pt;
-  /*background-color: #A9A9A9; */ 
 }
 
 .panel-info .btn-small {
@@ -125,7 +149,6 @@ span.facet-label {
 
 .facet-panel h4 {
   font-size: 10pt;
-  /*background-color: #A9A9A9; */
 }
 
 .facet-panel h4.heading {
@@ -135,7 +158,6 @@ span.facet-label {
 }
 
 li.search-tab {
-  /*border-bottom: 1px #235f9c solid; */
 }
 
 li.search-tab a {
@@ -164,7 +186,7 @@ li.search-tab a {
   color: #FFFFFF;
  
 }
-.nav  li.search-tab.active a {
+.nav li.search-tab.active a {
   background-color: #FFFFFF;
   color: #235f9c;
   border-top: 1px #235f9c solid;
@@ -195,5 +217,14 @@ li.search-tab a {
 .type-display {
   font-size: 12px;
   padding-right: 2px;
+}
+
+ 
+.search-results-info {
+  margin-top: 4px;
+  padding-top: 4px;
+  background-color: transparent;
+  border: none;
+  color: #333333;
 }
 
