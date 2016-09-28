@@ -23,9 +23,8 @@ class GenericDisplay extends HasSolrData(Component) {
               </div>
             </div>
 
-            <div className="row highlight-text">
+            <div className="row">
               <div className="col-md-12">
-               {/*this.highlightDisplay*/}
                {this.typeDisplay}
               </div>
             </div>
@@ -38,6 +37,7 @@ class GenericDisplay extends HasSolrData(Component) {
 
 }
 
+export { GenericDisplay, GenericTabDisplayer }
 
 import Tab from '../Tab'
 import { TabDisplayer } from '../Tab'

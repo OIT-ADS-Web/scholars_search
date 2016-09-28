@@ -105,6 +105,16 @@ let HasSolrData = (superclass) => class extends superclass {
     return display
   }
 
+  // http://stackoverflow.com/questions/10026626/check-if-html-snippet-is-valid-with-javascript
+  // was getting some malformed html <font >... <b> ... stuff 
+  // (see Reddy, William M) https://scholars2-test.oit.duke.edu/person/wmr
+  //
+  tidy(html) {
+    let d = document.createElement('div')
+    d.innerHTML = html
+    return d.innerHTML
+  }
+ 
   get highlightDisplay() {
 
     let text = this.highlightText
@@ -116,6 +126,8 @@ let HasSolrData = (superclass) => class extends superclass {
     let replacedText = this.filterHighlightText ? this.filterHighlightText(text) : text
 
     if (text === "") { return "" }
+    
+    replacedText = this.tidy(replacedText)
 
     let fragment = (
         <cite>
@@ -139,7 +151,9 @@ let HasSolrData = (superclass) => class extends superclass {
   get solrDocDisplay() {
     let env = process.env.NODE_ENV
 
-    if (env == 'production') {
+    // NOTE: so we're not showing this except in development
+    // it's just a view of the SOLR doc for debugging purposes
+    if (env == 'production' || env == 'acceptance') {
       return (<span></span>)
     }
 

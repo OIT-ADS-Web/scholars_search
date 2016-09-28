@@ -114,7 +114,7 @@ export class SearchResults extends Component {
   }
   */
 
-  handleFacetClick(e) {
+  handleFacetClick(e, assigned_id, is_selected, value) {
     const { search : { searchFields }, departments: { data }, dispatch } = this.props
 
     let query = solr.buildComplexQuery(searchFields)
@@ -125,9 +125,12 @@ export class SearchResults extends Component {
     
     let tabPicker = new TabPicker(filter)
     let filterer = tabPicker.filterer
-
-    // NOTE: if I try to wrap this function in _debounce I get 'no property id for null' here
-    let id = e.target.id
+    
+    // NOTE: I used to use assigned_id to look up stuff, but switched to value
+    // that's why the 'new_assigned_id' name
+    let id = assigned_id
+    let prefix = assigned_id.substr(0, assigned_id.indexOf("_"))
+    let new_assigned_id = `${prefix}_${value}`
 
     let full_query = { ...searchFields }
     full_query['start'] = 0
@@ -137,20 +140,22 @@ export class SearchResults extends Component {
     // have to convert to array if it's a single value. 
     // FIXME: there is probably a better way to do this
     if (typeof chosen_ids === 'string') {
-       chosen_ids = [chosen_ids]
+      chosen_ids = [chosen_ids]
     }
-  
-    if (e.target.checked) {
-      chosen_ids.push(id)
+ 
+    if (is_selected) {
+    //if (e.target.checked) {
+      chosen_ids.push(new_assigned_id)  // need way to map id to value
     } else {
-      chosen_ids = _.filter(chosen_ids, function(o) { return o != id })
+      chosen_ids = _.filter(chosen_ids, function(o) { return o != new_assigned_id })
     }
 
     full_query['facetIds'] = chosen_ids
 
-    // FIXME: since the action requires the tab -- it's mixing things up a bit
-    // it actually requires something that can modify the searcher
-    // by applying filters, etc ... which is determined from
+    // NOTE: since the action (facetClick) requires a tab -- it's perhaps in the
+    // wrong place since it requires something that can modify the searcher
+    // by applying filters, etc ... which is determined from:
+    // 
     // a) filter query param (e.g. 'tab')
     // b) config items associated with that 'tab'
     // c) any facetIds in query params

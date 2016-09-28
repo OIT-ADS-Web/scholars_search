@@ -10,7 +10,8 @@ class ErrorHappened extends Component {
     const { message } = this.props
 
     return (
-        <div className="alert alert-warning">{message}
+        <div className="alert alert-warning search-results-info">
+          {message}
         </div>
     )
   }

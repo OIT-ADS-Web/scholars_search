@@ -171,6 +171,10 @@ class SolrQuery {
     }
 
     // NOTE: this is only where the {!ex=tag} should go 
+    // in order to get counts for facets back - and apply filters
+    // without losing those counts - we need to add {!ex=<?tag>} to
+    // the facet query - and then {!tag=<?tag>} to the filter
+    //
     if (facets.length > 0) {
       
       if (facetParams.length > 0) {

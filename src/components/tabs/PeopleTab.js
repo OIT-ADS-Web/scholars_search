@@ -100,11 +100,10 @@ class PersonDisplay extends HasSolrData(Component) {
                </div>
             
                <div className="col-lg-10 col-md-12 col-xs-12 col-sm-12">
-                 <strong>
+                 <span className="name">
                    <ScholarsLink uri={this.profileURL} text={this.name} />
-                 </strong>
-                 <span> - {this.preferredTitle}</span>
-                 <div>{this.department}</div>
+                 </span>
+                 <div>{this.preferredTitle}</div>
                  <div>{this.highlightDisplay}</div>
 
                </div>
@@ -123,7 +122,7 @@ class PersonDisplay extends HasSolrData(Component) {
 
 import Facets from '../Facets'
 import HasFacets from '../HasFacets'
-import { FacetHelper } from '../Tab'
+//import { FacetHelper } from '../Tab'
 
 class PeopleFacets extends HasFacets(Component) {
 
@@ -133,8 +132,6 @@ class PeopleFacets extends HasFacets(Component) {
     this.onFacetClick = props.onFacetClick
     this.facets = [{field: "department_facet_string", prefix: "dept", label: "School/Unit"}]
  
-    this.helper = new FacetHelper()
-  
   }
 
 
@@ -142,13 +139,16 @@ class PeopleFacets extends HasFacets(Component) {
   // matching on 'prefix' - and if/then/else  
   //
   facetItem(prefix, item, context) {
-    let departmentNameMap = this.helper.mapURIsToName(context)
+    //let departmentNameMap = this.helper.mapURIsToName(context)
+
+    // FIXME: this is real specific to PeopleFacets maybe should be defined in this class
+    let departmentNameMap = this.mapURIsToName(context)
 
     if(prefix === 'dept') {
       let department_uri = item.label ? item.label.replace("1|", "") : "None" 
       let facetLabel = item.label ? departmentNameMap[department_uri] : "None"
       let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
-      return { id: org_id, title: department_uri, label: facetLabel }
+      return { id: org_id, title: department_uri, label: facetLabel, value: item.label}
     } else {
       return super.facetItem(prefix, item, context)
     }
@@ -157,7 +157,9 @@ class PeopleFacets extends HasFacets(Component) {
   
   render() {
     const { facet_fields, chosen_facets, context } = this.props
-    
+ 
+    // FIXME: if we don't have the context - should leave blank
+    // (so departments don't show up as blank) - this doesn't do that though
     if (!context) {
       return ""
     }
@@ -232,12 +234,6 @@ class PeopleTab extends Tab {
     //
     // filterer.facets = facets
     // displayer.facets = facets
-    //
-    // prefix is a UI thing to give <checkbox> an id like "dept_org5000001" - which is also sent in query params 
-    // like ?facetIds=dept_org5000001 - which is then used to parse back out to filter SOLR query
-    // like  "(department_facet_string:*org5000001)"
-    //
-    // could call it tag, differentiator .. or something like that 
     //
  
   }

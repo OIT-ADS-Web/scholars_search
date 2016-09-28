@@ -2,44 +2,6 @@ import _ from 'lodash'
 
 import json2csv from 'json2csv'
 
-class FacetHelper {
- 
-  mapURIsToName(data) {
-    let hash = {}
-    _.forEach(data, function(obj) {
-       hash[obj.URI] = obj.name
-    })
-    return hash
-  }
-
-  
-  parseFacetFields(facet_fields) {
-    //
-    // 1) first parse our search/facet_fields results
-    let results = {}
-    _.forEach(facet_fields, function(value, key) {
-      results[key] = []
-      
-      let array = value
-
-      let size = array.length
-      let i = 0
-      // strangely results are array, of [<count><field>, <count><field> ... ]
-      while (i < size) {
-        let label = array[i]
-        let count = array[i+1]
-        let summary = {label: label, count:count}
-        results[key].push(summary)
-
-        i = i + 2
-      }
-    })
-
-    return results
-  }
-
-}
-
 class Faceter {
 
   constructor(searcher, field, facet_ids, prefix) {
@@ -49,31 +11,32 @@ class Faceter {
     this.prefix = prefix
   }
 
+ 
+  constructFacetFilter(base_id, prefix) {
+    // default
+    let constructed = `(${base_id})`
+ 
+    // NOTE: got 'undefined field http' error from SOLR
+    // when trying to match against URI unless I did this 
+    return constructed.replace(':', '\\:')
+  }
 
   applyFacet() {
 
     let _self = this
 
+    // get out only the filters like dept_, or type_ so we 
+    // are only applying those with this particular Faceter object
+    //
     let filters = _.filter(this.facet_ids, (id) => {
       return id.startsWith(`${_self.prefix}_`)
     })
 
     let list = _.map(filters, (id) => {
-    /*
-     
-      FIXME: 
-      
-      people by departments used to look like this:
-      let uri_to_search = `(1|*individual/${id})`.replace("dept_", "")  // FIXME: this must be wrong
-      
-      but it seems I can get way with this (for now)
-      I'm thinking it's not precisely right though -- maybe PeopleFilterer has
-      to override something ??
+      let base_id = id.replace(`${_self.prefix}_`, "")
+      let uri_to_search = this.constructFacetFilter(base_id, _self.prefix)
 
-     */
-
-      let uri_to_search = `(*${id})`.replace(`${_self.prefix}_`, "") 
-      
+      // FIXME: do we need this check ???      
       if (id == `${_self.prefix}_null`) {
         return `(-${_self.field}:[* TO *] AND *:*)`
       } 
@@ -96,10 +59,10 @@ class TabFilterer {
 
   constructor(filter) {
     this.filter = filter
-    
     this.facet_ids = []
   }
  
+
   applyFilters(searcher) {
     if (this.filter) {
       searcher.addFilter("tab", this.filter)
@@ -108,18 +71,19 @@ class TabFilterer {
     _.forEach(this.facets, (value, key) => {
        this.applyFacet(searcher, value.field, value.prefix, value.options)
     })
+
   }
 
-  // NOTE: this is called by saga
+  // NOTE: this is called by saga - but happens BEFORE the actual call the SOLR
   applyOptionalFilters(searcher) {
-
+      // e.g. this is just mapping from config
+      //
     _.forEach(this.facets, (value, key) => {
       let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
       faceter.applyFacet()
     })
-   
   }
-  
+ 
   applyFacet(searcher, field, prefix, options={}) {
     // FIXME: these are a little persnickety, if you leave off the localParam it'll
     // crash - or if you leave off the facetField too
@@ -215,7 +179,7 @@ class TabDownloader {
 
 // FIXME: should these each be in a separate, short file ??? can't decide
 //
-export { TabFilterer, TabDownloader, TabDisplayer, Faceter, FacetHelper }
+export { TabFilterer, TabDownloader, TabDisplayer, Faceter }
 
 // FIXME: is it better to define that at top, or bottom of file?
 //

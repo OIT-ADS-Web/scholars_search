@@ -15,7 +15,9 @@ import { receiveDepartments, departmentsFailed } from './search'
 
 function checkStatus(res) {
   if (res.status >= 400) {
-    throw new Error(`Status: res.status`)
+    let message = `Status: ${res.status}`
+    throw new Error(message)
+    
   }
   return res.json()
 }
@@ -31,15 +33,15 @@ function fetchTabsApi(searchFields, tabList) {
   searcher.search = searchFields
 
   return searcher.execute().then(res => checkStatus(res))
-  //return searcher.execute().then(res => res.json())
 }
 
 // 2. what to do 
 export function* fetchTabs(action) {
   const { searchFields, tabList } = action
-  const results = yield call(fetchTabsApi,searchFields, tabList) 
 
   try {
+
+    const results = yield call(fetchTabsApi,searchFields, tabList) 
     yield put(receiveTabCount(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
@@ -96,7 +98,6 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   // FIXME: if this is an error (e.g. the JSON indicates it's an error)
   // nothing is done differently 
   return searcher.execute().then(res => checkStatus(res))
-  //return searcher.execute().then(res => res.json())
 }
 
 // FIXME: how to cancel and how to deal with errors
@@ -107,10 +108,10 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
 // 2. what watcher will do
 export function* fetchSearch(action) {
   const { searchFields, filterer } = action
-  
-  const results = yield call(fetchSearchApi, searchFields, filterer)
+ 
+  try { 
+    const results = yield call(fetchSearchApi, searchFields, filterer)
 
-  try {
     yield put(receiveSearch(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
@@ -144,15 +145,15 @@ export function fetchDepartmentsApi() {
   const orgUrl = process.env.ORG_URL
   let attempt = fetch(orgUrl)
 
-  //return attempt.then(res => res.json())
   return attempt.then(res => checkStatus(res))
 
 }
 
 export function* fetchDepartments() {
-  const results = yield call(fetchDepartmentsApi)
 
   try {
+    const results = yield call(fetchDepartmentsApi)
+
     yield put(receiveDepartments(results))
   } catch(e) {
     // FIXME: not actually prepared for error in application
