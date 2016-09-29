@@ -51,9 +51,7 @@ export class ScholarsSearchApp extends Component {
     let blankSearch = solr.isEmptySearch(query)
 
     // FIXME: this is too specific to Duke - if we were to try and componentize and share
-    // this app - this part would need to change
-    //
-    // dispatch(loadInitialData())  ?? something like that - some kind of callback or something ???
+    // this app - this part would need to change.  Maybe a more general loadInitialData function?
     dispatch(requestDepartments())
 
     // NOTE: was searching if no query parameters in route path, just searching everything

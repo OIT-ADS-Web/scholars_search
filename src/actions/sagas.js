@@ -80,6 +80,7 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   // NOTE: apply filters last, after search has been defined
   filterer.applyFilters(searcher)
  
+  // FIXME: this exact same check is in multiple places
   let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
    
   // have to convert to array if it's a single value
@@ -95,8 +96,6 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   // could even be part of the same function call
   filterer.applyOptionalFilters(searcher)
 
-  // FIXME: if this is an error (e.g. the JSON indicates it's an error)
-  // nothing is done differently 
   return searcher.execute().then(res => checkStatus(res))
 }
 

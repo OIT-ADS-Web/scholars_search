@@ -122,7 +122,6 @@ class PersonDisplay extends HasSolrData(Component) {
 
 import Facets from '../Facets'
 import HasFacets from '../HasFacets'
-//import { FacetHelper } from '../Tab'
 
 class PeopleFacets extends HasFacets(Component) {
 
@@ -136,10 +135,13 @@ class PeopleFacets extends HasFacets(Component) {
 
 
   // NOTE: have to override to get the right label for departments, otherwise this would be unnecessary
-  // matching on 'prefix' - and if/then/else  
+  // matching on 'prefix' - and if/then/else
+  //
+  // not crazy about this solution - might be better to populate a departmant_facet_string_name field
+  // (for instance) with the actual names -- to avoid this odd customization and also prevent 
+  // the UI lag that happens when we have the facet counts, but not the facet labels
   //
   facetItem(prefix, item, context) {
-    //let departmentNameMap = this.helper.mapURIsToName(context)
 
     // FIXME: this is real specific to PeopleFacets maybe should be defined in this class
     let departmentNameMap = this.mapURIsToName(context)

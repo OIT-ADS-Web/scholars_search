@@ -1,7 +1,6 @@
 // FIXME: this seems the wrong place for this
 // e.g. containers/ since it does configureStore, sets the Routes
 // etc... maybe most of that should be done in ../main.js
-
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 
@@ -13,16 +12,12 @@ import rootSaga from '../actions/sagas'
 store.runSaga = sagaMiddleware.run
 store.runSaga(rootSaga)
 
-// FIXME: saw this line somewhere, not sure if it's necessary or not
-//store.close = () => store.dispatch(END)
-
 // http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html
 import { Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 
 // NOTE: the following - it took a while to figure this out and it'll probably change without warning
 //https://github.com/reactjs/react-router/issues/353
-
 import { createHistory } from 'history';
 import { useRouterHistory } from 'react-router';
 
@@ -34,16 +29,7 @@ const browserHistory = useRouterHistory(createHistory)({
 const history = syncHistoryWithStore(browserHistory, store)
 
 // https://github.com/reactjs/react-router/blob/master/docs/guides/RouteConfiguration.md#decoupling-the-ui-from-the-url
-
 import routes from '../routes'
-
-// other ways to make routes ...
-// https://github.com/newtriks/generator-react-webpack/issues/141
-// https://github.com/emmenko/redux-react-router-async-example/blob/master/package.json
-
-
-//import ScholarsSearchApp from './ScholarsSearchApp'
-//import PeopleSearch from '../components/PeopleSearch'
 
 export default class ScholarsSearch extends Component {
   

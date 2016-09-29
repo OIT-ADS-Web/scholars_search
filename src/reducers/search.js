@@ -50,8 +50,7 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
       results: action.results,
       searchFields: action.searchFields,
       filterer: action.filterer,
-      lastUpdated: action.requestedAt/*,*/
-      //facetIds: action.facetIds
+      lastUpdated: action.requestedAt
   }
   case types.RECEIVE_SEARCH:
     
@@ -105,22 +104,8 @@ function departmentsReducer(departments = { isFetching: false, data: {}}, action
   }
 }
 
-
-
-
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'
-
-// FIXME: should tabs be different, seperate reducers?
-//
-// e.g. 
-// * peopleSearch
-// * publicationSearch
-// * etc...
-//
-// will get into that later - just need advanced search first
-// just naming 'search' to be explicit, not necessary
-//
 
 // NOTE: each reducer combines to effect the global state,
 // but only the named one - so, in effect, it's like
@@ -132,13 +117,10 @@ import { routerReducer  } from 'react-router-redux'
 const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
-  //init: appInitReducer,
   tabs: tabReducer,
   departments: departmentsReducer
 })
 
-// FIXME: did this for now to be able to test searchReducer in isolation
-// (instead of combined)
 export default {
   mainReducer,
   searchReducer
