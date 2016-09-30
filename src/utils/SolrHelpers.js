@@ -188,8 +188,6 @@ class SolrResultsParser {
 // [People][Publications][Artistic Works][Grants][Subject Headings][Misc]
 // disadvantage of this structure - ORDER is possibly random, I'm not sure
 //
-// FIXME: this has solr specific stuff "type:(*Person)" - but is a UI element
-// (tabs) so a bit of crossed concerns
 /*
 export const tabList = [
   { id: "person", filter: "type:(*Person)", label: "People" },
@@ -207,28 +205,9 @@ export const tabList = [
 
 
 /*
-
 VIVO solrconfig.xml:
 
-      <lst name="defaults">
-       <str name="defType">edismax</str>
-       <!-- nameText added for NIHVIVO-3701 -->
-       <str name="qf">ALLTEXT ALLTEXTUNSTEMMED nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase</str>
-       <str name="echoParams">explicit</str>
-       <str name="qs">2</str>
-       <int name="rows">10</int>
-       <str name="q.alt">*:*</str>
-       <str name="fl">*,score</str>
-       <str name="hl">true</str>
-       <str name="hl.fl">ALLTEXT</str>
-       <str name="hl.fragsize">160</str>
-      <!--  Default value of mm is 100% which should result in AND behavior, still setting it here
-      https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser -->
-      <str name="mm">100%</str>
-     </lst>
- 
-also see /srv/web/apps/vivo/solr/conf/schema.xml
-
+see /srv/web/apps/vivo/solr/conf/schema.xml
 
 */
 
@@ -251,8 +230,6 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     mm: 2,
     qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
-    //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
     'hl.usePhraseHighlighter': true

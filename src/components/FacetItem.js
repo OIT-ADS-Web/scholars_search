@@ -40,7 +40,7 @@ class FacetCheckbox extends Component {
     let selected = is_checked
 
    return (
-        <input id={assigned_id} checked={selected} onClick={(e) => this.onClick(e, assigned_id, value)} ref={assigned_id} type="checkbox" />
+        <input className="facet-checkbox" id={assigned_id} checked={selected} onClick={(e) => this.onClick(e, assigned_id, value)} ref={assigned_id} type="checkbox" />
     )
   }
 

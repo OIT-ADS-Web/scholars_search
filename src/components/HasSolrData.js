@@ -153,7 +153,8 @@ let HasSolrData = (superclass) => class extends superclass {
 
     // NOTE: so we're not showing this except in development
     // it's just a view of the SOLR doc for debugging purposes
-    if (env == 'production' || env == 'acceptance') {
+    if (env == 'production') {
+    //if (env == 'production' || env == 'acceptance') {
       return (<span></span>)
     }
 

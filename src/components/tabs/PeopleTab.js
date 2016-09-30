@@ -72,6 +72,10 @@ class PersonDisplay extends HasSolrData(Component) {
     return newLoc
   } 
 
+  get nameReversed() {
+    return this.name.split(",").reverse().join(" ").trim()
+  }
+
   get thumbnailUrl() {
     // NOTE: looks like this:
     // https://scholars.duke.edu/individual/i4284062
@@ -101,7 +105,7 @@ class PersonDisplay extends HasSolrData(Component) {
             
                <div className="col-lg-10 col-md-12 col-xs-12 col-sm-12">
                  <span className="name">
-                   <ScholarsLink uri={this.profileURL} text={this.name} />
+                   <ScholarsLink uri={this.profileURL} text={this.nameReversed} />
                  </span>
                  <div>{this.preferredTitle}</div>
                  <div>{this.highlightDisplay}</div>
@@ -130,6 +134,12 @@ class PeopleFacets extends HasFacets(Component) {
     
     this.onFacetClick = props.onFacetClick
     this.facets = [{field: "department_facet_string", prefix: "dept", label: "School/Unit"}]
+ 
+    // NOTE: this actually works
+    //this.facets = [
+    //   {field: "department_facet_string", prefix: "dept", label: "School/Unit"},
+    //   {field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}
+    // ]
  
   }
 
@@ -204,6 +214,13 @@ class PeopleFilterer extends TabFilterer {
   constructor(config) {
     super(config)
     this.facets = [{field: "department_facet_string", prefix: "dept", options: {prefix: "1|", mincount: "1"}}]
+ 
+    // NOTE: this actually works
+    //this.facets = [
+    //  {field: "department_facet_string", prefix: "dept", options: {prefix: "1|", mincount: "1"}},
+    //  {field: "mostSpecificTypeURIs", prefix: "type", options: {mincount: "1"}}
+    //]
+ 
   }
 
 
@@ -223,15 +240,16 @@ class PeopleTab extends Tab {
     this.displayer = new PeopleDisplayer()
 
     let fields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
-      { label: 'email', value: 'primaryEmail_text',  default: ''}, 
-      { label: 'profileUrl', value: 'profileUrl_text', default: ''}
+      { label: 'email', value: 'primaryEmail_text.0',  default: ''}, 
+      { label: 'profileUrl', value: 'profileURL_text.0', default: ''}
     ]
  
     this.downloader = new TabDownloader(fields)
   
-    // FIXME: could we do something like this:
+    // FIXME: could we do something like this so facet fields are only defined once:
     // let facets = [
-    //   {field: "department_facet_string", prefix: "dept", label: "School/Unit", options={prefix: "1|", mincount: "1"}}
+    //   {field: "department_facet_string", prefix: "dept", label: "School/Unit", options={prefix: "1|", mincount: "1"}},
+    //   {field: "mostSpecificTypeURIs", prefix: "type", label: "Type", options={mincount: "1"}}
     // ]
     //
     // filterer.facets = facets
