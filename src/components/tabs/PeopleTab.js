@@ -40,10 +40,6 @@ class PersonDisplay extends HasSolrData(Component) {
     return urlText
   }
 
-  filterHighlightText(text) {
-    return text
-  }
-
   get department() {
     // NOTE: department_search_text field can look like this:
     //
@@ -73,7 +69,9 @@ class PersonDisplay extends HasSolrData(Component) {
   } 
 
   get nameReversed() {
-    return this.name.split(",").reverse().join(" ").trim()
+    // Just in case the name is blank, don't want app to crash
+    let name = this.name ? this.name : this.URI
+    return name.split(",").reverse().join(" ").trim()
   }
 
   get thumbnailUrl() {
@@ -171,7 +169,9 @@ class PeopleFacets extends HasFacets(Component) {
     const { facet_fields, chosen_facets, context } = this.props
  
     // FIXME: if we don't have the context - should leave blank
-    // (so departments don't show up as blank) - this doesn't do that though
+    // (so departments don't show up as blank) - 
+    // that's the idea, but this doesn't accomplish that 
+    //
     if (!context) {
       return ""
     }
