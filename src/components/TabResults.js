@@ -142,21 +142,21 @@ class TabResults extends Component {
        </div>
     )
 
+    // NOTE: columns are in reverse order - so push/pull will put facets on top in mobile view
     return (
            
        <div className="search-results-table">
          
           <div className="row panel">
-            <div className="col-md-9">          
-              
-              {tabResults} 
-            
-            </div>
-            <div className="col-md-3 panel panel-info">
-             
+
+            <div className="col-md-3 col-md-push-9 panel panel-info">
               {tabFacets}
               {tabDownload}
-           
+            </div>
+
+
+            <div className="col-md-9 col-md-pull-3">          
+              {tabResults} 
             </div>
 
           </div>

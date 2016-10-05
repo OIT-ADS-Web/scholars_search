@@ -135,10 +135,16 @@ export class SearchTabs extends Component {
  
     let first = _.head(tabList)
 
-    // NOTE: every group has matches value, so it doesn't matter which one we take
-    // that's why I just did first
-    let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
-
+    // NOTE: the group query does return a total matches # (see below)
+    //let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
+    
+    // but if the filters of each tab are not all inclusive, the count will
+    // be off slighgtly - so this is just manually adding them ...
+    let ungroupedCount = 0
+    
+    _.forEach(grouped, function(value, key) {
+      ungroupedCount += value.doclist.numFound
+    })
 
     let desktopTabs = this.desktopTabs(isFetching, grouped, filter)
     let mobileTabs = this.mobileTabs(isFetching, grouped, filter)

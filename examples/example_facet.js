@@ -37,7 +37,13 @@ const compoundSearch = {
 
 searcher.setFacetField("department_facet_string", {prefix: "1|",  missing: "true"})
 
-import { tabList } from '../src/components/tabs/TabList'
+//searcher.setFacetField("department_search_text", {mincount: "1"})
+
+searcher.setFacetField("department_name_facet_string", {mincount: "1"})
+
+
+
+import { tabList } from '../src/components/tabs/TabLoader'
 
 // should be 'people' tab filter
 const filterStr = tabList[0].filter
@@ -56,6 +62,11 @@ function printResults(json) {
   console.log("***GETTING RESULTS****")
   console.log(json)
   console.log(json.facet_counts.facet_fields['department_facet_string'])
+
+  //console.log(json.facet_counts.facet_fields['department_search_text'])
+  console.log(json.facet_counts.facet_fields['department_name_facet_string'])
+
+
 }
 
 searcher.execute().then(function(response) {

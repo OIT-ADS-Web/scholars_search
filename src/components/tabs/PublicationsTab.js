@@ -11,16 +11,17 @@ class PublicationDisplay extends HasSolrData(Component) {
     this.highlight = this.props.highlight
   }
 
-  f(str) {
-    return (str || "").replace(/&#039;/g,"'");
+  get abstract() {
+    let text = this.doc.abstract_text ? this.doc.abstract_text : ''
+    return text
   }
 
 
-  // Continuant Document Entity Generically Dependent Continuant Information Content Entity
-  filterHighlightText(text) {
-    let replaced = text.replace("Continuant Document Entity Generically Dependent Continuant Information Content Entity", "")
-    return replaced
+  get authorList() {
+    let text = this.doc.authorList_text ? this.doc.authorList_text : ''
+    return text
   }
+
   
   render() {
     
