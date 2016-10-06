@@ -13,6 +13,9 @@ import ReactDOM from 'react-dom'
 
 import SearchTabs from './SearchTabs'
 
+import helper from '../utils/PagingHelper'
+
+
 export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
@@ -184,28 +187,24 @@ export class PagingPanel extends Component {
       }
     }
 
-    // needs to be a limit of 10 ? or something else?
-    // http://ux.stackexchange.com/questions/4127/design-suggestion-for-pagination-with-a-large-number-of-pages
+    let pageMap = helper.pageArrays(totalPages, currentPage)
+    // pageMap is an array set of arrays
     //
-    // I prefer to use smart truncation to display the most helpful page links. In other words, 
-    // I show the first 3, ..., the current page with a padding of 3 (3 on either side), 
-    // another ..., then the last 3. With a lot of pages, the links above the list look 
-    // like this (the mouse is hovering over 56):
+    const pagesExp = _.map(pageMap, function(ary) {
 
-    // first 3
-    // -3 [current] + 3
-    // last 3
-    //
-    // if page > 12 ---
-    // 1,2,3  ... 4,5,6,7,8,9 ... 10,11,12
-    //
-    
-    /*
-    const pages = _.map(_.range(1, totalPages+1), function(x) {
-      let active = (x == currentPage) ? true : false 
-      return page(x, active)
+      let grp = _.map(ary, function(x) {
+        if (x == '...') {
+          return (<li><a href="#">...</a></li>) 
+        }
+        else {
+          let active = (x == currentPage) ? true : false
+          return page(x, active)
+        }
+      })
+
+      return grp
     })
-    */
+
 
     const pages = (
        <li>
@@ -227,7 +226,8 @@ export class PagingPanel extends Component {
             </li>
              
             {pages}
-             
+ 
+            {pagesExp}            
             <li className={nextClasses}>
               <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
                   <span aria-hidden="true">&raquo;</span>
@@ -290,10 +290,6 @@ export class PagingPanel extends Component {
 
     const pageList = paging(next, previous)
 
-    //return (
-    //    pages
-   // )
-    
     return (
       pageList
     )

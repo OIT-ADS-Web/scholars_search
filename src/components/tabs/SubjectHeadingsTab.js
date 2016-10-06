@@ -3,12 +3,6 @@ import React, { Component } from 'react';
 import HasSolrData from '../HasSolrData'
 import ScholarsLink from '../ScholarsLink'
 
-// NOTE: wanted to do this, but babel-node tries to interpret
-//
-//import meshLogo from '../../images/meshhead.gif'
-//import locLogo from '../../images/loc-logo.png'
-//import dukeLogo from '../../images/duke-text-logo.png'
-
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
   constructor(props) {
@@ -39,12 +33,6 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
       uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
     }
 
-    /*
-                <div className="pull-right">
-                   <img width="18px" src={logo}/>
-                </div>
-    */
- 
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
@@ -63,32 +51,71 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
 
 }
 
+
+import Facets from '../Facets'
+import HasFacets from '../HasFacets'
+
+class SubjectHeadingsFacets extends HasFacets(Component) {
+
+  constructor(props) {
+    super(props)
+    
+    this.onFacetClick = props.onFacetClick
+
+    this.facets = props.facets
+
+  }
+
+  render() {
+    const { facet_fields, chosen_facets, context } = this.props
+ 
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    //
+    return (
+      <Facets>
+        {facetDisplay}
+      </Facets>
+     )
+
+  }
+
+ }
+
+
 import Tab from '../Tab'
 import { TabDisplayer, TabDownloader, TabFilterer } from '../Tab'
 
-/*
+
 class SubjectHeadingsFilterer extends TabFilterer {
 
   constructor(config) {
     super(config)
-    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", options: {mincount: "1"}}]
+    this.facets = [{field: "subjectheading_facet_string", prefix: "source", options: {mincount: "1"}}]
+  
   }
 
 }
-*/
+
+
 
 class SubjectHeadingsTabDisplayer extends TabDisplayer {
+
+  constructor() {
+     super()
+     this.facets = [{field: "subjectheading_facet_string", prefix: "source", label: "Source"}]
+   }
+  
 
   individualDisplay(doc, highlight) {
     return <SubjectHeadingDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
-  /*
+  
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<SubjectHeadingsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<SubjectHeadingsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
-  */
+  
  
 }
 
@@ -103,7 +130,7 @@ class SubjectHeadingsTab extends Tab  {
  
     this.displayer = new SubjectHeadingsTabDisplayer()
  
-    //this.filterer = new SubjectHeadingsFilterer()
+    this.filterer = new SubjectHeadingsFilterer(this.filter)
 
     let fields = [{label: 'Name', value: 'nameRaw.0'}]
     this.downloader = new TabDownloader(fields)

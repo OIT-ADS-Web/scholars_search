@@ -179,7 +179,7 @@ class TabDownloader {
 
 // FIXME: should these each be in a separate, short file ??? can't decide
 //
-export { TabFilterer, TabDownloader, TabDisplayer, Faceter }
+export { TabFilterer, TabDownloader, TabDisplayer }
 
 // FIXME: is it better to define that at top, or bottom of file?
 //
