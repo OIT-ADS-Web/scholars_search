@@ -75,7 +75,6 @@ class TabResults extends Component {
     let { facet_queries, facet_fields } = facet_counts
     
     let tabPicker = new TabPicker(filter)
-    let tab = tabPicker.tab
 
     let displayer = tabPicker.displayer
     //

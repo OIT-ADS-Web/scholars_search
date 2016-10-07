@@ -180,35 +180,8 @@ class SolrResultsParser {
 
 }
 
-
-// these correspond to tabs
-//
-// The tabs are these (at the moment):
-//
-// [People][Publications][Artistic Works][Grants][Subject Headings][Misc]
-// disadvantage of this structure - ORDER is possibly random, I'm not sure
-//
 /*
-export const tabList = [
-  { id: "person", filter: "type:(*Person)", label: "People" },
-  { id: "publications",  filter: "type:(*bibo/Document)", label: "Publications" },
-  { id: "organizations",  filter: "type:(*Organization)", label: "Organizations" }, 
-  { id: "grants",  filter: "type:(*Grant)", label: "Grants" }, 
-  { id: "courses",  filter: "type:(*Course)", label: "Courses" },
-  { id: "artisticworks",  filter: "type:(*ArtisticWork)", label: "Artistic Works" },
-  { id: "subjectheadings", filter: "type:(*Concept)", label: "Subject Headings" },
-  { id: "misc",  filter: "type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))",
-   label: "Other"
-  }
-]
-*/
-
-
-/*
-VIVO solrconfig.xml:
-
-see /srv/web/apps/vivo/solr/conf/schema.xml
-
+VIVO see /srv/web/apps/vivo/solr/conf/schema.xml
 */
 
 
@@ -238,10 +211,6 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
   return searcher
 }
 
-// FIXME: could allow 'tablist' as parameter to get app specific
-// stuff out of file
-//
-// another helper to avoid boilerplate
 function setupTabGroups(searcher, tabList) {
   // take a SolrQuery object and set up for tabs
    
@@ -253,9 +222,6 @@ function setupTabGroups(searcher, tabList) {
     mm: 2,
     qf: 'duke_text nameText nameLowercase',
     pf: 'duke_text nameText nameLowercase'
-    //'group.limit': '1000'
-    //qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-    //pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase'
   }
 
   // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter

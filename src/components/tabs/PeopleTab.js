@@ -131,7 +131,6 @@ class PeopleFacets extends HasFacets(Component) {
     super(props)
     
     this.onFacetClick = props.onFacetClick
- 
     this.facets = props.facets
   }
 
