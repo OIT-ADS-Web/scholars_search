@@ -70,7 +70,8 @@ function pageArrays(totalPages, currentPage) {
   // e.g. 7 example
   } else if (currentPage <= 7) {
     
-    let afterList = _.slice(pageArray, 3, currentPage)
+    // + 1 is to always show one page current page
+    let afterList = _.slice(pageArray, 3, currentPage + 1)
     let beforeList = first3.concat(afterList)
 
     returnArray.push(beforeList)

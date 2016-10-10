@@ -50,7 +50,6 @@ export class PagingPanel extends Component {
     // given page (in parameter) calculate start
     //
     let start = searchFields ? searchFields['start'] : 0
-    //let newStart = Math.floor(start) + PAGE_ROWS
     let newStart = (pageNumber - 1) * PAGE_ROWS
 
     // NOTE: if not a new 'query' obj (like below) - this error happens:
@@ -189,12 +188,23 @@ export class PagingPanel extends Component {
 
     let pageMap = helper.pageArrays(totalPages, currentPage)
     // pageMap is an array set of arrays
-    //
-    const pagesExp = _.map(pageMap, function(ary) {
-
-      let grp = _.map(ary, function(x) {
+    // spacers are returned as ['...'] 
+    // so example might be [[1,2,3][...][9,10,11,12,13,14][...][21,22,23]]
+    
+    const pagesExp = _.map(pageMap, (ary, index) => {
+      //console.log(index)
+      let grp = _.map(ary, (x) => {
         if (x == '...') {
-          return (<li><a href="#">...</a></li>) 
+          
+          let pageNumber = 1
+
+          if (index == 1) {
+             pageNumber = (currentPage - 10 > 1) ? currentPage -10 : 10
+          } else {
+            pageNumber = (currentPage + 10 < totalPages) ? currentPage +10 : totalPages - 10
+           }
+          
+          return (<li><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>...</a></li>) 
         }
         else {
           let active = (x == currentPage) ? true : false
@@ -226,8 +236,8 @@ export class PagingPanel extends Component {
             </li>
              
             {pages}
- 
-            {pagesExp}            
+            {pagesExp} 
+
             <li className={nextClasses}>
               <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
                   <span aria-hidden="true">&raquo;</span>

@@ -34,6 +34,8 @@ import _ from 'lodash'
 import helper from '../src/utils/PagingHelper'
 
 
+// e.g. totalPages, currentPage parameters
+//
 function main() {
   let test1 = helper.pageArrays(15, 8)
   console.log(test1)

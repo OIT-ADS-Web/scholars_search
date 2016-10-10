@@ -99,7 +99,7 @@ class GrantsTabDisplayer extends TabDisplayer {
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<GrantsFacets facets={facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<GrantsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
    
 

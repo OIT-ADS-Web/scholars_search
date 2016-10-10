@@ -12,7 +12,7 @@ class CourseDisplay extends HasSolrData(Component) {
   }
 
   render() {
-
+    
     return (
          <div className="generic search-result-row" key="{this.docId}">
             <div className="row">
@@ -23,9 +23,7 @@ class CourseDisplay extends HasSolrData(Component) {
               </div>
             </div>
 
-
             {this.solrDocDisplay}
- 
         </div>
     );
   }
