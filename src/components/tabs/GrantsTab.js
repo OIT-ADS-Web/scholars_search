@@ -53,7 +53,7 @@ class GrantsFacets extends HasFacets(Component) {
     super(props)
     
     this.onFacetClick = props.onFacetClick
-    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+    this.facets = props.facets
 
   }
 
@@ -88,13 +88,18 @@ class GrantsFilterer extends TabFilterer {
 
 class GrantsTabDisplayer extends TabDisplayer {
 
+  constructor() {
+    super()
+    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+  }
+
   individualDisplay(doc, highlight) {
     return <GrantDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
   }
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<GrantsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<GrantsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
    
 

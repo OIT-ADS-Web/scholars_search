@@ -48,7 +48,7 @@ class OrganizationsFacets extends HasFacets(Component) {
     super(props)
     
     this.onFacetClick = props.onFacetClick
-    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+    this.facets = props.facets
 
   }
 
@@ -76,6 +76,9 @@ class OrganizationsTabDisplayer extends TabDisplayer {
 
   constructor() {
     super()
+
+    this.facets = [{field: "mostSpecificTypeURIs", prefix: "type", label: "Type"}]
+ 
     // FIXME: make set facets() function? or put it in the constructor?
     // it would be *mostly* the same as filterer - but don't need options: {} 
     // but *do* need a "label" 
@@ -98,7 +101,7 @@ class OrganizationsTabDisplayer extends TabDisplayer {
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<OrganizationsFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<OrganizationsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
   }
    
 

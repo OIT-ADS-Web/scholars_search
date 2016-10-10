@@ -38,9 +38,9 @@ class TabPicker {
   }
 
   /* shouldn't need this ever (I don't think?) */
-  get tab() {
-    return this._tab
-  }
+  //get tab() {
+  //  return this._tab
+  //}
 
 }
 

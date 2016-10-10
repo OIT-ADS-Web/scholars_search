@@ -61,7 +61,6 @@ let HasFacets = (superclass) => class extends superclass {
  
     let items = results[field]
 
-    // FIXME: maybe take care of pure display things like abb.replace() in FacetItem code 
     let list = _.map(items, (item) => {
       let {id, title, label, value } = this.facetItem(prefix, item, context)
       let facetItem = (
@@ -110,6 +109,9 @@ let HasFacets = (superclass) => class extends superclass {
   render() {
     const { facet_fields, chosen_facets, context } = this.props
  
+    // NOTE: this doesn't seem to do what I want it to (not show people/department
+    // facets until we have departments loaded)
+    //
     if (!context) {
       return ""
     }

@@ -13,6 +13,9 @@ import ReactDOM from 'react-dom'
 
 import SearchTabs from './SearchTabs'
 
+import helper from '../utils/PagingHelper'
+
+
 export class PagingPanel extends Component {
 
   // FIXME: don't necessarily like this down at PagingPanel component
@@ -47,7 +50,6 @@ export class PagingPanel extends Component {
     // given page (in parameter) calculate start
     //
     let start = searchFields ? searchFields['start'] : 0
-    //let newStart = Math.floor(start) + PAGE_ROWS
     let newStart = (pageNumber - 1) * PAGE_ROWS
 
     // NOTE: if not a new 'query' obj (like below) - this error happens:
@@ -184,28 +186,35 @@ export class PagingPanel extends Component {
       }
     }
 
-    // needs to be a limit of 10 ? or something else?
-    // http://ux.stackexchange.com/questions/4127/design-suggestion-for-pagination-with-a-large-number-of-pages
-    //
-    // I prefer to use smart truncation to display the most helpful page links. In other words, 
-    // I show the first 3, ..., the current page with a padding of 3 (3 on either side), 
-    // another ..., then the last 3. With a lot of pages, the links above the list look 
-    // like this (the mouse is hovering over 56):
-
-    // first 3
-    // -3 [current] + 3
-    // last 3
-    //
-    // if page > 12 ---
-    // 1,2,3  ... 4,5,6,7,8,9 ... 10,11,12
-    //
+    let pageMap = helper.pageArrays(totalPages, currentPage)
+    // pageMap is an array set of arrays
+    // spacers are returned as ['...'] 
+    // so example might be [[1,2,3][...][9,10,11,12,13,14][...][21,22,23]]
     
-    /*
-    const pages = _.map(_.range(1, totalPages+1), function(x) {
-      let active = (x == currentPage) ? true : false 
-      return page(x, active)
+    const pagesExp = _.map(pageMap, (ary, index) => {
+      //console.log(index)
+      let grp = _.map(ary, (x) => {
+        if (x == '...') {
+          
+          let pageNumber = 1
+
+          if (index == 1) {
+             pageNumber = (currentPage - 10 > 1) ? currentPage -10 : 10
+          } else {
+            pageNumber = (currentPage + 10 < totalPages) ? currentPage +10 : totalPages - 10
+           }
+          
+          return (<li><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>...</a></li>) 
+        }
+        else {
+          let active = (x == currentPage) ? true : false
+          return page(x, active)
+        }
+      })
+
+      return grp
     })
-    */
+
 
     const pages = (
        <li>
@@ -227,7 +236,8 @@ export class PagingPanel extends Component {
             </li>
              
             {pages}
-             
+            {pagesExp} 
+
             <li className={nextClasses}>
               <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
                   <span aria-hidden="true">&raquo;</span>
@@ -290,10 +300,6 @@ export class PagingPanel extends Component {
 
     const pageList = paging(next, previous)
 
-    //return (
-    //    pages
-   // )
-    
     return (
       pageList
     )
