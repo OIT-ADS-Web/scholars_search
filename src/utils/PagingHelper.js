@@ -1,108 +1,96 @@
 import _ from 'lodash'
 
-// needs to be a limit of 10 ? or something else?
-// http://ux.stackexchange.com/questions/4127/design-suggestion-for-pagination-with-a-large-number-of-pages
-//
-// I prefer to use smart truncation to display the most helpful page links. In other words, 
-// I show the first 3, ..., the current page with a padding of 3 (3 on either side), 
-// another ..., then the last 3. With a lot of pages, the links above the list look 
-// like this (the mouse is hovering over 56):
-
-/*
-// 1,2,3  ... 5,6,7,8,9,10,11 ... 13,14,15
  
-sample results
+/*
+ * NOTE: this returns an array of 3 arrays given a total number of pages
+ * and the current page.  The first array is what to do with *before* the
+ * last array is what to do with *after*
+ *
+ * just made PAGE_BY a constant
+ *
+ * so, as an example:
+ *
+ * if we have 95 pages, and we 
+ * are on page 1:
+ *
+ [ [ '-' ],
+ [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+ [ '+', 16 ] ]
 
-********* 8 of 15 *******
-[ [ 1, 2, 3 ],
-  '...',
-  [ 5, 6, 7, 8 ],
-  [ 9, 10, 11 ],
-  '...',
-  [ 13, 14, 15 ] ]
-********* 9 of 15 *******
-[ [ 1, 2, 3 ], '...', [ 9, 10, 11, 12, 13, 14, 15 ] ]
-********* 7 of 15 *******
-[ [ 1, 2, 3, 4, 5, 6, 7 ], '...', [ 13, 14, 15 ] ]
+ - means no page to show for *before*
+ [1...15] are the pages to show
+ +, 16 means the *after* link goes to page 16
 
-*/
+ if we're on page 65
+ that falls within the 61-75 range
+ the *before* would be 46
+ the *next would be 75
 
+ [ [ '+', 46 ],
+  [ 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 ],
+  [ '+', 76 ] ]
+
+
+ if we're on page 92
+ that falls with the 91-105 range (but we don't have 105 pages)
+ so *before* would be 76
+ but *next* would be no page
+
+[ [ '+', 76 ], [ 91, 92, 93, 94 ], [ '-' ] ]
+ *
+ */
+const PAGE_BY = 15
 
 function pageArrays(totalPages, currentPage) {
 
-  let pageArray = _.range(1, totalPages + 1)
-
   let returnArray = []
 
-  if (totalPages < 15) {
+  if (totalPages <= PAGE_BY) {
+    let pageArray = _.range(1, totalPages + 1)
+    returnArray.push(['-'])
     returnArray.push(pageArray)
+    returnArray.push(['-'])
     return returnArray
   }
+  
+  let partitions = Math.floor(totalPages/PAGE_BY) 
 
-  let first3 = _.take(pageArray, 3)
-  let last3 = _.takeRight(pageArray, 3)
+  // which segment are we in ??
+  let currentPartition = Math.floor(currentPage/PAGE_BY)
+  
+  let isEnd =  currentPage % PAGE_BY == 0
+  if (isEnd) {
+    // if it's exact, we don't need to swtich to next range
+    currentPartition = currentPartition - 1
+  }
 
-  // example:
-  // if total pages15 ...
   //
-  //   if 7 or under only show 1-7 and 13,14,15
-  //   if 9 or over only show 1,2,3 and 9-15
-  //
-  //console.log(first3)
-  // e.g. 9 example
-  if (currentPage >= (totalPages - 6)) {
- 
-    returnArray.push(first3)
- 
-    let beforeList = _.slice(pageArray, currentPage - 1, totalPages - 3)
-    let lastList = beforeList.concat(last3)
-    
-    let middle = pageArray[Math.round((pageArray.length - 1) / 2)];
-    let middle6 = _.range(middle - 3, middle + 3)
+  let start = (currentPartition * PAGE_BY) + 1
 
-    returnArray.push(["..."])
-    returnArray.push(middle6)
-    returnArray.push(["..."])
-    // ? middle 3 ??
-    //
-    returnArray.push(lastList)
+  let end = (start + PAGE_BY > totalPages) ? totalPages : (start + PAGE_BY)
 
-  // e.g. 7 example
-  } else if (currentPage <= 7) {
-    
-    // + 1 is to always show one page current page
-    let afterList = _.slice(pageArray, 3, currentPage + 1)
-    let beforeList = first3.concat(afterList)
+  let pageRange = _.range(start, end)
 
-    returnArray.push(beforeList)
-
-    let middle = pageArray[Math.round((pageArray.length - 1) / 2)];
-    let middle6 = _.range(middle - 3, middle + 3)
-
-    returnArray.push(["..."])
-    returnArray.push(middle6)
-    returnArray.push(["..."])
-    
-    returnArray.push(last3)
-
-  } else {
-
-    returnArray.push(first3)
-
-    let before = currentPage - 3
-    let after = currentPage + 3
-
-    let beforeList = _.slice(pageArray, before - 1, currentPage)
-    let afterList = _.slice(pageArray, currentPage, after)
-
-    returnArray.push(["..."])
-    returnArray.push(beforeList)
-    returnArray.push(afterList)
-    returnArray.push(["..."])
-    returnArray.push(last3)
+  if (currentPartition >= partitions) {
+    returnArray.push(['+', (currentPartition - 1) * PAGE_BY + 1])
+    returnArray.push(pageRange)
+    returnArray.push(['-'])
+  } else if ((currentPartition < partitions) && (currentPartition > 1)) {
+    returnArray.push(['+', (currentPartition - 1) * PAGE_BY + 1])
+    returnArray.push(pageRange)
+    returnArray.push(['+', ((currentPartition + 1) * PAGE_BY) + 1])
+  } else if (currentPartition == 1) {
+    returnArray.push(['+', 1])
+    returnArray.push(pageRange)
+    returnArray.push(['+', ((currentPartition + 1) * PAGE_BY) + 1])
+  } else if (currentPartition == 0) {
+    returnArray.push(['-'])
+    returnArray.push(pageRange)
+    returnArray.push(['+', ((currentPartition + 1) * PAGE_BY) + 1])
   }
 
   return returnArray
+
 }
 
 
