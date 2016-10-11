@@ -29,9 +29,6 @@ export class PagingPanel extends Component {
   constructor(props, context) {
     super(props, context)
     
-    this.handleNextPage = this.handleNextPage.bind(this)
-    this.handlePreviousPage = this.handlePreviousPage.bind(this)
- 
     this.handlePage = this.handlePage.bind(this) 
   }
 
@@ -73,70 +70,6 @@ export class PagingPanel extends Component {
   
   }
   
-  handleNextPage(e) {
-    e.preventDefault()
-
-    if (e.currentTarget.className == 'disabled') {
-      return false
-    }  
-
-    const { search : { searchFields }, dispatch } = this.props
-
-    let start = searchFields ? searchFields['start'] : 0
-    let newStart = Math.floor(start) + PAGE_ROWS
-
-    // NOTE: if not a new 'query' obj (like below) - this error happens:
-    // useQueries.js:35 Uncaught TypeError: object.hasOwnProperty is not a function
-    const query = { ...searchFields, start: newStart }
-
-    let full_query = { ...query }
-
-    let filter = searchFields['filter']
-    let tabPicker =  new TabPicker(filter)
-
-    let filterer = tabPicker.filterer
-
-    dispatch(requestSearch(full_query, filterer))
- 
-    this.context.router.push({
-      pathname: '/',
-      query: full_query
-
-    })
-      
-  }
-
-  handlePreviousPage(e) {
-    e.preventDefault()
-
-    if (e.currentTarget.className == 'disabled') {
-      return false
-    }  
-    
-    const { search : { searchFields }, dispatch } = this.props
-
-    let start = searchFields ? searchFields['start'] : 0
-    let newStart = Math.floor(start) - PAGE_ROWS
-    
-    const query = { ...searchFields, start: newStart }
-
-    let full_query = { ...query }
-
-    let filter = searchFields['filter']
-    let tabPicker =  new TabPicker(filter)
-
-    let filterer = tabPicker.filterer
-
-    dispatch(requestSearch(full_query, filterer))
-
-    this.context.router.push({
-      pathname: '/',
-      query: full_query
-
-    })
- 
-  }
-
   render() {
     // so start should be coming from search object (state)
     const { search : { results, searchFields } } = this.props
@@ -188,117 +121,48 @@ export class PagingPanel extends Component {
 
     let pageMap = helper.pageArrays(totalPages, currentPage)
     // pageMap is an array set of arrays
-    // spacers are returned as ['...'] 
-    // so example might be [[1,2,3][...][9,10,11,12,13,14][...][21,22,23]]
+    // more/less links are returned as ['+', 16] or ['-'] (means no number)
+    //
+    // so example might be [['+', 1][16...30]['+', 31]]
+ 
+    let [previous, current, next] = pageMap
     
-    const pagesExp = _.map(pageMap, (ary, index) => {
-      //console.log(index)
-      let grp = _.map(ary, (x) => {
-        if (x == '...') {
-          
-          let pageNumber = 1
+    let flip = (x, direction) => {
+      if(x[0] == '+') {
+        let pageNumber = x[1]
 
-          if (index == 1) {
-             pageNumber = (currentPage - 10 > 1) ? currentPage -10 : 10
-          } else {
-            pageNumber = (currentPage + 10 < totalPages) ? currentPage +10 : totalPages - 10
-           }
-          
-          return (<li><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>...</a></li>) 
+        let desc = (<span><span aria-hidden="true">&laquo;</span> Previous</span>)
+        if (direction == 'forward') {
+          desc = (<span>Next <span aria-hidden="true">&raquo;</span></span>)
         }
-        else {
-          let active = (x == currentPage) ? true : false
-          return page(x, active)
-        }
-      })
+        return (<li><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>{desc}</a></li>) 
+      }
+    }
 
-      return grp
+    let pages = _.map(current, (x) => {
+       let active = (x == currentPage) ? true : false
+       return page(x, active)
     })
 
 
-    const pages = (
-       <li>
-         <span>Page {currentPage} of {totalPages}</span>
-       </li>
-    )
+    let backward = flip(previous, 'backward')
+    let forward = flip(next, 'forward')
 
-    const paging = (next, prev) => {
-      const nextClasses = classNames({disabled: !next})     
-      const prevClasses = classNames({disabled: !prev})     
+    const paging = () => {
       
       return (
         <nav>
           <ul className="pagination">
-            <li className={prevClasses}>
-              <a href="#" aria-label="Previous" onClick={this.handlePreviousPage} className={prevClasses}>
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-             
+            {backward}
             {pages}
-            {pagesExp} 
-
-            <li className={nextClasses}>
-              <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
-                  <span aria-hidden="true">&raquo;</span>
-               </a>
-            </li>
-
+            {forward}
           </ul>
         </nav>
       )
     }
 
     
-    /*
-    const paging = (next, prev) => {
-      const nextClasses = classNames({disabled: !next})     
-      const prevClasses = classNames({disabled: !prev})     
-      
-      return (
-        <nav>
-          <ul className="pagination">
-            <li className={prevClasses}>
-              <a href="#" aria-label="Previous" onClick={this.handlePreviousPage} className={prevClasses}>
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            
-            <li>
-              <span>Page {currentPage} of {totalPages}</span>
-            </li>
-
-            <li className={nextClasses}>
-              <a href="#" aria-label="Next" onClick={this.handleNextPage} className={nextClasses}>
-                  <span aria-hidden="true">&raquo;</span>
-               </a>
-            </li>
-
-          </ul>
-        </nav>
-      )
-    }
-    */
-
-    let next = false
-    let previous = false
-
-    // (50 + 50 < 105)
-
-    if ((Math.floor(start) + Math.floor(PAGE_ROWS)) < numFound) {
-      next = true
-    }
-    // (100 > 50 and some found)
-    if (Math.floor(start) >= Math.floor(PAGE_ROWS)) {
-      previous = true
-    }
-
-    if (numFound == 0) {
-      next = false
-      previous = false
-    }
-
-    const pageList = paging(next, previous)
+    const pageList = paging()
 
     return (
       pageList
