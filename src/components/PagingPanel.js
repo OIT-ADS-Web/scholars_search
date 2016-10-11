@@ -144,9 +144,8 @@ export class PagingPanel extends Component {
        return page(x, active)
     })
 
-
-    let backward = flip(previous, 'backward')
-    let forward = flip(next, 'forward')
+    let backward = flip(previous, 'backward') 
+    let forward = flip(next, 'forward') 
 
     const paging = () => {
       

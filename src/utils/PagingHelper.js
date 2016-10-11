@@ -47,7 +47,9 @@ function pageArrays(totalPages, currentPage) {
 
   if (totalPages <= PAGE_BY) {
     let pageArray = _.range(1, totalPages + 1)
+    returnArray.push(['-'])
     returnArray.push(pageArray)
+    returnArray.push(['-'])
     return returnArray
   }
   
