@@ -15,9 +15,17 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     let meshMatch = /^https:\/\/scholars.duke.edu\/individual\/mesh*/
     let locMatch = /^http:\/\/id.loc.gov\/authorities\/subjects\/*/
  
+    // NOTE: I believe this is probably the wrong way to generate a URI for Duke specific concepts
+    // but that's what it is right now example:
+    // https://scholars.duke.edu/individual/dukehttps://scholars.duke.edu/individual/scsG05
+    //
+    let dukeMatch = /^https:\/\/scholars.duke.edu\/individual\/dukehttps:\/\/scholars.duke.edu\/individual\/*/
+
     let uri = this.URI
     let isMesh = meshMatch.test(uri)
     let isLoc = locMatch.test(uri)
+
+    let isDuke = dukeMatch.test(uri)
 
     let logo = function() {
       if (isMesh) {
@@ -30,6 +38,10 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     }()
 
     if (isLoc) {
+      uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
+    }
+
+    if (isDuke) {
       uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
     }
 

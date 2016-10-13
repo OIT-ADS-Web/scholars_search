@@ -130,9 +130,9 @@ function* watchForSearch() {
     
     // NOTE: if I change it to this (per cancel example)
     // if spins forever
+    // yield take(types.SEARCH_CANCELLED)
+    // yield cancel(searchTask)
     const searchTask = yield fork(fetchSearch, action)
-    //yield take(types.SEARCH_CANCELLED)
-    //yield cancel(searchTask)
   }
 }
 
