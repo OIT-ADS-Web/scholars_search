@@ -149,7 +149,7 @@ class TabDownloader {
 
   toCSV(json) {
     let data = json.response.docs
-    let defaultFields = ['URI', {label: 'Type', value: 'mostSpecificTypeURIs.0'}]
+    let defaultFields = ['URI', {label: 'Type', value: 'mostSpecificTypeURIs.0'}, {label: 'Name', value: 'nameRaw.0'}]
     
     let extraFields = this._fields ? this._fields : []
    
