@@ -154,23 +154,17 @@ class TabDownloader {
     let extraFields = this._fields ? this._fields : []
    
     let allFields = _.concat(defaultFields, extraFields)
-   
+ 
     let _csv = ""
 
     if (data) {
-      json2csv({data: data, fields: allFields, flatten: true}, function(err, csv) {
-        if (err) {
-          console.log(err)
-        }
-        else {
-          _csv = csv
-        }
-      })
+      _csv = json2csv({data: data, fields: allFields, flatten: true})
     }
 
-    // NOTE: needs to be an array for Blob function do that here?
+    // NOTE: needs to be an array for Blob function later (in UI)
     let ary = []
     ary.push(_csv)
+
     return ary
   }
 
