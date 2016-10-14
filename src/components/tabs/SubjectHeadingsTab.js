@@ -138,8 +138,8 @@ class SubjectHeadingsTab extends Tab  {
  
     this.filterer = new SubjectHeadingsFilterer(this.filter)
 
-    let fields = [{label: 'Name', value: 'nameRaw.0'}]
-    this.downloader = new TabDownloader(fields)
+    //let fields = [{label: 'Name', value: 'nameRaw.0'}]
+    //this.downloader = new TabDownloader(fields)
   }
 
 
