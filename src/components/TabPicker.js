@@ -19,7 +19,8 @@ class TabPicker {
   // let tabPicker = new TabPicker("people")
   // let filterer = tabPicker.filterer
   // let displayer = tabPicker.displayer
-  // 
+  // let downloader = tabPicker.downloader
+  //
   constructor(id) {
     return new TabLoader(id)
   }

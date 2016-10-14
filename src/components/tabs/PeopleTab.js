@@ -241,7 +241,7 @@ class PeopleTab extends Tab {
     this.filterer = new PeopleFilterer(this.filter)
     this.displayer = new PeopleDisplayer()
 
-    let fields = [{label: 'Name', value: 'nameRaw.0'}, {label: 'title', value: 'PREFERRED_TITLE.0'}, 
+    let fields = [{label: 'title', value: 'PREFERRED_TITLE.0'}, 
       { label: 'email', value: 'primaryEmail_text.0',  default: ''}, 
       { label: 'profileUrl', value: 'profileURL_text.0', default: ''}
     ]

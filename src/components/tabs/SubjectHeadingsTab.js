@@ -14,7 +14,6 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
   render() {
     let meshMatch = /^https:\/\/scholars.duke.edu\/individual\/mesh*/
     let locMatch = /^http:\/\/id.loc.gov\/authorities\/subjects\/*/
- 
     // NOTE: I believe this is probably the wrong way to generate a URI for Duke specific concepts
     // but that's what it is right now example:
     // https://scholars.duke.edu/individual/dukehttps://scholars.duke.edu/individual/scsG05
@@ -22,9 +21,9 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     let dukeMatch = /^https:\/\/scholars.duke.edu\/individual\/dukehttps:\/\/scholars.duke.edu\/individual\/*/
 
     let uri = this.URI
+    
     let isMesh = meshMatch.test(uri)
     let isLoc = locMatch.test(uri)
-
     let isDuke = dukeMatch.test(uri)
 
     let logo = function() {
@@ -37,11 +36,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
       }
     }()
 
-    if (isLoc) {
-      uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
-    }
-
-    if (isDuke) {
+    if (isLoc || isDuke) {
       uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
     }
 
@@ -137,14 +132,14 @@ class SubjectHeadingsTab extends Tab  {
 
     this.id = "subjectheadings"
     this.filter = "{!tag=subjectheadings}type:(*Concept)"
-    this.label = "Subject Headings"
+    this.label = "SubjectHeadings"
  
     this.displayer = new SubjectHeadingsTabDisplayer()
  
     this.filterer = new SubjectHeadingsFilterer(this.filter)
 
-    let fields = [{label: 'Name', value: 'nameRaw.0'}]
-    this.downloader = new TabDownloader(fields)
+    //let fields = [{label: 'Name', value: 'nameRaw.0'}]
+    //this.downloader = new TabDownloader(fields)
   }
 
 
