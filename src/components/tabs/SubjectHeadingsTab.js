@@ -132,7 +132,7 @@ class SubjectHeadingsTab extends Tab  {
 
     this.id = "subjectheadings"
     this.filter = "{!tag=subjectheadings}type:(*Concept)"
-    this.label = "Subject Headings"
+    this.label = "SubjectHeadings"
  
     this.displayer = new SubjectHeadingsTabDisplayer()
  
