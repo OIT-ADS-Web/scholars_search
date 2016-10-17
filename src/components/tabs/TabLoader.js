@@ -13,7 +13,7 @@ import OtherTab from './OtherTab'
 export const tabList = [
   { id: "person", instance: new PeopleTab() },
   { id: "publications",  instance: new PublicationsTab() },
-  { id: "organizations",  instance: new OrganizationsTab() }, 
+  //{ id: "organizations",  instance: new OrganizationsTab() }, 
   { id: "grants",  instance: new GrantsTab() }, 
   { id: "courses",  instance: new CoursesTab() },
   { id: "artisticworks",  instance: new ArtisticWorksTab() },
