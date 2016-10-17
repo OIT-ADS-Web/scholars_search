@@ -203,19 +203,22 @@ li.search-tab a {
 
 /* FIXME: trying to get facets to take up entire space and put download button at bottom */
 /* http://stackoverflow.com/questions/11677886/twitter-bootstrap-div-in-container-with-100-height */
+/*
 #content {
   height: 100%;
 }
+*/
 
 .panel-info {
   border: none;
 }
 
+/*
 .fill { 
   min-height: 100%;
   height: 100%;
 }
-
+*/
 
 #header-navbar-inner .nav li a:hover {
   color: #235f9c;
@@ -235,4 +238,6 @@ li.search-tab a {
   color: #333333;
 }
 
+/* https://github.com/twbs/bootstrap/issues/9334 */
+.list-group-item { word-wrap: break-word; }
 
