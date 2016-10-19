@@ -6,10 +6,17 @@ import createSagaMiddleware from 'redux-saga'
 const sagaMiddleware = createSagaMiddleware()
 const loggerMiddleware = createLogger()
 
+// https://github.com/evgenyrodionov/redux-logger#user-content-log-only-in-development
+let middlewares = [sagaMiddleware]
+
+if (process.env.NODE_ENV != 'production') {
+  middlewares.push(loggerMiddleware)
+}
+
+
 // FIXME: don't like all these versions of basically the same thing
 const createStoreWithMiddlewareSagaVersion = applyMiddleware(
-  sagaMiddleware,
-  loggerMiddleware
+  ...middlewares
 )(createStore)
 
 const createStoreWithOnlySagaMiddleware = applyMiddleware(
