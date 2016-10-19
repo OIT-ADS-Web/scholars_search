@@ -7,6 +7,9 @@ require ('bootstrap')
 
 import 'jquery'
 
+import "babel-polyfill"
+
+
 // NOTE: wanted to require this in particular tabs
 // but babel-node tries to parse *.less as *.js file
 require('./styles/scholars_search.less');

@@ -20,7 +20,7 @@ var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
-    app: "./src/main.js"
+    app: ['babel-polyfill', "./src/main.js"]
   },
   // put all built files in dist
   // use 'name' variable to make 
