@@ -220,8 +220,8 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: 'duke_text nameText nameLowercase',
-    pf: 'duke_text nameText nameLowercase'
+    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase'
   }
 
   // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter
