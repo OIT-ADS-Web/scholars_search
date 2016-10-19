@@ -66,10 +66,10 @@ function buildComplexQuery(compoundSearch = {}) {
   // atLeastOne => array
   // noMatch => array
   // listing WAS in same order as form
-  const allWords = "allWords" in compoundSearch ? compoundSearch.allWords.split(/[ ,]+/) : [] 
+  const allWords = "allWords" in compoundSearch ? compoundSearch.allWords.trim().split(/[ ,]+/) : [] 
   const exactMatch = "exactMatch" in compoundSearch ? compoundSearch.exactMatch : ''
-  const atLeastOne = "atLeastOne" in compoundSearch ? compoundSearch.atLeastOne.split(/[ ,]+/) : []
-  const noMatch = "noMatch" in compoundSearch ? compoundSearch.noMatch.split(/[ ,]+/) : []
+  const atLeastOne = "atLeastOne" in compoundSearch ? compoundSearch.atLeastOne.trim().split(/[ ,]+/) : []
+  const noMatch = "noMatch" in compoundSearch ? compoundSearch.noMatch.trim().split(/[ ,]+/) : []
 
   if (noMatch &&  !(allWords || exactMatch || atLeastOne)) {
     //NOTE:  (can't NOT without something to match to begin with)

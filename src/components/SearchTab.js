@@ -80,10 +80,12 @@ export class SearchTab extends Component {
 
     let classList = classNames({active: this.active, 'search-tab': !this.mobile})
 
+    let tabLabel = this.label.replace(' ', '&nbsp;')
+
     // FIXME: the fact that I can't put an if statement in jsx is annoying    
     return (
          <li className={classList}>
-           <a href="#" onClick={this.handleTab}>{this.label} ({this.count}) </a>
+           <a href="#" onClick={this.handleTab}><span dangerouslySetInnerHTML={{__html: tabLabel}}></span> ({this.count}) </a>
          </li>
       )
   }

@@ -108,7 +108,7 @@ class ArtisticWorksTab extends Tab  {
     super()
     
     this.id = "artisticworks"
-    this.label = "ArtisticWorks"
+    this.label = "Artistic Works"
     this.filter = "{!tag=artisticworks}type:(*ArtisticWork)"
        
     this.displayer = new ArtisticWorksTabDisplayer()
