@@ -102,15 +102,17 @@ export class PagingPanel extends Component {
     const currentPage = Math.floor(start/PAGE_ROWS) + 1
  
     const page = (pageNumber, active) => {
+      let key = `pageLinkTo_${pageNumber}`
+
       if(active) {
         return (
-         <li className="active">
+         <li key={key} className="active">
            <span>{pageNumber}</span>
          </li>
         )
       } else {
          return (
-          <li>
+          <li key={key}>
             <span>
               <a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>{pageNumber}</a>
             </span>
@@ -135,7 +137,8 @@ export class PagingPanel extends Component {
         if (direction == 'forward') {
           desc = (<span>Next <span aria-hidden="true">&raquo;</span></span>)
         }
-        return (<li><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>{desc}</a></li>) 
+        let key = `pageLinkTo_${pageNumber}`
+        return (<li key={key}><a href="#" onClick={(e) => this.handlePage(e, pageNumber)}>{desc}</a></li>) 
       }
     }
 
