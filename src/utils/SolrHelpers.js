@@ -193,11 +193,12 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
-    'hl.usePhraseHighlighter': true
+    'hl.usePhraseHighlighter': true,
+    omitNorms: true
   }
 
   return searcher
@@ -212,8 +213,9 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
-    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase'
+    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    omitNorms: true
   }
 
   // NOTE: group query given a name for internal use (so I could remove as well as add).  Not needed by SOLR
