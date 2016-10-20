@@ -193,7 +193,7 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
@@ -213,7 +213,7 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     omitNorms: true
   }
