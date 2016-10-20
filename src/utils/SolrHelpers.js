@@ -65,7 +65,7 @@ function buildComplexQuery(compoundSearch = {}) {
   // exactMatch != array
   // atLeastOne => array
   // noMatch => array
-  // listing WAS in same order as form
+  
   const allWords = "allWords" in compoundSearch ? compoundSearch.allWords.trim().split(/[ ,]+/) : [] 
   const exactMatch = "exactMatch" in compoundSearch ? compoundSearch.exactMatch : ''
   const atLeastOne = "atLeastOne" in compoundSearch ? compoundSearch.atLeastOne.trim().split(/[ ,]+/) : []
@@ -101,20 +101,14 @@ function buildComplexQuery(compoundSearch = {}) {
 
 }
 
-// NOTE: not using this quite yet, except in one
-// example script, but the general idea is to allow the UI
+// NOTE: not using this at the moment, except in one
+// example script.
+//
+// The general idea is to allow the UI
 // code to not have to know internals of Solr, like
-// highlighting, doc.DocId, ALLTEXT etc...
+// highlighting, doc.DocId, ALLTEXT etc... but maybe that's fine
+//
 class SolrResultsParser {
-
-  // FIXME: if a constructor falls in the forest but noone hears
-  // it, does it exist?  i.e. what does javascript do with
-  // empty constructors?
-  /*
-   constructor() {
-
-   }
-  */
 
   parseResponse(results) {
     /* 
@@ -181,18 +175,16 @@ class SolrResultsParser {
 }
 
 /*
-VIVO see /srv/web/apps/vivo/solr/conf/schema.xml
+
+   VIVO SOLR config:
+   see /srv/web/apps/vivo/solr/conf/schema.xml
+
 */
 
 
 // just a helper function to avoid the boilerplate stuff
 function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
 
-  // FIXME: should we check for no filter? filter seems application specific
-  // but they are listed in the tabList above anyway
-
-  // set 'qf' option? 
-  //
   // NOTE: Math.floor probably not necessary
   searcher.options = {
     wt: "json",
@@ -201,11 +193,12 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     start: Math.floor(start),
     sort: sort,
     mm: 2,
-    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
-    'hl.usePhraseHighlighter': true
+    'hl.usePhraseHighlighter': true,
+    omitNorms: true
   }
 
   return searcher
@@ -220,15 +213,13 @@ function setupTabGroups(searcher, tabList) {
     rows: 0,
     group: true,
     mm: 2,
-    qf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
-    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase'
+    qf: '{!boost b=termfreq} duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    pf: 'duke_text nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
+    omitNorms: true
   }
 
-  // FIXME: this is the only reason a 'saga' needs to import { tabList }  just needs id, filter
-  //
+  // NOTE: group query given a name for internal use (so I could remove as well as add).  Not needed by SOLR
   // e.g.
-  // it's doing something like this...
-  //
   // searcher.addGroupQuery("type-subjectheading", "type:(*Concept)")
   // searcher.addGroupQuery("type-publication", "type:(*Publication)")
   // etc...
