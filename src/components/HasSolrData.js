@@ -12,14 +12,12 @@ let HasSolrData = (superclass) => class extends superclass {
   }
 
   get name() {
-    let doc = this.props.doc
-    let nameRaw = doc.nameRaw || [""]
+    let nameRaw = this.doc.nameRaw || [""]
     return nameRaw[0]
   }
 
   get preferredTitle() {
-    let doc = this.props.doc
-    return doc.PREFERRED_TITLE
+    return this.doc.PREFERRED_TITLE
   }
 
   get doc() {
