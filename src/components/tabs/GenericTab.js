@@ -7,8 +7,6 @@ class GenericDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
-    this.doc = this.props.doc;
-    this.highlight = this.props.highlight
   }
 
   render() {

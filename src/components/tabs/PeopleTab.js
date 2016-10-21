@@ -7,9 +7,8 @@ class PersonDisplay extends HasSolrData(Component) {
 
   constructor(props) {
     super(props);
-    this.doc = this.props.doc;
-    this.highlight = this.props.highlight
   }
+
 
   hasThumbnail() {
     let flag = false
@@ -82,7 +81,6 @@ class PersonDisplay extends HasSolrData(Component) {
   }
 
   render() {
-
     let picture
     
     if (this.hasThumbnail()) {
@@ -93,8 +91,10 @@ class PersonDisplay extends HasSolrData(Component) {
       //picture = <img className="profile-thumbnail"></img>
     }
 
+    let timestamp = Date.now()
+
     return (
-        <div className="person search-result-row" key="{this.docId}">
+        <div className="person search-result-row">
            <div className="row">
             
                <div className="col-lg-2 col-md-12 col-xs-12 col-sm-12">
@@ -201,7 +201,7 @@ class PeopleDisplayer extends TabDisplayer {
   }
 
   individualDisplay(doc, highlight) {
-    return <PersonDisplay key={doc.DocId} doc={doc} highlight={highlight}/> 
+    return <PersonDisplay key={doc.URI} doc={doc} highlight={highlight}/> 
   }
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
