@@ -198,7 +198,7 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
     'hl.usePhraseHighlighter': true,
-    bq: 'type:(*Faculty)'
+    bq: 'type:(*FacultyMember)'
   }
 
   return searcher
