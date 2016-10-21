@@ -12,21 +12,29 @@ let HasSolrData = (superclass) => class extends superclass {
   }
 
   get name() {
-    let nameRaw = this.doc.nameRaw || [""]
+    let doc = this.props.doc
+    let nameRaw = doc.nameRaw || [""]
     return nameRaw[0]
   }
 
   get preferredTitle() {
-    return this.doc.PREFERRED_TITLE
+    let doc = this.props.doc
+    return doc.PREFERRED_TITLE
   }
+
+  get doc() {
+    let doc = this.props.doc
+    return doc
+  }
+
+  get highlight() {
+    let highlight = this.props.highlight
+    return highlight
+  }
+
 
   get docId() {
     return this.doc.DocId
-  }
-
-  get allText() {
-    let allText = this.doc.ALLTEXT || []
-    return allText.join(" ")
   }
 
   get dukeText() {
@@ -83,7 +91,7 @@ let HasSolrData = (superclass) => class extends superclass {
   }
 
   get highlightText() {
-
+   
     let display = ""
       if (this.highlight) {
         // NOTE: sometimes doc.type is undefined (strangely enough) 
@@ -116,7 +124,7 @@ let HasSolrData = (superclass) => class extends superclass {
   }
  
   get highlightDisplay() {
-
+  
     let text = this.highlightText
 
     // NOTE: left this in place as a hook for a replace text function to modify what is shown 
