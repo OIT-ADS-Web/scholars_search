@@ -197,7 +197,8 @@ function setupDefaultSearch(searcher, rows=50, start=0, sort="score desc") {
     pf: 'duke_text duke_text_unstemmed nameText^2.0 nameUnstemmed^2.0 nameStemmed^2.0 nameLowercase',
     'hl.fragsize': '175',
     'hl.fl': 'duke_text',
-    'hl.usePhraseHighlighter': true
+    'hl.usePhraseHighlighter': true,
+    bq: 'type:(*Faculty)'
   }
 
   return searcher
