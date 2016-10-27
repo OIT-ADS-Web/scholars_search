@@ -118,7 +118,7 @@ then run this on the command line:
   
   ```
 
-You can switch the organizations list from local to acceptance too (that is waht the `/orgs` is for above).  But you also
+You can switch the organizations list from local to acceptance too (that is what the `/orgs` is for above).  But you also
 have to ssh tunnel into web-test-04 as well.
 
 This JSON comes from VIVO itself - as a path `/orgservice` (see productMods/WEB-INF/web.xml):
@@ -144,7 +144,7 @@ This JSON comes from VIVO itself - as a path `/orgservice` (see productMods/WEB-
   
   ```
 
-  Then there is a simple script that copies files.
+  Then there is a simple script that copies files `deploy.sh`.  You could modify it to match your server(s) and environment(s), then run:
   ```
   ./deploy.sh (acceptance|production)
   
@@ -208,7 +208,7 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
   
   ```
   
-  then in the componet something like this:
+  then in the component something like this:
 
   
   ```
