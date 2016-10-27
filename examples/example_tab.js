@@ -64,7 +64,6 @@ class PersonDisplay extends TabDisplay {
   }
 
  facetDisplay(facet_counts) {
-   //console.log(facet_counts.facet_fields.department_facet_string)
    let ary = facet_counts.facet_fields['department_facet_string']
    return ary
  }
@@ -110,7 +109,7 @@ function printResults(json) {
 
   console.log(html)
   
-  let facets = displayer.facets(results.facet_counts)
+  let facets = displayer.facetDisplay(results.facet_counts)
   console.log(facets)
 
 }
