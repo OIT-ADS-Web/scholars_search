@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-
-import FacetItem from './FacetItem'
-
 class FacetList extends Component {
 
   constructor(props) {

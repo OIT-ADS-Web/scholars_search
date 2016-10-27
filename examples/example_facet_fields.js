@@ -35,7 +35,7 @@ console.log(`query: ${qry}`)
 searcher.setFacetField("department_facet_string", {prefix: "1|", mincount: "1"})
 
 // FIXME: not crazy about this api - the local param has to match the facet field name
-// exactly to work - seems like they should both be added at the same time -- mabye something like this:
+// exactly to work - seems like they should both be added at the same time -- maybe something like this:
 //
 // searcher.setFacetField("department_facet_string", {prefix: "1|", mincount: "1"}, "{!ex=dept}")
 searcher.setFacetLocalParam("department_facet_string", "{!ex=dept}")

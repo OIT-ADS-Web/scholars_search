@@ -12,6 +12,9 @@ const myRedux = {
   dispatch: function(output) { console.log(output) }
 }
 
+// these would work - just don't want to run them
+// so commented out
+
 /*
 const taskSearch = runSaga(
   fetchSearch(compoundSearch),
@@ -28,7 +31,9 @@ import { call, put } from 'redux-saga/effects'
 import { fetchSearchApi } from '../src/actions/sagas'
 import * as types from '../src/actions/types'
 
-// NOTE: this is a way to see if the 'yield' is the right function
+// NOTE: this is a way to see if the 'yield' is the calling
+// the correct function
+//
 // since it's only 5 lines anyway, this seems like a waste
 const fn = fetchSearch(compoundSearch)
 let first = fn.next()
