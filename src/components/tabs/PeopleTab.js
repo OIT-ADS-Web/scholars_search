@@ -22,16 +22,16 @@ class PersonDisplay extends HasSolrData(Component) {
 
   get primaryEmail() {
     let emailText = ''
-    if (this.doc.primaryEmail_text) {
-      emailText = this.doc.primaryEmail_text
+    if (this.doc.primaryEmail_string) {
+      emailText = this.doc.primaryEmail_string
     }
     return emailText
   }
 
   get profileURL() {
     let urlText = ''
-    if (this.doc.profileURL_text) {
-      urlText = this.doc.profileURL_text
+    if (this.doc.profileURL_string) {
+      urlText = this.doc.profileURL_string
     } else {
       urlText = this.doc.URI
     }
@@ -242,8 +242,8 @@ class PeopleTab extends Tab {
     this.displayer = new PeopleDisplayer()
 
     let fields = [{label: 'title', value: 'PREFERRED_TITLE.0'}, 
-      { label: 'email', value: 'primaryEmail_text.0',  default: ''}, 
-      { label: 'profileUrl', value: 'profileURL_text.0', default: ''}
+      { label: 'email', value: 'primaryEmail_string',  default: ''}, 
+      { label: 'profileUrl', value: 'profileURL_string', default: ''}
     ]
  
     this.downloader = new TabDownloader(fields)

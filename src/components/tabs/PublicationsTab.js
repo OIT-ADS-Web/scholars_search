@@ -10,13 +10,13 @@ class PublicationDisplay extends HasSolrData(Component) {
   }
 
   get abstract() {
-    let text = this.doc.abstract_text ? this.doc.abstract_text : ''
+    let text = this.doc.abstract_string ? this.doc.abstract_string : ''
     return text
   }
 
 
   get authorList() {
-    let text = this.doc.authorList_text ? this.doc.authorList_text : ''
+    let text = this.doc.authorList_string ? this.doc.authorList_string : ''
     return text
   }
 
@@ -85,7 +85,7 @@ class PublicationsFacets extends HasFacets(Component) {
 
 
 import Tab from '../Tab'
-import { TabDisplayer, TabFilterer } from '../Tab'
+import { TabDisplayer, TabFilterer, TabDownloader } from '../Tab'
 
 class PublicationsFilterer extends TabFilterer {
 
@@ -128,6 +128,12 @@ class PublicationsTab extends Tab  {
   
     this.filterer = new PublicationsFilterer(this.filter)
 
+     let fields = [{ label: 'authorList', value: 'authorList_string',  default: ''}, 
+      { label: 'abstract', value: 'abstract_string', default: ''}
+    ]
+ 
+    this.downloader = new TabDownloader(fields)
+    
   }
 
 
