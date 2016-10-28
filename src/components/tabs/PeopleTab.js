@@ -6,7 +6,7 @@ import ScholarsLink from '../ScholarsLink'
 class PersonDisplay extends HasSolrData(Component) {
 
   constructor(props) {
-    super(props);
+    super(props)
   }
 
 

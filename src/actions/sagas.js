@@ -22,7 +22,7 @@ function checkStatus(res) {
   return res.json()
 }
 
-// ***** tabs *****0
+// ***** tabs ******
 // 1. actual function
 function fetchTabsApi(searchFields, tabList) {
   const solrUrl = process.env.SOLR_URL
@@ -44,7 +44,6 @@ export function* fetchTabs(action) {
     const results = yield call(fetchTabsApi,searchFields, tabList) 
     yield put(receiveTabCount(results))
   } catch(e) {
-    // FIXME: not actually prepared for error in application
     yield put(tabCountFailed(e.message))
   }
 
@@ -71,13 +70,8 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   //
   searcher.setupDefaultSearch(maxRows, start)
  
-  // in theory should either
-  // a) remove facetIds or
-  // b) incorporate facetIds into building the search
-  //
   searcher.search =  searchFields
 
-  // NOTE: apply filters last, after search has been defined
   filterer.applyFilters(searcher)
  
   // FIXME: this exact same check is in multiple places
@@ -99,7 +93,7 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
   return searcher.execute().then(res => checkStatus(res))
 }
 
-// FIXME: how to cancel and how to deal with errors
+// FIXME: how to cancel? 
 // 
 // cancel might look like this:
 // https://yelouafi.github.io/redux-saga/docs/advanced/TaskCancellation.html
@@ -113,7 +107,6 @@ export function* fetchSearch(action) {
 
     yield put(receiveSearch(results))
   } catch(e) {
-    // FIXME: not actually prepared for error in application
     yield put(searchFailed(e.message))
   } finally {
     if (yield cancelled()) {
@@ -155,7 +148,6 @@ export function* fetchDepartments() {
 
     yield put(receiveDepartments(results))
   } catch(e) {
-    // FIXME: not actually prepared for error in application
     yield put(departmentsFailed(e.message))
   } 
 }
