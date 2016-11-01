@@ -24,7 +24,10 @@ class PersonDisplay extends HasSolrData(Component) {
     let emailText = ''
     if (this.doc.primaryEmail_string) {
       emailText = this.doc.primaryEmail_string
+    } else if (this.doc.primaryEmail_text) {
+      emailText = this.doc.primaryEmail_text
     }
+    
     return emailText
   }
 
@@ -32,6 +35,8 @@ class PersonDisplay extends HasSolrData(Component) {
     let urlText = ''
     if (this.doc.profileURL_string) {
       urlText = this.doc.profileURL_string
+    } else if (this.doc.profileURL_text) {
+      urlText = this.doc.profleURL_text
     } else {
       urlText = this.doc.URI
     }
