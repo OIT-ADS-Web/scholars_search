@@ -128,8 +128,8 @@ class PublicationsTab extends Tab  {
   
     this.filterer = new PublicationsFilterer(this.filter)
 
-     let fields = [{ label: 'authorList', value: 'authorList_string',  default: ''}, 
-      { label: 'abstract', value: 'abstract_string', default: ''}
+     let fields = [{ label: 'authorList', value: 'authorList_text',  default: ''}, 
+      { label: 'abstract', value: 'abstract_text', default: ''}
     ]
  
     this.downloader = new TabDownloader(fields)

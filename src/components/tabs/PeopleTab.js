@@ -247,8 +247,8 @@ class PeopleTab extends Tab {
     this.displayer = new PeopleDisplayer()
 
     let fields = [{label: 'title', value: 'PREFERRED_TITLE.0'}, 
-      { label: 'email', value: 'primaryEmail_string',  default: ''}, 
-      { label: 'profileUrl', value: 'profileURL_string', default: ''}
+      { label: 'email', value: 'primaryEmail_text',  default: ''}, 
+      { label: 'profileUrl', value: 'profileURL_text', default: ''}
     ]
  
     this.downloader = new TabDownloader(fields)
