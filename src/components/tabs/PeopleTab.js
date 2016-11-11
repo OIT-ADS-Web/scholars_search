@@ -33,10 +33,11 @@ class PersonDisplay extends HasSolrData(Component) {
 
   get profileURL() {
     let urlText = ''
+
     if (this.doc.profileURL_string) {
       urlText = this.doc.profileURL_string
     } else if (this.doc.profileURL_text) {
-      urlText = this.doc.profleURL_text
+      urlText = this.doc.profileURL_text
     } else {
       urlText = this.doc.URI
     }

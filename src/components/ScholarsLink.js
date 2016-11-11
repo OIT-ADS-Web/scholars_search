@@ -15,13 +15,12 @@ class ScholarsLink extends Component {
     // or null or something  - so it throws an error
     // "replace() is not a function" (or something like that)
     uri = String(uri)
-
+    
     if (env == 'acceptance') {
       uri = uri.replace('https://scholars.duke.edu', 'https://scholars2-test.oit.duke.edu')
     } else if (env == 'development') {
       uri = uri.replace('https://scholars.duke.edu', 'http://localhost')
     }
-
 
     return (
       <a href={uri} target="_blank">
