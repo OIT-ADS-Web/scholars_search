@@ -41,7 +41,9 @@ class PersonDisplay extends HasSolrData(Component) {
     } else {
       urlText = this.doc.URI
     }
-         
+ 
+    console.log(`get profileURL() returning=${urlText}`)
+
     /*
     if (this.doc.profileURL_string) {
       urlText = this.doc.profileURL_string
