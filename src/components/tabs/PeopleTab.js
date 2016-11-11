@@ -34,25 +34,13 @@ class PersonDisplay extends HasSolrData(Component) {
   get profileURL() {
     let urlText = ''
 
-    console.log(`profileURL_text=${this.doc.profileURL_text}`)
-
-    if (this.doc.profileURL_text) {
-      urlText = this.doc.profleURL_text
-    } else {
-      urlText = this.doc.URI
-    }
- 
-    console.log(`get profileURL() returning=${urlText}`)
-
-    /*
     if (this.doc.profileURL_string) {
       urlText = this.doc.profileURL_string
     } else if (this.doc.profileURL_text) {
-      urlText = this.doc.profleURL_text
+      urlText = this.doc.profileURL_text
     } else {
       urlText = this.doc.URI
     }
-    */
 
     return urlText
   }
