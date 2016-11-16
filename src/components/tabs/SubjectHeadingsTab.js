@@ -16,7 +16,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     // but that's what it is right now example:
     // https://scholars.duke.edu/individual/dukehttps://scholars.duke.edu/individual/scsG05
     //
-    let dukeMatch = /^https:\/\/scholars.duke.edu\/individual\/dukehttps:\/\/scholars.duke.edu\/individual\/*/
+    let dukeMatch = /^https:\/\/scholars.duke.edu\/individual\/dukehttps:\/\/scholars.duke.edu\/keywords\/*/
 
     let uri = this.URI
     
