@@ -10,6 +10,8 @@ import ErrorHappened from './ErrorHappened'
 
 import { requestSearch } from '../actions/search'
 
+import { toggleFacets } from '../actions/search'
+
 import { tabList } from './TabPicker'
 
 export class SearchTabs extends Component {
@@ -24,6 +26,8 @@ export class SearchTabs extends Component {
 
   constructor(props) {
     super(props)
+    
+    this.handleShowMobileFacets = this.handleShowMobileFacets.bind(this)
   }
 
 
@@ -107,6 +111,15 @@ export class SearchTabs extends Component {
 
   }
 
+  handleShowMobileFacets(e) {
+    e.preventDefault();
+    const { dispatch } = this.props
+    
+    dispatch(toggleFacets())
+  
+  }
+
+
   render() {
     const { search : {searchFields} } = this.props
  
@@ -151,6 +164,10 @@ export class SearchTabs extends Component {
 
     let query = solr.buildComplexQuery(searchFields)
 
+    const { facets: {showFacets} } = this.props
+ 
+    let facetText = showFacets ? '&laquo; Hide Filters' : 'Filters &raquo;'
+
     return (
       <div>
         <div className="pull-right">
@@ -160,9 +177,14 @@ export class SearchTabs extends Component {
         </div>
         <div className="clearfix"></div>
         <nav className="visible-xs">
-            {mobileTabs}            
+            {mobileTabs} 
+            <span className="pull-right">
+              <a href="#" className="btn btn-primary" onClick={this.handleShowMobileFacets}>
+              <span dangerouslySetInnerHTML={{__html: facetText}}></span>
+              </a>
+            </span>           
         </nav>
-
+        
         <nav className="hidden-xs">
           <ul className="nav nav-pills nav-justified">
             {desktopTabs}

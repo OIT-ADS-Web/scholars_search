@@ -19,7 +19,10 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
     let dukeMatch = /^https:\/\/scholars.duke.edu\/individual\/duke*/
 
     let uri = this.URI
-    
+ 
+    // FIXME: should probably store 'source' in index then just do 
+    // let isMesh = this.doc.source_string == 'mesh' or what-not
+    //
     let isMesh = meshMatch.test(uri)
     let isLoc = locMatch.test(uri)
     let isDuke = dukeMatch.test(uri)
@@ -34,6 +37,7 @@ class SubjectHeadingDisplay extends HasSolrData(Component) {
       }
     }()
 
+    // FIXME: should this *always* be the link?  (even for MeSH)
     if (isLoc || isDuke) {
       uri = `https://scholars.duke.edu/individual?uri=${encodeURIComponent(this.URI)}`
     }

@@ -7,6 +7,8 @@ import TabPicker from './TabPicker'
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'
 
+import classNames from 'classnames'
+
 class EmptyResults extends Component {
   
   constructor(props) {
@@ -141,6 +143,11 @@ class TabResults extends Component {
        </div>
     )
 
+    const { facets: {showFacets} } = this.props
+    
+    let facetClasses = classNames({'hidden-sm': !showFacets, 'hidden-xs': !showFacets})
+
+    // facet-wrapper = classNames(
     // NOTE: columns are in reverse order - so push/pull will put facets on top in mobile view
     return (
            
@@ -149,8 +156,14 @@ class TabResults extends Component {
           <div className="row panel">
 
             <div className="col-md-3 col-md-push-9 panel panel-info">
+              
+              <span id="facet-wrapper" className={facetClasses}>
               {tabFacets}
+              </span>
+              
+              <span id="download-wrapper" className="hidden-sm hidden-xs">
               {tabDownload}
+              </span>
             </div>
 
 

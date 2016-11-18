@@ -104,6 +104,22 @@ function departmentsReducer(departments = { isFetching: false, data: {}}, action
   }
 }
 
+
+function facetsReducer(facets = { showFacets: false}, action) {
+  switch (action.type) {
+  
+  case types.FACETS_TOGGLE:
+    let shown = facets.showFacets
+    return { ... facets, showFacets: !shown }
+  case types.FACETS_HIDE:
+    return { ... facets, showFacets: false }
+  default:
+    return facets
+  }
+}
+
+
+
 import { combineReducers } from 'redux'
 import { routerReducer  } from 'react-router-redux'
 
@@ -118,7 +134,8 @@ const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
   tabs: tabReducer,
-  departments: departmentsReducer
+  departments: departmentsReducer,
+  facets: facetsReducer
 })
 
 export default {

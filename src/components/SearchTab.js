@@ -6,6 +6,8 @@ import querystring from 'querystring'
 
 import { requestSearch, requestTabCount } from '../actions/search'
 
+import { hideFacets } from '../actions/search'
+
 import solr from '../utils/SolrHelpers'
 
 import {saveAs} from 'file-saver'
@@ -66,7 +68,9 @@ export class SearchTab extends Component {
     // NOTE: wasn't doing this before I cancel update of SearchResults
     // (with componentShouldUpdate)
     dispatch(requestTabCount(full_query, tabList))
-  
+ 
+    dispatch(hideFacets())
+
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
