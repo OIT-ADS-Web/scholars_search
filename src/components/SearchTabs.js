@@ -10,6 +10,8 @@ import ErrorHappened from './ErrorHappened'
 
 import { requestSearch } from '../actions/search'
 
+import { toggleFacets } from '../actions/search'
+
 import { tabList } from './TabPicker'
 
 export class SearchTabs extends Component {
@@ -24,6 +26,28 @@ export class SearchTabs extends Component {
 
   constructor(props) {
     super(props)
+    
+    this.handleShowMobileFacets = this.handleShowMobileFacets.bind(this)
+  }
+
+
+  determineTabCount(tab, grouped) {
+    // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
+       
+    // NOTE: had to do this so I can add arbitary text (like a big NOT, OR statement) to group.query, but not 
+    // have to use that exact same text to match the 'tab'
+    let tagMatch = /^{!tag=(.*?)}/
+      
+    // so now group by the tag, not the group.query
+    let regrouped = {}
+    _.forEach(grouped, function(value, key) {
+        let match = tagMatch.exec(key)
+        regrouped[match[1]] = value
+    })
+      
+    // find it by the id - so the {tag} and the tab.id - have to match 
+    let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
+    return count
   }
 
 
@@ -41,6 +65,7 @@ export class SearchTabs extends Component {
         return <div></div>
       }
 
+      /*
       // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
        
       // NOTE: had to do this so I can add arbitary text (like a big NOT, OR statement) to group.query, but not 
@@ -56,6 +81,9 @@ export class SearchTabs extends Component {
       
       // find it by the id - so the {tag} and the tab.id - have to match 
       let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
+      */
+
+      let count = this.determineTabCount(tab, grouped)
 
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
 
@@ -64,16 +92,24 @@ export class SearchTabs extends Component {
     return tabs
   }
 
+  determineCurrentTab(tabList, filter) {
+    let index = _.findIndex(tabList, function(o) { return o.id == filter })
+    
+    let currentTab = tabList[index]
+    return currentTab
+  }
+
   // FIXME: see above - this ends up rendering tabs twice - and show/hide depending on screen-size
   mobileTabs(isFetching, grouped, filter) {
     if (isFetching) {
       return <div></div>
     }
       
-    let index = _.findIndex(tabList, function(o) { return o.id == filter })
+    //let index = _.findIndex(tabList, function(o) { return o.id == filter })
     
-    let currentTab = tabList[index]
-    
+    //let currentTab = tabList[index]
+    let currentTab = this.determineCurrentTab(tabList, filter)
+
     let count = currentTab.filter in grouped ? grouped[currentTab.filter].doclist.numFound : 0
     let label = currentTab.label
            
@@ -107,12 +143,20 @@ export class SearchTabs extends Component {
 
   }
 
+  handleShowMobileFacets(e) {
+    e.preventDefault();
+    const { dispatch } = this.props
+    
+    dispatch(toggleFacets())
+  
+  }
+
+
   render() {
     const { search : {searchFields} } = this.props
  
     // FIXME: seems like I shouldn't have to default filter in this place - 
-    // I'd like it more global because - these types of lines are in multiple
-    // places - feels too redundant
+    // I'd like it more global because - this type of code is in multiple places
     let filter = searchFields ? searchFields['filter'] : 'person'
 
     const { tabs : {grouped, isFetching, message } } = this.props
@@ -151,6 +195,25 @@ export class SearchTabs extends Component {
 
     let query = solr.buildComplexQuery(searchFields)
 
+    const { facets: {showFacets} } = this.props
+ 
+    let facetText = showFacets ? '&laquo; Hide Filters' : 'Filters &raquo;'
+
+    let mobileFilter = (<span></span>)
+    
+    let currentTab = this.determineCurrentTab(tabList, filter)
+    let currentTabCount = this.determineTabCount(currentTab, grouped)
+ 
+    if (currentTabCount > 0) { 
+      mobileFilter = (
+          <span className="pull-right">
+              <a href="#" className="btn btn-primary" onClick={this.handleShowMobileFacets}>
+                <span dangerouslySetInnerHTML={{__html: facetText}}></span>
+              </a>
+          </span> 
+        )
+     }      
+
     return (
       <div>
         <div className="pull-right">
@@ -160,9 +223,10 @@ export class SearchTabs extends Component {
         </div>
         <div className="clearfix"></div>
         <nav className="visible-xs">
-            {mobileTabs}            
+            {mobileTabs}
+            {mobileFilter} 
         </nav>
-
+        
         <nav className="hidden-xs">
           <ul className="nav nav-pills nav-justified">
             {desktopTabs}

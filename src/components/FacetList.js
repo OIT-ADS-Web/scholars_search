@@ -14,10 +14,14 @@ class FacetList extends Component {
     let label = this.label
 
     return  (
-      <ul className="list-group">
-        <h4 className="list-group-item-heading">{label}</h4>
-        {this.props.children}
-      </ul>
+
+     <aside>
+       <ul className="list-group">
+         <h4 className="list-group-item-heading">{label}</h4>
+         {this.props.children}
+       </ul>
+     </aside>
+
     )
   }
 }
