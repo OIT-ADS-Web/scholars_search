@@ -13,6 +13,7 @@ import { requestSearch } from '../actions/search'
 import { toggleFacets } from '../actions/search'
 
 import { tabList } from './TabPicker'
+import { defaultTab } from './TabPicker'
 
 export class SearchTabs extends Component {
 
@@ -29,7 +30,6 @@ export class SearchTabs extends Component {
     
     this.handleShowMobileFacets = this.handleShowMobileFacets.bind(this)
   }
-
 
   determineTabCount(tab, grouped) {
     // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
@@ -134,9 +134,7 @@ export class SearchTabs extends Component {
   render() {
     const { search : {searchFields} } = this.props
  
-    // FIXME: seems like I shouldn't have to default filter in this place - 
-    // I'd like it more global because - this type of code is in multiple places
-    let filter = searchFields ? searchFields['filter'] : 'person'
+    let filter = defaultTab(searchFields)
 
     const { tabs : {grouped, isFetching, message } } = this.props
 
@@ -162,7 +160,7 @@ export class SearchTabs extends Component {
     //let ungroupedCount = first.filter in grouped ? grouped[first.filter].matches : 0
     
     // but if the filters of each tab are not all inclusive, the count will
-    // be off slighgtly - so this is just manually adding them ...
+    // be off slightly - so this is just manually adding them ...
     let ungroupedCount = 0
     
     _.forEach(grouped, function(value, key) {

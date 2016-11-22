@@ -6,6 +6,10 @@ import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
 import querystring from 'querystring'
 
+// FIXME: not crazy about including reference to clearly UI related
+// code in this file - but it at least eliminates code duplication
+import { defaultChosenFacets } from '../components/TabPicker'
+
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components
 import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './search'
@@ -74,20 +78,14 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
 
   filterer.applyFilters(searcher)
  
-  // FIXME: this exact same check is in multiple places
-  let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
-   
-  // have to convert to array if it's a single value
-  if (typeof chosen_ids === 'string') {
-    chosen_ids = [chosen_ids]
-  }
+  let chosen_ids = defaultChosenFacets(searchFields)
   
   if (chosen_ids) {
     filterer.setActiveFacets(chosen_ids)
   }
 
-  // FIXME: have to remember to call this AFTER setActiveFacets ... 
-  // could even be part of the same function call
+  // FIXME: have to always remember to call this *AFTER* setActiveFacets
+  // which seems annoying  ... could even be part of the same function call
   filterer.applyOptionalFilters(searcher)
 
   return searcher.execute().then(res => checkStatus(res))

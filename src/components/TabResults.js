@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import PagingPanel from './PagingPanel'
 import TabPicker from './TabPicker'
-import { defaultTab } from './TabPicker'
+import { defaultTab, defaultChosenFacets } from './TabPicker'
 
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'
@@ -49,10 +49,6 @@ class TabResults extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
  
-    // NOTE: sometimes this makes debugging a little easier
-    // (since it just forces the component to update regardless)
-    //return true
-
     let now = Date.now()
     let timeElapsed = now - lastUpdated
     
@@ -117,19 +113,11 @@ class TabResults extends Component {
       )
     }
 
-     
-    let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
-    
-    // FIXME: it's annoying having this boilerplate check everywhere we get the chosen facets
-    // might be worth checking if it's necessary in this particular place
-    if (typeof chosen_facets === 'string') {
-      chosen_facets = [chosen_facets]
-    }
+
+    let chosen_facets = defaultChosenFacets(searchFields)
 
     let tabFacets = ""
 
-    // FIXME: need a way to map facetIds to actual facet values
-    //
     if (facet_fields && numFound > 0) {   
       tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, data)
     }
@@ -148,7 +136,6 @@ class TabResults extends Component {
     
     let facetClasses = classNames({'hidden-sm': !showFacets, 'hidden-xs': !showFacets})
 
-    // facet-wrapper = classNames(
     // NOTE: columns are in reverse order - so push/pull will put facets on top in mobile view
     return (
            
