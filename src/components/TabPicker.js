@@ -12,6 +12,12 @@ export const tabList = _.map(tabs, function(tab) {
 
 import TabLoader from './tabs/TabLoader'
 
+// NOTE: designed for centralizing search : { searchFields } access  
+export function defaultTab(searchFields) {
+  let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+  return filter
+}
+
 class TabPicker {
 
   // example usage:
@@ -37,11 +43,6 @@ class TabPicker {
   get downloader() {
     return this._tab.downloader
   }
-
-  /* shouldn't need this ever (I don't think?) */
-  //get tab() {
-  //  return this._tab
-  //}
 
 }
 

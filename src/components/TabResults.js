@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import PagingPanel from './PagingPanel'
 import TabPicker from './TabPicker'
+import { defaultTab } from './TabPicker'
+
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'
 
@@ -69,8 +71,7 @@ class TabResults extends Component {
   render() {
     const { search : { results, searchFields, isFetching, message }, departments: { data } } = this.props
 
-    // FIXME: this same logic appears in many places - it should be centralized
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    let filter = defaultTab(searchFields)
 
     let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
