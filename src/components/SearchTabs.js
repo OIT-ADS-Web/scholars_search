@@ -65,24 +65,6 @@ export class SearchTabs extends Component {
         return <div></div>
       }
 
-      /*
-      // http://stackoverflow.com/questions/432493/how-do-you-access-the-matched-groups-in-a-javascript-regular-expression
-       
-      // NOTE: had to do this so I can add arbitary text (like a big NOT, OR statement) to group.query, but not 
-      // have to use that exact same text to match the 'tab'
-      let tagMatch = /^{!tag=(.*?)}/
-      
-      // so now group by the tag, not the group.query
-      let regrouped = {}
-      _.forEach(grouped, function(value, key) {
-          let match = tagMatch.exec(key)
-          regrouped[match[1]] = value
-      })
-      
-      // find it by the id - so the {tag} and the tab.id - have to match 
-      let count = tab.id in regrouped ? regrouped[tab.id].doclist.numFound : 0
-      */
-
       let count = this.determineTabCount(tab, grouped)
 
       return <SearchTab key={tab.id} filter={tab.id} active={filter == tab.id} label={tab.label} count={count} />
