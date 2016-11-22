@@ -87,9 +87,6 @@ export class SearchTabs extends Component {
       return <div></div>
     }
       
-    //let index = _.findIndex(tabList, function(o) { return o.id == filter })
-    
-    //let currentTab = tabList[index]
     let currentTab = this.determineCurrentTab(tabList, filter)
 
     let count = currentTab.filter in grouped ? grouped[currentTab.filter].doclist.numFound : 0
