@@ -6,9 +6,7 @@ import { call, put, fork, take, cancel, cancelled  } from 'redux-saga/effects'
 
 import querystring from 'querystring'
 
-// FIXME: not crazy about including reference to clearly UI related
-// code in this file - but it at least eliminates code duplication
-import { defaultChosenFacets } from '../components/TabPicker'
+import { defaultChosenFacets } from '../utils/TabHelper'
 
 // NOTE: not import 'requestSearch', 'requestTabCount' because
 // those are called by containers/components

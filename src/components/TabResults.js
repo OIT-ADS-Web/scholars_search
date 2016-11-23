@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 
 import PagingPanel from './PagingPanel'
 import TabPicker from './TabPicker'
-import { defaultTab, defaultChosenFacets } from './TabPicker'
+
+import { defaultTab, defaultChosenFacets } from '../utils/TabHelper'
+
 
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'

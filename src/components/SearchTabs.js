@@ -13,7 +13,8 @@ import { requestSearch } from '../actions/search'
 import { toggleFacets } from '../actions/search'
 
 import { tabList } from './TabPicker'
-import { defaultTab } from './TabPicker'
+
+import { defaultTab } from '../utils/TabHelper'
 
 export class SearchTabs extends Component {
 

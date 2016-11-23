@@ -10,7 +10,7 @@ import SearchTabs from './SearchTabs'
 import TabResults from './TabResults'
 import TabPicker from './TabPicker'
 
-import { defaultTab, defaultChosenFacets } from './TabPicker'
+import { defaultTab, defaultChosenFacets } from '../utils/TabHelper'
 
 import solr from '../utils/SolrHelpers'
 
