@@ -21,6 +21,11 @@ class Faceter {
     return constructed.replace(':', '\\:')
   }
 
+  // NOTE: this is a bit obtuse, but it's taking a list of the facetIds to apply
+  // (obtained from the UI) and then finding the corresponding actual filter
+  // that needs to be added to the SOLR query per facetId - and then OR'ing them
+  // all together to actually filter the search
+  //
   applyFacet() {
 
     let _self = this
@@ -36,7 +41,10 @@ class Faceter {
       let base_id = id.replace(`${_self.prefix}_`, "")
       let uri_to_search = this.constructFacetFilter(base_id, _self.prefix)
 
-      // FIXME: do we need this check ???      
+      // FIXME: do we need this check?  
+      // I had the idea of being able to add a "_null" to a facet to search for all the 
+      // docs that are *not* covered by the facet - but I'm not sure this is ever going
+      // to be necessary     
       if (id == `${_self.prefix}_null`) {
         return `(-${_self.field}:[* TO *] AND *:*)`
       } 
@@ -54,7 +62,8 @@ class Faceter {
 
 }
 
-
+// *********** Filterer, Displayer, Downloader ************* //
+//
 class TabFilterer {
 
   constructor(filter) {
@@ -64,10 +73,12 @@ class TabFilterer {
  
 
   applyFilters(searcher) {
+    // 1. first apply the filter that corresponds to the 'tab'
     if (this.filter) {
       searcher.addFilter("tab", this.filter)
     }
  
+    // 2. then apply all facets that filter the results further
     _.forEach(this.facets, (value, key) => {
        this.applyFacet(searcher, value.field, value.prefix, value.options)
     })
@@ -76,7 +87,7 @@ class TabFilterer {
 
   // NOTE: this is called by saga - but happens BEFORE the actual call the SOLR
   applyOptionalFilters(searcher) {
-      // e.g. this is just mapping from config
+      // NOTE: 'this.facets' is just the mapping from the config
       //
     _.forEach(this.facets, (value, key) => {
       let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
@@ -93,14 +104,19 @@ class TabFilterer {
 
   
   defaultQueryOptions() { 
-   // this would possibly be a way to set query options per tab -- two problems
+   // this would possibly be a hook to set query options per tab, for instance
+   // if you wanted to search different fields or give different weights to certain
+   // fields etc...
+   //
+   // two problems
    // a) I tried it and it seemed to have no effect on the search
-   // b) would, technically, also need to be applied to tabs (e.g. the group query 
+   // b) would, technically, also need to be applied to tabs counts (e.g. the group query 
    //    to get number counts [People(12)][Organizations(4)] etc.... )
    //
+   // an example:
    //
-   //   qf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
-   //   pf: 'ALLTEXT ALLTEXTUNSTEMMED nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+   //   qf: 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
+   //   pf: 'nameText^200.0 nameUnstemmed^200.0 nameStemmed^200.0 nameLowercase',
   }
 
   setActiveFacets(chosen_ids) {
@@ -120,9 +136,8 @@ class TabDisplayer {
   }
    
   sortOptions(callback) {
-    // FIXME: how to deal with callback ?? right now this function does not work - will probably
-    // end up making a <Sorter callback={callback} /> type of component
-    //
+    // FIXME: this is some half-code to set up sorting but how to deal with callback ?? 
+    // will probably end up making a <Sorter callback={callback} /> type of component
     return (   
       <select onselect={() => callback()} classname="form-control" defaultvalue="score desc">
         <option value="score desc">relevance</option>
@@ -130,7 +145,6 @@ class TabDisplayer {
     )
   }
  
-  // FIXME: is this in the right place ???
   results(docs, highlighting) {
     let resultSet = docs.map(doc => { 
         let highlight = highlighting[doc.DocId]
@@ -172,11 +186,8 @@ class TabDownloader {
 }
 
 // FIXME: should these each be in a separate, short file ??? can't decide
-//
 export { TabFilterer, TabDownloader, TabDisplayer }
 
-// FIXME: is it better to define that at top, or bottom of file?
-//
 export default class Tab {
 
   constructor() { }

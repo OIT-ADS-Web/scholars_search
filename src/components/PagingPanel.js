@@ -18,8 +18,6 @@ import helper from '../utils/PagingHelper'
 
 export class PagingPanel extends Component {
 
-  // FIXME: don't necessarily like this down at PagingPanel component
-  // level just to get at router and add values to router so they go into state
   static get contextTypes() {
     return({
       router: PropTypes.object.isRequired
@@ -45,7 +43,6 @@ export class PagingPanel extends Component {
     const { search : { searchFields }, dispatch } = this.props
 
     // given page (in parameter) calculate start
-    //
     let start = searchFields ? searchFields['start'] : 0
     let newStart = (pageNumber - 1) * PAGE_ROWS
 
@@ -174,9 +171,6 @@ export class PagingPanel extends Component {
 
 }
 
-// FIXME: this is just returning the same state
-// seems like no point in that, but otherwise says
-// no property 'results' etc...
 const mapStateToProps = (search, ownProps) => {
   return  search;
 }
