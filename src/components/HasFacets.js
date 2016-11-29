@@ -6,7 +6,7 @@ import Facets from './Facets'
 
 let HasFacets = (superclass) => class extends superclass {
 
-  // NOTE: this is only used in PeopleTab, mabye it should not be
+  // NOTE: this is only used in PeopleTab, maybe it should not be
   // in this class
   mapURIsToName(data) {
     let hash = {}
@@ -42,6 +42,8 @@ let HasFacets = (superclass) => class extends superclass {
     return results
   }
 
+  // gets the label for a facet as it's looping through (see #facetItems) 
+  // NOTE: this is what you'd override if you need to control the label better
   facetItem(prefix, item, context={}) {
       let abb = item.label.split("#")[1] || item.label
       if (abb == item.label) {
@@ -102,9 +104,12 @@ let HasFacets = (superclass) => class extends superclass {
     return facetDisplay
   }
  
-  /* FIXME: could, in theory, give this a render() method too - I just wanted
-   * each HasFacets(Component) to define it's own - so you'd see what happens
-   * in the Component - rather than the mixin - but it leads to duplicated code
+  /* FIXME: could, in theory, give this mixin a render() method too (see below)
+   *
+   * I wanted each Component extends HasFacets(Component) to define it's own render, so you'd 
+   * always see what is rendered in the Component code - rather than going to the mixin code
+   * 
+   * downside: it leads to duplicated code (since the same code appears in every component)
    *
   render() {
     const { facet_fields, chosen_facets, context } = this.props
