@@ -76,8 +76,6 @@ import Tab from '../Tab'
 
 import { TabFilterer, TabDisplayer } from '../Tab'
 
-//import { GenericTabDisplayer, GenericDisplay } from './GenericTab'
-
 class OtherTabDisplayer extends TabDisplayer {
 
   individualDisplay(doc, highlight) {
@@ -110,7 +108,7 @@ class OtherTab extends Tab {
 
     this.id =  "misc"
     this.filter =  "{!tag=misc}type:((*Award) OR (*Presentation) OR (*ProfessionalActivity) OR (*geographical_region) OR (*self_governing))"
-    // NOTE: this gets *everything else* which is sometimes useful
+    // NOTE: the following gets *everything else* via NOT which is sometimes useful
     //
     //this.filter = "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))"
  

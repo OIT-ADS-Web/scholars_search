@@ -106,6 +106,20 @@ export function departmentsFailed(message) {
 }
 
 
+export function toggleFacets() {
+  return {
+    type: types.FACETS_TOGGLE
+  }
+}
+
+export function hideFacets() {
+  return {
+    type: types.FACETS_HIDE
+  }
+}
+
+
+
 // allow all to be exported at once into an 'actions' object
 export default {
   requestSearch,
@@ -118,6 +132,8 @@ export default {
   tabCountFailed,
   requestDepartments,
   receiveDepartments,
-  departmentsFailed
+  departmentsFailed,
+  toggleFacets,
+  hideFacets
 } 
 

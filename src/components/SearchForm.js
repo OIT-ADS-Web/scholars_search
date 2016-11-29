@@ -50,18 +50,8 @@ export class SearchForm extends Component {
     const noMatch = this.noMatch
     const advanced = this.advanced
 
-    // FIXME: should '*' wildcard be added to allWords word(s) or not?
-    //let add = "";
-    //if (allWords.value.lastIndexOf('*', 0) != 0) {
-    //  add = "*"
-    //}
-    // NOTE: allWords search needs a '*' after every word, otherwise it's searching
-    // exactly (sort of).  Then again, maybe the user wants the ability to differentiate the two.
-    
-    // NOTE: persist tab for search - but default to 'person' tab if nothing is there
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-    // per Julia's request - just default to people tab on any new search
-    filter = 'person'
+    // NOTE: per Julia's request - just default to people tab on any new search
+    let filter = 'person'
     //
     // NOTE: if it's a new search - default to page 0 so we're not trying 
     // to get a non-existent page of data

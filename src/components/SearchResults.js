@@ -10,6 +10,8 @@ import SearchTabs from './SearchTabs'
 import TabResults from './TabResults'
 import TabPicker from './TabPicker'
 
+import { defaultTab, defaultChosenFacets } from '../utils/TabHelper'
+
 import solr from '../utils/SolrHelpers'
 
 import { fetchSearchApi } from '../actions/sagas'
@@ -41,7 +43,7 @@ export class SearchResults extends Component {
     this.path = "/"
   }
 
-  
+ 
   handleDownload() {
     // NOTE: I get this warning when I added (e) as parameter and used e.preventDefault():
     //
@@ -49,8 +51,7 @@ export class SearchResults extends Component {
     // on a released/nullified synthetic event. This is a no-op. See https://fb.me/react-event-pooling for more information."
     const { search : { searchFields } } = this.props
 
-    // FIXME: this same logic appears in many places - it should be centralized
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    let filter = defaultTab(searchFields)
 
     let today = new Date()
     let todayStr = today.toISOString().substring(0,10) // ISOString Returns 2011-10-05T14:48:00.000Z
@@ -87,8 +88,7 @@ export class SearchResults extends Component {
   handleSort() {
     const { search : { searchFields } } = this.props
  
-    // FIXME: this same logic appears in many places - it should be centralized
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    let filter = defaultTab(searchFields)
 
     let sort = this.sort
 
@@ -119,10 +119,8 @@ export class SearchResults extends Component {
 
     let query = solr.buildComplexQuery(searchFields)
      
-    // FIXME: this same logic appears in many, many places - it should be centralized
-    // or defaulted at a higher level, or something
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
-    
+    let filter = defaultTab(searchFields)
+
     let tabPicker = new TabPicker(filter)
     let filterer = tabPicker.filterer
     
@@ -135,16 +133,9 @@ export class SearchResults extends Component {
     let full_query = { ...searchFields }
     full_query['start'] = 0
 
-    let chosen_ids = searchFields['facetIds'] ? searchFields['facetIds'] : []
-    
-    // have to convert to array if it's a single value. 
-    // FIXME: there is probably a better way to do this
-    if (typeof chosen_ids === 'string') {
-      chosen_ids = [chosen_ids]
-    }
+    let chosen_ids = defaultChosenFacets(searchFields)
  
     if (is_selected) {
-    //if (e.target.checked) {
       chosen_ids.push(new_assigned_id)  // need way to map id to value
     } else {
       chosen_ids = _.filter(chosen_ids, function(o) { return o != new_assigned_id })

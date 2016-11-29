@@ -42,7 +42,6 @@ export default class SearchField extends Component {
     this.refs.myInput.focus()
   }
 
-  //
   // NOTE: ends up being a wrapper for typical input.value access
   // for a text input field - but in this case it's a <SearchField> component
   //

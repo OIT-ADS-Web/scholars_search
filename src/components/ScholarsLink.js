@@ -11,9 +11,8 @@ class ScholarsLink extends Component {
 
     let env = process.env.NODE_ENV
 
-    // NOTE: strangely this is occassionally not a string
-    // or null or something  - so it throws an error
-    // "replace() is not a function" (or something like that)
+    // NOTE: strangely this is occassionally not a string or null or something  - so it throws an error
+    // "replace is not a function of undefined" (or something like that) - so I wrapped in String()
     uri = String(uri)
     
     if (env == 'acceptance') {

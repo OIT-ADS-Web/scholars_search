@@ -4,8 +4,14 @@ import { connect } from 'react-redux';
 
 import PagingPanel from './PagingPanel'
 import TabPicker from './TabPicker'
+
+import { defaultTab, defaultChosenFacets } from '../utils/TabHelper'
+
+
 import Loading from './Loading'
 import ErrorHappened from './ErrorHappened'
+
+import classNames from 'classnames'
 
 class EmptyResults extends Component {
   
@@ -45,10 +51,6 @@ class TabResults extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { search : { isFetching, message, lastUpdated }} = nextProps
  
-    // NOTE: sometimes this makes debugging a little easier
-    // (since it just forces the component to update regardless)
-    //return true
-
     let now = Date.now()
     let timeElapsed = now - lastUpdated
     
@@ -67,8 +69,7 @@ class TabResults extends Component {
   render() {
     const { search : { results, searchFields, isFetching, message }, departments: { data } } = this.props
 
-    // FIXME: this same logic appears in many places - it should be centralized
-    let filter = searchFields ? (searchFields['filter'] || 'person') : 'person'
+    let filter = defaultTab(searchFields)
 
     let { highlighting={}, response={}, facet_counts={} } = results
     let { numFound=0,docs } = response
@@ -114,19 +115,11 @@ class TabResults extends Component {
       )
     }
 
-     
-    let chosen_facets = searchFields['facetIds'] ? searchFields['facetIds'] : []
-    
-    // FIXME: it's annoying having this boilerplate check everywhere we get the chosen facets
-    // might be worth checking if it's necessary in this particular place
-    if (typeof chosen_facets === 'string') {
-      chosen_facets = [chosen_facets]
-    }
+
+    let chosen_facets = defaultChosenFacets(searchFields)
 
     let tabFacets = ""
 
-    // FIXME: need a way to map facetIds to actual facet values
-    //
     if (facet_fields && numFound > 0) {   
       tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, data)
     }
@@ -141,6 +134,10 @@ class TabResults extends Component {
        </div>
     )
 
+    const { facets: {showFacets} } = this.props
+    
+    let facetClasses = classNames({'hidden-sm': !showFacets, 'hidden-xs': !showFacets})
+
     // NOTE: columns are in reverse order - so push/pull will put facets on top in mobile view
     return (
            
@@ -149,8 +146,14 @@ class TabResults extends Component {
           <div className="row panel">
 
             <div className="col-md-3 col-md-push-9 panel panel-info">
+              
+              <span id="facet-wrapper" className={facetClasses}>
               {tabFacets}
+              </span>
+              
+              <span id="download-wrapper" className="hidden-sm hidden-xs">
               {tabDownload}
+              </span>
             </div>
 
 

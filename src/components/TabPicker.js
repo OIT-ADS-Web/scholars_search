@@ -38,11 +38,6 @@ class TabPicker {
     return this._tab.downloader
   }
 
-  /* shouldn't need this ever (I don't think?) */
-  //get tab() {
-  //  return this._tab
-  //}
-
 }
 
 

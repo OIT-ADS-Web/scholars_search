@@ -6,6 +6,8 @@ import querystring from 'querystring'
 
 import { requestSearch, requestTabCount } from '../actions/search'
 
+import { hideFacets } from '../actions/search'
+
 import solr from '../utils/SolrHelpers'
 
 import {saveAs} from 'file-saver'
@@ -52,8 +54,6 @@ export class SearchTab extends Component {
     const query  = {...searchFields, start: 0, filter: filter }
     query['facetIds'] = []
  
-    // FIXME: needs to do this on default search (from URL) too
-    // FIXME: is this a good place for adding facet - counts etc...
     let tabPicker = new TabPicker(filter)
     let filterer = tabPicker.filterer
 
@@ -63,10 +63,10 @@ export class SearchTab extends Component {
     
     dispatch(requestSearch(full_query, filterer))
 
-    // NOTE: wasn't doing this before I cancel update of SearchResults
-    // (with componentShouldUpdate)
     dispatch(requestTabCount(full_query, tabList))
-  
+ 
+    dispatch(hideFacets())
+
     // NOTE: took me a while to figure out I couldn't just pass
     // searchFields as {query: searchFields} had to copy it (see above)
     this.context.router.push({
@@ -82,7 +82,6 @@ export class SearchTab extends Component {
 
     let tabLabel = this.label.replace(' ', '&nbsp;')
 
-    // FIXME: the fact that I can't put an if statement in jsx is annoying    
     return (
          <li className={classList}>
            <a href="#" onClick={this.handleTab}><span dangerouslySetInnerHTML={{__html: tabLabel}}></span> ({this.count}) </a>
