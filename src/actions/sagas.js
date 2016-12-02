@@ -8,11 +8,9 @@ import querystring from 'querystring'
 
 import { defaultChosenFacets } from '../utils/TabHelper'
 
-// NOTE: not import 'requestSearch', 'requestTabCount' because
+// NOTE: did not import 'requestSearch', 'requestTabCount' (etc...) because
 // those are called by containers/components
 import { receiveSearch, receiveTabCount, tabCountFailed, searchFailed } from './search'
-
-// same as above
 import { receiveDepartments, departmentsFailed } from './search'
 
 function checkStatus(res) {
@@ -50,6 +48,7 @@ export function* fetchTabs(action) {
   }
 
 }
+
 // 3. watcher
 function* watchForTabs() {
   while(true) {
@@ -137,6 +136,7 @@ export function fetchDepartmentsApi() {
 
 }
 
+// 2. what watcher will do
 export function* fetchDepartments() {
 
   try {

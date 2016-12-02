@@ -9,7 +9,7 @@ export default class SearchField extends Component {
 
   // NOTE: jeeesh, this was convoluted and took a while to figure out (see below)
   // https://discuss.reactjs.org/t/how-to-pass-in-initial-value-to-form-fields/869/5
-  // I just needed fields that I could initial from query params - but also
+  // I just needed fields that I could initialize from query params - but also
   // be able to edit
   //
   shouldSetInputTextToDefaultValue (props) {

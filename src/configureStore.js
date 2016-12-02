@@ -24,7 +24,6 @@ const createStoreWithOnlySagaMiddleware = applyMiddleware(
 )(createStore)
 
 
-// FIXME: add tablist here?
 const initialState = {}
 
 // NOTE: not sure about good naming, organizational method
