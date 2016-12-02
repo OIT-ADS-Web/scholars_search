@@ -6,6 +6,8 @@ import HasSolrData from '../HasSolrData'
 
 import ScholarsLink from '../ScholarsLink'
 
+// NOTE: go to bottom of file for actual Tab definition
+//
 class OtherDisplay extends HasSolrData(Component) {
 
   constructor(props) {
