@@ -115,7 +115,7 @@ export class SearchResults extends Component {
   */
 
   handleFacetClick(e, assigned_id, is_selected, value) {
-    const { search : { searchFields }, departments: { data }, dispatch } = this.props
+    const { search : { searchFields }, dispatch } = this.props
 
     let query = solr.buildComplexQuery(searchFields)
      

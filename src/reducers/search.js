@@ -78,32 +78,31 @@ function searchReducer(search = { isFetching: false, results: {}}, action) {
 }
 
 
-function departmentsReducer(departments = { isFetching: false, data: {}}, action) {
+function initReducer(init = { isFetching: false, departments: {}}, action) {
   switch (action.type) {
 
   case types.REQUEST_DEPARTMENTS:
     
-    return { ...departments, 
+    return { ...init, 
       isFetching: true,
-      data: action.data
+      departments: action.departments
   }
   case types.RECEIVE_DEPARTMENTS:
     
-    return { ...departments, 
+    return { ...init, 
       isFetching: false,
-      data: action.data
+      departments: action.departments
   }
   case types.DEPARTMENTS_FAILED:
     
-    return { ...departments,
+    return { ...init,
       isFetching: false,
       message: action.message
   }
   default:
-    return departments;
+    return init
   }
 }
-
 
 function facetsReducer(facets = { showFacets: false}, action) {
   switch (action.type) {
@@ -134,7 +133,7 @@ const mainReducer = combineReducers({
   search: searchReducer,
   routing: routerReducer,
   tabs: tabReducer,
-  departments: departmentsReducer,
+  init: initReducer,
   facets: facetsReducer
 })
 

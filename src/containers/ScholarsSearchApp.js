@@ -7,6 +7,7 @@ import SearchForm from '../components/SearchForm'
 import SearchResults from '../components/SearchResults'
 
 import { requestSearch, requestTabCount, emptySearch, requestDepartments } from '../actions/search'
+//import { requestData } from '../actions/search'
 
 import solr from '../utils/SolrHelpers'
 
@@ -43,7 +44,7 @@ export class ScholarsSearchApp extends Component {
 
   // FIXME: maybe this is the wrong place to initialize from routes
   componentDidMount() {
-    const { location, dispatch, departments: { data }} = this.props;
+    const { location, dispatch } = this.props;
 
     let query = location.query
     
