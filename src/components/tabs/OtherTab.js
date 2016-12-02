@@ -60,9 +60,9 @@ class OtherFacets extends HasFacets(Component) {
   }
 
   render() {
-    const { facet_fields, chosen_facets, context } = this.props
+    const { facet_fields, chosen_facets, extraData } = this.props
  
-    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, extraData)
     //
     return (
       <Facets>
@@ -87,7 +87,7 @@ class OtherTabDisplayer extends TabDisplayer {
   
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<OtherFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<OtherFacets facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} extraData={data}/>)
   }
    
 

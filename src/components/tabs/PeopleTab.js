@@ -150,10 +150,10 @@ class PeopleFacets extends HasFacets(Component) {
   // (for instance) with the actual names -- to avoid this odd customization and also prevent 
   // the UI lag that happens when we have the facet counts, but not the facet labels
   //
-  facetItem(prefix, item, context) {
+  facetItem(prefix, item, extraData) {
 
     // FIXME: this is real specific to PeopleFacets maybe should be defined in this class
-    let departmentNameMap = this.mapURIsToName(context)
+    let departmentNameMap = this.mapURIsToName(extraData)
 
     if(prefix === 'dept') {
       let department_uri = item.label ? item.label.replace("1|", "") : "None" 
@@ -161,23 +161,23 @@ class PeopleFacets extends HasFacets(Component) {
       let org_id = item.label ? item.label.replace(/1\|https:\/\/scholars.duke.edu\/individual\//g, "dept_") : "dept_null"
       return { id: org_id, title: department_uri, label: facetLabel, value: item.label}
     } else {
-      return super.facetItem(prefix, item, context)
+      return super.facetItem(prefix, item, extraData)
     }
 
   }
   
   render() {
-    const { facet_fields, chosen_facets, context } = this.props
+    const { facet_fields, chosen_facets, extraData } = this.props
  
-    // FIXME: if we don't have the context - should leave blank
+    // FIXME: if we don't have the extraData - should leave blank
     // (so departments don't show up as blank) - 
     // that's the idea, but this doesn't accomplish that 
     //
-    if (!context) {
+    if (!extraData) {
       return ""
     }
 
-    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, extraData)
  
     return (
       <Facets>
@@ -214,7 +214,7 @@ class PeopleDisplayer extends TabDisplayer {
 
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<PeopleFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<PeopleFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} extraData={data}/>)
   }
 
 }
