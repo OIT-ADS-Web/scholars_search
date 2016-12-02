@@ -67,19 +67,11 @@ export class SearchForm extends Component {
       'advanced': advanced.value
     }
 
-    /*
-     * FIXME: should only add these to route if there is a value
-     * e.g. it really shouldn't search a 'blank' search
-     */
-    //let path = "/"
-    
     this.context.router.push({
       pathname: this.path,
       query: compoundSearch 
     })
 
-    // NOTE: this creates a new PersonTab() (for instance)
-    //
     let tabPicker = new TabPicker(filter)
  
     let filterer = tabPicker.filterer

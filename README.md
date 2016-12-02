@@ -208,7 +208,7 @@ tab specific behaviour.  These are further divided into filterer, displayer, and
   
   ```
   
-  then in the componet something like this:
+  then in the component something like this:
 
   
   ```
