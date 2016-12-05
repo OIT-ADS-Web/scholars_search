@@ -44,7 +44,7 @@ let HasFacets = (superclass) => class extends superclass {
 
   // gets the label for a facet as it's looping through (see #facetItems) 
   // NOTE: this is what you'd override if you need to control the label better
-  facetItem(prefix, item, context={}) {
+  facetItem(prefix, item, extraData={}) {
       let abb = item.label.split("#")[1] || item.label
       if (abb == item.label) {
         abb = item.label.substring(item.label.lastIndexOf("/") + 1)
@@ -58,13 +58,13 @@ let HasFacets = (superclass) => class extends superclass {
       return { id: id, title: title, label: label, value: value }
   }
 
-  facetItems(facet_fields, field, prefix, chosen_facets, context={}) {
+  facetItems(facet_fields, field, prefix, chosen_facets, extraData={}) {
     let results = this.parseFacetFields(facet_fields)
  
     let items = results[field]
 
     let list = _.map(items, (item) => {
-      let {id, title, label, value } = this.facetItem(prefix, item, context)
+      let {id, title, label, value } = this.facetItem(prefix, item, extraData)
       let facetItem = (
            <FacetItem key={id} assigned_id={id} count={item.count} chosen_ids={chosen_facets} onFacetClick={this.onFacetClick} facetLabel={label} title={title} value={value}/>
         )
@@ -74,7 +74,7 @@ let HasFacets = (superclass) => class extends superclass {
     return list   
    }
 
-   facetFieldsDisplay(facet_fields, chosen_facets, context) {
+   facetFieldsDisplay(facet_fields, chosen_facets, extraData) {
 
     let size = facet_fields.length
 
@@ -87,7 +87,7 @@ let HasFacets = (superclass) => class extends superclass {
       let prefix = facet.prefix
       let label = facet.label
 
-      let items  = this.facetItems(facet_fields, field, prefix, chosen_facets, context)
+      let items  = this.facetItems(facet_fields, field, prefix, chosen_facets, extraData)
       let list = (
           <FacetList key={field} label={label}>{items}</FacetList>
       )
@@ -112,16 +112,16 @@ let HasFacets = (superclass) => class extends superclass {
    * downside: it leads to duplicated code (since the same code appears in every component)
    *
   render() {
-    const { facet_fields, chosen_facets, context } = this.props
+    const { facet_fields, chosen_facets, extraData } = this.props
  
     // NOTE: this doesn't seem to do what I want it to (not show people/department
     // facets until we have departments loaded)
     //
-    if (!context) {
+    if (!extraData) {
       return ""
     }
 
-    let facetFieldDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    let facetFieldDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, extraData)
     
     return (
       <Facets>

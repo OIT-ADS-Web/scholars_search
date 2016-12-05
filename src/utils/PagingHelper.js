@@ -3,8 +3,8 @@ import _ from 'lodash'
  
 /*
  * NOTE: this returns an array of 3 arrays given a total number of pages
- * and the current page.  The first array is what to do with *before* the
- * last array is what to do with *after*
+ * and the current page.  The first array is what to do with *before*,
+ * the last array is what to do with *after*
  *
  * just made PAGE_BY a constant
  *
@@ -60,11 +60,10 @@ function pageArrays(totalPages, currentPage) {
   
   let isEnd =  currentPage % PAGE_BY == 0
   if (isEnd) {
-    // if it's exact, we don't need to swtich to next range
+    // if it's exact, we don't need to switch to next range
     currentPartition = currentPartition - 1
   }
 
-  //
   let start = (currentPartition * PAGE_BY) + 1
 
   let end = (start + PAGE_BY > totalPages) ? totalPages : (start + PAGE_BY)

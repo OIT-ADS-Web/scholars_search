@@ -22,6 +22,28 @@ function checkStatus(res) {
   return res.json()
 }
 
+// NOTE: the basic thing happening here is the application is starting what is 
+// seemingly a separate thread or queue of events called a 'saga'.
+//
+// The UI calls the requestSearch action (for instance) and that's all it has
+// to do.  Redux takes care of sending that here as an action type.
+//
+// The saga itself is like a 'watcher' or listener waiting for notification 
+// of a particular event to happen (and ignoring all others)
+//
+// It 'takes' the event from the queue and does something, which could
+// possibly be starting another process and waiting for a response (sort of like 
+// a thread).
+//
+// Then when it gets a response it calls back to same queue with a new
+// event. It's up to Redux to dispatch this back to the UI.
+// 
+// see here:
+// http://stackoverflow.com/questions/34570758/why-do-we-need-middleware-for-async-flow-in-redux#answer-34623840
+// 
+// In particular, I like this idea:
+// "Your UI just needs to dispatch what HAS HAPPENED. We only fire events (always in the past tense!) and not actions..."
+//
 // ***** tabs ******
 // 1. actual function
 function fetchTabsApi(searchFields, tabList) {
@@ -35,7 +57,7 @@ function fetchTabsApi(searchFields, tabList) {
   return searcher.execute().then(res => checkStatus(res))
 }
 
-// 2. what to do 
+// 2. what watcher does (see next) 
 export function* fetchTabs(action) {
   const { searchFields, tabList } = action
 
@@ -93,7 +115,7 @@ export function fetchSearchApi(searchFields, filterer, maxRows=PAGE_ROWS) {
 // cancel might look like this:
 // https://yelouafi.github.io/redux-saga/docs/advanced/TaskCancellation.html
 
-// 2. what watcher will do
+// 2. what watcher will do (see next)
 export function* fetchSearch(action) {
   const { searchFields, filterer } = action
  

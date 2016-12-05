@@ -133,7 +133,9 @@ class TabDisplayer {
   }
 
   facetDisplay(facet_counts, chosen_facets, callback, data) { 
-    return ""
+    return (
+        <span className="placeholder" />
+    )
   }
    
   sortOptions(callback) {

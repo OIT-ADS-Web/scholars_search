@@ -67,7 +67,7 @@ class TabResults extends Component {
   }
  
   render() {
-    const { search : { results, searchFields, isFetching, message }, departments: { data } } = this.props
+    const { search : { results, searchFields, isFetching, message }, init: { departments } } = this.props
 
     let filter = defaultTab(searchFields)
 
@@ -121,7 +121,7 @@ class TabResults extends Component {
     let tabFacets = ""
 
     if (facet_fields && numFound > 0) {   
-      tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, data)
+      tabFacets = displayer.facetDisplay(facet_counts, chosen_facets, this.onFacetClick, departments)
     }
 
     let tabDownload = ""

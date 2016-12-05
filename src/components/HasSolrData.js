@@ -178,18 +178,6 @@ let HasSolrData = (superclass) => class extends superclass {
     return fragment
   }
 
-  get allTextDisplay() {
-    let fragment = (
-      <div className="row">
-        <div className="col-md-12">
-          <div className="alert alert-success"><strong>ALLTEXT</strong> {this.allText}</div>
-        </div>
-      </div>
-    )
-
-    return fragment
-  }
-
 }
 
 export default HasSolrData
