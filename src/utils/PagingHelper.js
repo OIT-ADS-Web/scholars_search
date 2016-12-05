@@ -24,17 +24,18 @@ import _ from 'lodash'
  if we're on page 65
  that falls within the 61-75 range
  the *before* would be 46
- the *next would be 75
+ the *next would be 76
 
  [ [ '+', 46 ],
   [ 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 ],
   [ '+', 76 ] ]
 
 
- if we're on page 92
+ if we're on page 92 of 94
  that falls with the 91-105 range (but we don't have 105 pages)
  so *before* would be 76
- but *next* would be no page
+ *next* would be no page
+ and [91...94] are the pages to show
 
 [ [ '+', 76 ], [ 91, 92, 93, 94 ], [ '-' ] ]
  *
