@@ -28,6 +28,29 @@ const browserHistory = useRouterHistory(createHistory)({
 
 const history = syncHistoryWithStore(browserHistory, store)
 
+// https://www.npmjs.com/package/react-ga
+// https://web-design-weekly.com/2016/07/08/adding-google-analytics-react-application/
+import ReactGA from 'react-ga'
+ReactGA.initialize('UA-38539532-1') //Unique Google Analytics tracking number
+
+function logPageView() {
+  console.log(`logging page view: ${window.location}`)
+
+  ReactGA.set({ page: window.location.pathname });
+  ReactGA.pageview(window.location.pathname);
+}
+
+// NOTE: another possible way - might work, seems simpler, but havent' figured out how yet
+//
+/*
+// http://stackoverflow.com/questions/34836500/how-to-set-up-google-analytics-for-react-router
+history.listen(function (location) {
+  console.log(location.pathname)
+  console.log(window.ga)
+  //window.ga('send', 'pageview', location.pathname);
+})
+*/
+
 // https://github.com/reactjs/react-router/blob/master/docs/guides/RouteConfiguration.md#decoupling-the-ui-from-the-url
 import routes from '../routes'
 
@@ -40,7 +63,7 @@ export default class ScholarsSearch extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router history={history}>
+        <Router onUpdate={logPageView} history={history}>
           {routes}
         </Router>
       </Provider>
