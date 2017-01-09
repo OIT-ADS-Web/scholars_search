@@ -99,7 +99,7 @@ class SolrQuery {
   // { 'allWords': 'medicine', 'rows': 50, 'filter': 'person' etc ... } and
   set search(compoundSearch) {
     // FIXME: would this be a better place to check for
-    // filter and start being empty?
+    // 'filter' and/or 'start' being empty?
     //
     // NOTE: 'filter' is sent to SOLR differently
     // 
@@ -113,10 +113,6 @@ class SolrQuery {
     //}
 
     this._search = compoundSearch
-    // FIXME: is this a good idea or not, want
-    // to hide the implementation
-    //
-    //
     let qry = this.buildQuery(compoundSearch)
     this.query = qry
 
@@ -128,8 +124,7 @@ class SolrQuery {
     return this
   }
 
-  // NOTE: this effectively *adds* could be called
-  // set-A-facet-field
+  // NOTE: this effectively *adds*, so could be called 'set-A-facet-field'
   setFacetField(name,options={}) {
     this._facetFields[name] = options
     return this
@@ -141,7 +136,6 @@ class SolrQuery {
   }
 
   setFacetLocalParam(name, param) {
-   // this._facetLocalParams = {}
     this._facetLocalParams[name] = param
     return this
   }
@@ -243,12 +237,12 @@ class SolrQuery {
   }
 
   get queryString() {
-    // NOTE: querystring turns javascript data into queryParams
+    // NOTE: querystring library turns javascript data into queryParams
     //
     // querystring.stringify({ foo: 'bar', baz: ['qux', 'quux'], corge: '' })
     // returns 'foo=bar&baz=qux&baz=quux&corge='
 
-    // e.g. making a big hash {} - the keys being
+    // so this code is making a big hash {} - the keys being
     // [q, rows, start etc..., fq,   
     let queryOptions = Object.assign({q: this.query},
         this.options,
@@ -256,11 +250,7 @@ class SolrQuery {
         this.getFacetFieldOptions(),
         this.getGroupQueryOptions())
 
-    // NOTE: switched to querystring.stringify, as opposed to manual
     let params = querystring.stringify(queryOptions)
-    // still printing for fun
-    //console.debug(params)
-   
     return this.selectUrl + '?' + params
   }
 
@@ -271,14 +261,13 @@ class SolrQuery {
 
   execute() {
 
-    // FIXME: would be great if I could send JSON
+    // FIXME: would be great if I could send JSON, someday
     // fetch(queryString, {method: 'GET',  
     //  header: {
     //    'Accept': 'application/json',
     //    'Content-Type': 'application/json'
     //  }
     // })
-    //
 
     let attempt = fetch(this.queryString)
     return attempt
@@ -288,6 +277,4 @@ class SolrQuery {
 }
 
 export default SolrQuery
-// FIXME: could make default = SolrQuery, then export others
-// just makes importing a little easier
 

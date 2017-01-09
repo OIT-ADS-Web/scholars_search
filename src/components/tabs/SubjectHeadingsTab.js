@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import HasSolrData from '../HasSolrData'
 import ScholarsLink from '../ScholarsLink'
 
+// NOTE: go to bottom of file for actual Tab definition
+//
 class SubjectHeadingDisplay extends HasSolrData(Component) {
 
   constructor(props) {
@@ -75,9 +77,9 @@ class SubjectHeadingsFacets extends HasFacets(Component) {
   }
 
   render() {
-    const { facet_fields, chosen_facets, context } = this.props
+    const { facet_fields, chosen_facets, extraData } = this.props
  
-    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, extraData)
     //
     return (
       <Facets>
@@ -121,7 +123,7 @@ class SubjectHeadingsTabDisplayer extends TabDisplayer {
   
   facetDisplay(facet_counts, chosen_ids, callback, data) {
     let facet_fields = facet_counts.facet_fields
-    return (<SubjectHeadingsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} context={data}/>)
+    return (<SubjectHeadingsFacets facets={this.facets} facet_fields={facet_fields} chosen_facets={chosen_ids} onFacetClick={callback} extraData={data}/>)
   }
   
  

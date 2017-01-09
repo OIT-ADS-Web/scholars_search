@@ -58,9 +58,9 @@ class ArtisticWorksFacets extends HasFacets(Component) {
   }
 
   render() {
-    const { facet_fields, chosen_facets, context } = this.props
+    const { facet_fields, chosen_facets, extraData } = this.props
  
-    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, context)
+    let facetDisplay = this.facetFieldsDisplay(facet_fields, chosen_facets, extraData)
     //
     return (
       <Facets>

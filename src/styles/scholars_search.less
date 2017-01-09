@@ -93,8 +93,10 @@ span.facet-label {
  
 .list-group-item.facet-item {
   font-size: 11px;
-  padding: 4px 0px 0px 0px;
   margin-bottom: 2px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
 }
 
 .list-group-item {
@@ -106,8 +108,11 @@ span.facet-label {
   font-size: 11px;
   background-color: transparent;
   color: #333333;
-  padding: 4px 1px;
   max-width:10%;
+  padding-top: 4px;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  padding-right: 0px;
 }
 
 .facet-item.active span.badge {
@@ -118,7 +123,19 @@ span.facet-label {
 .facet-item span.badge:after{content:")"}
 .facet-item span.badge:before{content:"("}
 
-.facet-item span.badge { padding: 0px 0px; }
+.facet-item label { 
+  padding: 2px; 
+  margin-bottom: 0px;
+}
+
+.facet-item label input {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.list-group-item.facet-item {
+  margin-bottom: 2px
+}
 
 .facet-item a {
   text-decoration: none;
@@ -128,21 +145,23 @@ span.facet-label {
 
 .facet-item.active a {
   color: #FFF;
-  /*font-weight: normal; */
-}
-
-
-.facet-item.active span.badge {
-  /*font-weight: normal; */
 }
 
 
 .search-text {
   font-weight: bold;
-  margin-right: 8px;
+  margin-right: 0px;
+  text-align: right;
 }
 
+.search-help-link {
+  display: block;
+  text-align:right;
+}
 
+.search-help-link a {
+  text-decoration: underline;
+}
 .panel-info {
   background-color: #F5F5F5;
 }

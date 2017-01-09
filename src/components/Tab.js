@@ -85,9 +85,10 @@ class TabFilterer {
 
   }
 
-  // NOTE: this is called by saga - but happens BEFORE the actual call the SOLR
+  // NOTE: this is called by saga - but happens BEFORE the actual call to SOLR
   applyOptionalFilters(searcher) {
       // NOTE: 'this.facets' is just the mapping from the config
+      // it's sort of like an implicitly required initialization parameter
       //
     _.forEach(this.facets, (value, key) => {
       let faceter = new Faceter(searcher, value.field, this.facet_ids, value.prefix)
@@ -132,7 +133,9 @@ class TabDisplayer {
   }
 
   facetDisplay(facet_counts, chosen_facets, callback, data) { 
-    return ""
+    return (
+        <span className="placeholder" />
+    )
   }
    
   sortOptions(callback) {

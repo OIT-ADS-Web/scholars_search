@@ -13,6 +13,9 @@ import OtherTab from './OtherTab'
 export const tabList = [
   { id: "person", instance: new PeopleTab() },
   { id: "publications",  instance: new PublicationsTab() },
+  // NOTE: took away organizations tab for the time being
+  // since 'type' in vivo/index does not match 'type' envisioned
+  // (so faceting on 'type' is not useful) 
   //{ id: "organizations",  instance: new OrganizationsTab() }, 
   { id: "grants",  instance: new GrantsTab() }, 
   { id: "courses",  instance: new CoursesTab() },

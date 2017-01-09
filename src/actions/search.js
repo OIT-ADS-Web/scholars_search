@@ -80,18 +80,16 @@ export function tabCountFailed(message) {
 export function requestDepartments() {
   return {
     type: types.REQUEST_DEPARTMENTS,
-    data: {},
-    isFetching: true,
+    departments: {},
+    isFetching: true
   }
 
 }
 
 export function receiveDepartments(json) {
-  let departments = json
-
   return {
     type: types.RECEIVE_DEPARTMENTS,
-    data: departments,
+    departments: json,
     isFetching: false
   }
 
@@ -105,7 +103,7 @@ export function departmentsFailed(message) {
   }
 }
 
-
+/* necessary for mobile view */
 export function toggleFacets() {
   return {
     type: types.FACETS_TOGGLE

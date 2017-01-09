@@ -199,6 +199,9 @@ export class SearchTabs extends Component {
           <span className="search-text">
           Query: {query} found {ungroupedCount} results
           </span>
+          <span className="search-help-link">
+            <a href="http://about.scholars.duke.edu/how-does-search-work">Learn how the search works</a>
+          </span>
         </div>
         <div className="clearfix"></div>
         <nav className="visible-xs">

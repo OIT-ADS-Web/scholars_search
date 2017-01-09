@@ -3,8 +3,8 @@ import _ from 'lodash'
  
 /*
  * NOTE: this returns an array of 3 arrays given a total number of pages
- * and the current page.  The first array is what to do with *before* the
- * last array is what to do with *after*
+ * and the current page.  The first array is what to do with *before*,
+ * the last array is what to do with *after*
  *
  * just made PAGE_BY a constant
  *
@@ -24,17 +24,18 @@ import _ from 'lodash'
  if we're on page 65
  that falls within the 61-75 range
  the *before* would be 46
- the *next would be 75
+ the *next would be 76
 
  [ [ '+', 46 ],
   [ 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75 ],
   [ '+', 76 ] ]
 
 
- if we're on page 92
+ if we're on page 92 of 94
  that falls with the 91-105 range (but we don't have 105 pages)
  so *before* would be 76
- but *next* would be no page
+ *next* would be no page
+ and [91...94] are the pages to show
 
 [ [ '+', 76 ], [ 91, 92, 93, 94 ], [ '-' ] ]
  *
@@ -60,11 +61,10 @@ function pageArrays(totalPages, currentPage) {
   
   let isEnd =  currentPage % PAGE_BY == 0
   if (isEnd) {
-    // if it's exact, we don't need to swtich to next range
+    // if it's exact, we don't need to switch to next range
     currentPartition = currentPartition - 1
   }
 
-  //
   let start = (currentPartition * PAGE_BY) + 1
 
   let end = (start + PAGE_BY > totalPages) ? totalPages : (start + PAGE_BY)
