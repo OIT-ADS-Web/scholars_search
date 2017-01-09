@@ -46,7 +46,7 @@ function logPageView() {
 // http://stackoverflow.com/questions/34836500/how-to-set-up-google-analytics-for-react-router
 history.listen(function (location) {
   console.log(location.pathname)
-  console.log(window.ga)
+  console.log(window.ga) // window.ga is 'undefined'
   //window.ga('send', 'pageview', location.pathname);
 })
 */
