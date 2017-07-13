@@ -109,7 +109,7 @@ class OtherTab extends Tab {
     super()
 
     this.id =  "misc"
-    this.filter =  "{!tag=misc}type:((*Award) OR (*Presentation) OR (*ProfessionalActivity) OR (*geographical_region) OR (*self_governing))"
+    this.filter =  "{!tag=misc}type:((*Award) OR (*Presentation) OR (*ProfessionalActivity) OR (*geographical_region) OR (*self_governing) OR (*Event))"
     // NOTE: the following gets *everything else* via NOT which is sometimes useful
     //
     //this.filter = "{!tag=misc}type:(NOT((*Person) OR (*bibo/Document) OR (*Organization) OR (*Grant) OR (*Course) OR (*ArtisticWork) OR (*Concept)))"
