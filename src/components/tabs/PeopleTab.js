@@ -15,7 +15,7 @@ class PersonDisplay extends HasSolrData(Component) {
   hasThumbnail() {
     let flag = false
 
-    if (this.doc.THUMBNAIL != "0") {
+    if (this.doc.THUMBNAIL != "0" && this.doc.public_image_text != '') {
       flag = true
     }
 
