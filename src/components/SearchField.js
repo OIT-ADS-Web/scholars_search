@@ -37,7 +37,6 @@ export default class SearchField extends Component {
     return this.shouldSetInputTextToDefaultValue(nextProps)
   }
 
-
   focus() {
     this.refs.myInput.focus()
   }
@@ -68,22 +67,23 @@ export default class SearchField extends Component {
     const { label, placeholder, defaultValue, autofocus } = this.props
 
     let input = (
-      <input onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control input-sm"  placeholder={placeholder}/>
+      <input onBlur = {this.handleBlur} id="search" type="text" ref="myInput" className="form-control input-sm" placeholder={placeholder}/>
     )
     
     if (autofocus) {
       input = (
-        <input autoFocus={true} onBlur = {this.handleBlur} type="text" ref="myInput" className="form-control input-sm"  placeholder={placeholder}/>
+        <input autoFocus={true} onBlur = {this.handleBlur} id="search" type="text" ref="myInput" className="form-control input-sm" placeholder={placeholder}/>
       )
     }
 
     return (
-         <div className="form-group">
-            <label className="col-sm-4 control-label">{label}</label>
-            <div className="col-sm-8">
-              {input}
-            </div>
-         </div>
+      <div className="form-group">
+        <label className="col-sm-4 control-label">{label}</label>
+        <label className="sr-only" for="search">Search</label>
+        <div className="col-sm-8">
+          {input}
+        </div>
+      </div>
     )
 
   }
