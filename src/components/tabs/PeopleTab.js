@@ -92,7 +92,7 @@ class PersonDisplay extends HasSolrData(Component) {
     let picture
     
     if (this.hasThumbnail()) {
-      picture = <div className="crop"><img src={this.thumbnailUrlAdjusted} className="profile-thumbnail"></img></div>
+      picture = <div className="crop"><img src={this.thumbnailUrlAdjusted} className="profile-thumbnail" alt=""></img></div>
     } else {
       // just empty instead of a picture size block, to save space
       picture = <span></span>
