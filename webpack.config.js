@@ -20,7 +20,7 @@ var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
-    app: ['babel-polyfill', "./src/main.js"]
+    app: ["./src/main.js"]
   },
   // put all built files in dist
   // use 'name' variable to make 
@@ -37,39 +37,26 @@ module.exports = {
   // fs: "empty"
   //},
   module: {
-    loaders: [
+    rules: [
       { test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file-loader' },
       // style pre-processing
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // use ! to chain loaders
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(png|gif|jpg)$/, loader: 'file-loader' },
-      { test: /jquery/, loader: 'expose?$!expose?jQuery' },
+      { test: /jquery/, loader: 'expose-loader?$!expose-loader?jQuery' },
       { test: /\.json$/, loader: 'json' },
        // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
-        // http://asdfsafds.blogspot.com/2016/02/referenceerror-regeneratorruntime-is.html
-        // http://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined-with-async-await
-        query: {
-          presets: ['react','es2015'],
-          plugins: ["transform-runtime"]
-        }
+        options: { presets: ['@babel/env', '@babel/react']},
+        exclude: /node_modules/
       }
     ]
   },
   // make sourcemaps in separate files
   devtool: 'source-map',
   plugins: [
-    // build index from template, add cach-busting hashes to js bundle urls
-    // pass title variable to the template - you can specify any property here
-    // and access it in the src/index.ejs template
-    //  inject: 'head',
-    //  hash: true,
-    //  title: "Calendar Demo",
-    //  template: 'src/index.ejs/'
- 
     new HtmlWebpackPlugin({
       inject: 'head',
       hash: true,

@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import SolrQuery from '../utils/SolrQuery'
 import * as types from './types'
 import { PAGE_ROWS } from './constants'

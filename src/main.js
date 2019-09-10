@@ -11,8 +11,9 @@ import "babel-polyfill"
 
 // NOTE: wanted to require this in particular tabs (where actually needed)
 // but babel-node tries to parse *.less as *.js file
-require('./styles/scholars_search.less');
+require('./styles/scholars_search.less')
 
+/*
 module.exports = function(targetNode) {
   unmountComponentAtNode(targetNode)
   render (
@@ -20,5 +21,13 @@ module.exports = function(targetNode) {
       targetNode
   )
 }
+*/
+export default function(targetNode) {
+  unmountComponentAtNode(targetNode)
+  render (
+    <ScholarsSearch />,
+    targetNode
+  )
+}
 
-
+//export default main
