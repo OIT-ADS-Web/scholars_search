@@ -79,7 +79,7 @@ export default class SearchField extends Component {
     return (
       <div className="form-group">
         <label className="col-sm-4 control-label">{label}</label>
-        <label className="sr-only" for="search">Search</label>
+        <label className="sr-only" htmlFor="search">Search</label>
         <div className="col-sm-8">
           {input}
         </div>

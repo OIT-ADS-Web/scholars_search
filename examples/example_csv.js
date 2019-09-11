@@ -1,6 +1,10 @@
 // NOTE: need .env file at root to get SOLR_URL
 require('dotenv').config();
 
+// yarn add @babel/core @babel/cli
+// then
+// ./node_modules/.bin/babel examples/example_search.js
+
 // Example of searching using the SolrQuery class
 //
 // run via babel-node examples/example_search.js (must npm install babel-cli --global)

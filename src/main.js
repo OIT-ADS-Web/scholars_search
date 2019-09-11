@@ -7,7 +7,7 @@ require ('bootstrap')
 
 import 'jquery'
 
-import "babel-polyfill"
+import "@babel/polyfill"
 
 // NOTE: wanted to require this in particular tabs (where actually needed)
 // but babel-node tries to parse *.less as *.js file
@@ -22,6 +22,7 @@ module.exports = function(targetNode) {
   )
 }
 */
+
 export default function(targetNode) {
   unmountComponentAtNode(targetNode)
   render (
@@ -30,4 +31,5 @@ export default function(targetNode) {
   )
 }
 
-//export default main
+
+

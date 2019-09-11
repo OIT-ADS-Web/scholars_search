@@ -20,7 +20,7 @@ var config = require('dotenv').config({path: __dirname + '/.env.'+ environment})
 module.exports = {
   // start an main.js and follow requires to build the 'app' bundle in the 'dist' directory
   entry: {
-    app: ["./src/main.js"]
+    app: "./src/main.js"
   },
   // put all built files in dist
   // use 'name' variable to make 
@@ -48,11 +48,15 @@ module.exports = {
        // react/jsx and es6/2015 transpiling
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        options: { presets: ['@babel/env', '@babel/react']},
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/react']
+          }
+        }
       }
-    ]
+    ],
   },
   // make sourcemaps in separate files
   devtool: 'source-map',
@@ -61,12 +65,15 @@ module.exports = {
       inject: 'head',
       hash: true,
       title: "Scholars Search",
-      template: 'src/index.ejs/'
+      template: 'src/index.html'
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(environment),
       'process.env.SOLR_URL': JSON.stringify(process.env.SOLR_URL),
       'process.env.ORG_URL':  JSON.stringify(process.env.ORG_URL)
     })
-  ]
+  ],
+  devServer: {
+    disableHostCheck: true
+  }
 }
