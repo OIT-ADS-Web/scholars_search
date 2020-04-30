@@ -36,7 +36,7 @@
     "jasmine": "^2.4.1",
     "jasmine-async": "0.0.1",
     "jasmine-core": "^2.4.1",
-    "jquery": "^2.2.4",
+    "jquery": "^3.5.0",
     "json-loader": "^0.5.4",
     "json2csv": "^3.4.2",
     "karma": "^0.13.21",
