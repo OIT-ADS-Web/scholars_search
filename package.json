@@ -38,7 +38,7 @@
     "jasmine-core": "^2.4.1",
     "jquery": "^2.2.4",
     "json-loader": "^0.5.4",
-    "json2csv": "^3.4.2",
+    "json2csv": "^5.0.7",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "^0.2.2",
     "karma-jasmine": "^0.3.7",
